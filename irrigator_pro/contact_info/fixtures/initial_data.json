@@ -1,0 +1,134 @@
+[
+{
+    "pk": 1, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "warnes", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2014-01-06T21:36:46.691Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$rtsjl3zrR7Gl$rz3xd7AL/Bn46mgCf0qZS8RdfieLHNJbnSnwv8GP008=", 
+        "email": "greg@warnes.net", 
+        "date_joined": "2014-01-06T19:29:20Z"
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "test", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": true, 
+        "is_staff": true, 
+        "last_login": "2014-01-06T21:37:24.488Z", 
+        "groups": [], 
+        "user_permissions": [
+            19, 
+            20, 
+            22, 
+            23, 
+            24, 
+            25, 
+            26, 
+            27, 
+            40, 
+            41, 
+            42, 
+            43, 
+            44, 
+            45
+        ], 
+        "password": "pbkdf2_sha256$12000$zokqVyeVYWBF$ByddbFEv1xrogK7NgRYQY3pkYjRi+VqqTJA36odyeOQ=", 
+        "email": "", 
+        "date_joined": "2014-01-06T20:38:27Z"
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "farmer", 
+        "first_name": "Example", 
+        "last_name": "Farmer", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-01-06T22:59:37Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$1GjNnnfen7kI$uQqc3GK+/zXJgA+LwudQtd/C44YivuCp7XfPD7f0Dsg=", 
+        "email": "farmer@null.com", 
+        "date_joined": "2014-01-06T22:59:37Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "Albany", 
+        "fax": "(229) 405-2471", 
+        "mdate": "2014-01-06T18:36:44.731Z", 
+        "cuser": 1, 
+        "mobile": "585-478-6129", 
+        "country": "United States", 
+        "zipcode": "31707", 
+        "county": "", 
+        "phone": "585-678-6661", 
+        "state": "GA", 
+        "address_1": "266 Brenda Lane", 
+        "address_2": "", 
+        "muser": 1, 
+        "cdate": "2014-01-06T18:36:44.731Z", 
+        "user": 1
+    }
+},
+{
+    "pk": 2, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "Home Town", 
+        "fax": "", 
+        "mdate": "2014-01-06T22:46:07.401Z", 
+        "cuser": 1, 
+        "mobile": " ", 
+        "country": "United States", 
+        "zipcode": "37999", 
+        "county": "Lee", 
+        "phone": "229-555-1234", 
+        "state": "GA", 
+        "address_1": "1234 Main Street", 
+        "address_2": "", 
+        "muser": 2, 
+        "cdate": "2014-01-06T20:38:27.435Z", 
+        "user": 2
+    }
+},
+{
+    "pk": 3, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "Dawson", 
+        "fax": "", 
+        "mdate": "2014-01-06T23:22:06.866Z", 
+        "cuser": 2, 
+        "mobile": "", 
+        "country": "United States", 
+        "zipcode": "31999", 
+        "county": "Lee", 
+        "phone": "", 
+        "state": "GA", 
+        "address_1": "1234 Farm Road ", 
+        "address_2": "", 
+        "muser": 2, 
+        "cdate": "2014-01-06T22:59:37.610Z", 
+        "user": 3
+    }
+}
+]
