@@ -9,13 +9,25 @@ class AuditAdmin(admin.ModelAdmin):
                         'cuser',
                         'muser',
                       )
+    save_on_top = True
 
     def save_model(self, request, obj, form, change):
         # only set cname on create
         if not change:
             obj.cuser = request.user
 
-        # always set mname 
+        # always set mname
+        obj.muser = request.user
+
+        obj.save()
+
+
+def save_audit_model(self, request, obj, form, change):
+    # only set cname on create
+    if not change:
+        obj.cuser = request.user
+
+        # always set mname
         obj.muser = request.user
 
         obj.save()

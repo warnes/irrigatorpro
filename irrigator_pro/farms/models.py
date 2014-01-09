@@ -18,7 +18,7 @@ class Farm(NameDesc, Location, Comment, Audit):
     def get_users(self):
         user_list = self.users.all()
         if user_list:
-            return ', '.join([ obj.userid for obj in user_list])
+            return ', '.join([ obj.username for obj in user_list])
         else:
             return ''
 
@@ -42,7 +42,7 @@ class Field(NameDesc, Comment, Audit):
     farm          = models.ForeignKey(Farm)
     acres         = models.DecimalField(max_digits=4, decimal_places=2) # ###.##
     soil_type     = models.ForeignKey('SoilType')
-    irr_capacity  = models.PositiveSmallIntegerField()
+    irr_capacity  = models.DecimalField(max_digits=3, decimal_places=2) # #.##
 
     def __unicode__(self):
         return u"Farm %s - Field %s" % ( self.farm.name, self.name )
@@ -59,6 +59,11 @@ class SoilType(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
+    max_available_water = models.DecimalField(max_digits=3,
+                                                      decimal_places=2,
+                                                      blank=True,
+                                                      null=True) # #.##
+
     def __unicode__(self):
         return self.name
 
@@ -66,7 +71,7 @@ class SoilType(NameDesc, Comment, Audit):
         ordering = ["name"]
 
 
-class SoilTypeParameters(Comment, Audit):
+class SoilTypeParameter(Comment, Audit):
     DEPTH_VALUES = ( 8, 16, 24 )
     DEPTH_CHOICES = ( (8,  "8 inches"),
                       (16, "16 inches"),
@@ -74,17 +79,16 @@ class SoilTypeParameters(Comment, Audit):
 
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    soil_type    = models.ForeignKey(SoilType)
-    depth        = models.PositiveSmallIntegerField(choices=DEPTH_CHOICES)
-    intercept    = models.FloatField("Intercept Term (B0)")
-    slope        = models.FloatField("Slope Term (B1)")
+    soil_type           = models.ForeignKey(SoilType)
+    depth               = models.PositiveSmallIntegerField(choices=DEPTH_CHOICES)
+    intercept           = models.FloatField("Intercept Term (B0)")
+    slope               = models.FloatField("Slope Term (B1)")
 
     def __unicode__(self):
         return u"%s - %s inches" % (self.soil_type, self.depth)
 
     class Meta:
         ordering = ["soil_type__name", "depth"]
-
 
 
 ############
@@ -95,7 +99,12 @@ class Crop(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    variety     = models.CharField(max_length=32, blank=True)
+    variety = models.CharField(max_length=32,
+                               blank=True,
+    )
+
+    def __unicode__(self):
+        return u"%s - %s" % (self.name, self.variety)
 
     class Meta:
         ordering = ['name']
@@ -106,17 +115,18 @@ class CropEvent(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     crop                    = models.ForeignKey(Crop)
-    prior_event             = models.ForeignKey('CropEvent')
-    event_order             = models.PositiveSmallIntegerField()
-    days_after_prior_early  = models.PositiveSmallIntegerField()
-    days_after_prior_normal = models.PositiveSmallIntegerField()    
-    days_after_prior_late   = models.PositiveSmallIntegerField()    
+    days_after_emergence    = models.PositiveSmallIntegerField()
+    daily_water_use         = models.DecimalField(max_digits=3, decimal_places=2)
+
+    def __unicode__(self):
+        return u"%s: %s" % (self.crop, self.name)
 
     class Meta:
-        ordering = [ 'crop__name', 'event_order' ]
+        ordering = [ 'crop__name', 'days_after_emergence' ]
+        verbose_name = "Crop Event"
 
     todo = """
-           Add code to ensure that event_order is unique and sequential.  
+           Add code to ensure that event_order is unique and sequential.
            """
 
 ########################################
@@ -130,15 +140,17 @@ class Planting(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
     fields            = models.ManyToManyField(Field)
     crop              = models.ForeignKey(Crop)
-    date              = models.DateField() ## May need a better name
+    planting_date     = models.DateField() ## May need a better name
 
-
-class PlantingEvents(Comment, Audit):
+class PlantingEvent(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     planting          = models.ForeignKey(Planting)
     event             = models.ForeignKey(CropEvent)
     event_date        = models.DateField()
+
+    class Meta:
+        verbose_name = "Planting Event"
 
 
 #############
@@ -153,7 +165,7 @@ class WaterHistory(Comment, Audit):
     date        = models.DateField()
     rain        = models.DecimalField("rainfall in inches", max_digits=4, decimal_places=2, default=0.0)   # ##.##
     irrigation  = models.DecimalField("irrigation in inches", max_digits=4, decimal_places=2, default=0.0) # ##.##
-    
+
 
 #############################
 ### Probe & Measurements ###
@@ -168,16 +180,20 @@ class Probe(NameDesc, Comment, Audit):
     probe_id    = models.CharField(max_length=10)
 
 
-class ProbeReadings(Audit):
+class ProbeReading(Audit):
     # from Audit: cdate, cuser, mdate, muser
     probe               = models.ForeignKey(Probe)
     date_time           = models.DateTimeField()
     soil_potential_8    = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
     soil_potential_16   = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
     soil_potential_32   = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
-    
 
-class RawProbeReadings(Audit):
+
+    class Meta:
+        verbose_name = "Probe Reading"
+
+
+class RawProbeReading(Audit):
     """
     Model for CSV data read from probe files
     """
@@ -201,7 +217,6 @@ class RawProbeReadings(Audit):
     thermocouple_1_temp = models.DecimalField(max_digits=4, decimal_places=2) #  ##.##
     thermocouple_2_temp = models.DecimalField(max_digits=4, decimal_places=2) #  ##.##
     minutes_awake       = models.PositiveSmallIntegerField()
-    
 
-
-
+    class Meta:
+        verbose_name = "Raw Probe Reading"
