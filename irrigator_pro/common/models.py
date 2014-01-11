@@ -39,13 +39,13 @@ class Location(models.Model):
 class Audit(models.Model):
 
     cdate     = models.DateTimeField(auto_now_add=True, verbose_name="creation date")
-    cuser     = models.ForeignKey(User, 
+    cuser     = models.ForeignKey(User,
                                   related_name="%(app_label)s_%(class)s_cusers",
                                   verbose_name="creator",
                                   )
 
     mdate     = models.DateTimeField(auto_now=True, verbose_name="last modification date")
-    muser     = models.ForeignKey(User, 
+    muser     = models.ForeignKey(User,
                                   related_name="%(app_label)s_%(class)s_musers",
                                   verbose_name="last modifcation user",
                                   )
