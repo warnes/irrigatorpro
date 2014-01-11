@@ -288,3 +288,13 @@ class RawProbeReadingAdmin(AuditAdmin):
 
 admin.site.register(RawProbeReading, RawProbeReadingAdmin)
 
+
+#################
+### ProbeSync ###
+#################
+
+class ProbeSyncAdmin(AuditAdmin):
+    pass
+
+admin.site.register(ProbeSync, ProbeSyncAdmin)
+
