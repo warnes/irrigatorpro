@@ -13,8 +13,6 @@ This script downlaads the UGA SSA data stored on the NESPAL webserver and upload
 
 eastern = pytz.timezone("US/Eastern")
 
-line = "07/25/2013 09:02:07,1,0459FF,2.74,76%,0,0,5.1,23.6,21.4,23.6,1516"
-
 ## Configuration
 ftp_server   = "www.nespal.org"
 ftp_path     = "/cigflint/flint2013"
@@ -162,12 +160,25 @@ for dir in dirs:
 
             ## Disconnect & reconnect to ensure we don't lose connection unexpectedly
             ftp.quit()
-            ftp = FTP(host=ftp_server, user=ftp_username, passwd=ftp_password)
+            ftp = None
+            tries = 0
+            while (not ftp) and (tries <10) :
+                tries += 1
+                try:
+                    ftp = FTP(host=ftp_server, user=ftp_username, passwd=ftp_password, timeout=10)
+                except:
+                    pass
+            print "Connected after %s" % tries
+            sys.stdout.flush()
+
             ftp.cwd( "/" + ftp_path + "/" + dir + "/" + "daily" )
 
 
             nFiles += 1
-            allFiles = allFiles + ", " + filename
+            if allFiles:
+                allFiles = allFiles + ", " + filename
+            else:
+                allFiles = filename
 
             print "Working on %s" % filename
             sys.stdout.flush()
