@@ -14,33 +14,32 @@ This script downlaads the UGA SSA data stored on the NESPAL webserver and upload
 line = "07/25/2013 09:02:07,1,0459FF,2.74,76%,0,0,5.1,23.6,21.4,23.6,1516"
 
 ## Configuration
-#server   = "170.224.165.20"
-#username = "UGA"
-#password = "UGA_irrigator"
-
 ftp_server   = "www.nespal.org"
 ftp_path     = "/cigflint/flint2013"
 ftp_username = "flintcig"
 ftp_password = "cigswcd"
+DEBUG=False
 
-
-
-nfiles=0
-nrecords=0
-
+## Global counters
+nFiles    = 0
+nRecords  = 0
+allFiles  = ""
 
 def putProbe(farm_code, file_date, line):
+    """
+    Extract elements of CSV-encoded line, write to database
+    """
 
-    global nrecords
+    global nRecords
 
     try:
         line = line.decode("utf-8-sig")
     except:
         line = line.decode("utf-8")
 
-    print "\n"
-    print "data: %s\n" % line
-    print "\n"
+    if DEBUG:
+        print "data: %s" % line
+        sys.stdout.flush()
 
     ( reading_date,
       node_id,
@@ -56,7 +55,11 @@ def putProbe(farm_code, file_date, line):
       minutes_awake
     ) = line.split(',')
 
-    reading_date = datetime.strptime(reading_date, "%m/%d/%Y %I:%M:%S")
+    reading_date = datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z")
+    if DEBUG:
+        print reading_date
+        sys.stdout.flush()
+
     battery_percent = battery_percent.replace("%","")
 
     user = User.objects.get(username='warnes')
@@ -84,10 +87,12 @@ def putProbe(farm_code, file_date, line):
 
     rpr.save()
 
-    nrecords += 1
+    nRecords += 1
 
 def parse_filename(filename):
-    ## Extract farm and date from filename
+    """
+    Extract farm and date from filename
+    """
     (base, ext) = filename.split('.')
     (farm, datestr) = base.split('_')
     month = datestr[0:2]
@@ -99,26 +104,26 @@ def parse_filename(filename):
 
 
 
-## Get most recent successful run
+## Get most recent successful run from ProbeSync table
 ps_query = ProbeSync.objects.filter(success=True)
 if ps_query:
     latest_date = ps_query.latest().datetime
 else:
     latest_date = datetime(year=2013, month=01, day=01)
 
-## Record this run
+## Record the start of this run in the ProbeSync table
 user = User.objects.get(username='warnes')
 now  = timezone.now()
-ps = ProbeSync(datetime=timezone.now(),
-               success=False,
-               message="Starting sync.",
-               nfiles=0,
-               nrecords=0,
-               filenames="",
-               cuser=user,
-               cdate=now,
-               muser=user,
-               mdate=now
+ps = ProbeSync(datetime  = timezone.now(),
+               success   = False,
+               message   = "Starting sync.",
+               nfiles    = 0,
+               nrecords  = 0,
+               filenames = "",
+               cuser     = user,
+               cdate     = now,
+               muser     = user,
+               mdate     = now
               )
 ps.save()
 
@@ -140,7 +145,7 @@ dir_re = re.compile( dir_pattern )
 dirs = filter( lambda x: dir_re.match(x), files)
 
 ## Iterate across directories (farms)
-for dir in dirs[:2]:
+for dir in dirs:
         print "Working on Farm %s " % dir
         sys.stdout.flush()
 
@@ -153,7 +158,8 @@ for dir in dirs[:2]:
 
         ## Iterate across files (days)
         for filename in filenames[:2]:
-            nfiles += 1
+            nFiles += 1
+            allFiles = allFiles + ", " + filename
 
             print "Working on %s" % filename
             sys.stdout.flush()
@@ -166,14 +172,35 @@ for dir in dirs[:2]:
             year  = datestr[4:]
             file_date = date(year=int(year), month=int(month), day=int(day))
 
-            print "file_date", file_date
-            sys.stdout.flush()
+            if DEBUG:
+                print "file_date", file_date
+                sys.stdout.flush()
 
-            ftp.retrlines("RETR " + filename,
-                          lambda line: putProbe(farm_code=farm, file_date=file_date, line=line)
-                         )
+            if 1:
+                #try:
+                ftp.retrlines("RETR " + filename,
+                              lambda line: putProbe(farm_code=farm, file_date=file_date, line=line)
+                          )
 
+                ## Update ProbeSync record
+                ps.nfiles   = nFiles
+                ps.nrecords = nRecords
+                ps.files    = allFiles
+                ps.save
+            #except Exception as e:
+            #    "Error in decoding record and/or save RawProbeReading object: %s" % e
 
+## Disconnect
 ftp.quit()
+
+## Finalize ProbeSync record
+ps.success  = True
+ps.message  = "Successful sync of dates from %s to present"
+ps.nfiles   = nFiles
+ps.nrecords = nRecords
+ps.files    = allFiles
+ps.muser    = user
+ps.mdate    = timezone.now()
+ps.save()
 
 
