@@ -1,7 +1,9 @@
+#!/usr/bin/env python
 from ftplib import FTP
 from datetime import date, datetime
-import re, sys
+import os, os.path, re, subprocess, sys
 
+from irrigator_pro.settings import BASE_DIR
 from farms.models import ProbeSync, RawProbeReading
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -11,19 +13,57 @@ import pytz
 This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
 """
 
+
+if __name__ == "__main__":
+    # Add the directory *above* this to the python path so we can find our modules
+    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
+
+## Current Timezone
 eastern = pytz.timezone("US/Eastern")
 
-## Configuration
-ftp_server   = "www.nespal.org"
-ftp_path     = "/cigflint/flint2013"
-ftp_username = "flintcig"
-ftp_password = "cigswcd"
+## FTP Configuration
+ftp_server     = "www.nespal.org"
+ftp_path       = "/cigflint/Flint2013"
+ftp_username   = "flintcig"
+ftp_password   = "cigswcd"
+ftp_cache_path = os.path.join(BASE_DIR, "ftp_cache")
+
+## Debugging
 DEBUG=False
 
 ## Global counters
 nFiles    = 0
 nRecords  = 0
 allFiles  = ""
+
+def mirror(max_tries=20):
+    """
+    Use wget command to mirror the FTP 'daily' files to the local directory 'ftp_cache_path'
+    """
+
+    ## Create target directory (if needed)
+    try:
+        os.mkdir(ftp_cache_path)
+    except:
+        pass
+
+    os.chdir(ftp_cache_path)
+
+    command = [ 'wget',
+                '--mirror',
+                '--ftp-user=%s' % ftp_username,
+                '--ftp-password=%s' % ftp_password,
+                '--exclude-directories=/*/*/*/hourly',
+                '--no-verbose',
+                '--cut-dirs=6',
+                '--tries=%d' % max_tries,
+                '--no-host-directories',
+                'ftp://%s/%s' % ( ftp_server, ftp_path )
+            ]
+
+    log = subprocess.check_output(command)
+
 
 def putProbe(farm_code, file_date, line):
     """
@@ -85,10 +125,10 @@ def putProbe(farm_code, file_date, line):
                           muser=user,
                           mdate=now
                           )
-
     rpr.save()
 
     nRecords += 1
+
 
 def parse_filename(filename):
     """
@@ -104,13 +144,9 @@ def parse_filename(filename):
     return ( filename, farm, file_date )
 
 
-
-## Get most recent successful run from ProbeSync table
-ps_query = ProbeSync.objects.filter(success=True)
-if ps_query:
-    latest_date = ps_query.latest().datetime
-else:
-    latest_date = datetime(year=2013, month=01, day=01, hour=00, minute=00, second=00, tzinfo=eastern)
+###########################
+## Start of main script ###
+###########################
 
 ## Record the start of this run in the ProbeSync table
 user = User.objects.get(username='warnes')
@@ -128,90 +164,44 @@ ps = ProbeSync(datetime  = timezone.now(),
               )
 ps.save()
 
-## Connect to FTP server
-ftp = FTP(host=ftp_server, user=ftp_username, passwd=ftp_password)
+## Synchronize with ftp site
+mirror()
 
-## Change to data directory
-ftp.cwd(ftp_path)
+## Select files to work on
+files = os.listdir(ftp_cache_path)
+data_files = filter(lambda x: re.match("[0-9]+_[0-9]+\.txt", x), files)
+filename_farm_dates = map(parse_filename, data_files)
 
-## Get list of files and directories
-files = ftp.nlst()
+## Iterate across files
+for (filename, farm, date) in filename_farm_dates:
 
-# Data directories should match the pattern ##### (5 digits)
-dir_pattern = "^[0-9]{5}$"
-dir_re = re.compile( dir_pattern )
+    # check if this data has already been imported
+    if not RawProbeReading.objects.filter( farm_code=farm, file_date=date ).count():
+        next
 
-dirs = filter( lambda x: dir_re.match(x), files)
+    nFiles += 1
+    if allFiles:
+        allFiles = allFiles + ", " + filename
+    else:
+        allFiles = filename
 
-## Iterate across directories (farms)
-for dir in dirs:
-        print "Working on Farm %s " % dir
-        sys.stdout.flush()
+    print "Working on farm '%s' for date %s " % ( farm, date )
+    sys.stdout.flush()
 
-        ftp.cwd( "/" + ftp_path + "/" + dir + "/" + "daily" )
-        files = ftp.nlst()
+    file = open( filename, 'r' )
 
-        filename_farm_date = map(parse_filename, files)
-        filename_farm_date = filter(lambda x: x[2] > latest_date.date(), filename_farm_date )
-        filenames = map(lambda x: x[0], filename_farm_date)
+    for line in file:
+        ## add line to database
+        putProbe(farm_code=farm, file_date=file_date, line=line)
 
-        ## Iterate across files (days)
-        for filename in filenames:
+        ## Update ProbeSync record
+        ps.nfiles    = nFiles
+        ps.nrecords  = nRecords
+        ps.filenames = allFiles
+        ps.save()
 
-            ## Disconnect & reconnect to ensure we don't lose connection unexpectedly
-            ftp.quit()
-            ftp = None
-            tries = 0
-            while (not ftp) and (tries <10) :
-                tries += 1
-                try:
-                    ftp = FTP(host=ftp_server, user=ftp_username, passwd=ftp_password, timeout=10)
-                except:
-                    pass
-            print "Connected after %s" % tries
-            sys.stdout.flush()
+    file.close()
 
-            ftp.cwd( "/" + ftp_path + "/" + dir + "/" + "daily" )
-
-
-            nFiles += 1
-            if allFiles:
-                allFiles = allFiles + ", " + filename
-            else:
-                allFiles = filename
-
-            print "Working on %s" % filename
-            sys.stdout.flush()
-
-            ## Extract farm and date from filename
-            (base, ext) = filename.split('.')
-            (farm, datestr) = base.split('_')
-            month = datestr[0:2]
-            day   = datestr[2:4]
-            year  = datestr[4:]
-            file_date = date(year=int(year), month=int(month), day=int(day))
-
-            if DEBUG:
-                print "file_date", file_date
-                sys.stdout.flush()
-
-            if 1:
-                #try:
-                ftp.retrlines("RETR " + filename,
-                              lambda line: putProbe(farm_code=farm, file_date=file_date, line=line)
-                          )
-
-                ## Update ProbeSync record
-                ps.nfiles    = nFiles
-                ps.nrecords  = nRecords
-                ps.filenames = allFiles
-                ps.save()
-
-            #except Exception as e:
-            #    "Error in decoding record and/or save RawProbeReading object: %s" % e
-
-## Disconnect
-ftp.quit()
 
 ## Finalize ProbeSync record
 ps.success   = True
