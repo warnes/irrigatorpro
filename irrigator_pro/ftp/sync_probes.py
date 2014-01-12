@@ -175,9 +175,13 @@ filename_farm_dates = map(parse_filename, data_files)
 ## Iterate across files
 for (filename, farm, file_date) in filename_farm_dates:
 
+    print "Working on farm '%s' for date %s " % ( farm, file_date )
+    sys.stdout.flush()
+
+    count = RawProbeReading.objects.filter( farm_code=farm, file_date=file_date ).count()
+
     # check if this data has already been imported
-    if not RawProbeReading.objects.filter( farm_code=farm, file_date=date ).count():
-        next
+    if count > 0: next
 
     nFiles += 1
     if allFiles:
@@ -185,8 +189,6 @@ for (filename, farm, file_date) in filename_farm_dates:
     else:
         allFiles = filename
 
-    print "Working on farm '%s' for date %s " % ( farm, file_date )
-    sys.stdout.flush()
 
     file = open( filename, 'r' )
 
