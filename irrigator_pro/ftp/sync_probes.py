@@ -173,7 +173,7 @@ data_files = filter(lambda x: re.match("[0-9]+_[0-9]+\.txt", x), files)
 filename_farm_dates = map(parse_filename, data_files)
 
 ## Iterate across files
-for (filename, farm, date) in filename_farm_dates:
+for (filename, farm, file_date) in filename_farm_dates:
 
     # check if this data has already been imported
     if not RawProbeReading.objects.filter( farm_code=farm, file_date=date ).count():
@@ -185,7 +185,7 @@ for (filename, farm, date) in filename_farm_dates:
     else:
         allFiles = filename
 
-    print "Working on farm '%s' for date %s " % ( farm, date )
+    print "Working on farm '%s' for date %s " % ( farm, file_date )
     sys.stdout.flush()
 
     file = open( filename, 'r' )
