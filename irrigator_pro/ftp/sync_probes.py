@@ -3,21 +3,21 @@ from ftplib import FTP
 from datetime import date, datetime
 import os, os.path, re, subprocess, sys
 
+"""
+This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
+"""
+
+if __name__ == "__main__":
+    # Add the directory *above* this to the python path so we can find our modules
+    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
+
 from irrigator_pro.settings import BASE_DIR
 from farms.models import ProbeSync, RawProbeReading
 from django.contrib.auth.models import User
 from django.utils import timezone
 import pytz
 
-"""
-This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
-"""
-
-
-if __name__ == "__main__":
-    # Add the directory *above* this to the python path so we can find our modules
-    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
