@@ -97,6 +97,8 @@ def putProbe(farm_code, file_date, line):
 
     reading_date = datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z")
     try:
+        # This can sometimes fail if a particular datetime falls into
+        # a daylight-savings transition
         reading_date = timezone.make_aware(reading_date, eastern)
     except pytz.exceptions.AmbiguousTimeError as e:
         print e
