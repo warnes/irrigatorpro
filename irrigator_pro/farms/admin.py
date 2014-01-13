@@ -266,28 +266,17 @@ admin.site.register(Probe, ProbeAdmin)
 ####################
 
 class ProbeReadingAdmin(AuditAdmin):
-    fields = [ 'probe',
-               'date_time',
-               'soil_potential_8',
-               'soil_potential_16',
-               'soil_potential_32',
-             ] \
-             + Audit.fields
-    list_display  = fields[:-4]
-    list_editable = list_display[1:]
+    # fields = [ 'probe',
+    #            'date_time',
+    #            'soil_potential_8',
+    #            'soil_potential_16',
+    #            'soil_potential_32',
+    #          ] \
+    #          + Audit.fields
+    # list_display  = fields[:-4]
+    # list_editable = list_display[1:]
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)
-
-
-#######################
-### RawProbeReading ###
-#######################
-
-class RawProbeReadingAdmin(AuditAdmin):
-    pass
-
-admin.site.register(RawProbeReading, RawProbeReadingAdmin)
-
 
 #################
 ### ProbeSync ###

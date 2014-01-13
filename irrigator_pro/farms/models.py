@@ -255,23 +255,13 @@ class Probe(NameDesc, Comment, Audit):
     field       = models.ManyToManyField(Field, limit_choices_to={'farm':farm} )
     farm_code   = models.CharField(max_length=10)
     probe_code  = models.CharField(max_length=10)
+    unique_together = ( ("farm_code", "node_id",), )
 
     def __unicode__(self):
         return u"Probe for '%s' with farm code '%s' probe code '%s' " % (field, farm_code, probe_code)
 
+
 class ProbeReading(Audit):
-    # from Audit: cdate, cuser, mdate, muser
-    probe               = models.ForeignKey(Probe)
-    date_time           = models.DateTimeField()
-    soil_potential_8    = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
-    soil_potential_16   = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
-    soil_potential_32   = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
-
-    class Meta:
-        verbose_name = "Probe Reading"
-
-
-class RawProbeReading(Audit):
     """
     Model for CSV data read from probe files
     """
@@ -284,7 +274,7 @@ class RawProbeReading(Audit):
 
     ## From file contents
     reading_date        = models.DateTimeField()
-    node_id             = models.CharField(max_length=10)
+    probe_code          = models.CharField(max_length=10)
     radio_id            = models.CharField(max_length=10)
     battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2) #   #.##
     battery_percent     = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
@@ -298,6 +288,11 @@ class RawProbeReading(Audit):
 
     class Meta:
         verbose_name = "Raw Probe Reading"
+        unique_together = ( ("farm_code", "node_id", "reading_date",), )
+
+    def __unicode__(self):
+        return u"ProbeReading %s-%s" % ( farm_code.strip(), probe_code.strip() )
+
 
 class ProbeSync(Audit):
     """
@@ -312,3 +307,6 @@ class ProbeSync(Audit):
 
     class Meta:
         get_latest_by = "datetime"
+
+    def __unicode__(self):
+        return u"ProbeSync %s" % self.datetime
