@@ -95,7 +95,11 @@ def putProbe(farm_code, file_date, line):
       minutes_awake
     ) = line.split(',')
 
-    reading_date = timezone.make_aware(datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z"), eastern)
+    reading_date = datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z")
+    try:
+        reading_date = timezone.make_aware(reading_date, eastern)
+    except pytz.exceptions.AmbiguousTimeError as e:
+        print e
 
     if DEBUG:
         print reading_date
@@ -106,28 +110,38 @@ def putProbe(farm_code, file_date, line):
     user = User.objects.get(username='warnes')
     now  = timezone.now()
 
-    rpr = RawProbeReading(farm_code           = farm_code,
-                          file_date           = file_date,
-                          reading_date        = reading_date,
-                          node_id             = node_id,
-                          radio_id            = radio_id,
-                          battery_voltage     = battery_voltage,
-                          battery_percent     = battery_percent,
-                          soil_potential_8    = soil_potential_8,
-                          soil_potential_16   = soil_potential_16,
-                          soil_potential_32   = soil_potential_32,
-                          circuit_board_temp  = circuit_board_temp,
-                          thermocouple_1_temp = thermocouple_1_temp,
-                          thermocouple_2_temp = thermocouple_2_temp,
-                          minutes_awake       = minutes_awake,
-                          cuser=user,
-                          cdate=now,
-                          muser=user,
-                          mdate=now
-                          )
+    # if the reading object already exists, update it
+    try:
+        rpr = RawProbeReading.objects.get(farm_code           = farm_code,
+                                          reading_date        = reading_date,
+                                          node_id             = node_id)
+    except RawProbeReading .DoesNotExist:
+        # otherwise create a new one
+        rpr = RawProbeReading(farm_code           = farm_code,
+                              reading_date        = reading_date,
+                              node_id             = node_id)
+
+        rpr.cuser               = user
+        rpr.cdate               = now
+
+        nRecords += 1
+
+    rpr.radio_id            = radio_id
+    rpr.file_date           = file_date
+    rpr.battery_voltage     = battery_voltage
+    rpr.battery_percent     = battery_percent
+    rpr.soil_potential_8    = soil_potential_8
+    rpr.soil_potential_16   = soil_potential_16
+    rpr.soil_potential_32   = soil_potential_32
+    rpr.circuit_board_temp  = circuit_board_temp
+    rpr.thermocouple_1_temp = thermocouple_1_temp
+    rpr.thermocouple_2_temp = thermocouple_2_temp
+    rpr.minutes_awake       = minutes_awake
+    rpr.muser               = user
+    rpr.mdate               = now
+
     rpr.save()
 
-    nRecords += 1
 
 
 def parse_filename(filename):
@@ -175,34 +189,39 @@ filename_farm_dates = map(parse_filename, data_files)
 ## Iterate across files
 for (filename, farm, file_date) in filename_farm_dates:
 
-    print "Working on farm '%s' for date %s " % ( farm, file_date )
-    sys.stdout.flush()
+    # If the file has been fully imported, it will be recorded in a
+    # ProbeSync object's filenames field.
 
-    count = RawProbeReading.objects.filter( farm_code=farm, file_date=file_date ).count()
+    count = ProbeSync.objects.filter( filenames__contains=filename ).count()
 
-    # check if this data has already been imported
-    if count > 0: next
-
-    nFiles += 1
-    if allFiles:
-        allFiles = allFiles + ", " + filename
+    # If it does up, skip it. Otherwise proceed.
+    if count > 0:
+        print "Farm '%s' for date %s already loaded.  Skipping." % ( farm, file_date )
+        sys.stdout.flush()
     else:
-        allFiles = filename
+        print "Working on farm '%s' for date %s " % ( farm, file_date )
+        sys.stdout.flush()
+
+        nFiles += 1
+        if allFiles:
+            allFiles = allFiles + ", " + filename
+        else:
+            allFiles = filename
 
 
-    file = open( filename, 'r' )
+        file = open( filename, 'r' )
 
-    for line in file:
-        ## add line to database
-        putProbe(farm_code=farm, file_date=file_date, line=line)
+        for line in file:
+            ## add line to database
+            putProbe(farm_code=farm, file_date=file_date, line=line)
 
-        ## Update ProbeSync record
-        ps.nfiles    = nFiles
-        ps.nrecords  = nRecords
-        ps.filenames = allFiles
-        ps.save()
+            ## Update ProbeSync record
+            ps.nfiles    = nFiles
+            ps.nrecords  = nRecords
+            ps.filenames = allFiles
+            ps.save()
 
-    file.close()
+        file.close()
 
 
 ## Finalize ProbeSync record
