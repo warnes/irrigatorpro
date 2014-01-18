@@ -4,6 +4,8 @@ from common.models import Audit, Comment, Location, NameDesc
 from django.contrib.auth.models import User
 from datetime import timedelta
 
+import sys
+
 ############
 ### Farm ###
 ############
@@ -288,10 +290,23 @@ class ProbeReading(Audit):
 
     class Meta:
         verbose_name = "Raw Probe Reading"
-        unique_together = ( ("farm_code", "node_id", "reading_date",), )
+        unique_together = ( ("farm_code", "probe_code", "reading_date",), )
 
     def __unicode__(self):
         return u"ProbeReading %s-%s" % ( farm_code.strip(), probe_code.strip() )
+
+    def _dedupe(self):
+
+        lastSeenVals = (None, None, None)
+        rows = ProbeReading.objects.all().order_by( "farm_code", "probe_code", "reading_date", )
+
+        for row in rows:
+            if (row.farm_code, row.probe_code, row.reading_date ) == lastSeenVals:
+                row.delete() # We've seen this id in a previous row
+                print ".",
+                sys.stdout.flush()
+            else: # New id found, save it and check future rows for duplicates.
+               lastSeenVals = ( row.farm_code, row.probe_code, row.reading_date )
 
 
 class ProbeSync(Audit):
