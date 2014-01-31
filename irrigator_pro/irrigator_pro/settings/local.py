@@ -66,5 +66,7 @@ if DEBUG:
         'INTERCEPT_REDIRECTS': False,
         # 'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar_function,
         #'EXTRA_SIGNALS': ['myproject.signals.MySignal'],
-        'INSERT_BEFORE': 'div',
+        'INSERT_BEFORE': '</body>',
     }
+
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

@@ -109,7 +109,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'irrigator_pro.urls'
@@ -166,6 +166,7 @@ EXTERNAL_APPS = (
 LOCAL_APPS = (
     'irrigator_pro',
     'home',
+    'registration'
 )
 
 # the order is important!
@@ -213,3 +214,9 @@ LOGGING = {
     }
 }
 
+# # Email Settings
+# EMAIL_HOST=""
+# EMAIL_PORT=""
+# EMAIL_HOST_USER=""
+# EMAIL_HOST_PASSWORD=""
+# EMAIL_USE_TLS=""

@@ -10,3 +10,4 @@ django-extensions #==1.1.1
 #wsgiref==0.1.2 # not used
 Werkzeug
 FeedParser
+django-crispy-forms

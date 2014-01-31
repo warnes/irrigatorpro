@@ -64,8 +64,8 @@ if DEBUG:
     )
 
     DEBUG_TOOLBAR_CONFIG = {
-        'INTERCEPT_REDIRECTS': False,
+        #'INTERCEPT_REDIRECTS': False,
         # 'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar_function,
-        'EXTRA_SIGNALS': ['myproject.signals.MySignal'],
-        'INSERT_BEFORE': 'div',
+        #'EXTRA_SIGNALS': ['myproject.signals.MySignal'],
+        'INSERT_BEFORE': '</body>',
     }
