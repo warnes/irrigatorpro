@@ -322,6 +322,8 @@ class ProbeSync(Audit):
 
     class Meta:
         get_latest_by = "datetime"
+        verbose_name  = "Probe Synchronization"
+
 
     def __unicode__(self):
         return u"ProbeSync %s" % self.datetime
