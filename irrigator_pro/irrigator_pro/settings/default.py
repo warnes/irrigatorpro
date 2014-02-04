@@ -164,6 +164,9 @@ EXTERNAL_APPS = (
 )
 
 LOCAL_APPS = (
+    'contact_info',
+    'common',
+    'farms',
     'irrigator_pro',
     'home',
     'registration'
