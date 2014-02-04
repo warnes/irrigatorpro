@@ -13,7 +13,7 @@ urlpatterns = patterns('',
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
                        
-                       ## Admin interface
+                       # ## Admin interface
                        url(r'^admin/password_reset/$', 'django.contrib.auth.views.password_reset', name='admin_password_reset'),
 
                        url(r'^admin/password_reset/done/$', 'django.contrib.auth.views.password_reset_done', name='password_reset_done'),
@@ -26,13 +26,13 @@ urlpatterns = patterns('',
                        # admin documentation: 
                        url(r'^admin/doc/', include('django.contrib.admindocs.urls')), 
 
-                       # Uncomment these to enable the admin interface: 
+                       # # Uncomment these to enable the admin interface: 
                        url(r'^admin_tools/', include('admin_tools.urls')),
                        url(r'^admin/', include(admin.site.urls)),
 
-                       ## User authorization
-                       url(r'^accounts/login/$',  'django.contrib.auth.views.login'),
-                       url(r'^accounts/logout/$', 'django.contrib.auth.views.login'),
+                       # ## User authorization
+                       url(r'^registration/login/$',  'django.contrib.auth.views.login'),
+                       url(r'^registration/logout/$', 'django.contrib.auth.views.login'),
 
 )
 

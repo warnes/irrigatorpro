@@ -6,6 +6,7 @@ import sys
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 # Absolute paths for where the project and templates are stored.
 ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
@@ -216,6 +217,8 @@ LOGGING = {
         },
     }
 }
+
+
 
 # # Email Settings
 # EMAIL_HOST=""
