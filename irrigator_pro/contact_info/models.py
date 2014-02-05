@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from emailuser.models import EmailUser as User
 from common.models import Audit, Comment, Location, NameDesc
 
 class Contact_Info(Location, Audit):
@@ -22,7 +22,7 @@ class Contact_Info(Location, Audit):
 
 
     def __unicode__(self):
-        return self.user.username + ": " + self.get_address()
+        return self.user.email + ": " + self.get_address()
 
     class Meta: 
         verbose_name        = 'Contact Information' 

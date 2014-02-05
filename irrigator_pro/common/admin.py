@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
+from emailuser.models import EmailUser as User
 from contact_info.models import Contact_Info
 
 class AuditAdmin(admin.ModelAdmin):

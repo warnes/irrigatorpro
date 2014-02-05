@@ -11,23 +11,23 @@ def login(request):
     return render_to_response('login.html', c)
 
 def auth_view(request, onsuccess='/accounts/loggedin', onfail='/accounts/invalid/'):
-    username = request.POST.get('username','')
+    email = request.POST.get('email','')
     password = request.POST.get('password','')
-    user = auth.authenticate(username=username, password=password)
+    user = auth.authenticate(email=email, password=password)
     if user is not None:
         login(request, user)
         return redirect(onsuccess)
     else:
         return redirect(onfail)  
 
-def create_user(username, email, password):
-    user = User(username=username, email=email)
+def create_user(email, email, password):
+    user = User(email=email, email=email)
     user.set_password(password)
     user.save()
     return user
 
-def user_exists(username):
-    user_count = User.objects.filter(username=username).count()
+def user_exists(email):
+    user_count = User.objects.filter(email=email).count()
     if user_count == 0:
         return False
     return True
@@ -35,7 +35,7 @@ def user_exists(username):
 def sign_up_in(request):
     post = request.POST
     if not user_exists(post['email']): 
-        user = create_user(username=post['email'], email=post['email'], password=post['password'])
+        user = create_user(email=post['email'], email=post['email'], password=post['password'])
     	return auth_and_login(request)
     else:
     	return redirect("/login/")

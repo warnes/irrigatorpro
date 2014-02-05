@@ -167,6 +167,7 @@ EXTERNAL_APPS = (
 LOCAL_APPS = (
     'contact_info',
     'common',
+    'emailuser',
     'farms',
     'irrigator_pro',
     'home',
@@ -226,3 +227,6 @@ LOGGING = {
 # EMAIL_HOST_USER=""
 # EMAIL_HOST_PASSWORD=""
 # EMAIL_USE_TLS=""
+
+## django-libtech-emailuser settings
+AUTH_USER_MODEL = "emailuser.EmailUser"

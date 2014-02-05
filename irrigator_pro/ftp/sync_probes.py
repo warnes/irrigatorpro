@@ -25,7 +25,7 @@ eastern = pytz.timezone("US/Eastern")
 ## FTP Configuration
 ftp_server     = "www.nespal.org"
 ftp_path       = "/cigflint/Flint2013"
-ftp_username   = "flintcig"
+ftp_email   = "flintcig"
 ftp_password   = "cigswcd"
 ftp_cache_path = os.path.join(BASE_DIR, "ftp_cache")
 
@@ -52,7 +52,7 @@ def mirror(max_tries=20):
 
     command = [ 'wget',
                 '--mirror',
-                '--ftp-user=%s' % ftp_username,
+                '--ftp-user=%s' % ftp_email,
                 '--ftp-password=%s' % ftp_password,
                 '--exclude-directories=/*/*/*/hourly',
                 '--no-verbose',
@@ -109,7 +109,7 @@ def putProbe(farm_code, file_date, line):
 
     battery_percent = battery_percent.replace("%","")
 
-    user = User.objects.get(username='warnes')
+    user = User.objects.get(email='warnes')
     now  = timezone.now()
 
     # if the reading object already exists, update it
@@ -165,7 +165,7 @@ def parse_filename(filename):
 ###########################
 
 ## Record the start of this run in the ProbeSync table
-user = User.objects.get(username='warnes')
+user = User.objects.get(email='warnes')
 now  = timezone.now()
 ps = ProbeSync(datetime  = timezone.now(),
                success   = False,
