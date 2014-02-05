@@ -11,3 +11,4 @@ django-extensions #==1.1.1
 Werkzeug
 feedparser
 django-crispy-forms
+django-session-security

@@ -111,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'session_security.middleware.SessionSecurityMiddleware',
 )
 
 ROOT_URLCONF = 'irrigator_pro.urls'
@@ -161,13 +162,14 @@ CORE_APPS = (
 
 EXTERNAL_APPS = (
     'django_extensions',
+    'emailuser',
+    'session_security',
     'south',
 )
 
 LOCAL_APPS = (
     'contact_info',
     'common',
-    'emailuser',
     'farms',
     'irrigator_pro',
     'home',
@@ -230,3 +232,27 @@ LOGGING = {
 
 ## django-libtech-emailuser settings
 AUTH_USER_MODEL = "emailuser.EmailUser"
+
+
+## django-session-security Session Timeout Settings
+# WARN_AFTER
+#    Time (in seconds) before the user should be warned that is session will 
+#    expire because of inactivity. Default 540. 
+# SESSION_SECURITY_WARN_AFTER=540
+
+# EXPIRE_AFTER
+#    Time (in seconds) before the user should be logged out if inactive. Default
+#    is 600. 
+# SESSION_SECURITY_EXPIRE_AFTER=600
+
+# PASSIVE_URLS
+#    List of urls that should be ignored by the middleware. For example the 
+#    ping ajax request of session_security is made without user intervention,
+#    as such it should not be used to update the user's last activity datetime.
+# SESSION_SECURITY_PASSIVE_URLS=[]
+
+# EXPIRE_AT_BROWSER_CLOSE
+#    Required for this module to operate properl
+SESSION_EXPIRE_AT_BROWSER_CLOSE=True
+
+
