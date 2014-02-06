@@ -262,8 +262,19 @@ LOGGING = {
 # EMAIL_HOST_PASSWORD=""
 # EMAIL_USE_TLS=""
 
-## django-libtech-emailuser settings
+###
+# Authentication Settings
+###
+# use django-libtech-emailuser instead of django.contrib.auth.User
 AUTH_USER_MODEL = "emailuser.EmailUser"
+
+ACCOUNT_ACTIVATION_DAYS = 2
+EMAIL_HOST = 'localhost'
+DEFAULT_FROM_EMAIL = 'webmaster@irrigatorpro.org'
+LOGIN_REDIRECT_URL = '/'
+
+
+
 
 ###
 # django-session-security Session Timeout Settings
@@ -289,10 +300,6 @@ AUTH_USER_MODEL = "emailuser.EmailUser"
 #    Required for this module to operate properl
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
-###
-# Authentication Settings
-###
-LOGIN_REDIRECT_URL="/"
 
 ###
 ## django-admin-tools Settings
