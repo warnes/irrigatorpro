@@ -32,9 +32,11 @@ urlpatterns = patterns('',
 
                        ## User authorization
                        url(r'^registration/login/$',  'django.contrib.auth.views.login'),
-                       url(r'^registration/logout/$', 'django.contrib.auth.views.login'),
-
-                       ## Sesstion Timeout
+                       url(r'^registration/logout/$', 'django.contrib.auth.views.logout'),
+                       #url(r'^registration/login/$',  'django.contrib.auth.views.login'),
+                       #url(r'^registration/logout/$', 'django.contrib.auth.views.logout'),
+                       
+                       ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
 )
 

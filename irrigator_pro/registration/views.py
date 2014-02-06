@@ -10,12 +10,12 @@ def login(request):
     c.update(csrf(request))
     return render_to_response('login.html', c)
 
-def auth_view(request, onsuccess='/accounts/loggedin', onfail='/accounts/invalid/'):
-    email = request.POST.get('email','')
+def auth_view(request, onsuccess='/registration/logged_in/', onfail='/registration/login/'):
+    email    = request.POST.get('email',   '')
     password = request.POST.get('password','')
-    user = auth.authenticate(email=email, password=password)
+    user     = auth.authenticate(email=email, password=password)
     if user is not None:
-        login(request, user)
+        auth.login(request, user)
         return redirect(onsuccess)
     else:
         return redirect(onfail)  

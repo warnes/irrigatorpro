@@ -2,19 +2,44 @@
 import os
 import sys
 
-# Django settings for sampleapp project.
+"""
+Django settings for IrrigatorPro Web Site
+"""
+
+###
+# Site settings
+###
+
+# Name displayed on pages, for easy change
+SITE_NAME = "IrrigatorPro for Corn (DEVELOPMENT)"
+
+# Make this unique, and don't share it with anybody.
+# http://www.miniwebtool.com/django-secret-key-generator/
+SECRET_KEY = '#1tgtwm0*$zoevga2vuzguf(pf&y$p4c^$byzhswy5iic@*74r'
+
+SITE_ID = 1
+
+ADMINS = (
+    ('Gregory R. Warnes', 'greg@warnes.net'),
+    ('Bill Edwards', 'edwardsb2001@yahoo.com'),
+)
+
+MANAGERS = ADMINS
+
+###
+# Debug settings
+###
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
-# Absolute paths for where the project and templates are stored.
+###
+# Paths
+###
+
 ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
 ABSOLUTE_TEMPLATES_PATH = os.path.abspath(os.path.join(ABSOLUTE_PROJECT_ROOT, 'templates/'))
-
-# add root directory to PYTHONPATH
-#if not ABSOLUTE_PROJECT_ROOT in sys.path:
-#    sys.path.insert(0, ABSOLUTE_PROJECT_ROOT)
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -33,12 +58,9 @@ STATICFILES_DIRS = (
     os.path.abspath(os.path.join(ABSOLUTE_PROJECT_ROOT, 'staticfiles/')),
 )
 
-ADMINS = (
-    ('Gregory R. Warnes', 'greg@warnes.net'),
-    ('Bill Edwards', 'edwardsb2001@yahoo.com'),
-)
-
-MANAGERS = ADMINS
+###
+# Database settings
+###
 
 DATABASES = {
     'default': {
@@ -58,6 +80,10 @@ DATABASES = {
     }
 }
 
+###
+# Localization
+###
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -71,8 +97,6 @@ TIME_ZONE = 'US/Eastern'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = 1
-
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -84,6 +108,10 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+###
+# Finders/Loaders
+###
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
@@ -91,10 +119,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-# http://www.miniwebtool.com/django-secret-key-generator/
-SECRET_KEY = '#1tgtwm0*$zoevga2vuzguf(pf&y$p4c^$byzhswy5iic@*74r'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -128,6 +152,7 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'home.context_processors.sitevars',
     # default template context processors
     'django.contrib.auth.context_processors.auth',
     'django.core.context_processors.debug',
@@ -139,7 +164,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     #'django.contrib.messages.context_processors.messages',
 )
 
+###
 # APPS
+###
+
 # django debugging stuff
 ADMIN_TOOL_APPS = (
     'admin_tools.theming',
@@ -183,6 +211,9 @@ INSTALLED_APPS = ADMIN_TOOL_APPS \
                  + EXTERNAL_APPS
 
 
+###
+# Logging
+###
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
@@ -221,9 +252,10 @@ LOGGING = {
     }
 }
 
+###
+# Email Settings
+###
 
-
-# # Email Settings
 # EMAIL_HOST=""
 # EMAIL_PORT=""
 # EMAIL_HOST_USER=""
@@ -233,8 +265,10 @@ LOGGING = {
 ## django-libtech-emailuser settings
 AUTH_USER_MODEL = "emailuser.EmailUser"
 
+###
+# django-session-security Session Timeout Settings
+###
 
-## django-session-security Session Timeout Settings
 # WARN_AFTER
 #    Time (in seconds) before the user should be warned that is session will 
 #    expire because of inactivity. Default 540. 
@@ -255,4 +289,12 @@ AUTH_USER_MODEL = "emailuser.EmailUser"
 #    Required for this module to operate properl
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
+###
+# Authentication Settings
+###
+LOGIN_REDIRECT_URL="/"
 
+###
+## django-admin-tools Settings
+###
+ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'

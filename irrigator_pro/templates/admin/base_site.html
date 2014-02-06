@@ -1,10 +1,21 @@
 {% extends "admin/base.html" %}
 {% load i18n %}
 
-{% block title %}{{ title }} | {% trans 'Django site admin' %}{% endblock %}
+{% block title %}{{ title }} | {% trans 'IrrigatorPro site admin' %}{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">{% trans 'IrrigatorPro Administration' %}</h1>
+
+  {% if 'admin' in request.path %}
+
+    <h1 id="site-name">{{ site_name }} Administration</h1>
+
+  {% else %}
+
+    <h1 id="site-name">{{ site_name }}</h1>
+
+  {% endif %}
+
 {% endblock %}
+
 
 {% block nav-global %}{% endblock %}
