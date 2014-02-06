@@ -12,3 +12,5 @@ Werkzeug
 feedparser
 django-crispy-forms
 django-session-security
+django-registration
+django-registration-defaults

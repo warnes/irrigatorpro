@@ -1,6 +1,7 @@
 #! /usr/bin/env python2.7
 import os
 import sys
+#from registration_defaults.settings import *
 
 """
 Django settings for IrrigatorPro Web Site
@@ -201,7 +202,8 @@ LOCAL_APPS = (
     'farms',
     'irrigator_pro',
     'home',
-    'registration'
+    'registration',
+    #'registration_defaults',
 )
 
 # the order is important!
