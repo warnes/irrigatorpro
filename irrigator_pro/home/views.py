@@ -6,6 +6,6 @@ class HomeView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = {
-            'some_dynamic_value': 'Coming soon as a web application!',
+            'some_dynamic_value': 'Coming soon!',
         }
         return self.render_to_response(context)
