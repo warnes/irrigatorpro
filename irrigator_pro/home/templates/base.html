@@ -13,8 +13,14 @@
     <!-- http://jqueryui.com/themeroller/ -->
     <!-- http://stackoverflow.com/questions/1348559/are-there-hosted-jquery-ui-themes-anywhere -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui/jquery-ui-base.css">
+
+    <!-- Bootstrap -->
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" -->
+    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css" -->
     <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap.min.css">
+
     <link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css">
+
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
     <style>
         body {
@@ -48,7 +54,8 @@
                 <ul class="nav">
                     <li class="active"><a href="/">Home</a></li>
                     <li><a href="/#about">About</a></li>
-                    <li><a href="/#contact">Comntact</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+		    <!-- 
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
                         <ul class="dropdown-menu">
@@ -61,12 +68,20 @@
                             <li><a href="#">One more separated link</a></li>
                         </ul>
                     </li>
+		    -->
                 </ul>
 		{% if user.is_authenticated %}
-		  <ul class="nav navbar-nav navbar-right pull-right">
-		    <li><a href="#">{{ user.first_name }}</a></li>
-		    <li><a href="{% url 'registration_logout' %}">Logout</a></li>
-		  </ul>
+		  <ul class="nav pull-right">
+		    <li> 
+		      <a href="#">{{ user.first_name }} {{ user.last_name }}</a> 
+		    </li>
+		    <li>
+		      <form class="navbar-form pull-right" 
+			    action="{% url 'registration_logout' %}">
+			<button class="btn btn-xs btn-inverse">Logout</button>
+		      </form>
+		    </li>
+		    </ul>
 	        {% else %}
                   <form class="navbar-form pull-right" 
 			action="{% url 'registration_login' %}"
@@ -78,7 +93,7 @@
                     <input id="id_password" class="span2"
 			   type="password" name="password"
 			   placeholder="Password">  
-                    <button type="submit" class="btn">Sign in</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
                   </form>
 		{% endif %}
 
@@ -88,11 +103,11 @@
     </div>
 </div>
 
-<div class="content">
+<div class="container">
     {% block content %}{% endblock %}
 
     <footer>
-        <p>&copy; Company 2012</p>
+        <p>&copy; 2014 Gregory R. Warnes Consulting </p>
     </footer>
 
 </div> <!-- /content -->
@@ -101,6 +116,7 @@
 <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')</script>
 
 <script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script>
+<!-- script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script -->
 <script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script>
 <script src="{{ STATIC_URL }}js/plugins.js"></script>
 <script src="{{ STATIC_URL }}js/main.js"></script>
