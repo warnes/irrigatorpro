@@ -11,7 +11,7 @@ Django settings for IrrigatorPro Web Site
 ###
 
 # Name displayed on pages, for easy change
-SITE_NAME = "IrrigatorPro for Corn (DEVELOPMENT)"
+SITE_NAME = "IrrigatorPro for Corn (DEVEL)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
@@ -205,9 +205,9 @@ LOCAL_APPS = (
 )
 
 # the order is important!
-INSTALLED_APPS = ADMIN_TOOL_APPS \
+INSTALLED_APPS = LOCAL_APPS \
+                 + ADMIN_TOOL_APPS \
                  + CORE_APPS \
-                 + LOCAL_APPS \
                  + EXTERNAL_APPS
 
 
