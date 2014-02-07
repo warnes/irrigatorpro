@@ -32,7 +32,6 @@ MANAGERS = ADMINS
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-DEBUG_TOOLBAR_PATCH_SETTINGS = False
 
 ###
 # Paths
@@ -124,7 +123,7 @@ STATICFILES_FINDERS = (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#    'django.template.loaders.eggs.Loader',
+    'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -239,7 +238,8 @@ LOCAL_APPS = (
 INSTALLED_APPS = LOCAL_APPS \
                  + ADMIN_TOOL_APPS \
                  + CORE_APPS \
-                 + EXTERNAL_APPS
+                 + EXTERNAL_APPS \
+                 + AUTHENTICATION_APPS
 
 
 ###
@@ -306,13 +306,15 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-
-
 LOGIN_REDIRECT_URL = '/'
 
-
-
-
+ACCOUNT_AUTHENTICATION_METHOD = "email"      # User can login using either userid or email
+ACCOUNT_EMAIL_REQUIRED        = True         # User is required to hand over an e-mail address when signing up.
+ACCOUNT_EMAIL_VERIFICATION    = "mandatory"  # User is blocked from logging in until the email address is verified. 
+ACCOUNT_USERNAME_REQUIRED     = False        # Do not prompt the user to enter a username
+ACCOUNT_PASSWORD_MIN_LENGTH   = 8            # Minimum password length.
+ACCOUNT_LOGOUT_ON_GET         = True         # User is automatically logged out by a mere GET request
+ACCOUNT_USER_DISPLAY          = lambda user: user.email
 ###
 # django-session-security Session Timeout Settings
 ###

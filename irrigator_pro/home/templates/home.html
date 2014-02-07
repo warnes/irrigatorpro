@@ -8,7 +8,9 @@
     <div class="hero-unit">
         <h1>{{ site_name }}</h1>
         <p>{{ some_dynamic_value }}</p>
-        <p><a class="btn btn-primary btn-large" href="{-% url 'registration_register' %-}">Register &raquo;</a></p>
+	{% if not user.is_authenticated %}
+          <p><a class="btn btn-primary btn-large" href="{% url 'account_signup' %}">Register &raquo;</a></p>
+	{% endif %}
     </div>
 
 {% endblock %}

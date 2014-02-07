@@ -62,6 +62,8 @@ if DEBUG:
         'debug_toolbar.panels.redirects.RedirectsPanel',
     ]
 
+    DEBUG_TOOLBAR_PATCH_SETTINGS = False
+
     DEBUG_TOOLBAR_CONFIG = {
         'INTERCEPT_REDIRECTS': False,
         # 'SHOW_TOOLBAR_CALLBACK': custom_show_toolbar_function,
