@@ -1,5 +1,5 @@
 from django.db import models
-from emailuser.models import EmailUser as User
+from django.contrib.auth.models import User
 from common.models import Audit, Comment, Location, NameDesc
 
 class Contact_Info(Location, Audit):

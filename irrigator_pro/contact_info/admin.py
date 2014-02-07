@@ -1,6 +1,6 @@
 from django.contrib import admin
-from emailuser.admin import EmailUserAdmin
-from emailuser.models import EmailUser
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
 from contact_info.models import Contact_Info
 from common.admin  import AuditAdmin
 
@@ -15,9 +15,9 @@ class Contact_Info_Inline(admin.StackedInline):
                       )
 
 
-class EmailUserAdmin(EmailUserAdmin):
+class UserAdmin(UserAdmin):
     inlines = ( Contact_Info_Inline, )
-    list_display  = ( 'pk', 'email', 'first_name', 'last_name' )
+    list_display  = ( 'pk', 'username', 'email', 'first_name', 'last_name' )
     list_editable = list_display[1:]
     save_on_top = True
 
@@ -37,8 +37,8 @@ class EmailUserAdmin(EmailUserAdmin):
             instance.save()
 
 
-admin.site.unregister(EmailUser)
-admin.site.register(EmailUser, EmailUserAdmin)
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
 class Contact_Info_Admin(AuditAdmin):
     fields = (

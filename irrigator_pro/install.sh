@@ -24,8 +24,6 @@ pip install -r requirements.txt --allow-unverified django-admin-tools
 easy_install -a readline
 pip install Werkzeug
 
-(cd thirdparty/django-libtech-emailuser; python setup.py install)
-
 # ## Link admin/static directory
 # export DJANGO_PATH=$( find $VIRTUAL_ENV -name "django")
 # mkdir -p static_extra

@@ -13,11 +13,11 @@ urlpatterns = patterns('',
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
                        
-                       ## Admin interface
-                       url(r'^admin/password_reset/$',                            'django.contrib.auth.views.password_reset',          name='admin_password_reset'),
-                       url(r'^admin/password_reset/done/$',                       'django.contrib.auth.views.password_reset_done',     name='password_reset_done'),
-                       url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm',  name='password_reset_confirm'),  
-                       url(r'^reset/done/$',                                      'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'), 
+                       # ## Admin interface
+                       # url(r'^admin/password_reset/$',                            'django.contrib.auth.views.password_reset',          name='admin_password_reset'),
+                       # url(r'^admin/password_reset/done/$',                       'django.contrib.auth.views.password_reset_done',     name='password_reset_done'),
+                       # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm',  name='password_reset_confirm'),  
+                       # url(r'^reset/done/$',                                      'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'), 
 
                        # Uncomment the admin/doc line below to enable
                        # admin documentation: 
@@ -25,21 +25,10 @@ urlpatterns = patterns('',
 
                        ## Uncomment these to enable the admin interface: 
                        url(r'^admin_tools/', include('admin_tools.urls')),
-                       url(r'^admin/', include(admin.site.urls)),
+                       url(r'^admin/',       include(admin.site.urls)),
 
-                       ## User authentication via django-contrib-auth 
-                       url(r'^registration/login/$',                   'django.contrib.auth.views.login',                   name='registration_login'),
-                       url(r'^accounts/login/$',                       'django.contrib.auth.views.login',                   name='registration_login'), # alias for previous
-
-                       url(r'^registration/logout/$',                  'django.contrib.auth.views.logout',                  name='registration_logout'),
-                       url(r'^registration/password_change/$',         'django.contrib.auth.views.password_change',         name='registration_password_change'),
-                       url(r'^registration/password_change_done/$',    'django.contrib.auth.views.password_change_done',    name='registration_password_change_done'),
-                       url(r'^registration/password_reset/$',          'django.contrib.auth.views.password_reset',          name='registration_password_reset'),
-                       url(r'^registration/password_reset_done/$',     'django.contrib.auth.views.password_reset_done',     name='registration_password_reset_done'),
-                       url(r'^registration/password_reset_confirm/$',  'django.contrib.auth.views.password_reset_confirm',  name='registrattion_password_reset_confirm'),
-                       
-                       ## User registration via django-registration
-                       (r'^accounts/', include('registration.backends.default.urls')),
+                       ## User authentication via django-allauth
+                       (r'^accounts/', include('allauth.urls')),                       
  
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),

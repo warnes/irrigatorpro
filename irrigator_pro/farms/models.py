@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from common.models import Audit, Comment, Location, NameDesc
-from emailuser.models import EmailUser as User
+from django.contrib.auth.models import User
 from datetime import timedelta
 
 import sys
@@ -21,12 +21,12 @@ class Farm(NameDesc, Location, Comment, Audit):
     def get_users(self):
         user_list = self.users.all()
         if user_list:
-            return ', '.join([ obj.email for obj in user_list])
+            return ', '.join([ obj.username for obj in user_list])
         else:
             return ''
 
     def __unicode__(self):
-        return u"Farmer %s - %s Farm" % ( self.farmer.email, self.name )
+        return u"Farmer %s - %s Farm" % ( self.farmer.username, self.name )
 
     class Meta:
         ordering = ["farmer"]
@@ -51,7 +51,7 @@ class Field(NameDesc, Comment, Audit):
         return u"Farm %s - Field %s" % ( self.farm.name, self.name )
 
     class Meta:
-        ordering = ["farm__farmer__email", "farm__name", "name"]
+        ordering = ["farm__farmer__username", "farm__name", "name"]
 
 
 #################

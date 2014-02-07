@@ -10,7 +10,10 @@ django-extensions #==1.1.1
 #wsgiref==0.1.2 # not used
 Werkzeug
 feedparser
-django-crispy-forms
+#django-crispy-forms
 django-session-security
-django-registration
-django-registration-defaults
+# for django-allauth
+python-openid
+requests
+requests-oauthlib
+django-allauth

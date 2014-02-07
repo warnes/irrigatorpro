@@ -73,18 +73,18 @@
 		{% if user.is_authenticated %}
 		  <ul class="nav pull-right">
 		    <li> 
-		      <a href="#">{{ user.first_name }} {{ user.last_name }}</a> 
+		      <a href="#">{{ user.get_full_name }}</a> 
 		    </li>
 		    <li>
 		      <form class="navbar-form pull-right" 
-			    action="{% url 'registration_logout' %}">
+			    action="{-% url 'auth_logout' %-}">
 			<button class="btn btn-xs btn-inverse">Logout</button>
 		      </form>
 		    </li>
 		    </ul>
 	        {% else %}
                   <form class="navbar-form pull-right" 
-			action="{% url 'registration_login' %}"
+			action="{-% url 'auth_login' %-}"
 			method="post">
 		    {% csrf_token %}
 		    

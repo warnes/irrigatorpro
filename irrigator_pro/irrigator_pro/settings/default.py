@@ -1,7 +1,6 @@
 #! /usr/bin/env python2.7
 import os
 import sys
-#from registration_defaults.settings import *
 
 """
 Django settings for IrrigatorPro Web Site
@@ -160,9 +159,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.static',
-    # required by django-admin-tools
+    # required by django-admin-tools and django-allauth
     'django.core.context_processors.request',
     #'django.contrib.messages.context_processors.messages',
+    'allauth.account.context_processors.account',
+    'allauth.socialaccount.context_processors.socialaccount',    
 )
 
 ###
@@ -191,10 +192,40 @@ CORE_APPS = (
 
 EXTERNAL_APPS = (
     'django_extensions',
-    'emailuser',
     'session_security',
     'south',
+    
 )
+
+AUTHENTICATION_APPS = (
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # ... include the providers you want to enable:
+    # 'allauth.socialaccount.providers.amazon',
+    # 'allauth.socialaccount.providers.angellist',
+    # 'allauth.socialaccount.providers.bitbucket',
+    # 'allauth.socialaccount.providers.bitly',
+    # 'allauth.socialaccount.providers.dropbox',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.flickr',
+    # 'allauth.socialaccount.providers.feedly',
+    # 'allauth.socialaccount.providers.github',
+    # 'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.instagram',
+    # 'allauth.socialaccount.providers.linkedin',
+    # 'allauth.socialaccount.providers.linkedin_oauth2',
+    # 'allauth.socialaccount.providers.openid',
+    # 'allauth.socialaccount.providers.persona',
+    # 'allauth.socialaccount.providers.soundcloud',
+    # 'allauth.socialaccount.providers.stackexchange',
+    # 'allauth.socialaccount.providers.tumblr',
+    # 'allauth.socialaccount.providers.twitch',
+    # 'allauth.socialaccount.providers.twitter',
+    # 'allauth.socialaccount.providers.vimeo',
+    # 'allauth.socialaccount.providers.vk',
+    # 'allauth.socialaccount.providers.weibo',
+ )
 
 LOCAL_APPS = (
     'contact_info',
@@ -202,8 +233,6 @@ LOCAL_APPS = (
     'farms',
     'irrigator_pro',
     'home',
-    'registration',
-    #'registration_defaults',
 )
 
 # the order is important!
@@ -258,21 +287,27 @@ LOGGING = {
 # Email Settings
 ###
 
-# EMAIL_HOST=""
-# EMAIL_PORT=""
-# EMAIL_HOST_USER=""
-# EMAIL_HOST_PASSWORD=""
-# EMAIL_USE_TLS=""
+EMAIL_HOST           = 'localhost'
+DEFAULT_FROM_EMAIL   = 'webmaster@irrigatorpro.org'
+# EMAIL_PORT           = ''
+# EMAIL_HOST_USER      = ''
+# EMAIL_HOST_PASSWORD  = ''
+# EMAIL_USE_TLS        = ''
 
 ###
-# Authentication Settings
+# Authenticationx Settings
 ###
-# use django-libtech-emailuser instead of django.contrib.auth.User
-AUTH_USER_MODEL = "emailuser.EmailUser"
 
-ACCOUNT_ACTIVATION_DAYS = 2
-EMAIL_HOST = 'localhost'
-DEFAULT_FROM_EMAIL = 'webmaster@irrigatorpro.org'
+AUTHENTICATION_BACKENDS = (
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+
+
 LOGIN_REDIRECT_URL = '/'
 
 

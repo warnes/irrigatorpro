@@ -1,5 +1,5 @@
 from django.db import models
-from emailuser.models import EmailUser as User
+from django.contrib.auth.models import User
 
 class NameDesc(models.Model):
     # name and description
