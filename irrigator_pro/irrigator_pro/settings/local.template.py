@@ -72,3 +72,27 @@ if DEBUG:
     }
 
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+    ###
+    # django-session-security Session Timeout Settings
+    ###
+
+    # WARN_AFTER
+    #    Time (in seconds) before the user should be warned that is session will 
+    #    expire because of inactivity. Default 540. 
+    SESSION_SECURITY_WARN_AFTER=60 * 60 * 11 # 11 hours
+
+    # EXPIRE_AFTER
+    #    Time (in seconds) before the user should be logged out if inactive. Default
+    #    is 600. 
+    SESSION_SECURITY_EXPIRE_AFTER=60 * 60 * 12 # 12 hours
+    
+    # PASSIVE_URLS
+    #    List of urls that should be ignored by the middleware. For example the 
+    #    ping ajax request of session_security is made without user intervention,
+    #    as such it should not be used to update the user's last activity datetime.
+    # SESSION_SECURITY_PASSIVE_URLS=[]
+
+    # EXPIRE_AT_BROWSER_CLOSE
+    #    Required for this module to operate properl
+    SESSION_EXPIRE_AT_BROWSER_CLOSE=False
