@@ -17,3 +17,4 @@ python-openid
 requests
 requests-oauthlib
 django-allauth
+django-model-blocks
