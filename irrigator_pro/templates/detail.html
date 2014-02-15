@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load model_blocks %}
+{% load object_name %}
+
+{% block title %}Irrigator Pro for Corn{% endblock %}
+
+{% block content %}
+
+{{ object|as_detail_block }}
+
+{% endblock %}

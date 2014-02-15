@@ -3,6 +3,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.views import serve
 from django.contrib import admin
 from home.views import HomeView
+from contact_info.views import *
 
 admin.autodiscover()
 
@@ -32,6 +33,11 @@ urlpatterns = patterns('',
  
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
+
+                       ## User pages
+                       url(r'^contact_info/edit$',  edit_contact_info  ),
+                       url(r'^contact_info/view$',  Contact_InfoDetailView.as_view()  )
+
 )
 
 if settings.DEBUG:
