@@ -40,19 +40,23 @@ class Audit(models.Model):
 
     cdate     = models.DateTimeField(auto_now_add=True, 
                                      verbose_name="creation date",
-                                     editable=False)
+                                     #editable=False,
+                                     )
     cuser     = models.ForeignKey(User,
                                   related_name="%(app_label)s_%(class)s_cusers",
                                   verbose_name="creator",
-                                  editable=False)
+                                  #editable=False
+                                  )
 
     mdate     = models.DateTimeField(auto_now=True, 
                                      verbose_name="last modification date",
-                                     editable=False)
+                                     #editable=False
+                                     )
     muser     = models.ForeignKey(User,
                                   related_name="%(app_label)s_%(class)s_musers",
                                   verbose_name="last modifcation user",
-                                  editable=False)
+                                  #editable=False
+                                  )
 
     fields = [ 'cdate', 'cuser', 'mdate', 'muser' ]
 

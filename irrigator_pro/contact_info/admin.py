@@ -51,10 +51,14 @@ class Contact_Info_Admin(AuditAdmin):
         'zipcode',
         'phone',
         'mobile',
-        'fax'
+        'fax',
+        'cdate',
+        'mdate',
+        'cuser',
+        'muser',        
     )
     list_display  = fields
-    list_editable = fields[1:]
+    list_editable = fields[1:-4]
     save_on_top = True
 
 admin.site.register(Contact_Info, Contact_Info_Admin)
