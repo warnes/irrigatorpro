@@ -23,12 +23,6 @@
     <!--link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css"-->
 
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
-    <style>
-      body {
-      padding-top: 60px;
-      padding-bottom: 40px;
-      }
-    </style>
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/sb-admin.css">
 
@@ -41,68 +35,64 @@
         <![endif]-->
 
     <div id="wrapper">
+      
+      <!-- Code to log out after a period of inactivity -->
+      {% include 'session_security/all.html' %}
+      <!-- /Code to log out after a period of inactivity -->
+      
+      {% include 'navbar-top.html' %} 
+      
+      {% if user.is_authenticated %}
+	{% include 'navbar-side.html' %} 
+	
+	<div id="page-wrapper">
 
-    {% include 'session_security/all.html' %}
+      {% endif %}
 
-    <!-- This code is from http://getbootstrap.com/examples/jumbotron/ -->
+      <div class="container">
+	{% block content %}{% endblock %}   
+      </div> <!-- /container -->
 
-    {% include 'navbar-top.html' %} 
-
-    {% if user.is_authenticated %}
-      {% include 'navbar-side.html' %} 
-
-      <div id="page-wrapper">
-	<div class="row">
-
-    {% endif %}
-
-	  <div class="container">
-	    {% block content %}{% endblock %}
-	    
-	    <footer>
-	      <p>&copy; 2014 Gregory R. Warnes Consulting </p>
-	    </footer>
-
-	  </div> <!-- /container -->
-
-    {% if user.is_authenticated %}
+      {% if user.is_authenticated %}
 
 	</div>
-      </div>
-      <!-- /#page-wrapper -->
+	<!-- /#page-wrapper -->
 
-    {% endif %}
+      {% endif %}
 
 
-    <!-- <div class="container"> -->
-    <!--   {--% block content %}{% endblock %--} -->
-      
-    <!--   <footer> -->
-    <!-- 	<p>&copy; 2014 Gregory R. Warnes Consulting </p> -->
-    <!--   </footer> -->
-      
-    <!-- </div> <\!-- /container -\-> -->
+      <footer>
+	<p>&copy; 2014 Gregory R. Warnes Consulting </p>
+      </footer>
 
     </div>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')</script>
+    <!-- Start of scripts -->
+    <span>
 
-    <script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-    <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
-    <script src="{{ STATIC_URL }}js/plugins.js"></script>
-    <script src="{{ STATIC_URL }}js/main.js"></script>
-    <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')</script>
 
-    <!-- SB Admin Scripts - Include with every page -->
-    <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+      <script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script>
+      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+      <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
+      <script src="{{ STATIC_URL }}js/plugins.js"></script>
+      <script src="{{ STATIC_URL }}js/main.js"></script>
+      <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
-    <script>
-      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script>
+      <!-- SB Admin Scripts - Include with every page -->
+      <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+
+      <script>
+	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	s.parentNode.insertBefore(g,s)}(document,'script'));
+      </script>
+
+    </span>
+    <!-- End of Scripts -->
+
+
   </body>
 </html>

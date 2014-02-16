@@ -65,6 +65,49 @@
 	}
 }
 
+
+.navbar-static-side {
+    margin-top: 52px;
+    width: 175px;
+    position: fixed;
+    bottom: 0;
+    top: 0;
+}
+
+#page-wrapper {
+    padding: 20px;
+    margin-left: 175px; 
+}
+
+body {
+    padding-top: 52px;
+    padding-bottom: 40px;
+}
+
+.container {
+    width: auto;
+}
+
+footer {
+   margin-left: 175px;
+   position:fixed;
+   bottom:0;
+   height:1.5em;   /* Height of the footer */
+   text-align: center;
+   background-color: #0b39ff;
+   color: #eefcff;
+   right: 0;
+   left: 0;
+}
+
+
+nav li.active > a {
+    background-color: #37aafe;
+    color: white !important;
+}
+
+
+
 /* Settings for django-model-blocks */
 .detail {
   display:table;         
