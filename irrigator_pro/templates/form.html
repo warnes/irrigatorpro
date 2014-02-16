@@ -5,7 +5,16 @@
 {% block content %}
 
 <form action="{{ request.path }}"" method="post">{% csrf_token %}
-{{ form.as_p }}
+
+<table class="default_form">
+{% for field in form %}
+  <tr>
+    <td>{{ field.label_tag }}</td> 
+    <td>{{ field }}</td>
+  </tr>
+{% endfor %}
+</table>
+
 <input type="submit" value="Submit" />
 </form>
 

@@ -35,8 +35,13 @@ urlpatterns = patterns('',
                        url(r'session_security/', include('session_security.urls')),
 
                        ## User pages
-                       url(r'^contact_info/edit$',  edit_contact_info  ),
-                       url(r'^contact_info/view$',  Contact_InfoDetailView.as_view()  )
+                       url(r'^contact_info/$',  Contact_InfoUpdateView.as_view()  ),
+
+                       ## User pages
+                       #url(r'^user/edit$',  edit_user  ),
+                       url(r'^user/$',                  UserDetailView.as_view()  ),
+                       url(r'^user/(?P<username>\w+)$', UserDetailView.as_view()  ),
+
 
 )
 
