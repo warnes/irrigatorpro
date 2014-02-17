@@ -317,6 +317,7 @@ ACCOUNT_USERNAME_REQUIRED     = False        # Do not prompt the user to enter a
 ACCOUNT_PASSWORD_MIN_LENGTH   = 8            # Minimum password length.
 ACCOUNT_LOGOUT_ON_GET         = True         # User is automatically logged out by a mere GET request
 ACCOUNT_USER_DISPLAY          = lambda user: user.email
+
 ###
 # django-session-security Session Timeout Settings
 ###
@@ -346,3 +347,4 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 ## django-admin-tools Settings
 ###
 ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
+
