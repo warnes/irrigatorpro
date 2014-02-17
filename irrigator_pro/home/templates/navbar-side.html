@@ -32,6 +32,9 @@
 
       {% load account %} <!-- enable user_display tag -->
       
+      <!-- For tab highlighting to work properly,   --
+        -- hrefs should *NOT* have a trailing slash -->
+
       <li> <!-- class="active"-->
 	<a href="/accounts/password/change">Change Password</a>
       </li>
@@ -41,15 +44,15 @@
       </li>
 
       <li>
-	<a href="/farms">Farms and Fields</a>
+	<a href="#/farms">Farms and Fields</a>
       </li>
 
       <li>
-	<a href="/probes">Probes</a>
+	<a href="#/probes">Probes</a>
       </li>
 
       <li>
-	<a href="/planting">Planting Events</a>
+	<a href="#/planting">Planting Events</a>
       </li>
 
       <li>
