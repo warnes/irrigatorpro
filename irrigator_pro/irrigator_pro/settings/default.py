@@ -229,8 +229,7 @@ AUTHENTICATION_APPS = (
  )
 
 LOCAL_APPS = (
-    'admin',  # only holds /fixtures
-    'auth',   # only holds /fixtures
+    'extra_fixtures',  # only holds /fixtures
     'contact_info',
     'common',
     'farms',
