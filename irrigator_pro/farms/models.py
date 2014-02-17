@@ -145,19 +145,25 @@ class Planting(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farm              = models.ForeignKey(Farm)
-    fields            = models.ManyToManyField(Field)
+    field_list        = models.ManyToManyField(Field)
     crop              = models.ForeignKey(Crop)
     planting_date     = models.DateField() ## May need a better name
 
-    def get_fields(self):
-        field_list = self.fields.all()
+    def planting_year(self):
+        return planting_date.year
+        
+
+    def get_field_list(self):
+        field_list = self.field_list.all()
         if field_list:
-            return ', '.join([ obj.fieldname for obj in field_list])
+            return ', '.join([ obj.name for obj in field_list])
         else:
             return ''
 
+
     def __unicode__(self):
         return u"%s: %s - %s" % (self.farm, self.planting_date, self.crop)
+
 
     # Create a full set of PlantingEvents when a new Planting is saved
     def save(self, *args, **kwargs):
@@ -165,8 +171,6 @@ class Planting(NameDesc, Comment, Audit):
 
         crop_events = CropEvent.objects.filter(crop = self.crop).order_by("days_after_emergence")
         planting_events = PlantingEvent.objects.filter(planting=self)
-
-        print "Here!!"
 
         for ce in crop_events:
             print "Checking whether Planting %s has CropEvent %s" % ( self, ce )
@@ -182,6 +186,7 @@ class Planting(NameDesc, Comment, Audit):
                                    muser = self.muser
                                )
                 pe.save()
+
 
     class Meta:
         ordering = [ 'farm', 'planting_date', 'crop' ]
@@ -221,7 +226,7 @@ class WaterHistory(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farm                    = models.ForeignKey(Farm)
-    field                   = models.ManyToManyField(Field)
+    field_list              = models.ManyToManyField(Field)
     date                    = models.DateField()
     rain                    = models.DecimalField("rainfall in inches",
                                                   max_digits=4, decimal_places=2, default=0.0) # ##.##
@@ -230,8 +235,8 @@ class WaterHistory(Comment, Audit):
     available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
                                                   blank=True, null=True)   # Null --> Not yet calculated
 
-    def get_fields(self):
-        field_list = self.field.all()
+    def get_field_list(self):
+        field_list = self.field_list.all()
         if field_list:
             return ', '.join([ obj.name for obj in field_list])
         else:
@@ -242,7 +247,9 @@ class WaterHistory(Comment, Audit):
         verbose_name_plural = "Water Histories"
 
     def __unicode__(self):
-        return u"Water History Entry for %s %s" % (field, date)
+        return u"Water History Entry for %s %s" % (self.farm,
+                                                   #self.get_field_list, 
+                                                   self.date)
 
 
 #############################
@@ -254,13 +261,22 @@ class Probe(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farm        = models.ForeignKey(Farm)
-    field       = models.ManyToManyField(Field, limit_choices_to={'farm':farm} )
+    field_list      = models.ManyToManyField(Field)
     farm_code   = models.CharField(max_length=10)
     probe_code  = models.CharField(max_length=10)
-    unique_together = ( ("farm_code", "node_id",), )
+    unique_together = ( ("farm_code", "probe_code",), )
+
+    def get_field_list(self):
+        field_list = self.field_list.all()
+        if field_list:
+            return ', '.join([ obj.name for obj in field_list])
+        else:
+            return ''
 
     def __unicode__(self):
-        return u"Probe for '%s' with farm code '%s' probe code '%s' " % (field, farm_code, probe_code)
+        return u"Probe for '%s' with farm code '%s' probe code '%s' " % (self.farm, 
+                                                                         self.farm_code, 
+                                                                         self.probe_code)
 
 
 class ProbeReading(Audit):
@@ -293,7 +309,7 @@ class ProbeReading(Audit):
         unique_together = ( ("farm_code", "probe_code", "reading_date",), )
 
     def __unicode__(self):
-        return u"ProbeReading %s-%s" % ( farm_code.strip(), probe_code.strip() )
+        return u"ProbeReading %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
 
     def _dedupe(self):
 
