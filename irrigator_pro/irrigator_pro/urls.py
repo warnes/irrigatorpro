@@ -39,8 +39,8 @@ urlpatterns = patterns('',
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
-                       url(r'^user/$',                  UserDetailView.as_view()  ),
-                       url(r'^user/(?P<username>\w+)$', UserDetailView.as_view()  ),
+                       #url(r'^user/$',                  UserDetailView.as_view()  ),
+                       #url(r'^user/(?P<username>\w+)$', UserDetailView.as_view()  ),
 
 
 )
