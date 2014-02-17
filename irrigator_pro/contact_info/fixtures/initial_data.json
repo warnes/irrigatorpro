@@ -1,15 +1,825 @@
 [
 {
     "pk": 1, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_permission", 
+        "name": "Can add permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 2, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_permission", 
+        "name": "Can change permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_permission", 
+        "name": "Can delete permission", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_group", 
+        "name": "Can add group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 5, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_group", 
+        "name": "Can change group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 6, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_group", 
+        "name": "Can delete group", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 7, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_user", 
+        "name": "Can add user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 8, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_user", 
+        "name": "Can change user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 9, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_user", 
+        "name": "Can delete user", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 10, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_contenttype", 
+        "name": "Can add content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 11, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_contenttype", 
+        "name": "Can change content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 12, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_contenttype", 
+        "name": "Can delete content type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 13, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_session", 
+        "name": "Can add session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 14, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_session", 
+        "name": "Can change session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 15, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_session", 
+        "name": "Can delete session", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 16, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_site", 
+        "name": "Can add site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 17, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_site", 
+        "name": "Can change site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 18, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_site", 
+        "name": "Can delete site", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 19, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_logentry", 
+        "name": "Can add log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 20, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_logentry", 
+        "name": "Can change log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 21, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_logentry", 
+        "name": "Can delete log entry", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 22, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_migrationhistory", 
+        "name": "Can add migration history", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 23, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_migrationhistory", 
+        "name": "Can change migration history", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 24, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_migrationhistory", 
+        "name": "Can delete migration history", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 25, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_bookmark", 
+        "name": "Can add bookmark", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 26, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_bookmark", 
+        "name": "Can change bookmark", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 27, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_bookmark", 
+        "name": "Can delete bookmark", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 28, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_dashboardpreferences", 
+        "name": "Can add dashboard preferences", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 29, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_dashboardpreferences", 
+        "name": "Can change dashboard preferences", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 30, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_dashboardpreferences", 
+        "name": "Can delete dashboard preferences", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 31, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_contact_info", 
+        "name": "Can add Contact Information", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 32, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_contact_info", 
+        "name": "Can change Contact Information", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 33, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_contact_info", 
+        "name": "Can delete Contact Information", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 34, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_farm", 
+        "name": "Can add farm", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 35, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_farm", 
+        "name": "Can change farm", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 36, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_farm", 
+        "name": "Can delete farm", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 37, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_field", 
+        "name": "Can add field", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 38, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_field", 
+        "name": "Can change field", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 39, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_field", 
+        "name": "Can delete field", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 40, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_soiltype", 
+        "name": "Can add Soil Type", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 41, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_soiltype", 
+        "name": "Can change Soil Type", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 42, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_soiltype", 
+        "name": "Can delete Soil Type", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 43, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_soiltypeparameter", 
+        "name": "Can add Soil Type Parameters", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 44, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_soiltypeparameter", 
+        "name": "Can change Soil Type Parameters", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 45, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_soiltypeparameter", 
+        "name": "Can delete Soil Type Parameters", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 46, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_crop", 
+        "name": "Can add crop", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 47, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_crop", 
+        "name": "Can change crop", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 48, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_crop", 
+        "name": "Can delete crop", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 49, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_cropevent", 
+        "name": "Can add Crop Event", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 50, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_cropevent", 
+        "name": "Can change Crop Event", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 51, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_cropevent", 
+        "name": "Can delete Crop Event", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 52, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_planting", 
+        "name": "Can add planting", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 53, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_planting", 
+        "name": "Can change planting", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 54, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_planting", 
+        "name": "Can delete planting", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 55, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_plantingevent", 
+        "name": "Can add Planting Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 56, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_plantingevent", 
+        "name": "Can change Planting Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 57, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_plantingevent", 
+        "name": "Can delete Planting Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 58, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_waterhistory", 
+        "name": "Can add Water History", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 59, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_waterhistory", 
+        "name": "Can change Water History", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 60, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_waterhistory", 
+        "name": "Can delete Water History", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 61, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probe", 
+        "name": "Can add probe", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 62, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probe", 
+        "name": "Can change probe", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 63, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probe", 
+        "name": "Can delete probe", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 64, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probereading", 
+        "name": "Can add Raw Probe Reading", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 65, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probereading", 
+        "name": "Can change Raw Probe Reading", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 66, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probereading", 
+        "name": "Can delete Raw Probe Reading", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 67, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probesync", 
+        "name": "Can add probe sync", 
+        "content_type": 23
+    }
+},
+{
+    "pk": 68, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probesync", 
+        "name": "Can change probe sync", 
+        "content_type": 23
+    }
+},
+{
+    "pk": 69, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probesync", 
+        "name": "Can delete probe sync", 
+        "content_type": 23
+    }
+},
+{
+    "pk": 70, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailuser", 
+        "name": "Can add user", 
+        "content_type": 24
+    }
+},
+{
+    "pk": 71, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailuser", 
+        "name": "Can change user", 
+        "content_type": 24
+    }
+},
+{
+    "pk": 72, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailuser", 
+        "name": "Can delete user", 
+        "content_type": 24
+    }
+},
+{
+    "pk": 73, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_passwordreset", 
+        "name": "Can add password reset", 
+        "content_type": 25
+    }
+},
+{
+    "pk": 74, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_passwordreset", 
+        "name": "Can change password reset", 
+        "content_type": 25
+    }
+},
+{
+    "pk": 75, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_passwordreset", 
+        "name": "Can delete password reset", 
+        "content_type": 25
+    }
+},
+{
+    "pk": 76, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailaddress", 
+        "name": "Can add email address", 
+        "content_type": 26
+    }
+},
+{
+    "pk": 77, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailaddress", 
+        "name": "Can change email address", 
+        "content_type": 26
+    }
+},
+{
+    "pk": 78, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailaddress", 
+        "name": "Can delete email address", 
+        "content_type": 26
+    }
+},
+{
+    "pk": 79, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailconfirmation", 
+        "name": "Can add email confirmation", 
+        "content_type": 27
+    }
+},
+{
+    "pk": 80, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailconfirmation", 
+        "name": "Can change email confirmation", 
+        "content_type": 27
+    }
+},
+{
+    "pk": 81, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailconfirmation", 
+        "name": "Can delete email confirmation", 
+        "content_type": 27
+    }
+},
+{
+    "pk": 82, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_socialapp", 
+        "name": "Can add social app", 
+        "content_type": 28
+    }
+},
+{
+    "pk": 83, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_socialapp", 
+        "name": "Can change social app", 
+        "content_type": 28
+    }
+},
+{
+    "pk": 84, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_socialapp", 
+        "name": "Can delete social app", 
+        "content_type": 28
+    }
+},
+{
+    "pk": 85, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_socialaccount", 
+        "name": "Can add social account", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 86, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_socialaccount", 
+        "name": "Can change social account", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 87, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_socialaccount", 
+        "name": "Can delete social account", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 88, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_socialtoken", 
+        "name": "Can add social token", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 89, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_socialtoken", 
+        "name": "Can change social token", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 90, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_socialtoken", 
+        "name": "Can delete social token", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 1, 
     "model": "auth.user", 
     "fields": {
-	"username": "warnes",
+        "username": "warnes", 
         "first_name": "Gregory", 
         "last_name": "Warnes", 
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-01-06T21:36:46.691Z", 
+        "last_login": "2014-02-16T01:27:46.657Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$rtsjl3zrR7Gl$rz3xd7AL/Bn46mgCf0qZS8RdfieLHNJbnSnwv8GP008=", 
@@ -21,7 +831,7 @@
     "pk": 2, 
     "model": "auth.user", 
     "fields": {
-	"username": "test",
+        "username": "test", 
         "first_name": "Tim", 
         "last_name": "Test", 
         "is_active": true, 
@@ -39,7 +849,7 @@
     "pk": 3, 
     "model": "auth.user", 
     "fields": {
-	"username": "example",
+        "username": "example", 
         "first_name": "Example", 
         "last_name": "Farmer", 
         "is_active": true, 
@@ -57,7 +867,7 @@
     "pk": 4, 
     "model": "auth.user", 
     "fields": {
-	"username": "edwardsb",
+        "username": "edwardsb", 
         "first_name": "Bill", 
         "last_name": "Edwards", 
         "is_active": true, 
@@ -75,7 +885,7 @@
     "pk": 5, 
     "model": "auth.user", 
     "fields": {
-	"username": "buttsb",
+        "username": "buttsb", 
         "first_name": "Chris", 
         "last_name": "Butts", 
         "is_active": true, 
@@ -84,98 +894,60 @@
         "last_login": "2014-02-05T16:34:13Z", 
         "groups": [], 
         "user_permissions": [
-            85, 
-            86, 
-            87, 
-            88, 
-            89, 
-            90, 
-            73, 
-            74, 
-            75, 
-            22, 
-            23, 
-            24, 
-            94, 
-            95, 
-            109, 
-            40, 
-            110, 
-            41, 
-            111, 
-            42, 
-            112, 
-            113, 
-            114, 
-            28, 
-            97, 
-            29, 
-            98, 
-            99, 
-            100, 
-            32, 
-            101, 
-            33, 
-            102, 
-            46, 
-            115, 
-            47, 
-            116, 
-            48, 
-            117, 
-            49, 
-            118, 
-            50, 
-            119, 
-            51, 
-            120, 
-            55, 
-            124, 
-            56, 
-            125, 
-            57, 
-            126, 
-            127, 
-            58, 
-            128, 
-            59, 
-            129, 
-            60, 
-            61, 
-            130, 
-            62, 
-            131, 
-            63, 
-            132, 
-            34, 
-            103, 
-            35, 
-            104, 
-            36, 
-            105, 
-            37, 
-            52, 
-            121, 
-            53, 
-            122, 
-            54, 
-            123, 
-            70, 
-            67, 
-            71, 
-            72, 
-            69, 
-            10, 
             79, 
             80, 
             81, 
-            84, 
-            133, 
+            32, 
+            33, 
+            10, 
+            28, 
+            29, 
+            70, 
+            71, 
+            72, 
+            73, 
+            74, 
+            75, 
+            46, 
+            47, 
+            48, 
+            49, 
+            50, 
+            51, 
+            34, 
+            35, 
+            36, 
+            37, 
+            52, 
+            53, 
+            54, 
+            55, 
+            56, 
+            57, 
+            61, 
+            62, 
+            63, 
             64, 
-            134, 
             65, 
-            135, 
-            66
+            66, 
+            67, 
+            69, 
+            40, 
+            41, 
+            42, 
+            58, 
+            59, 
+            60, 
+            85, 
+            86, 
+            87, 
+            84, 
+            88, 
+            89, 
+            90, 
+            22, 
+            23, 
+            24
         ], 
         "password": "pbkdf2_sha256$12000$0JREYUxxJMxK$59+xg2G208CvyZMJ3GEEPlYrWeBh+n1+68L2Pqkl2SM=", 
         "email": "chris.butts@ars.usda.gov", 
@@ -188,7 +960,7 @@
     "fields": {
         "city": "Albany", 
         "fax": "(229) 405-2471", 
-        "mdate": "2014-02-04T21:29:45.953Z", 
+        "mdate": "2014-02-16T02:00:04.757Z", 
         "cuser": 1, 
         "mobile": "585-478-6129", 
         "country": "United States", 
@@ -230,17 +1002,17 @@
     "fields": {
         "city": "Dawson", 
         "fax": "", 
-        "mdate": "2014-01-06T23:22:06.866Z", 
+        "mdate": "2014-02-15T23:51:01.581Z", 
         "cuser": 2, 
         "mobile": "", 
         "country": "United States", 
         "zipcode": "31999", 
-        "county": "Lee", 
+        "county": "Terrell", 
         "phone": "", 
         "state": "GA", 
         "address_1": "1234 Farm Road ", 
         "address_2": "", 
-        "muser": 2, 
+        "muser": 1, 
         "cdate": "2014-01-06T22:59:37.610Z", 
         "user": 3
     }
@@ -251,7 +1023,7 @@
     "fields": {
         "city": "Dawson", 
         "fax": "", 
-        "mdate": "2014-02-05T16:34:13.120Z", 
+        "mdate": "2014-02-15T23:47:15.185Z", 
         "cuser": 4, 
         "mobile": "", 
         "country": "United States", 
@@ -261,7 +1033,7 @@
         "state": "Ga", 
         "address_1": "1011 Forrester Dr SE", 
         "address_2": "", 
-        "muser": 4, 
+        "muser": 1, 
         "cdate": "2014-02-05T16:34:13.120Z", 
         "user": 5
     }
@@ -342,6 +1114,136 @@
         "change_message": "Changed first_name, last_name and user_permissions.", 
         "user": 4, 
         "content_type": 8
+    }
+},
+{
+    "pk": 7, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-07T02:35:07.354Z", 
+        "object_repr": "test", 
+        "object_id": "2", 
+        "change_message": "Changed is_staff and is_superuser.", 
+        "user": 1, 
+        "content_type": 3
+    }
+},
+{
+    "pk": 8, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 3, 
+        "action_time": "2014-02-07T03:13:48.971Z", 
+        "object_repr": "test2", 
+        "object_id": "5", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 3
+    }
+},
+{
+    "pk": 9, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:46:43.750Z", 
+        "object_repr": "greg@warnes.net:  266 Brenda Lane, test, Albany, GA 31707, United States", 
+        "object_id": "1", 
+        "change_message": "Changed address_2.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 10, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:46:56.826Z", 
+        "object_repr": "greg@warnes.net:  266 Brenda Lane, , Albany, GA 31707, United States", 
+        "object_id": "1", 
+        "change_message": "Changed address_2.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 11, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:47:08.106Z", 
+        "object_repr": "chris.butts@ars.usda.gov:  1011 Forrester Dr SE, , Dawson, Ga 39842, United States", 
+        "object_id": "4", 
+        "change_message": "Changed mobile.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 12, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:47:15.191Z", 
+        "object_repr": "chris.butts@ars.usda.gov:  1011 Forrester Dr SE, , Dawson, Ga 39842, United States", 
+        "object_id": "4", 
+        "change_message": "Changed mobile.", 
+        "user": 1, 
+        "content_type": 11
+    }
+},
+{
+    "pk": 13, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 1, 
+        "action_time": "2014-02-15T23:49:41.193Z", 
+        "object_repr": "test@warnes.net", 
+        "object_id": "6", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 3
+    }
+},
+{
+    "pk": 14, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:50:23.741Z", 
+        "object_repr": "test@warnes.net", 
+        "object_id": "6", 
+        "change_message": "Added Contact Information \":  abc123, , Dawson, GA 37999, United States\".", 
+        "user": 1, 
+        "content_type": 3
+    }
+},
+{
+    "pk": 15, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 3, 
+        "action_time": "2014-02-15T23:50:36.841Z", 
+        "object_repr": "test@warnes.net", 
+        "object_id": "6", 
+        "change_message": "", 
+        "user": 1, 
+        "content_type": 3
+    }
+},
+{
+    "pk": 16, 
+    "model": "admin.logentry", 
+    "fields": {
+        "action_flag": 2, 
+        "action_time": "2014-02-15T23:51:01.593Z", 
+        "object_repr": "farmer@null.com:  1234 Farm Road , , Dawson, GA 31999, United States", 
+        "object_id": "3", 
+        "change_message": "Changed county.", 
+        "user": 1, 
+        "content_type": 11
     }
 }
 ]

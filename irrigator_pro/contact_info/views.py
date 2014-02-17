@@ -86,6 +86,6 @@ class UserDetailView(DetailView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(Contact_InfoDetailView, self).dispatch(*args, **kwargs)
+        return super(UserDetailView, self).dispatch(*args, **kwargs)
 
 
