@@ -18,3 +18,5 @@ requests
 requests-oauthlib
 django-allauth
 django-model-blocks
+docutils
+pygments
