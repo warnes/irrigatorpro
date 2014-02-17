@@ -33,6 +33,10 @@
       {% load account %} <!-- enable user_display tag -->
       
       <li> <!-- class="active"-->
+	<a href="/accounts/password/change/">Change Password</a>
+      </li>
+
+      <li> <!-- class="active"-->
 	<a href="/contact_info">Contact Information</a>
       </li>
 
@@ -67,6 +71,13 @@
       <li>
 	<a href="/alerts">Alert Settings</a>
       </li>
+
+      {% if perms.auth.staff_status %}
+	<li>
+	  <a href="/admin" target="_blank">Admin</a>
+	</li>
+      {% endif %}
+
     </ul>
     <!-- /#side-menu -->
   </div>
