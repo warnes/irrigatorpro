@@ -22,7 +22,6 @@ mkvirtualenv --clear $APPNAME
 ## Install required packages
 pip install -r requirements.txt --allow-unverified django-admin-tools
 easy_install -a readline
-pip install Werkzeug
 
 # ## Link admin/static directory
 # export DJANGO_PATH=$( find $VIRTUAL_ENV -name "django")
