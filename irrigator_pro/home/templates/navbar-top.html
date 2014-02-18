@@ -8,15 +8,15 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">{{ site_name }}</a>
+      <a class="navbar-brand" href="/"><i class="fa fa-pagelines fa-fw"></i> {{ site_name }}</a>
     </div>
 
     <div class="navbar-collapse collapse">
 
       <ul class="nav navbar-nav">
-        <li><a href="/">Home</a></li>
-        <li><a href="/#about">About</a></li>
-        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/"><i class="fa fa-home fa-fw"></i> Home</a></li>
+        <li><a href="/#about"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
+        <li><a href="/#contact"><i class="fa fa-comment-o fa-fw"></i> Contact</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
           <ul class="dropdown-menu">
@@ -36,12 +36,12 @@
 
 	<ul class="nav navbar-nav navbar-right">
 	  <li>
-	    <a href="#">{% user_display user %}</a> 
+	    <a href="#"><i class="fa fa-user fw"></i> {% user_display user %}</a> 
 	  </li>
 	  <li>
 	    <form class="navbar-form pull-right" role="form" 
 		  action="{% url 'account_logout' %}">
-	      <button class="btn btn-default btn-sm">Sign Out</button>
+	      <button class="btn btn-default btn-sm"><i class="fa fa-sign-out fa-fw"></i> Sign Out</button>
 	    </form>
 	  </li>
 	</ul>

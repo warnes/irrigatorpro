@@ -35,49 +35,53 @@
       <!-- For tab highlighting to work properly,   --
         -- hrefs should *NOT* have a trailing slash -->
 
+      <li>
+	<a href="/accounts/email"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
+      </li>
+
       <li> <!-- class="active"-->
-	<a href="/accounts/password/change">Change Password</a>
+	<a href="/accounts/password/change"><i class="fa fa-user fa-fw"></i> Change Password</a>
       </li>
 
       <li> <!-- class="active"-->
-	<a href="/contact_info">Contact Information</a>
+	<a href="/contact_info"><i class="fa fa-home fa-fw"></i> Contact Information</a>
       </li>
 
       <li>
-	<a href="/#farms">Farms and Fields</a>
+	<a href="/#farms"><i class="fa fa-leaf fa-fw"></i> Farms and Fields</a>
       </li>
 
       <li>
-	<a href="/#probes">Probes</a>
+	<a href="/#probes"><i class="fa fa-pencil fa-fw"></i> Probes</a>
       </li>
 
       <li>
-	<a href="/#planting">Planting Events</a>
+	<a href="/#planting"><i class="fa fa-pagelines fa-fw"></i> Planting Events</a>
       </li>
 
       <li>
-	<a href="/#waterhistory">Rainfall & Irrigation</a>
+	<a href="/#waterhistory"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
       </li>
 
       <li>
-	<a href="/#probereading">Probe Readings</a>
+	<a href="/#probereading"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
       </li>
 
       <li>
-	<a href="/#waterregister">Water Register</a>
+	<a href="/#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
       </li>
 
       <li>
-	<a href="/#dashboard">Dashboard</a>
+	<a href="/#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
       </li>
 
       <li>
-	<a href="/#alerts">Alert Settings</a>
+	<a href="/#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
       </li>
 
       {% if perms.auth.staff_status %}
 	<li>
-	  <a href="/admin" target="_blank">Admin</a>
+	  <a href="/admin" target="_blank"><i class="fa fa-gear fa-fw"></i> Admin</a>
 	</li>
       {% endif %}
 
