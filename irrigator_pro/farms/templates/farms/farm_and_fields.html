@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Irrigator Pro for Corn{% endblock %}
+
+{% block content %}
+
+  {% include 'farms/farm_navbar.html' %}
+  
+    <!-- Farm Details -->
+
+    <div class="third-level">
+
+      <form action="{{ request.path }}" method="post">{% csrf_token %}
+
+
+	{% if form.non_field_errors %}
+	  <div class="alert alert-danger">
+	    {{ form.non_field_errors }}
+	  </div>
+	{% endif %}
+
+	<table class="default-form">
+	  {% for field in form %}
+	    <tr>
+	      <td>{{ field.label_tag }}</td> 
+	      <td>{{ field }}</td>
+	      <td>
+		{% if field.errors %}
+		  <div class="inline-alert alert-danger">
+		    {{ field.errors }}
+	          </div>
+		{% else %}
+		  {% if field.field.required %}(Required){% endif %}
+		{% endif %}	
+	      </td>
+	    </tr>
+	  {% endfor %}
+	  
+	  <tr>
+	    <td colspan="3" align="center"><br/>
+
+	      <button value="Submit" type="submit" class="btn btn-success">
+		<i class="fa fa-floppy-o"></i> Save Changes
+	      </button>
+
+
+	      {% if object.pk %}
+	      <a class="btn btn-warning" href="{{ farm_path }}{{ object.pk }}">
+		<i class="fa fa-undo fa-fw"></i> Cancel Changes
+	      </a>
+	      {% else %}
+	      <a class="btn btn-warning" href="{{ farm_path }}">
+		<i class="fa fa-undo fa-fw"></i> Cancel Changes
+	      </a>
+	      {% endif %}
+
+	      {% if object.pk %}
+	      <a class="btn btn-danger" href="{{ farm_path }}delete/{{ object.pk }}">
+		<i class="fa fa-times fa-fw"></i> Delete
+	      </a>
+	      {% endif %}
+	      
+	    </td>
+	  </tr>
+
+	</table>
+
+      </form>
+
+    </div>
+    <!-- /Farm Details -->
+
+    
+{% endblock %}

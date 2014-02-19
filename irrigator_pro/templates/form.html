@@ -4,18 +4,39 @@
 
 {% block content %}
 
-<form action="{{ request.path }}"" method="post">{% csrf_token %}
+<form action="{{ request.path }}" method="post">{% csrf_token %}
 
-<table class="default_form">
-{% for field in form %}
-  <tr>
-    <td>{{ field.label_tag }}</td> 
-    <td>{{ field }}</td>
-  </tr>
-{% endfor %}
-</table>
+  {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+  
+  <table class="default_form">
+    {% for field in form %}
+      <tr>
+	<td>{{ field.label_tag }}</td> 
+	<td>{{ field }}</td>
+	<td>
+	  {% if field.errors %}
+	    <div class="inline-alert alert-danger">
+	      {{ field.errors }}
+	    </div>
+	  {% else %}
+	    {% if field.field.required %}(Required){% endif %}
+	  {% endif %}	
+	</td>
+      </tr>
+    {% endfor %}
 
-<input type="submit" value="Submit" />
+    <tr>
+      <td colspan="3" align="center"><br/>
+	<input type="submit" value="Submit" />
+      </td>
+    </tr>
+
+  </table>
+
 </form>
 
 {% endblock %}

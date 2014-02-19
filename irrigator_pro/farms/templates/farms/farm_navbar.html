@@ -1,0 +1,22 @@
+<!-- Farms NavBar -->
+<nav class="navbar-default navbar-static-side navbar-side-second" role="navigation">
+  <ul class="nav" id="side-menu">
+    
+    {% for item in farm_list %}
+      <li>
+  	<a href="{{ farm_path }}{{ item.pk }}">
+  	  {{ item.name }}
+  	</a>
+      </li>
+    {% endfor %}
+    
+    <li>
+      <a href="{{ farm_path }}new">
+  	<i class="fa fa-plus fa-fw"></i> New Farm
+      </a>
+    </li>
+    
+    
+  </ul>  <!-- /#side-menu -->
+</nav>  <!-- /.navbar-static-side -->
+<!-- /Farms NavBar -->

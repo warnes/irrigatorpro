@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from common.models import Audit, Comment, Location, NameDesc
+from common.models import Audit, Comment, Location, Location_Optional, NameDesc
 from django.contrib.auth.models import User
 from datetime import timedelta
 
@@ -10,13 +10,13 @@ import sys
 ### Farm ###
 ############
 
-class Farm(NameDesc, Location, Comment, Audit):
+class Farm(NameDesc, Location_Optional, Comment, Audit):
     # from NameDesc: name, description
     # from Location: address_1, address_2, city, state, zipcode, country
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farmer      = models.ForeignKey(User, related_name="farmers")
-    users       = models.ManyToManyField(User)
+    users       = models.ManyToManyField(User, blank=True)
 
     def get_users(self):
         user_list = self.users.all()

@@ -18,7 +18,7 @@
 	font-weight: bold;
 }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
-	color: LimeGreen; //#fffebb;
+	color: LimeGreen; 
 }
 .navbar-default .navbar-text {
 	color: #eefcff;
@@ -27,21 +27,21 @@
 	color: #eefcff;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-	color: LimeGreen; //#fffebb;
+	color: LimeGreen; 
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-	color: DarkGreen; //#fffebb;
-	background-color: #80B580; //#37aafe;
+	color: DarkGreen; 
+	background-color: #80B580; 
 }
 .navbar-static-side > .open > a, .navbar-static-side > .open > a:hover, .navbar-static-side > .open > a:focus {
-	color: LimeGreen; //#fffebb;
+	color: LimeGreen; 
 	background-color: #37aafe;
 }
 .navbar-default .navbar-toggle {
 	border-color: #37aafe;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-	color: LimeGreen; //#fffebb;
+	color: LimeGreen; 
 	background-color: #37aafe;
 }
 .navbar-default .navbar-toggle .icon-bar {
@@ -55,70 +55,91 @@
 	color: #eefcff;
 }
 .navbar-default .navbar-link:hover {
-	color: LimeGreen; //#fffebb;
+	color: LimeGreen; 
 }
 
 @media (max-width: 767px) {
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-	    color: LimeGreen; //#fffebb;
+	    color: LimeGreen; 
 	}
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-	    color: LimeGreen; //#fffebb;
+	    color: LimeGreen; 
 	    color: #fffebb;
 	}
 	.navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-	        color: DarkGreen; //#fffebb;
-		background-color: #80B580; //#37aafe;
+	        color: DarkGreen; 
+		background-color: #80B580; 
 	}
 }
 
 
 .navbar-static-side {
-    margin-top: 52px;
-    width: 175px;
+    margin-top: 62px;
+    width: 185px;
     position: fixed;
     bottom: 0;
     top: 0;
 }
 
 .navbar-static-side a {
-    //background-color: red; 
-    color: white !important; //#eefcff;
+    color: white !important;
 }
 
 .navbar-static-side a:hover {
-    color: DarkGreen !important; //#eefcff;
-    //background-color: red; 
+    color: DarkGreen !important; 
 }
 
 nav li.active > a {
-    background-color: #80B580; //#37aafe;
+    background-color: #80B580; 
     color: DarkGreen !important;
 }
 
-/* nav li > a .hover { */
-/*     background-color: Red !important; //#80B580; //#37aafe; */
-/*     color: LightGreen !important; */
-/* } */
+.navbar-side-second {
+    background-color: #80B580;
+    border-color: #37aafe;
+    margin-left: -20px !important;
+    width: 200px;
+}
 
+.navbar-side-second li.active > a {
+    background-color: #eefcff;
+    color: DarkGreen !important;
+}
+
+
+
+
+
+.third-level {
+    margin-left: 200px;
+    padding-left: 20px;
+}
 
 
 #page-wrapper {
-    padding: 20px;
-    margin-left: 175px; 
+    padding: 0;
+    margin-left: 185px; 
+    background-color: #eefcff;
 }
 
 body {
-    padding-top: 52px;
+    padding-top: 62px;
     padding-bottom: 40px;
 }
 
 .container {
+    padding: 0px;
+    margin: 0px; 
     width: auto;
 }
 
+
+.contents {
+    padding: 20px;
+}
+
 footer {
-   margin-left: 175px;
+   margin-left: 185px;
    position:fixed;
    bottom:0;
    height:1.5em;   /* Height of the footer */
@@ -135,9 +156,23 @@ footer {
     font-weight: bold;
 }
 
+.navbar-brand{
+    padding:22.5px;
+}
+
+.navbar-nav {
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+td { 
+    padding: 2px;
+}
 
 
+/************************************/
 /* Settings for django-model-blocks */
+/************************************/
 .detail {
   display:table;         
   width:auto;         
@@ -157,4 +192,17 @@ footer {
   display:table-column;         
   width:200px;         
   background-color:#ccc;  
+}
+
+
+
+/*********************/
+/* Display of Alerts */
+/*********************/
+
+.alert-inline {
+    padding: 2px;
+    margin-bottom: 5px;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
