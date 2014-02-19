@@ -1,5 +1,6 @@
 """
-Add user created by ('cuser') and modified by ('muser') foreign key refs to all models that contain these fields.
+Add user created by ('cuser') and modified by ('muser') foreign key
+refs to all models that contain these fields.
 
 Based on
   http://mindlace.wordpress.com/2012/10/19/automatically-associating-users-with-django-models-on-save/
