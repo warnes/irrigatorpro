@@ -52,6 +52,9 @@ class Contact_InfoUpdateView(UpdateView):
               #'muser',        
           )
 
+    def get_success_url(self):
+        return self.request.path
+
     def get_object(self):
         obj = Contact_Info.objects.get(user = self.request.user)
         return obj
