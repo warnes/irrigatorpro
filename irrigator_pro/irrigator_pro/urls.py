@@ -11,6 +11,7 @@ from home.views import HomeView
 from farms.views import *
 from contact_info.views import *
 import farms.models
+from recipe.views import *
 
 admin.autodiscover()
 
@@ -72,7 +73,8 @@ urlpatterns = patterns('',
                        #url(r'^user/$', UserDetailView.as_view()  ),
                        #url(r'^user/(?P<userid>\w+)$', UserDetailView.as_view()  ),
 
-                       
+                       ## Demo recipe pages
+                       url(r'^recipe/add$', RecipeCreateView.as_view() )
 
 
 

@@ -19,7 +19,10 @@ class Contact_Info(Location, Audit):
     
     def user_last_name(self):
         return self.user.last_name
-    
+
+    def user_full_name(self):
+        return self.user.first_name + ' ' + self.user.last_name
+
     def __unicode__(self):
         return self.user.email + ": " + self.get_address()
     

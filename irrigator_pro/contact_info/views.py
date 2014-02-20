@@ -35,7 +35,7 @@ class Contact_InfoDetailView(DetailView):
 
 
 class Contact_InfoUpdateView(UpdateView):
-    template_name = "form.html"
+    template_name = "contact_info/contact_info_form.html"
     fields = (#'user',
               'address_1',
               'address_2',

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Irrigator Pro for Corn{% endblock %}
+{% comment %}
+{% block title %}Irrigator Pro for Corn{% endblock %} -->
+{% endcomment %}
 
 {% block content %}
 
@@ -10,34 +12,65 @@
 
     <div class="third-level">
 
+      <h2>Farm</h2>
+
       <form action="{{ request.path }}" method="post">{% csrf_token %}
+	<tbody>
 
+	  {% if form.non_field_errors %}
+	    <div class="alert alert-danger">
+	      {{ form.non_field_errors }}
+	    </div>
+	  {% endif %}
 
-	{% if form.non_field_errors %}
-	  <div class="alert alert-danger">
-	    {{ form.non_field_errors }}
-	  </div>
-	{% endif %}
+	  <table class="default-form">
+	    {% for input in form %}
+	      <tr>
+		<td>{{ input.label_tag }}</td> 
+		<td>{{ input }}</td>
+		<td>
+		  {% if input.errors %}
+		    <div class="inline-alert alert-danger">
+		      {{ input.errors }}
+	            </div>
+		  {% else %}
+		    {% if input.field.required %}(Required){% endif %}
+		  {% endif %}	
+		</td>
+	      </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+
+	<h2>Fields</h2>
 
 	<table class="default-form">
-	  {% for field in form %}
+	  <thead>
 	    <tr>
-	      <td>{{ field.label_tag }}</td> 
-	      <td>{{ field }}</td>
-	      <td>
-		{% if field.errors %}
-		  <div class="inline-alert alert-danger">
-		    {{ field.errors }}
-	          </div>
-		{% else %}
-		  {% if field.field.required %}(Required){% endif %}
-		{% endif %}	
-	      </td>
+	      {% for label in field_form_headers %}
+		<th>{{ label }}</th> 
+	      {% endfor %}
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	  {% for field in field_form %}
+	    <tr>
+	      {% for input in field %}
+		<td>
+		  {% if input.errors %}
+		    <div class="inline-alert alert-danger">
+		      {{ input.errors }}
+	            </div>
+		  {% endif %}
+		  {{ input }}
+		</td>
+	      {% endfor %}
 	    </tr>
 	  {% endfor %}
 	  
 	  <tr>
-	    <td colspan="3" align="center"><br/>
+	    <td colspan="100%" align="center"><br/>
 
 	      <button value="Submit" type="submit" class="btn btn-success">
 		<i class="fa fa-floppy-o"></i> Save Changes
@@ -64,6 +97,8 @@
 	  </tr>
 
 	</table>
+
+
 
       </form>
 

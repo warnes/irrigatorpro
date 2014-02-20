@@ -43,9 +43,12 @@ class Field(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
 
     farm          = models.ForeignKey(Farm)
-    acres         = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
+    acres         = models.DecimalField(max_digits=5, 
+                                        decimal_places=2) # ###.##
     soil_type     = models.ForeignKey('SoilType')
-    irr_capacity  = models.DecimalField(max_digits=3, decimal_places=2) # #.##
+    irr_capacity  = models.DecimalField(max_digits=3, 
+                                        verbose_name='Irrigation Capacity',
+                                        decimal_places=2) # #.##
 
     def __unicode__(self):
         return u"Farm %s - Field %s" % ( self.farm.name, self.name )

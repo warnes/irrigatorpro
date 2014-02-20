@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{{ site_name }}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -35,11 +35,7 @@
         <![endif]-->
 
     <div id="wrapper">
-      
-      <!-- Code to log out after a period of inactivity -->
-      {% include 'session_security/all.html' %}
-      <!-- /Code to log out after a period of inactivity -->
-      
+           
       {% include 'navbar-top.html' %} 
       
       {% if user.is_authenticated %}
@@ -51,6 +47,11 @@
 
       <div class="container">
 	<div class="contents">
+
+	  <h1 class="title">
+	    {% block title %}{% endblock %}
+	  </h1>
+
 	  {% block content %}{% endblock %}   
 	</div> <!-- /contents -->
       </div> <!-- /container -->
@@ -73,7 +74,9 @@
     <span>
 
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')</script>
+      <script>
+	window.jQuery || document.write('<script src="{{STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')
+      </script>
 
       <script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script>
       <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
@@ -84,16 +87,28 @@
 
       <!-- SB Admin Scripts - Include with every page -->
       <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+      
+      <!-- jquery-formset - support formsets -->
+      <script src="{{ STATIC_URL }}js/jquery.formset.min.js"></script>
 
-      <script>
-	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-	s.parentNode.insertBefore(g,s)}(document,'script'));
-      </script>
+      <!-- uncomment and adjust for google analytics -->
+      {% comment %}
+	<script>
+	  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+	  s.parentNode.insertBefore(g,s)}(document,'script'));
+	</script>
+      {% endcomment %}
+
+      {% block scripts %}{% endblock %}
 
     </span>
     <!-- End of Scripts -->
+    
+    <!-- Code to log out after a period of inactivity -->
+    {% include 'session_security/all.html' %}
+    <!-- /Code to log out after a period of inactivity -->
 
 
   </body>
