@@ -974,7 +974,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-02-17T21:20:24.435Z", 
+        "last_login": "2014-02-17T22:24:34.343Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$rtsjl3zrR7Gl$rz3xd7AL/Bn46mgCf0qZS8RdfieLHNJbnSnwv8GP008=", 
@@ -1101,33 +1101,6 @@
         "password": "pbkdf2_sha256$12000$0JREYUxxJMxK$59+xg2G208CvyZMJ3GEEPlYrWeBh+n1+68L2Pqkl2SM=", 
         "email": "chris.butts@ars.usda.gov", 
         "date_joined": "2014-02-05T16:34:13Z"
-    }
-},
-{
-    "pk": 1, 
-    "model": "dashboard.dashboardpreferences", 
-    "fields": {
-        "dashboard_id": "dashboard", 
-        "data": "{}", 
-        "user": 1
-    }
-},
-{
-    "pk": 2, 
-    "model": "dashboard.dashboardpreferences", 
-    "fields": {
-        "dashboard_id": "farms-dashboard", 
-        "data": "{}", 
-        "user": 1
-    }
-},
-{
-    "pk": 3, 
-    "model": "dashboard.dashboardpreferences", 
-    "fields": {
-        "dashboard_id": "dashboard", 
-        "data": "{}", 
-        "user": 2
     }
 },
 {

@@ -6,6 +6,5 @@ python manage.py dumpdata --indent 4 \
     account \
     admin \
     auth \
-    dashboard \
     sites \
     > extra_fixtures/fixtures/initial_data.json
