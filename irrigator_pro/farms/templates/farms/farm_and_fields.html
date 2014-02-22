@@ -1,8 +1,16 @@
 {% extends "base.html" %}
 
-{% comment %}
-{% block title %}Irrigator Pro for Corn{% endblock %} -->
-{% endcomment %}
+
+{% block scripts %}
+<script type="text/javascript">
+    $(function() {
+        $('#formset tbody tr').formset({
+            extraClasses: ['row1', 'row2', 'row3']
+        })
+    })
+</script>
+{% endblock %}
+
 
 {% block content %}
 
@@ -44,7 +52,7 @@
 
 	<h2>Fields</h2>
 
-	<table class="default-form">
+	<table id="formset" class="formset default-form">
 	  <thead>
 	    <tr>
 	      {% for label in field_form_headers %}
@@ -54,49 +62,47 @@
 	  </thead>
 
 	  <tbody>
-	  {% for field in field_form %}
-	    <tr>
-	      {% for input in field %}
-		<td>
-		  {% if input.errors %}
-		    <div class="inline-alert alert-danger">
-		      {{ input.errors }}
-	            </div>
-		  {% endif %}
-		  {{ input }}
-		</td>
-	      {% endfor %}
-	    </tr>
-	  {% endfor %}
-	  
-	  <tr>
-	    <td colspan="100%" align="center"><br/>
-
-	      <button value="Submit" type="submit" class="btn btn-success">
-		<i class="fa fa-floppy-o"></i> Save Changes
-	      </button>
-
-
-	      {% if object.pk %}
-	      <a class="btn btn-warning" href="{{ farm_path }}{{ object.pk }}">
-		<i class="fa fa-undo fa-fw"></i> Cancel Changes
-	      </a>
-	      {% else %}
-	      <a class="btn btn-warning" href="{{ farm_path }}">
-		<i class="fa fa-undo fa-fw"></i> Cancel Changes
-	      </a>
-	      {% endif %}
-
-	      {% if object.pk %}
-	      <a class="btn btn-danger" href="{{ farm_path }}delete/{{ object.pk }}">
-		<i class="fa fa-times fa-fw"></i> Delete
-	      </a>
-	      {% endif %}
-	      
-	    </td>
-	  </tr>
-
+	    {% for field in field_form %}
+	      <tr>
+		{% for input in field %}
+		  <td>
+		    {% if input.errors %}
+		      <div class="inline-alert alert-danger">
+			{{ input.errors }}
+	              </div>
+		    {% endif %}
+		    {{ input }}
+		  </td>
+		{% endfor %}
+	      </tr>
+	    {% endfor %}
+	  </tbody>
 	</table>
+
+	<div class="submit-bar">
+
+	  <button value="Submit" type="submit" class="btn btn-success">
+	    <i class="fa fa-floppy-o"></i> Save Changes
+	  </button>
+
+	  {% if object.pk %}
+	    <a class="btn btn-warning" href="{{ farm_path }}{{ object.pk }}">
+	      <i class="fa fa-undo fa-fw"></i> Cancel Changes
+	    </a>
+	  {% else %}
+	    <a class="btn btn-warning" href="{{ farm_path }}">
+	      <i class="fa fa-undo fa-fw"></i> Cancel Changes
+	    </a>
+	  {% endif %}
+
+	  {% if object.pk %}
+	    <a class="btn btn-danger" href="{{ farm_path }}delete/{{ object.pk }}">
+	      <i class="fa fa-times fa-fw"></i> Delete
+	    </a>
+	  {% endif %}
+
+	</div>
+
 
 	{{ field_form.management_form }}
 

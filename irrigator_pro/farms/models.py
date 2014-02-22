@@ -26,7 +26,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
             return ''
 
     def __unicode__(self):
-        return u"Farmer %s - %s Farm" % ( self.farmer.username, self.name )
+        return self.name
 
     class Meta:
         ordering = ["farmer"]
@@ -51,7 +51,7 @@ class Field(NameDesc, Comment, Audit):
                                         decimal_places=2) # #.##
 
     def __unicode__(self):
-        return u"Farm %s - Field %s" % ( self.farm.name, self.name )
+        return self.name
 
     class Meta:
         ordering = ["farm__farmer__username", "farm__name", "name"]
@@ -113,7 +113,8 @@ class Crop(NameDesc, Comment, Audit):
     )
 
     def __unicode__(self):
-        return u"%s - %s" % (self.name, self.variety)
+        #return u"%s - %s" % (self.name, self.variety)
+        return self.name
 
     class Meta:
         ordering = ['name']
@@ -165,8 +166,8 @@ class Planting(NameDesc, Comment, Audit):
 
 
     def __unicode__(self):
-        return u"%s: %s - %s" % (self.farm, self.planting_date, self.crop)
-
+        ##return u"%s: %s - %s" % (self.farm, self.planting_date, self.crop)
+        return self.name
 
     # Create a full set of PlantingEvents when a new Planting is saved
     def save(self, *args, **kwargs):
@@ -217,7 +218,8 @@ class PlantingEvent(Comment, Audit):
         verbose_name = "Planting Event"
 
     def __unicode__(self):
-        return u"Planting Event: %s - %s: %s" % (self.planting, self.crop_event.name, self.date)
+        #return u"Planting Event: %s - %s: %s" % (self.planting, self.crop_event.name, self.date)
+        return self.crop_event.name
 
 
 
@@ -250,9 +252,10 @@ class WaterHistory(Comment, Audit):
         verbose_name_plural = "Water Histories"
 
     def __unicode__(self):
-        return u"Water History Entry for %s %s" % (self.farm,
-                                                   #self.get_field_list, 
-                                                   self.date)
+        #return u"Water History Entry for %s %s" % (self.farm,
+        #                                           #self.get_field_list, 
+        #                                           self.date)
+        u"%s" % self.date
 
 
 #############################
@@ -277,9 +280,12 @@ class Probe(NameDesc, Comment, Audit):
             return ''
 
     def __unicode__(self):
-        return u"Probe for '%s' with farm code '%s' probe code '%s' " % (self.farm, 
-                                                                         self.farm_code, 
-                                                                         self.probe_code)
+        return u"ProbeReading %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
+        #         return u"Probe for '%s' with farm code '%s' probe code '%s' " % (self.farm, 
+        # self.farm_code, 
+        # self.probe_code)
+        
+
 
 
 class ProbeReading(Audit):

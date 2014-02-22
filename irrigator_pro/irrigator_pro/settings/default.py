@@ -195,6 +195,7 @@ EXTERNAL_APPS = (
     'django_extensions',
     'session_security',
     'south',
+    'extra_views',
     
 )
 

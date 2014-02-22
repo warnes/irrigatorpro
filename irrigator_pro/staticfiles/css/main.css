@@ -150,7 +150,6 @@ footer {
    left: 0;
 }
 
-
 .site-title {
     color: DarkGreen;
     font-weight: bold;
@@ -205,4 +204,39 @@ td {
     margin-bottom: 5px;
     border: 1px solid transparent;
     border-radius: 4px;
+}
+
+/******************/
+/* Centered block */
+/******************/
+
+.submit-bar {
+    text-align: center;
+    padding: 10px;
+}
+
+
+/***********/
+/* formset */
+/***********/
+
+table.formset, table.formset tr, table.formset td, table.formset th {
+    border: 1px solid #006B00;
+    width: 100%;
+    text-align: center;
+}
+
+tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
+    text-align: center  !important; 
+}
+
+a.add-row {
+    display: table-cell;
+    width: 100%;
+    text-align: center;
+    column-span: 100;
+}
+
+a.add-row, a.delete-row { 
+    color: #006B00;
 }

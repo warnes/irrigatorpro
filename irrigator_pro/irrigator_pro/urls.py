@@ -11,7 +11,6 @@ from home.views import HomeView
 from farms.views import *
 from contact_info.views import *
 import farms.models
-from recipe.views import *
 
 admin.autodiscover()
 
@@ -57,25 +56,13 @@ urlpatterns = patterns('',
                        url(r'^farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view() ),
                        url(r'^farm/(?P<pk>\w+)$',        FarmUpdateView.as_view() ),
 
-                       
-
-                       ## Field pages
-                       url(r'^field/$',  ListView.as_view(
-                                            model=farms.models.Field,
-                                            template_name="list.html",
-                                            ),
-                                         name='field_list_view'
-                       ),
-
+                       ## Probe pages
+                       url(r'^probes/$',  ProbesView.as_view() ),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
                        #url(r'^user/$', UserDetailView.as_view()  ),
                        #url(r'^user/(?P<userid>\w+)$', UserDetailView.as_view()  ),
-
-                       ## Demo recipe pages
-                       url(r'^recipe/add$', RecipeCreateView.as_view() )
-
 
 
 )
