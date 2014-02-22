@@ -203,22 +203,6 @@ class PlantingAdmin(AuditAdmin):
             formfield.queryset = Field.objects.filter(farm=planting.farm)
         return formfield
 
-    ## Set cuser and muser for the Contact_Info inline
-    def save_formset(self, request, form, formset, change):
-        instances = formset.save(commit=False)
-
-        for instance in instances:
-            # not sure why this doesn't work:
-
-            # only set cname on create
-            if not hasattr(instance, 'cuser'):
-                instance.cuser = request.user
-
-            # always set mname
-            instance.muser = request.user
-
-            instance.save()
-
 admin.site.register(Planting, PlantingAdmin)
 
 ######################
