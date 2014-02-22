@@ -89,15 +89,6 @@ class FarmListView(ListView):
 
     context_object_name = 'farm_list'
 
-
-    def get_context_data(self, **kwargs):
-        context = super(FarmListView, self).get_context_data(**kwargs)
-        #context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
-        #                                            Q(users=self.request.user) ).distinct()
-        context['farm_path'] = '/farm/'
-        return context
-
-
     def get_queryset(self):
         return Farm.objects.filter( Q(farmer=self.request.user) |
                                     Q(users=self.request.user) ).distinct()

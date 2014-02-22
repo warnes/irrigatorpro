@@ -1,12 +1,13 @@
-from extra_views import ModelFormSetView
+from extra_views import InlineFormSet, CreateWithInlinesView, ModelFormSetView, UpdateWithInlinesView
 from django.forms import Textarea, MultipleChoiceField
 from django.db.models import Q
+from django.core.urlresolvers import reverse
 
-from farms.models import Probe
+from farms.models import Planting, PlantingEvent, Probe
 from common.models import Audit, Comment, Location, NameDesc
 
 from farm_views import *
-
+from planting_views import *
 
 class ProbesView(ModelFormSetView):
     model = Probe
@@ -30,4 +31,3 @@ class ProbesView(ModelFormSetView):
         return queryset.distinct()
 
 
-    

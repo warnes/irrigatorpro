@@ -82,18 +82,28 @@
 	window.jQuery || document.write('<script src="{{STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')
       </script>
 
-      <script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script>
-      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-      <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
+      <!--- jQuery --->
+        <!--script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script-->
+        <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+        <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+      <!--- /jQuery --->
+
+      <!-- Bootstrap -->
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+        <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
+      <!-- /Bootstrap -->
+
       <script src="{{ STATIC_URL }}js/plugins.js"></script>
       <script src="{{ STATIC_URL }}js/main.js"></script>
       <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
-      <!-- SB Admin Scripts - Include with every page -->
+      <!-- SB Admin -->
       <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+      <!-- /SB Admin -->
       
-      <!-- jquery-formset - support formsets -->
+      <!-- django-jquery-formset - support formsets -->
       <script src="{{ STATIC_URL }}js/jquery.formset.min.js"></script>
+      <!-- /django-jquery-formset -->
 
       <!-- uncomment and adjust for google analytics -->
       {% comment %}

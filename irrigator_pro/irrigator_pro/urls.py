@@ -51,13 +51,19 @@ urlpatterns = patterns('',
                        #                      ),
                        #                   name='farm_list_view'
                        # ),
-                       url(r'^farm/$',                   FarmListView.as_view()   ),
-                       url(r'^farm/new$',                FarmCreateView.as_view() ),
-                       url(r'^farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view() ),
-                       url(r'^farm/(?P<pk>\w+)$',        FarmUpdateView.as_view() ),
+                       url(r'^farm/$',                   FarmListView.as_view(),   name='farm_list'),
+                       url(r'^farm/new$',                FarmCreateView.as_view(), name='farm_new'),
+                       url(r'^farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view(), name='farm_delete'),
+                       url(r'^farm/(?P<pk>\w+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
-                       url(r'^probes/$',  ProbesView.as_view() ),
+                       url(r'^probes/$',  ProbesView.as_view(), name='probes' ),
+
+                       # ## Planting pages
+                       url(r'^planting/$',                   PlantingListView.as_view(),   name='planting_list'),
+                       url(r'^planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
+                       # url(r'^planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
+                       url(r'^planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

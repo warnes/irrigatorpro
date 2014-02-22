@@ -151,7 +151,7 @@ class Planting(NameDesc, Comment, Audit):
     farm              = models.ForeignKey(Farm)
     field_list        = models.ManyToManyField(Field)
     crop              = models.ForeignKey(Crop)
-    planting_date     = models.DateField() ## May need a better name
+    planting_date     = models.DateField(default=timezone.now()) ## May need a better name
 
     def planting_year(self):
         return planting_date.year
