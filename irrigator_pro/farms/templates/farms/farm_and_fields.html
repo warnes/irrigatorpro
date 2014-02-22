@@ -24,7 +24,6 @@
       <h2>Farm</h2>
 
       <form action="{{ request.path }}" method="post">{% csrf_token %}
-	<tbody>
 
 	  {% if form.non_field_errors %}
 	    <div class="alert alert-danger">
@@ -33,6 +32,7 @@
 	  {% endif %}
 
 	  <table class="default-form">
+	    <tbody>
 	    {% for input in form %}
 	      <tr>
 		<td>{{ input.label_tag }}</td> 
