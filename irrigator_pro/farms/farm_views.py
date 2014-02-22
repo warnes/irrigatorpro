@@ -5,12 +5,28 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.db.models import Q
+from django.core.urlresolvers import reverse
+
 from farms.forms import FieldFormSet
 
 #from farms.forms import FarmForm
 from farms.models import Farm
 
 from sys import stderr
+
+
+farm_view_fields =  ('farmer',
+                     'name',
+                     'description',
+                     'users',
+                     'address_1',
+                     'address_2',
+                     'city',
+                     'county',
+                     'state',
+                     'zipcode',
+                 )
+
 
 class FarmMixin:
     def get(self, request, *args, **kwargs):
@@ -75,17 +91,7 @@ class FarmMixin:
 class FarmListView(ListView):
     template_name = "farms/farm_list.html"
     model = Farm
-    fields = ('farmer',
-              'name',
-              'description',
-              'users',
-              'address_1',
-              'address_2',
-              'city',
-              'county',
-              'state',
-              'zipcode',
-               )
+    fields = [ 'name' ]
 
     context_object_name = 'farm_list'
 
@@ -102,17 +108,7 @@ class FarmUpdateView(FarmMixin, UpdateView):
     template_name = "farms/farm_and_fields.html"
     model = Farm
     pk_field = 'pk' 
-    fields = ('farmer',
-              'name',
-              'description',
-              'users',
-              'address_1',
-              'address_2',
-              'city',
-              'county',
-              'state',
-              'zipcode',
-               )
+    fields = farm_view_fields
 
     def get_success_url(self):
         path = self.request.path.replace('new', "%s" % self.object.pk)
@@ -123,7 +119,6 @@ class FarmUpdateView(FarmMixin, UpdateView):
         context = super(FarmUpdateView, self).get_context_data(**kwargs)
         context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
                                                     Q(users=self.request.user) ).distinct()
-        context['farm_path'] = '/farm/'
         return context
 
 
@@ -136,17 +131,7 @@ class FarmCreateView(FarmMixin, CreateView):
     template_name = "farms/farm_and_fields.html"
     model = Farm
     pk_field = 'pk' 
-    fields = ('farmer',
-              'name',
-              'description',
-              'users',
-              'address_1',
-              'address_2',
-              'city',
-              'county',
-              'state',
-              'zipcode',
-               )
+    fields = farm_view_fields
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -162,11 +147,10 @@ class FarmCreateView(FarmMixin, CreateView):
         dict['farmer'] = self.request.user
         return dict
         
-    def get_context_data(self, **kwargs):
-        context = super(FarmCreateView, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(FarmCreateView, self).get_context_data(*args, **kwargs)
         context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
                                                     Q(users=self.request.user) ).distinct()
-        context['farm_path'] = '/farm/'
         return context
 
     def get_object(self, queryset=None):
@@ -177,29 +161,21 @@ class FarmDeleteView(DeleteView):
     template_name = "farms/farm_delete.html"
     model = Farm
     pk_field = 'pk' 
-    fields = ('farmer',
-              'name',
-              'description',
-              'users',
-              'address_1',
-              'address_2',
-              'city',
-              'county',
-              'state',
-              'zipcode',
-               )
     
-    success_url = "/farm/"
+    #success_url = reverse_lazy('farm_list')
 
-    def get_context_data(self, **kwargs):
-        context = super(FarmDeleteView, self).get_context_data(**kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context = super(FarmDeleteView, self).get_context_data(*args, **kwargs)
         context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
                                                     Q(users=self.request.user) ).distinct()
-        context['farm_path'] = '/farm/'
         return context
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(FarmDeleteView, self).dispatch(*args, **kwargs)
 
+
+class FarmDetailView(DetailView):
+    model = Farm
+    fields = farm_view_fields
 
