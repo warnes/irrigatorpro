@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  {% include 'farms/planting_navbar.html' %}
+  
+    <!-- Farm Details -->
+    <div class="third-level">
+
+      <form action="" method="post">{% csrf_token %}
+	<p>Are you sure you want to delete planting "{{ object.name }}"?</p>
+
+	<a class="btn btn-warning" href="{% url 'planting_list' %}{{ object.pk }}">
+	  <i class="fa fa-undo fa-fw"></i> Cancel Delete
+	</a>
+
+	<button class="btn btn-danger" value="Confirm" type="submit">
+	    <i class="fa fa-times fa-fw"></i> Confirm Delete
+	</button>
+
+      </form>
+
+    </div>
+    <!-- /Farm Details -->
+
+{% endblock %}
