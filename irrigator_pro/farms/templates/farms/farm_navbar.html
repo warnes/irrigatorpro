@@ -4,14 +4,14 @@
     
     {% for item in farm_list %}
       <li>
-  	<a href="{{ farm_path }}{{ item.pk }}">
+  	<a href="{% url 'farm_list' %}{{ item.pk }}">
   	  {{ item.name }}
   	</a>
       </li>
     {% endfor %}
     
     <li>
-      <a href="{{ farm_path }}new">
+      <a href="{% url 'farm_list' %}new">
   	<i class="fa fa-plus fa-fw"></i> New Farm
       </a>
     </li>
