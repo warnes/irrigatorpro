@@ -11,6 +11,7 @@ django-extensions #==1.1.1
 Werkzeug
 feedparser
 #django-crispy-forms
+django-extra-views
 django-session-security
 # for django-allauth
 python-openid
