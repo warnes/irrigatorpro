@@ -25,7 +25,7 @@ class ProbesView(ModelFormSetView):
 
         queryset = queryset.filter( Q(farm__farmer=user) | 
                                     Q(farm__users=user) 
-                               )
+                                  )
         
         return queryset.distinct()
 

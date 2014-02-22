@@ -240,3 +240,54 @@ a.add-row {
 a.add-row, a.delete-row { 
     color: #006B00;
 }
+
+.delete-icon {
+    color: #d9534f;
+}
+
+.delete-icon:hover {
+    color: #d2322d;
+}
+
+
+.add-icon {
+    color: #5cb85c;
+    border-color: #398439;
+}
+
+.add-icon:hover {
+    color: #47a447;
+}
+
+/***********/
+/* Tooltip */
+/***********/
+
+.iTooltip {
+    display: inline;
+    position: relative;
+}
+
+.iTooltip:hover:after{
+    background: rgba(0,107,0,.6);
+    border-radius: 5px;
+    bottom: 1em;
+    color: white;
+    content: attr(help);
+    right: 0px;
+    padding: 5px 5px;
+    position: absolute;
+    z-index: 98;
+    %width: 220px;
+}
+
+/* .iTooltip:hover:before{ */
+/*     border: solid; */
+/*     border-color: #333 transparent; */
+/*     border-width: 6px 6px 0 6px; */
+/*     bottom: 20px; */
+/*     content: ""; */
+/*     left: 50%; */
+/*     position: absolute; */
+/*     z-index: 99; */
+/* } */

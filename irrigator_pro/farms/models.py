@@ -267,7 +267,7 @@ class Probe(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farm        = models.ForeignKey(Farm)
-    field_list      = models.ManyToManyField(Field)
+    field_list  = models.ManyToManyField(Field)
     farm_code   = models.CharField(max_length=10)
     probe_code  = models.CharField(max_length=10)
     unique_together = ( ("farm_code", "probe_code",), )
