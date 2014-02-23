@@ -51,7 +51,7 @@ class Field(NameDesc, Comment, Audit):
                                         decimal_places=2) # #.##
 
     def __unicode__(self):
-        return self.name
+        return u"%s %s" % (self.farm, self.name)
 
     class Meta:
         ordering = ["farm__farmer__username", "farm__name", "name"]

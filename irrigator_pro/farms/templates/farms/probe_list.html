@@ -18,18 +18,20 @@
 
 {% block content %}
 
-  <h2>{{ object_name }}</h2>
+  <h2>Probes</h2>
   
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
     
     <table class="formset" >
+
       <thead>
 	<tr>
-	  {% with object=formset|first %}
-	    {% for field in object.fields %}
-	      <th>{{ field.name }}<th>
-	    {% endfor %}
-	  {% endwith %}
+	  <th>Probe Name</th>
+	  <th>Farm</th>
+	  <th>Fields</th>
+	  <th>Farm Code</th>
+	  <th>Probe Code<th>
+	  <th>Delete</th>
 	</tr>
       </thead>
 

@@ -62,8 +62,11 @@ urlpatterns = patterns('',
                        # ## Planting pages
                        url(r'^planting/$',                   PlantingListView.as_view(),   name='planting_list'),
                        url(r'^planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
-                       # url(r'^planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
+                       url(r'^planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
                        url(r'^planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
+
+                       ## Planting pages
+                       url(r'^water_history/$',              WaterHistoryView.as_view(),   name='water_history'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

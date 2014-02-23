@@ -6,6 +6,8 @@ from django.views.generic.list import ListView
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from farms.models import Farm, Field, Planting, PlantingEvent, Probe
 
@@ -136,5 +138,20 @@ class PlantingCreateView(CreateWithInlinesView):
         return form
 
 
+class PlantingDeleteView(DeleteView):
+    template_name = "farms/planting_delete.html"
+    model = Planting
+    pk_field = 'pk' 
+    
+    success_url = reverse_lazy('planting_list')
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(PlantingDeleteView, self).get_context_data(*args, **kwargs)
+        context['Planting_list'] = plantings_filter(self.request.user)
+        return context
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(PlantingDeleteView, self).dispatch(*args, **kwargs)
+    
 

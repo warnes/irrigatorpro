@@ -5,7 +5,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.db.models import Q
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from farms.forms import FieldFormSet
 
@@ -162,7 +162,7 @@ class FarmDeleteView(DeleteView):
     model = Farm
     pk_field = 'pk' 
     
-    #success_url = reverse_lazy('farm_list')
+    success_url = reverse_lazy('farm_list')
 
     def get_context_data(self, *args, **kwargs):
         context = super(FarmDeleteView, self).get_context_data(*args, **kwargs)
