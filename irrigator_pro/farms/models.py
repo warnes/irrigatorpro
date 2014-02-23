@@ -18,6 +18,11 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     farmer      = models.ForeignKey(User, related_name="farmers")
     users       = models.ManyToManyField(User, blank=True)
 
+    def get_farmer_and_user_list(self):
+        retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
+        print 'retval=', retval
+        return retval
+
     def get_users(self):
         user_list = self.users.all()
         if user_list:
@@ -51,7 +56,7 @@ class Field(NameDesc, Comment, Audit):
                                         decimal_places=2) # #.##
 
     def __unicode__(self):
-        return u"%s %s" % (self.farm, self.name)
+        return u"%s: %s" % (self.farm, self.name)
 
     class Meta:
         ordering = ["farm__farmer__username", "farm__name", "name"]
@@ -148,7 +153,6 @@ class Planting(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    farm              = models.ForeignKey(Farm)
     field_list        = models.ManyToManyField(Field)
     crop              = models.ForeignKey(Crop)
     planting_date     = models.DateField(default=timezone.now()) ## May need a better name
@@ -193,7 +197,7 @@ class Planting(NameDesc, Comment, Audit):
 
 
     class Meta:
-        ordering = [ 'farm', 'planting_date', 'crop' ]
+        ordering = [ 'planting_date', 'crop' ]
 
 
 class PlantingEvent(Comment, Audit):
@@ -230,7 +234,6 @@ class PlantingEvent(Comment, Audit):
 class WaterHistory(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    farm                    = models.ForeignKey(Farm)
     field_list              = models.ManyToManyField(Field)
     date                    = models.DateField()
     rain                    = models.DecimalField("rainfall in inches",
@@ -266,7 +269,6 @@ class Probe(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    farm        = models.ForeignKey(Farm)
     field_list  = models.ManyToManyField(Field)
     farm_code   = models.CharField(max_length=10)
     probe_code  = models.CharField(max_length=10)

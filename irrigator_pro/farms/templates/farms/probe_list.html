@@ -27,10 +27,12 @@
       <thead>
 	<tr>
 	  <th>Probe Name</th>
-	  <th>Farm</th>
+	  <th>Description</th>
 	  <th>Fields</th>
 	  <th>Farm Code</th>
-	  <th>Probe Code<th>
+	  <th>Probe Code</th>
+	  <th>Comment</th>
+	  <th/>
 	  <th>Delete</th>
 	</tr>
       </thead>
@@ -61,17 +63,17 @@
       
       
       {% if object.pk %}
-	<a class="btn btn-warning" href="{{ farm_path }}{{ object.pk }}">
+	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% else %}
-	<a class="btn btn-warning" href="{{ farm_path }}">
+	<a class="btn btn-warning" href="{% url 'farm_list' %}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% endif %}
       
       {% if object.pk %}
-	<a class="btn btn-danger" href="{{ farm_path }}delete/{{ object.pk }}">
+	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
 	  <i class="fa fa-times fa-fw"></i> Delete
 	</a>
       {% endif %}

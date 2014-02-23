@@ -175,7 +175,7 @@ class PlantingEventInline(admin.TabularInline):
 
 
 class PlantingAdmin(AuditAdmin):
-    fields = [ 'farm', 'field_list', ] \
+    fields = [ 'field_list', ] \
              + NameDesc.fields \
              + [
                  'crop',
@@ -183,25 +183,16 @@ class PlantingAdmin(AuditAdmin):
                 ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = ['farm', 'get_field_list', 'name' ] + fields[4:-5]
+    list_display  = ['pk', 'get_field_list', 'name' ] + fields[4:-5]
     list_editable = list_display[2:]
     inlines = [ PlantingEventInline ]
-    list_filter = ['farm', 
-                   'farm__farmer', 
+    list_filter = ['field_list__farm__farmer', 
+                   'field_list__farm',
                    'planting_date']
-    list_filter = ['farm', 'farm__farmer', 'planting_date']
-
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
         return super(PlantingAdmin, self).get_form(request, obj, **kwargs)
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        planting = kwargs.pop('obj', None)
-        formfield = super(PlantingAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name == "field_list" and planting:
-            formfield.queryset = Field.objects.filter(farm=planting.farm)
-        return formfield
 
 admin.site.register(Planting, PlantingAdmin)
 
@@ -215,8 +206,8 @@ class PlantingEventAdmin(AuditAdmin):
     list_display  = fields[:3]
     list_editable = [ 'date' ]
     list_filter = ['planting', 
-                   'planting__farm', 
-                   'planting__farm__farmer', 
+                   'planting__field_list__farm__farmer', 
+                   'planting__field_list__farm', 
                    'planting__planting_date']
 
 admin.site.register(PlantingEvent, PlantingEventAdmin)
@@ -226,24 +217,16 @@ admin.site.register(PlantingEvent, PlantingEventAdmin)
 #####################
 
 class WaterHistoryAdmin(AuditAdmin):
-    fields = [ 'farm', 'field_list', 'date', 'rain', 'irrigation', 'available_water_content' ] \
+    fields = [ 'field_list', 'date', 'rain', 'irrigation', 'available_water_content' ] \
              + Comment.fields
-    list_display  = [ 'farm', 'get_field_list' ] + fields[2:-1]
+    list_display  = [ 'pk', 'get_field_list' ] + fields[2:-1]
     list_editable = [ 'rain', 'irrigation' ]
     readonly_fields = [ 'available_water_content' ]
-    list_filter = [ 'farm__farmer', 'farm', 'date' ]
+    list_filter = [ 'field_list__farm__farmer', 'field_list__farm', 'date' ]
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
         return super(WaterHistoryAdmin, self).get_form(request, obj, **kwargs)
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        waterhistory = kwargs.pop('obj', None)
-        formfield = super(WaterHistoryAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name == "field_list" and waterhistory:
-            formfield.queryset = Field.objects.filter(farm=waterhistory.farm)
-        return formfield
-
 
 admin.site.register(WaterHistory, WaterHistoryAdmin)
 
@@ -253,28 +236,23 @@ admin.site.register(WaterHistory, WaterHistoryAdmin)
 #############
 
 class ProbeAdmin(AuditAdmin):
-    fields = [ 'farm', 'field_list', ] \
-             + NameDesc.fields \
-             + [ 'farm_code', 'probe_code'] \
+    fields = NameDesc.fields \
+             + [ 'field_list', 'farm_code', 'probe_code'] \
              + Comment.fields \
              + Audit.fields
-    list_display  = [ 'farm', 
-                      'get_field_list', 
+    list_display  = [ 'pk',
                       'name',
-                      'farm_code', 'probe_code' ]
-    list_editable = list_display[2:]
-    list_filter = [ 'farm__farmer', 'farm' ]
+                      'get_field_list', 
+                      'farm_code', 
+                      'probe_code' ]
+    list_editable = [ 'name', 'farm_code', 'probe_code']
+    list_filter = [ 'field_list__farm__farmer',
+                    'field_list__farm',
+                  ] 
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
         return super(ProbeAdmin, self).get_form(request, obj, **kwargs)
-
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        probeadmin = kwargs.pop('obj', None)
-        formfield = super(ProbeAdmin, self).formfield_for_dbfield(db_field, **kwargs)
-        if db_field.name == "field_list" and probeadmin:
-            formfield.queryset = Field.objects.filter(farm=probeadmin.farm)
-        return formfield
 
 
 admin.site.register(Probe, ProbeAdmin)

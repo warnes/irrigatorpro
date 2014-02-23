@@ -291,3 +291,7 @@ a.add-row, a.delete-row {
 /*     position: absolute; */
 /*     z-index: 99; */
 /* } */
+
+.hasDatePicker {
+    margin: 5px;
+}

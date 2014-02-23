@@ -38,4 +38,11 @@ function setNavigation() {
 }
 
 
+/** Use jQuery DatePicker widget for any data item **/
+$(function() {
+      $('input[id$=date]').datepicker({ dateFormat: 'yy-mm-dd' }); // Use date picker widget
+      $('input[id$=date]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
+      $('input[id$=date]').width("3em") // -= $(".fa").width();    // Make narrower 
+    });
+
 

@@ -28,6 +28,11 @@ farm_view_fields =  ('farmer',
                  )
 
 
+def farms_filter(user):
+        return Farm.objects.filter( Q(farmer=user) |
+                                    Q(users=user) ).distinct()
+
+
 class FarmMixin:
     def get(self, request, *args, **kwargs):
         """
@@ -51,6 +56,7 @@ class FarmMixin:
                                         field_form_headers=field_form_headers,
                                     )
         return self.render_to_response(context)
+
 
     def post(self, request, *args, **kwargs):
         """
@@ -110,6 +116,24 @@ class FarmUpdateView(FarmMixin, UpdateView):
     pk_field = 'pk' 
     fields = farm_view_fields
 
+    farm_list = None
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """
+        This function ensures that the user has the right to access
+        this object by comparing the primary key of this object to the
+        list of primary keys constructed from a query of objects where
+        this user is either the farmer or the one of the users.
+        """
+        self.farm_list = farms_filter(self.request.user) 
+        user_pk = int(kwargs['pk'])
+        pk_list = map( lambda x: int(x.pk), self.farm_list )
+        if not user_pk in pk_list:
+            return redirect( reverse('farm_list') )
+        else:
+            return super(FarmUpdateView, self).dispatch(*args, **kwargs)
+
     def get_success_url(self):
         path = self.request.path.replace('new', "%s" % self.object.pk)
         print path
@@ -117,14 +141,8 @@ class FarmUpdateView(FarmMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(FarmUpdateView, self).get_context_data(**kwargs)
-        context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
-                                                    Q(users=self.request.user) ).distinct()
+        context['farm_list'] = self.farm_list
         return context
-
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(FarmUpdateView, self).dispatch(*args, **kwargs)
 
 
 class FarmCreateView(FarmMixin, CreateView):
@@ -133,10 +151,13 @@ class FarmCreateView(FarmMixin, CreateView):
     pk_field = 'pk' 
     fields = farm_view_fields
 
+    farm_list = None
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        self.farm_list = farms_filter(self.request.user) 
         return super(FarmCreateView, self).dispatch(*args, **kwargs)
-    
+
     def get_success_url(self):
         path = self.request.path.replace('new', "%s" % self.object.pk)
         print path
@@ -149,8 +170,7 @@ class FarmCreateView(FarmMixin, CreateView):
         
     def get_context_data(self, *args, **kwargs):
         context = super(FarmCreateView, self).get_context_data(*args, **kwargs)
-        context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
-                                                    Q(users=self.request.user) ).distinct()
+        context['farm_list'] = self.farm_list
         return context
 
     def get_object(self, queryset=None):
@@ -164,18 +184,31 @@ class FarmDeleteView(DeleteView):
     
     success_url = reverse_lazy('farm_list')
 
+    farm_list = None
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        """
+        This function ensures that the user has the right to access
+        this object by comparing the primary key of this object to the
+        list of primary keys constructed from a query of objects where
+        this user is either the farmer or the one of the users.
+        """
+        self.farm_list = Farm.objects.filter( Q(farmer=self.request.user) |
+                                              Q(users=self.request.user) ).distinct()
+        user_pk = int(kwargs['pk'])
+        pk_list = map( lambda x: int(x.pk), self.farm_list )
+        if not user_pk in pk_list:
+            return redirect( reverse('farm_list') )
+        else:
+            return super(FarmUpdateView, self).dispatch(*args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
         context = super(FarmDeleteView, self).get_context_data(*args, **kwargs)
         context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
                                                     Q(users=self.request.user) ).distinct()
         return context
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(FarmDeleteView, self).dispatch(*args, **kwargs)
 
 
-class FarmDetailView(DetailView):
-    model = Farm
-    fields = farm_view_fields
 

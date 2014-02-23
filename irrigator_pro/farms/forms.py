@@ -25,7 +25,7 @@ FieldFormSet = inlineformset_factory(Farm,
 
 
 ProbeFormSet = modelformset_factory(Probe,
-                                    fields = [ 'farm', 'field_list', ] \
+                                    fields = [ 'field_list', ] \
                                              + NameDesc.fields \
                                              + [ 'farm_code', 'probe_code'] \
                                              + Comment.fields,
