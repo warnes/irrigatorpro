@@ -166,8 +166,7 @@ class PlantingDeleteView(DeleteView):
         list of primary keys constructed from a query of objects where
         this user is either the farmer or the one of the users.
         """
-        self.planting_list = Planting.objects.filter( Q(field_list__farmer=self.request.user) |
-                                              Q(field_list__users=self.request.user) ).distinct()
+        self.planting_list = plantings_filter(self.request.user)
         user_pk = int(kwargs['pk'])
         pk_list = map( lambda x: int(x.pk), self.planting_list )
         if not user_pk in pk_list:
@@ -177,5 +176,5 @@ class PlantingDeleteView(DeleteView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(PlantingDeleteView, self).get_context_data(*args, **kwargs)
-        context['planting_list'] = planting_list
+        context['planting_list'] = self.planting_list
         return context

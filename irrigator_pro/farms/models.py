@@ -282,12 +282,7 @@ class Probe(NameDesc, Comment, Audit):
             return ''
 
     def __unicode__(self):
-        return u"ProbeReading %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
-        #         return u"Probe for '%s' with farm code '%s' probe code '%s' " % (self.farm, 
-        # self.farm_code, 
-        # self.probe_code)
-        
-
+        return u"Probe %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
 
 
 class ProbeReading(Audit):

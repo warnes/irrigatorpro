@@ -301,6 +301,7 @@ class ProbeReadingAdmin(AuditAdmin):
                      'battery_percent', 
                      ]
     list_editable = []
+    list_filter = [ 'farm_code', 'probe_code', 'reading_date', 'reading_date' ]
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)
