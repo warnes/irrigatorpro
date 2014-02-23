@@ -22,3 +22,4 @@ django-extra-views
 django-model-blocks
 docutils
 pygments
+pytz
