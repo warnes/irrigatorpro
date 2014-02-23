@@ -11,9 +11,13 @@ if __name__ == "__main__":
     # Add the directory *above* this to the python path so we can find our modules
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
+else: # assume we're running in the script directory
+    sys.path.append("..")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
+    
 
-from irrigator_pro.settings import BASE_DIR
-from farms.models import ProbeSync, RawProbeReading
+from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
+from farms.models import ProbeSync, ProbeReading
 from django.contrib.auth.models import User
 from django.utils import timezone
 import pytz
@@ -27,7 +31,9 @@ ftp_server     = "www.nespal.org"
 ftp_path       = "/cigflint/Flint2013"
 ftp_email   = "flintcig"
 ftp_password   = "cigswcd"
-ftp_cache_path = os.path.join(BASE_DIR, "ftp_cache")
+ftp_cache_path = os.path.join(ABSOLUTE_PROJECT_ROOT, "ftp_cache")
+
+print "ftp_cache_path:", ftp_cache_path
 
 ## Debugging
 DEBUG=False
@@ -67,10 +73,13 @@ def mirror(max_tries=20):
 
 def putProbe(farm_code, file_date, line):
     """
-    Extract elements of CSV-encoded line, write to database
+    Extract elements of CSV-encoded line, write to database.
+
+    Store last entries before 9:00am on each date.
     """
 
     global nRecords
+    global rpr
 
     try:
         line = line.decode("utf-8-sig")
@@ -82,7 +91,7 @@ def putProbe(farm_code, file_date, line):
         sys.stdout.flush()
 
     ( reading_date,
-      node_id,
+      probe_code,
       radio_id,
       battery_voltage,
       battery_percent,
@@ -95,6 +104,7 @@ def putProbe(farm_code, file_date, line):
       minutes_awake
     ) = line.split(',')
 
+
     reading_date = datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z")
     try:
         # This can sometimes fail if a particular datetime falls into
@@ -103,31 +113,36 @@ def putProbe(farm_code, file_date, line):
     except pytz.exceptions.AmbiguousTimeError as e:
         print e
 
+    # Only consider times between 1:00am and 9:00am on each date.
+    if reading_date.hour < 1 or reading_date.hour > 8:
+        return
+
     if DEBUG:
         print reading_date
         sys.stdout.flush()
 
     battery_percent = battery_percent.replace("%","")
 
-    user = User.objects.get(email='warnes')
+    user = User.objects.get(email='greg@warnes.net')
     now  = timezone.now()
 
-    # if the reading object already exists, update it
+    # if a reading for this date already exists, update it
     try:
-        rpr = RawProbeReading.objects.get(farm_code           = farm_code,
-                                          reading_date        = reading_date,
-                                          node_id             = node_id)
-    except RawProbeReading .DoesNotExist:
+        rpr = ProbeReading.objects.get(farm_code    = farm_code,
+                                       reading_date__startswith=reading_date.date(),
+                                       probe_code   = probe_code)
+    except ProbeReading .DoesNotExist:
         # otherwise create a new one
-        rpr = RawProbeReading(farm_code           = farm_code,
-                              reading_date        = reading_date,
-                              node_id             = node_id)
+        rpr = ProbeReading(farm_code    = farm_code,
+                           reading_date  = reading_date,
+                           probe_code    = probe_code)
 
         rpr.cuser               = user
-        rpr.cdate               = now
+        rpr.muser               = user
 
         nRecords += 1
 
+    rpr.reading_date        = reading_date
     rpr.radio_id            = radio_id
     rpr.file_date           = file_date
     rpr.battery_voltage     = battery_voltage
@@ -165,7 +180,7 @@ def parse_filename(filename):
 ###########################
 
 ## Record the start of this run in the ProbeSync table
-user = User.objects.get(email='warnes')
+user = User.objects.get(email='greg@warnes.net')
 now  = timezone.now()
 ps = ProbeSync(datetime  = timezone.now(),
                success   = False,
@@ -211,7 +226,7 @@ for (filename, farm, file_date) in filename_farm_dates:
             allFiles = filename
 
 
-        file = open( filename, 'r' )
+        file = open( os.path.join(ftp_cache_path, filename), 'r' )
 
         for line in file:
             ## add line to database
