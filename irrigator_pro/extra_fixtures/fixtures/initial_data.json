@@ -965,6 +965,708 @@
     }
 },
 {
+    "pk": 106, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_contact_info", 
+        "name": "Can add Contact Information", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 107, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_contact_info", 
+        "name": "Can change Contact Information", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 108, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_contact_info", 
+        "name": "Can delete Contact Information", 
+        "content_type": 1
+    }
+},
+{
+    "pk": 109, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_farm", 
+        "name": "Can add farm", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 110, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_farm", 
+        "name": "Can change farm", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 111, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_farm", 
+        "name": "Can delete farm", 
+        "content_type": 2
+    }
+},
+{
+    "pk": 112, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_field", 
+        "name": "Can add field", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 113, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_field", 
+        "name": "Can change field", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 114, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_field", 
+        "name": "Can delete field", 
+        "content_type": 3
+    }
+},
+{
+    "pk": 115, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_soiltype", 
+        "name": "Can add Soil Type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 116, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_soiltype", 
+        "name": "Can change Soil Type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 117, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_soiltype", 
+        "name": "Can delete Soil Type", 
+        "content_type": 4
+    }
+},
+{
+    "pk": 118, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_soiltypeparameter", 
+        "name": "Can add Soil Type Parameters", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 119, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_soiltypeparameter", 
+        "name": "Can change Soil Type Parameters", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 120, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_soiltypeparameter", 
+        "name": "Can delete Soil Type Parameters", 
+        "content_type": 5
+    }
+},
+{
+    "pk": 121, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_crop", 
+        "name": "Can add crop", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 122, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_crop", 
+        "name": "Can change crop", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 123, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_crop", 
+        "name": "Can delete crop", 
+        "content_type": 6
+    }
+},
+{
+    "pk": 124, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_cropevent", 
+        "name": "Can add Crop Event", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 125, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_cropevent", 
+        "name": "Can change Crop Event", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 126, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_cropevent", 
+        "name": "Can delete Crop Event", 
+        "content_type": 7
+    }
+},
+{
+    "pk": 127, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_planting", 
+        "name": "Can add planting", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 128, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_planting", 
+        "name": "Can change planting", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 129, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_planting", 
+        "name": "Can delete planting", 
+        "content_type": 8
+    }
+},
+{
+    "pk": 130, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_plantingevent", 
+        "name": "Can add Planting Event", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 131, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_plantingevent", 
+        "name": "Can change Planting Event", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 132, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_plantingevent", 
+        "name": "Can delete Planting Event", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 133, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_waterhistory", 
+        "name": "Can add Water History", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 134, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_waterhistory", 
+        "name": "Can change Water History", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 135, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_waterhistory", 
+        "name": "Can delete Water History", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 136, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probe", 
+        "name": "Can add probe", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 137, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probe", 
+        "name": "Can change probe", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 138, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probe", 
+        "name": "Can delete probe", 
+        "content_type": 11
+    }
+},
+{
+    "pk": 139, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probereading", 
+        "name": "Can add Raw Probe Reading", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 140, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probereading", 
+        "name": "Can change Raw Probe Reading", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 141, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probereading", 
+        "name": "Can delete Raw Probe Reading", 
+        "content_type": 12
+    }
+},
+{
+    "pk": 142, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_probesync", 
+        "name": "Can add Probe Synchronization", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 143, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_probesync", 
+        "name": "Can change Probe Synchronization", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 144, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_probesync", 
+        "name": "Can delete Probe Synchronization", 
+        "content_type": 13
+    }
+},
+{
+    "pk": 145, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_recipe", 
+        "name": "Can add recipe", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 146, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_recipe", 
+        "name": "Can change recipe", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 147, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_recipe", 
+        "name": "Can delete recipe", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 148, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_ingredient", 
+        "name": "Can add ingredient", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 149, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_ingredient", 
+        "name": "Can change ingredient", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 150, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_ingredient", 
+        "name": "Can delete ingredient", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 151, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_instruction", 
+        "name": "Can add instruction", 
+        "content_type": 31
+    }
+},
+{
+    "pk": 152, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_instruction", 
+        "name": "Can change instruction", 
+        "content_type": 31
+    }
+},
+{
+    "pk": 153, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_instruction", 
+        "name": "Can delete instruction", 
+        "content_type": 31
+    }
+},
+{
+    "pk": 154, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_permission", 
+        "name": "Can add permission", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 155, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_permission", 
+        "name": "Can change permission", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 156, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_permission", 
+        "name": "Can delete permission", 
+        "content_type": 14
+    }
+},
+{
+    "pk": 157, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_group", 
+        "name": "Can add group", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 158, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_group", 
+        "name": "Can change group", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 159, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_group", 
+        "name": "Can delete group", 
+        "content_type": 15
+    }
+},
+{
+    "pk": 160, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_user", 
+        "name": "Can add user", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 161, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_user", 
+        "name": "Can change user", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 162, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_user", 
+        "name": "Can delete user", 
+        "content_type": 16
+    }
+},
+{
+    "pk": 163, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_contenttype", 
+        "name": "Can add content type", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 164, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_contenttype", 
+        "name": "Can change content type", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 165, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_contenttype", 
+        "name": "Can delete content type", 
+        "content_type": 17
+    }
+},
+{
+    "pk": 166, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_session", 
+        "name": "Can add session", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 167, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_session", 
+        "name": "Can change session", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 168, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_session", 
+        "name": "Can delete session", 
+        "content_type": 18
+    }
+},
+{
+    "pk": 169, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_site", 
+        "name": "Can add site", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 170, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_site", 
+        "name": "Can change site", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 171, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_site", 
+        "name": "Can delete site", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 172, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_logentry", 
+        "name": "Can add log entry", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 173, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_logentry", 
+        "name": "Can change log entry", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 174, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_logentry", 
+        "name": "Can delete log entry", 
+        "content_type": 20
+    }
+},
+{
+    "pk": 175, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_migrationhistory", 
+        "name": "Can add migration history", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 176, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_migrationhistory", 
+        "name": "Can change migration history", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 177, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_migrationhistory", 
+        "name": "Can delete migration history", 
+        "content_type": 21
+    }
+},
+{
+    "pk": 178, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailaddress", 
+        "name": "Can add email address", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 179, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailaddress", 
+        "name": "Can change email address", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 180, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailaddress", 
+        "name": "Can delete email address", 
+        "content_type": 22
+    }
+},
+{
+    "pk": 181, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailconfirmation", 
+        "name": "Can add email confirmation", 
+        "content_type": 23
+    }
+},
+{
+    "pk": 182, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailconfirmation", 
+        "name": "Can change email confirmation", 
+        "content_type": 23
+    }
+},
+{
+    "pk": 183, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailconfirmation", 
+        "name": "Can delete email confirmation", 
+        "content_type": 23
+    }
+},
+{
     "pk": 1, 
     "model": "auth.user", 
     "fields": {
@@ -974,7 +1676,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-02-17T22:24:34.343Z", 
+        "last_login": "2014-02-22T18:24:20.517Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$rtsjl3zrR7Gl$rz3xd7AL/Bn46mgCf0qZS8RdfieLHNJbnSnwv8GP008=", 
@@ -1101,6 +1803,51 @@
         "password": "pbkdf2_sha256$12000$0JREYUxxJMxK$59+xg2G208CvyZMJ3GEEPlYrWeBh+n1+68L2Pqkl2SM=", 
         "email": "chris.butts@ars.usda.gov", 
         "date_joined": "2014-02-05T16:34:13Z"
+    }
+},
+{
+    "pk": 1, 
+    "model": "dashboard.dashboardpreferences", 
+    "fields": {
+        "dashboard_id": "dashboard", 
+        "data": "{}", 
+        "user": 1
+    }
+},
+{
+    "pk": 2, 
+    "model": "dashboard.dashboardpreferences", 
+    "fields": {
+        "dashboard_id": "farms-dashboard", 
+        "data": "{}", 
+        "user": 1
+    }
+},
+{
+    "pk": 3, 
+    "model": "dashboard.dashboardpreferences", 
+    "fields": {
+        "dashboard_id": "dashboard", 
+        "data": "{}", 
+        "user": 2
+    }
+},
+{
+    "pk": 4, 
+    "model": "dashboard.dashboardpreferences", 
+    "fields": {
+        "dashboard_id": "account-dashboard", 
+        "data": "{}", 
+        "user": 1
+    }
+},
+{
+    "pk": 5, 
+    "model": "dashboard.dashboardpreferences", 
+    "fields": {
+        "dashboard_id": "auth-dashboard", 
+        "data": "{}", 
+        "user": 1
     }
 },
 {
