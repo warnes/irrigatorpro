@@ -2,6 +2,7 @@
 from ftplib import FTP
 from datetime import date, datetime
 import os, os.path, re, subprocess, sys
+import argparse
 
 """
 This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
@@ -28,7 +29,7 @@ eastern = pytz.timezone("US/Eastern")
 
 ## FTP Configuration
 ftp_server     = "www.nespal.org"
-ftp_path       = "/cigflint/Flint2013"
+ftp_path       = "/cigflint/Flint%(year)s" # year will be appended
 ftp_email   = "flintcig"
 ftp_password   = "cigswcd"
 ftp_cache_path = os.path.join(ABSOLUTE_PROJECT_ROOT, "ftp_cache")
@@ -43,7 +44,7 @@ nFiles    = 0
 nRecords  = 0
 allFiles  = ""
 
-def mirror(max_tries=20):
+def mirror(year=2013, max_tries=20):
     """
     Use wget command to mirror the FTP 'daily' files to the local directory 'ftp_cache_path'
     """
@@ -65,7 +66,7 @@ def mirror(max_tries=20):
                 '--cut-dirs=6',
                 '--tries=%d' % max_tries,
                 '--no-host-directories',
-                'ftp://%s/%s' % ( ftp_server, ftp_path )
+                'ftp://%s/%s' % ( ftp_server, ftp_path % {'year': year} )
             ]
 
     log = subprocess.check_output(command)
@@ -179,24 +180,66 @@ def parse_filename(filename):
 ## Start of main script ###
 ###########################
 
-## Record the start of this run in the ProbeSync table
-user = User.objects.get(email='greg@warnes.net')
-now  = timezone.now()
-ps = ProbeSync(datetime  = timezone.now(),
-               success   = False,
-               message   = "Starting sync.",
-               nfiles    = 0,
-               nrecords  = 0,
-               filenames = "",
-               cuser     = user,
-               cdate     = now,
-               muser     = user,
-               mdate     = now
-              )
-ps.save()
 
+## Handle Command Line Arguments
+today = date.today()
+date_start_default = "%s-01-01" % today.year
+date_end_default   = today.isoformat(),
+
+parser = argparse.ArgumentParser(description='Download probe readings and import into database')
+parser.add_argument('--date-start',
+                    action='store',
+                    default=date_start_default,
+                    help="Earliest probe reading date to process, in yyyy-mm-dd format - Default is %s" % date_start_default)
+parser.add_argument('--date-end',
+                    action='store',
+                    default=date_end_default,
+                    help="Latest probe reading date to process, in yyyy-mm-ddd format - Default is %s" % date_end_default)
+parser.add_argument('--no-files',
+                    action='store_true',
+                    help='Do not update local copy of server files.'
+                    ) 
+parser.add_argument('--no-store',
+                    action='store_true',
+                    help='Do not store probe readings into the database.'
+                    ) 
+parser.add_argument('--no-log',
+                    action='store_true',
+                    help='Do not store a log of this execution into the database.'
+                    ) 
+
+args = parser.parse_args()
+
+mirror_files = not args.no_files
+store_probes = not args.no_store
+store_log    = not args.no_log
+date_start   = datetime.strptime("%s EST" % args.date_start, "%Y-%m-%d %Z").date()
+date_end     = datetime.strptime("%s EST" % args.date_end, "%Y-%m-%d %Z").date()
+
+## Store a record of this run
+
+if store_log:
+    ## Record the start of this run in the ProbeSync table
+    user = User.objects.get(email='greg@warnes.net')
+    now  = timezone.now()
+    ps = ProbeSync(datetime  = timezone.now(),
+                   success   = False,
+                   message   = "Starting sync.",
+                   nfiles    = 0,
+                   nrecords  = 0,
+                   filenames = "",
+                   cuser     = user,
+                   cdate     = now,
+                   muser     = user,
+                   mdate     = now
+                  )
+    ps.save()
+    
 ## Synchronize with ftp site
-mirror()
+years = range( date_start.year, date_end.year+1 )
+
+if mirror_files:
+    for year in years: mirror(year=year)
 
 ## Select files to work on
 files = os.listdir(ftp_cache_path)
@@ -206,14 +249,19 @@ filename_farm_dates = map(parse_filename, data_files)
 ## Iterate across files
 for (filename, farm, file_date) in filename_farm_dates:
 
+
+    if not (date_start <= file_date <= date_end):
+        print "File date '%s' outside range [%s to %s].  Skipped." % \
+            ( file_date, date_start, date_end  )
+        sys.stdout.flush()
+        continue
+
     # If the file has been fully imported, it will be recorded in a
     # ProbeSync object's filenames field.
-
     count = ProbeSync.objects.filter( filenames__contains=filename ).count()
-
     # If it does up, skip it. Otherwise proceed.
     if count > 0:
-        print "Farm '%s' for date %s already loaded.  Skipping." % ( farm, file_date )
+        print "Farm '%s' for date %s already loaded.  Skipped." % ( farm, file_date )
         sys.stdout.flush()
     else:
         print "Working on farm '%s' for date %s " % ( farm, file_date )
@@ -225,30 +273,32 @@ for (filename, farm, file_date) in filename_farm_dates:
         else:
             allFiles = filename
 
+        if store_probes:
+            file = open( os.path.join(ftp_cache_path, filename), 'r' )
 
-        file = open( os.path.join(ftp_cache_path, filename), 'r' )
+            for line in file:
+                ## add line to database
+                putProbe(farm_code=farm, file_date=file_date, line=line)
 
-        for line in file:
-            ## add line to database
-            putProbe(farm_code=farm, file_date=file_date, line=line)
-
-            ## Update ProbeSync record
-            ps.nfiles    = nFiles
-            ps.nrecords  = nRecords
-            ps.filenames = allFiles
-            ps.save()
-
-        file.close()
+                if store_log:
+                    ## Update ProbeSync record
+                    ps.nfiles    = nFiles
+                    ps.nrecords  = nRecords
+                    ps.filenames = allFiles
+                    ps.save()
+                    
+            file.close()
 
 
 ## Finalize ProbeSync record
-ps.success   = True
-ps.message   = "Successful sync of dates from %s to present"
-ps.nfiles    = nFiles
-ps.nrecords  = nRecords
-ps.filenames = allFiles
-ps.muser     = user
-ps.mdate     = timezone.now()
-ps.save()
+if store_log:
+    ps.success   = True
+    ps.message   = "Successful sync of dates from %s to present"
+    ps.nfiles    = nFiles
+    ps.nrecords  = nRecords
+    ps.filenames = allFiles
+    ps.muser     = user
+    ps.mdate     = timezone.now()
+    ps.save()
 
 
