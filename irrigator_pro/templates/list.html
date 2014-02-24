@@ -7,12 +7,13 @@
 
 {% block content %}
 
-  <!-- {--{ object_list|as_list_block }--} -->
+  {{ object_list|as_list_block }}
 
   <table>
     <tr>Header</tr>
 
     {% for item in object_list %}
+      {{ item 1 }}
       <tr> 
 	<td>
 	  <a href="{{ request.get_full_path }}{{ item.pk }}">

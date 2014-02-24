@@ -4,8 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from farms.models import Field, Probe, ProbeReading, WaterHistory
-from fields_filter import *
+from farms.models import Field, Probe, WaterHistory
 
 class Farms_FormsetView(ModelFormSetView):
     # model = WaterHistory

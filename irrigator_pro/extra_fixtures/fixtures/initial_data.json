@@ -1676,7 +1676,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-02-22T18:24:20.517Z", 
+        "last_login": "2014-02-24T13:14:59.637Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$rtsjl3zrR7Gl$rz3xd7AL/Bn46mgCf0qZS8RdfieLHNJbnSnwv8GP008=", 
@@ -1751,54 +1751,54 @@
         "last_login": "2014-02-05T16:34:13Z", 
         "groups": [], 
         "user_permissions": [
-            64, 
-            65, 
-            66, 
-            67, 
-            69, 
-            58, 
-            59, 
-            60, 
-            40, 
-            41, 
-            42, 
+            28, 
+            29, 
+            32, 
+            33, 
+            10, 
+            73, 
+            74, 
+            75, 
             46, 
             47, 
             48, 
             49, 
             50, 
             51, 
-            73, 
-            74, 
-            75, 
-            22, 
-            23, 
-            24, 
-            32, 
-            33, 
             34, 
             35, 
             36, 
             37, 
-            10, 
-            28, 
-            29, 
-            70, 
-            71, 
-            72, 
             52, 
             53, 
             54, 
             55, 
             56, 
             57, 
+            61, 
+            62, 
+            63, 
+            64, 
+            65, 
+            66, 
+            67, 
+            69, 
+            40, 
+            41, 
+            42, 
+            58, 
+            59, 
+            60, 
+            70, 
+            71, 
+            72, 
             79, 
             80, 
             81, 
             84, 
-            61, 
-            62, 
-            63
+            22, 
+            23, 
+            24
         ], 
         "password": "pbkdf2_sha256$12000$0JREYUxxJMxK$59+xg2G208CvyZMJ3GEEPlYrWeBh+n1+68L2Pqkl2SM=", 
         "email": "chris.butts@ars.usda.gov", 
@@ -1811,383 +1811,6 @@
     "fields": {
         "domain": "example.com", 
         "name": "example.com"
-    }
-},
-{
-    "pk": 1, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-05T13:03:18.017Z", 
-        "object_repr": "Farmer bill.edwards@ars.usda.gov - BIlls Place Farm", 
-        "object_id": "3", 
-        "change_message": "", 
-        "user": 4, 
-        "content_type": 10
-    }
-},
-{
-    "pk": 2, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-05T13:05:21.752Z", 
-        "object_repr": "Farm BIlls Place - Field Home", 
-        "object_id": "4", 
-        "change_message": "", 
-        "user": 4, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 3, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-05T13:06:07.120Z", 
-        "object_repr": "Farm BIlls Place - Field Center", 
-        "object_id": "5", 
-        "change_message": "", 
-        "user": 4, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 4, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-05T13:06:45.500Z", 
-        "object_repr": "Farm BIlls Place - Field South", 
-        "object_id": "6", 
-        "change_message": "", 
-        "user": 4, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 5, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-05T16:34:13.120Z", 
-        "object_repr": "chris.butts@ars.usda.gov", 
-        "object_id": "5", 
-        "change_message": "", 
-        "user": 4, 
-        "content_type": 8
-    }
-},
-{
-    "pk": 6, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-05T16:45:04.028Z", 
-        "object_repr": "chris.butts@ars.usda.gov", 
-        "object_id": "5", 
-        "change_message": "Changed first_name, last_name and user_permissions.", 
-        "user": 4, 
-        "content_type": 8
-    }
-},
-{
-    "pk": 7, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-07T02:35:07.354Z", 
-        "object_repr": "test", 
-        "object_id": "2", 
-        "change_message": "Changed is_staff and is_superuser.", 
-        "user": 1, 
-        "content_type": 3
-    }
-},
-{
-    "pk": 8, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 3, 
-        "action_time": "2014-02-07T03:13:48.971Z", 
-        "object_repr": "test2", 
-        "object_id": "5", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 3
-    }
-},
-{
-    "pk": 9, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:46:43.750Z", 
-        "object_repr": "greg@warnes.net:  266 Brenda Lane, test, Albany, GA 31707, United States", 
-        "object_id": "1", 
-        "change_message": "Changed address_2.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 10, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:46:56.826Z", 
-        "object_repr": "greg@warnes.net:  266 Brenda Lane, , Albany, GA 31707, United States", 
-        "object_id": "1", 
-        "change_message": "Changed address_2.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 11, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:47:08.106Z", 
-        "object_repr": "chris.butts@ars.usda.gov:  1011 Forrester Dr SE, , Dawson, Ga 39842, United States", 
-        "object_id": "4", 
-        "change_message": "Changed mobile.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 12, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:47:15.191Z", 
-        "object_repr": "chris.butts@ars.usda.gov:  1011 Forrester Dr SE, , Dawson, Ga 39842, United States", 
-        "object_id": "4", 
-        "change_message": "Changed mobile.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 13, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-15T23:49:41.193Z", 
-        "object_repr": "test@warnes.net", 
-        "object_id": "6", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 3
-    }
-},
-{
-    "pk": 14, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:50:23.741Z", 
-        "object_repr": "test@warnes.net", 
-        "object_id": "6", 
-        "change_message": "Added Contact Information \":  abc123, , Dawson, GA 37999, United States\".", 
-        "user": 1, 
-        "content_type": 3
-    }
-},
-{
-    "pk": 15, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 3, 
-        "action_time": "2014-02-15T23:50:36.841Z", 
-        "object_repr": "test@warnes.net", 
-        "object_id": "6", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 3
-    }
-},
-{
-    "pk": 16, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-15T23:51:01.593Z", 
-        "object_repr": "farmer@null.com:  1234 Farm Road , , Dawson, GA 31999, United States", 
-        "object_id": "3", 
-        "change_message": "Changed county.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 17, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 3, 
-        "action_time": "2014-02-17T17:35:06.492Z", 
-        "object_repr": "Farmer warnes - Greg's Garden Patch Farm: 2014-03-10 - Corn - any", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 8
-    }
-},
-{
-    "pk": 18, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-17T17:36:12.151Z", 
-        "object_repr": "Farmer warnes - Greg's Garden Patch Farm: 2014-02-28 - Corn - any", 
-        "object_id": "3", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 8
-    }
-},
-{
-    "pk": 19, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-17T17:37:23.295Z", 
-        "object_repr": "Probe for 'Farmer warnes - Greg's Garden Patch Farm' with farm code 'ABC123' probe code 'FEFE34' ", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 20, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T17:37:30.836Z", 
-        "object_repr": "Probe for 'Farmer warnes - Greg's Garden Patch Farm' with farm code 'ABC123' probe code 'FEFE34' ", 
-        "object_id": "1", 
-        "change_message": "No fields changed.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 21, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T17:37:44.783Z", 
-        "object_repr": "Medium/Heavy", 
-        "object_id": "3", 
-        "change_message": "No fields changed.", 
-        "user": 1, 
-        "content_type": 4
-    }
-},
-{
-    "pk": 22, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T17:53:46.426Z", 
-        "object_repr": "Probe for 'Farmer warnes - Greg's Garden Patch Farm' with farm code 'ABC123' probe code 'FEFE34' ", 
-        "object_id": "1", 
-        "change_message": "No fields changed.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 23, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T18:42:57.888Z", 
-        "object_repr": "Water History Entry for Farmer warnes - Greg's Garden Patch Farm 2014-01-10", 
-        "object_id": "1", 
-        "change_message": "No fields changed.", 
-        "user": 1, 
-        "content_type": 10
-    }
-},
-{
-    "pk": 24, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-17T19:17:02.753Z", 
-        "object_repr": "ProbeSync 2014-02-17 14:16:52-05:00", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 13
-    }
-},
-{
-    "pk": 25, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 1, 
-        "action_time": "2014-02-17T19:29:49.197Z", 
-        "object_repr": "ProbeReading ABC123-FEFE34", 
-        "object_id": "1", 
-        "change_message": "", 
-        "user": 1, 
-        "content_type": 12
-    }
-},
-{
-    "pk": 26, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T19:40:14.359Z", 
-        "object_repr": "warnes", 
-        "object_id": "1", 
-        "change_message": "Changed password.", 
-        "user": 1, 
-        "content_type": 16
-    }
-},
-{
-    "pk": 27, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T19:41:31.710Z", 
-        "object_repr": "test", 
-        "object_id": "2", 
-        "change_message": "Changed is_superuser.", 
-        "user": 2, 
-        "content_type": 16
-    }
-},
-{
-    "pk": 28, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-17T21:39:25.037Z", 
-        "object_repr": "Probe for 'Farmer warnes - Greg's Garden Patch Farm' with farm code 'ABC123' probe code 'FEFE34' ", 
-        "object_id": "1", 
-        "change_message": "No fields changed.", 
-        "user": 1, 
-        "content_type": 11
-    }
-},
-{
-    "pk": 29, 
-    "model": "admin.logentry", 
-    "fields": {
-        "action_flag": 2, 
-        "action_time": "2014-02-20T01:16:36.394Z", 
-        "object_repr": "Farm BIlls Place - Field Center", 
-        "object_id": "5", 
-        "change_message": "Changed description.", 
-        "user": 1, 
-        "content_type": 3
     }
 },
 {

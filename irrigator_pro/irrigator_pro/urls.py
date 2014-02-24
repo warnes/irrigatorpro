@@ -69,8 +69,8 @@ urlpatterns = patterns('',
                        url(r'^water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
 
                        ## Probe Reading pages
-                       #!#  url(r'^probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
-
+                       url(r'^probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^probe_readings_list/$',  ProbeReadingListView.as_view(), name='probe_reading_list' ),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
