@@ -57,7 +57,7 @@ urlpatterns = patterns('',
                        url(r'^farm/(?P<pk>\w+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
-                       url(r'^probes/$',  ProbesView.as_view(), name='probes' ),
+                       url(r'^probes/$',  ProbeFormsetView.as_view(), name='probes' ),
 
                        # ## Planting pages
                        url(r'^planting/$',                   PlantingListView.as_view(),   name='planting_list'),
@@ -66,7 +66,11 @@ urlpatterns = patterns('',
                        url(r'^planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
 
                        ## Planting pages
-                       url(r'^water_history/$',              WaterHistoryView.as_view(),   name='water_history'),
+                       url(r'^water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
+
+                       ## Probe Reading pages
+                       #!#  url(r'^probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
