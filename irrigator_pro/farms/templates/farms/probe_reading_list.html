@@ -8,7 +8,7 @@
 {% block content %}
 
   <table class="list-table">
-    <theader>
+    <thead>
       <tr>
 	<th>Farm Code</th>
 	<th>Probe Code</th> 
@@ -20,41 +20,41 @@
 	<th>Thermocouple 1 Temp</th>
 	<th>Thermocouple 2 Temp</th>
       </tr>
-      <theader>
+    </thead>
 
-	<tbody>
-	  {% for item in object_list %}
-	    <tr> 
-	      <td>
-		{{ item.farm_code }}
-	      </td>
-	      <td>
-		{{ item.probe_code }}
-	      </td>
-	      <td>
-		{{ item.reading_datetime }}
-	      </td>
-	      <td>
-		{{ item.soil_potential_8 }}
-	      </td> 
-	      <td>
-		{{ item.soil_potential_16 }}
-	      </td>
-	      <td>
-		{{ item.soil_potential_32 }}
-	      </td>
-	      <td>
-		{{ item.battery_percent }}
-	      </td>
-	      <td>
-		{{ item.thermocouple_1_temp }}
-	      </td>
-	      <td>
-		{{ item.thermocouple_2_temp }}
-	      </td>
-	    </tr>
-	  {% endfor %}
+    <tbody>
+      {% for item in object_list %}
+	<tr> 
+	  <td>
+	    {{ item.farm_code }}
+	  </td>
+	  <td>
+	    {{ item.probe_code }}
+	  </td>
+	  <td>
+	    {{ item.reading_datetime }}
+	  </td>
+	  <td>
+	    {{ item.soil_potential_8 }}
+	  </td> 
+	  <td>
+	    {{ item.soil_potential_16 }}
+	  </td>
+	  <td>
+	    {{ item.soil_potential_32 }}
+	  </td>
+	  <td>
+	    {{ item.battery_percent }}
+	  </td>
+	  <td>
+	    {{ item.thermocouple_1_temp }}
+	  </td>
+	  <td>
+	    {{ item.thermocouple_2_temp }}
+	  </td>
+	</tr>
+      {% endfor %}
 
-	  <tbody>
+      <tbody>
   </table>
 {% endblock %}

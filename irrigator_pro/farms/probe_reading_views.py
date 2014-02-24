@@ -9,7 +9,7 @@ from farms.models import Probe, ProbeReading
 
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
-    template_name = 'farms/formset.html'
+    template_name = 'farms/probe_readings.html'
     fields = [ 
         'farm_code', 'probe_code', 
         'reading_datetime',
