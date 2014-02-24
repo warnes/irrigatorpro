@@ -297,7 +297,7 @@ class ProbeReading(Audit):
     file_date           = models.DateField()
 
     ## From file contents
-    reading_date        = models.DateTimeField()
+    reading_datetime    = models.DateTimeField()
     probe_code          = models.CharField(max_length=10)
     radio_id            = models.CharField(max_length=10)
     battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2) #   #.##
@@ -312,23 +312,26 @@ class ProbeReading(Audit):
 
     class Meta:
         verbose_name = "Raw Probe Reading"
-        unique_together = ( ("farm_code", "probe_code", "reading_date",), )
+        unique_together = ( ("farm_code", "probe_code", "reading_datetime",), )
 
     def __unicode__(self):
-        return u"ProbeReading %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
+        return u"ProbeReading %s-%s %s" % ( self.farm_code.strip(), 
+                                            self.probe_code.strip(),
+                                            self.reading_datetime,
+                                          )
 
     def _dedupe(self):
 
         lastSeenVals = (None, None, None)
-        rows = ProbeReading.objects.all().order_by( "farm_code", "probe_code", "reading_date", )
+        rows = ProbeReading.objects.all().order_by( "farm_code", "probe_code", "reading_datetime", )
 
         for row in rows:
-            if (row.farm_code, row.probe_code, row.reading_date ) == lastSeenVals:
+            if (row.farm_code, row.probe_code, row.reading_datetime ) == lastSeenVals:
                 row.delete() # We've seen this id in a previous row
                 print ".",
                 sys.stdout.flush()
             else: # New id found, save it and check future rows for duplicates.
-               lastSeenVals = ( row.farm_code, row.probe_code, row.reading_date )
+               lastSeenVals = ( row.farm_code, row.probe_code, row.reading_datetime )
 
 
 class ProbeSync(Audit):

@@ -280,7 +280,7 @@ class ProbeReadingAdmin(AuditAdmin):
     fields = [ 'farm_code', 
                'probe_code', 
                'file_date',
-               'reading_date',
+               'reading_datetime',
                'radio_id',
                'soil_potential_8',
                'soil_potential_16',
@@ -293,7 +293,7 @@ class ProbeReadingAdmin(AuditAdmin):
                'minutes_awake' ]
     list_display = [ 'farm_code', 
                      'probe_code', 
-                     'reading_date',
+                     'reading_datetime',
                      'soil_potential_8', 
                      'soil_potential_16',
                      'soil_potential_32',
@@ -301,7 +301,7 @@ class ProbeReadingAdmin(AuditAdmin):
                      'battery_percent', 
                      ]
     list_editable = []
-    list_filter = [ 'farm_code', 'probe_code', 'reading_date', 'reading_date' ]
+    list_filter = [ 'farm_code', 'probe_code', 'reading_datetime', 'reading_datetime' ]
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)
