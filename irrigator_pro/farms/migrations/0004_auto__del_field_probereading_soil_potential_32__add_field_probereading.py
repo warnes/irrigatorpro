@@ -10,12 +10,12 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'ProbeReading.soil_potential_24'
         db.add_column(u'farms_probereading', 'soil_potential_24',
-                      self.gf('django.db.models.fields.DecimalField')(default=24, max_digits=5, decimal_places=2),
+                      self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2),
                       keep_default=False)
 
-        
-        for probereading in orm.ProbeReading.objects.all():
-            probereading.soil_potential_24 = probereading.soil_potential_32
+        if not db.dry_run:        
+            for probereading in orm.ProbeReading.objects.all():
+                probereading.soil_potential_24 = probereading.soil_potential_32
 
         # Deleting field 'ProbeReading.soil_potential_32'
         db.delete_column(u'farms_probereading', 'soil_potential_32')
@@ -23,13 +23,14 @@ class Migration(SchemaMigration):
 
     def backwards(self, orm):
 
-        # The following code is provided here to aid in writing a correct migration        # Adding field 'ProbeReading.soil_potential_32'
+        # Adding field 'ProbeReading.soil_potential_32'
         db.add_column(u'farms_probereading', 'soil_potential_32',
-                      self.gf('django.db.models.fields.DecimalField')(max_digits=5, decimal_places=2),
+                      self.gf('django.db.models.fields.DecimalField')(default=0, max_digits=5, decimal_places=2),
                       keep_default=False)
 
-        for probereading in orm.ProbeReading.objects.all():
-            probereading.soil_potential_32 = probereading.soil_potential_24
+        if not db.dry_run:
+            for probereading in orm.ProbeReading.objects.all():
+                probereading.soil_potential_32 = probereading.soil_potential_24
 
         # Deleting field 'ProbeReading.soil_potential_24'
         db.delete_column(u'farms_probereading', 'soil_potential_24')

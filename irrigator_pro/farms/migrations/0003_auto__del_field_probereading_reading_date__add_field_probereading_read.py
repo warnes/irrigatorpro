@@ -13,11 +13,12 @@ class Migration(SchemaMigration):
 
         # Adding field 'ProbeReading.reading_datetime'
         db.add_column(u'farms_probereading', 'reading_datetime',
-                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(2014, 2, 24, 0, 0)),
+                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0)),
                       keep_default=False)
 
-        for probereading in orm.ProbeReading.objects.all():
-            probereading.reading_datetime = probereading.reading_date
+        if not db.dry_run:
+            for probereading in orm.ProbeReading.objects.all():
+                probereading.reading_datetime = probereading.reading_date
 
         # Deleting field 'ProbeReading.reading_date'
         db.delete_column(u'farms_probereading', 'reading_date')
@@ -30,14 +31,14 @@ class Migration(SchemaMigration):
         # Removing unique constraint on 'ProbeReading', fields ['farm_code', 'probe_code', 'reading_datetime']
         db.delete_unique(u'farms_probereading', ['farm_code', 'probe_code', 'reading_datetime'])
 
-
-        for probereading in orm.ProbeReading.objects.all():
-            probereading.reading_date = probereading.reading_datetime
-
         # The following code is provided here to aid in writing a correct migration        # Adding field 'ProbeReading.reading_date'
         db.add_column(u'farms_probereading', 'reading_date',
-                      self.gf('django.db.models.fields.DateTimeField')(),
+                      self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime(1970, 1, 1, 0, 0)),
                       keep_default=False)
+
+        if not db.dry_run:
+            for probereading in orm.ProbeReading.objects.all():
+                probereading.reading_date = probereading.reading_datetime
 
         # Deleting field 'ProbeReading.reading_datetime'
         db.delete_column(u'farms_probereading', 'reading_datetime')
