@@ -4,8 +4,6 @@ from common.models import Audit, Comment, Location, NameDesc
 from common.admin import AuditAdmin
 from functools import partial
 
-from sys import stderr
-
 ############
 ### Farm ###
 ############
@@ -156,7 +154,11 @@ class CropEventAdmin(AuditAdmin):
                 ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = [ 'crop', 'name', 'days_after_emergence' ]
+    list_display  = [ 'crop', 
+                      'name', 
+                      'days_after_emergence',
+                      'daily_water_use',
+                    ]
     list_editable = list_display[1:]
     list_filter = ['crop']
 
@@ -284,7 +286,7 @@ class ProbeReadingAdmin(AuditAdmin):
                'radio_id',
                'soil_potential_8',
                'soil_potential_16',
-               'soil_potential_32',
+               'soil_potential_24',
                'battery_voltage',
                'battery_percent', 
                'circuit_board_temp',
@@ -296,7 +298,7 @@ class ProbeReadingAdmin(AuditAdmin):
                      'reading_datetime',
                      'soil_potential_8', 
                      'soil_potential_16',
-                     'soil_potential_32',
+                     'soil_potential_24',
                      'battery_voltage',
                      'battery_percent', 
                      ]

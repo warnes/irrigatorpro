@@ -131,7 +131,8 @@ class CropEvent(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
     crop                    = models.ForeignKey(Crop)
     days_after_emergence    = models.PositiveSmallIntegerField()
-    daily_water_use         = models.DecimalField(max_digits=3, decimal_places=2)
+    daily_water_use         = models.DecimalField(max_digits=3, 
+                                                  decimal_places=2)
 
     def __unicode__(self):
         return u"%s: %s" % (self.crop, self.name)
@@ -304,7 +305,7 @@ class ProbeReading(Audit):
     battery_percent     = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
-    soil_potential_32   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2) # ###.##

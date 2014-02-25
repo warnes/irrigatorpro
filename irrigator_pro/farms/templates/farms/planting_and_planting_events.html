@@ -29,7 +29,7 @@
 
   <div class="third-level">
 
-    <h2>Planting</h2>
+    <h2>Crop Season</h2>
 
     <form action="{{ request.path }}" method="post">{% csrf_token %}
       {% if form.non_field_errors %}
@@ -58,9 +58,8 @@
 	</tbody>
       </table>
 
-      <h2>Events</h2>
-
-      
+      <h2>Fields</h2>
+     
       {% with form=inlines|first %}
 	
 	{{ form.management_form }}

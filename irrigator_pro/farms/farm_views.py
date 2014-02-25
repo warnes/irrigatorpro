@@ -8,12 +8,7 @@ from django.db.models import Q
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from farms.forms import FieldFormSet
-
-#from farms.forms import FarmForm
 from farms.models import Farm
-
-from sys import stderr
-
 
 farm_view_fields =  ('farmer',
                      'name',

@@ -7,8 +7,6 @@ from django.views.generic.edit import CreateView, UpdateView
 from contact_info.forms import Contact_InfoForm
 from contact_info.models import Contact_Info
 
-from sys import stderr
-
 class Contact_InfoCreateView(CreateView):
     model = Contact_Info
 

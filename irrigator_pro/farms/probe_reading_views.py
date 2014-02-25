@@ -13,7 +13,7 @@ class ProbeReadingFormsetView(ModelFormSetView):
     fields = [ 
         'farm_code', 'probe_code', 
         'reading_datetime',
-        'soil_potential_8', 'soil_potential_16', 'soil_potential_32',
+        'soil_potential_8', 'soil_potential_16', 'soil_potential_24',
         'battery_percent', 
         'thermocouple_1_temp', 'thermocouple_2_temp'
                ]
@@ -61,7 +61,7 @@ class ProbeReadingListView(ListView):
     fields = [ 
         'farm_code', 'probe_code', 
         'reading_datetime',
-        'soil_potential_8', 'soil_potential_16', 'soil_potential_32',
+        'soil_potential_8', 'soil_potential_16', 'soil_potential_24',
         'battery_percent', 
         'thermocouple_1_temp', 'thermocouple_2_temp'
                ]
