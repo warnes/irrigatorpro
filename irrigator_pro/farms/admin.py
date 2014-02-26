@@ -239,15 +239,15 @@ admin.site.register(WaterHistory, WaterHistoryAdmin)
 
 class ProbeAdmin(AuditAdmin):
     fields = NameDesc.fields \
-             + [ 'field_list', 'farm_code', 'probe_code'] \
+             + [ 'field_list', 'radio_id' ] \
              + Comment.fields \
              + Audit.fields
     list_display  = [ 'pk',
+                      'radio_id',
                       'name',
                       'get_field_list', 
-                      'farm_code', 
-                      'probe_code' ]
-    list_editable = [ 'name', 'farm_code', 'probe_code']
+                    ]
+    list_editable = [ 'radio_id', 'name' ]
     list_filter = [ 'field_list__farm__farmer',
                     'field_list__farm',
                   ] 
@@ -293,8 +293,7 @@ class ProbeReadingAdmin(AuditAdmin):
                'thermocouple_1_temp',
                'thermocouple_2_temp',
                'minutes_awake' ]
-    list_display = [ 'farm_code', 
-                     'probe_code', 
+    list_display = [ 'radio_id', 
                      'reading_datetime',
                      'soil_potential_8', 
                      'soil_potential_16',
@@ -303,7 +302,7 @@ class ProbeReadingAdmin(AuditAdmin):
                      'battery_percent', 
                      ]
     list_editable = []
-    list_filter = [ 'farm_code', 'probe_code', 'reading_datetime', 'reading_datetime' ]
+    list_filter = [ 'radio_id', 'reading_datetime', 'reading_datetime' ]
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)

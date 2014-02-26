@@ -2,9 +2,14 @@
    Author's custom styles
    ========================================================================== */
 
+h1 {
+    margin-bottom: 20px;
+}
+
+
 #page-wrapper {
     padding: 0;
-    margin-left: 185px; 
+    margin-left: 210px; 
     background-color: #eefcff;
 }
 
@@ -25,7 +30,7 @@ body {
 }
 
 footer {
-   margin-left: 185px;
+   margin-left: 200px;
    position:fixed;
    bottom:0;
    height:1.5em;   /* Height of the footer */

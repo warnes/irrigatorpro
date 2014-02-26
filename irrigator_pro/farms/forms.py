@@ -27,7 +27,7 @@ FieldFormSet = inlineformset_factory(Farm,
 ProbeFormSet = modelformset_factory(Probe,
                                     fields = [ 'field_list', ] \
                                              + NameDesc.fields \
-                                             + [ 'farm_code', 'probe_code'] \
+                                             + [ 'radio_id'] \
                                              + Comment.fields,
                                     widgets = {
                                         'description': Textarea(attrs={'rows':2, 

@@ -4,73 +4,143 @@
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
 
-      {% load account %} <!-- enable user_display tag -->
+      <li><a href="/accounts">Account</a>
+
+	<ul class="nav nav-secondary">
+
+	  {% load account %} <!-- enable user_display tag -->
+	  
+	  <!-- For tab highlighting to work properly,   --
+          -- hrefs should *NOT* have a trailing slash -->
+
+	  <li>
+	    <a href="/accounts/email"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
+	  </li>
+
+	  <li> <!-- class="active"-->
+	    <a href="/accounts/password/change"><i class="fa fa-user fa-fw"></i> Change Password</a>
+	  </li>
+
+	  <li> <!-- class="active"-->
+	    <a href="/accounts/contact_info"><i class="fa fa-home fa-fw"></i> Contact Information</a>
+	  </li>
+
+	</ul>
+      </li>
+
+      <li><a href="/setup">Set Up</a>
+
+	<ul class="nav nav-secondary">
+
+	  <li>
+	    <a href="/setup/farm">
+	      <i class="fa fa-leaf fa-fw"></i> 
+	      Farms and Fields 
+	      <!--i class="fa fa-caret-square-o-right fa-fw"></i-->
+	    </a>
+	    
+	    {% if farm_list %}
+	      <ul class="nav">
+		{% for item in farm_list %}
+		  <li>
+  		    <a href="{% url 'farm_list' %}{{ item.pk }}">
+  		      {{ item.name }}
+  		    </a>
+		  </li>
+		{% endfor %}
+		
+		<li>
+		  <a href="{% url 'farm_list' %}new">
+  		    <i class="fa fa-plus fa-fw"></i> New Farm
+		  </a>
+		</li>
+	      </ul>
+	    {% endif %}
+
+	  </li>
+
+	  <li>
+	    <a href="/setup/planting"><i class="fa fa-pagelines fa-fw"></i> Crop Season </a>
+
+	    {% if planting_list %}
+	      <ul class="nav">
+		{% for item in planting_list %}
+		  <li>
+  		    <a href="{% url 'planting_list' %}{{ item.pk }}">
+  		      {{ item.name }}
+  		    </a>
+		  </li>
+		{% endfor %}
+		
+		<li>
+		  <a href="{% url 'planting_list' %}new">
+  		    <i class="fa fa-plus fa-fw"></i> New Planting
+		  </a>
+		</li>
+              </ul>
+	    {% endif %}
+
+
+
+	  </li>
+
+	  <li>
+	    <a href="/setup/probes"><i class="fa fa-pencil fa-fw"></i> Probes</a>
+	  </li>
+
+	</ul>
+      </li>
+
+
+      <li><a href="/data_entry">Data Entry</a>
+
+	<ul class="nav nav-secondary">
+
+	  <li>
+	    <a href="/data_entry/probe_readings"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
+	  </li>
+
+	  <li>
+	    <a href="/data_entry/water_history"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
+	  </li>
+
+	</ul>
+      </li>
+
+
+      <li><a href="/reports">Reports</a>
+
+	<ul class="nav nav-secondary">
+	  <li>
+	    <a href="/#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
+	  </li>
+
+	  <li>
+	    <a href="/#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+	  </li>
+	</ul>
+      </li>
+
+      <li><a href="">Settings</a>
+	
+	<ul class="nav nav-secondary">
+	  
+	  <li>
+	    <a href="/#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
+	  </li>
+	  
+	  {% if perms.auth.staff_status %}
+	    <li>
+	      <a href="/admin" target="_blank"><i class="fa fa-gear fa-fw"></i> Admin</a>
+	    </li>
+	  {% endif %}
+	  
+	</ul>
+      </li>
       
-      <!-- For tab highlighting to work properly,   --
-        -- hrefs should *NOT* have a trailing slash -->
-
-      <li>
-	<a href="/accounts/email"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
-      </li>
-
-      <li> <!-- class="active"-->
-	<a href="/accounts/password/change"><i class="fa fa-user fa-fw"></i> Change Password</a>
-      </li>
-
-      <li> <!-- class="active"-->
-	<a href="/contact_info"><i class="fa fa-home fa-fw"></i> Contact Information</a>
-      </li>
-
-      <li>
-	<a href="/farm">
-	  <i class="fa fa-leaf fa-fw"></i> 
-	  Farms and Fields 
-	  <i class="fa fa-caret-square-o-right fa-fw"></i>
-	</a>
-      </li>
-
-      <li>
-	<a href="/planting"><i class="fa fa-pagelines fa-fw"></i> Planting Events</a>
-      </li>
-
-      <li>
-	<a href="/probes"><i class="fa fa-pencil fa-fw"></i> Probes</a>
-      </li>
-
-      <li>
-	<a href="/water_history"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
-      </li>
-
-      <li>
-	<a href="/probe_readings_list"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
-      </li>
-
-      <li>
-	<a href="/probe_readings"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings (Edit)</a>
-      </li>
-
-      <li>
-	<a href="/#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
-      </li>
-
-      <li>
-	<a href="/#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-      </li>
-
-      <li>
-	<a href="/#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
-      </li>
-
-      {% if perms.auth.staff_status %}
-	<li>
-	  <a href="/admin" target="_blank"><i class="fa fa-gear fa-fw"></i> Admin</a>
-	</li>
-      {% endif %}
-
-    </ul>
-    <!-- /#side-menu -->
-  </div>
-  <!-- /.sidebar-collapse -->
+<!-- /#side-menu -->
+</div>
+<!-- /.sidebar-collapse -->
 </nav><!-- /.navbar-static-side -->
 
 <!-- /Sidebar -->

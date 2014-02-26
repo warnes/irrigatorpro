@@ -16,7 +16,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     farmer      = models.ForeignKey(User, related_name="farmers")
-    users       = models.ManyToManyField(User, blank=True)
+    users       = models.ManyToManyField(User, blank=True, verbose_name="Authorized Users")
 
     def get_farmer_and_user_list(self):
         retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
@@ -199,6 +199,7 @@ class Planting(NameDesc, Comment, Audit):
 
     class Meta:
         ordering = [ 'planting_date', 'crop' ]
+        verbose_name = 'Crop Season'
 
 
 class PlantingEvent(Comment, Audit):
@@ -270,10 +271,11 @@ class Probe(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
+
+    #!# planting    = models.ForeignKey(Planting)  # Probe assignments change with crop season
+
     field_list  = models.ManyToManyField(Field)
-    farm_code   = models.CharField(max_length=10)
-    probe_code  = models.CharField(max_length=10)
-    unique_together = ( ("farm_code", "probe_code",), )
+    radio_id    = models.CharField(max_length=10, unique=True)
 
     def get_field_list(self):
         field_list = self.field_list.all()
@@ -283,7 +285,7 @@ class Probe(NameDesc, Comment, Audit):
             return ''
 
     def __unicode__(self):
-        return u"Probe %s-%s" % ( self.farm_code.strip(), self.probe_code.strip() )
+        return u"Probe %s" % self.radio_id.strip()
 
 
 class ProbeReading(Audit):
@@ -313,26 +315,18 @@ class ProbeReading(Audit):
 
     class Meta:
         verbose_name = "Raw Probe Reading"
-        unique_together = ( ("farm_code", "probe_code", "reading_datetime",), )
+        unique_together = ( ("radio_id", "reading_datetime", ) , )
+        #ordering = [ "reading_datetime", "radio_id", ]
 
     def __unicode__(self):
-        return u"ProbeReading %s-%s %s" % ( self.farm_code.strip(), 
-                                            self.probe_code.strip(),
+        return u"ProbeReading %s on %s" % ( self.radio_id.strip(), 
                                             self.reading_datetime,
                                           )
-
-    def _dedupe(self):
-
-        lastSeenVals = (None, None, None)
-        rows = ProbeReading.objects.all().order_by( "farm_code", "probe_code", "reading_datetime", )
-
-        for row in rows:
-            if (row.farm_code, row.probe_code, row.reading_datetime ) == lastSeenVals:
-                row.delete() # We've seen this id in a previous row
-                print ".",
-                sys.stdout.flush()
-            else: # New id found, save it and check future rows for duplicates.
-               lastSeenVals = ( row.farm_code, row.probe_code, row.reading_datetime )
+    def temperature(self):
+        if (0 < selt.thermocouple_1_temp < 130):
+            return thermocouple_1_temp
+        else:
+            return thermocouple_2_temp
 
 
 class ProbeSync(Audit):

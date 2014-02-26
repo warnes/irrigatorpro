@@ -37,12 +37,10 @@ urlpatterns = patterns('',
 
                        ## User authentication via django-allauth
                        (r'^accounts/', include('allauth.urls')),                       
- 
+                       url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view()  ),
+
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
-
-                       ## User pages
-                       url(r'^contact_info/$',  Contact_InfoUpdateView.as_view()  ),
 
                        ## Farm pages
                        # url(r'^farm/$',  ListView.as_view(
@@ -51,26 +49,25 @@ urlpatterns = patterns('',
                        #                      ),
                        #                   name='farm_list_view'
                        # ),
-                       url(r'^farm/$',                   FarmListView.as_view(),   name='farm_list'),
-                       url(r'^farm/new$',                FarmCreateView.as_view(), name='farm_new'),
-                       url(r'^farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view(), name='farm_delete'),
-                       url(r'^farm/(?P<pk>\w+)$',        FarmUpdateView.as_view(), name='farm_id'),
+                       url(r'^setup/farm/$',                   FarmListView.as_view(),   name='farm_list'),
+                       url(r'^setup/farm/new$',                FarmCreateView.as_view(), name='farm_new'),
+                       url(r'^setup/farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view(), name='farm_delete'),
+                       url(r'^setup/farm/(?P<pk>\w+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
-                       url(r'^probes/$',  ProbeFormsetView.as_view(), name='probes' ),
+                       url(r'^setup/probes/$',  ProbeFormsetView.as_view(), name='probes' ),
 
                        # ## Planting pages
-                       url(r'^planting/$',                   PlantingListView.as_view(),   name='planting_list'),
-                       url(r'^planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
-                       url(r'^planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
-                       url(r'^planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
+                       url(r'^setup/planting/$',                   PlantingListView.as_view(),   name='planting_list'),
+                       url(r'^setup/planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
+                       url(r'^setup/planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
+                       url(r'^setup/planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
 
                        ## Planting pages
-                       url(r'^water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
+                       url(r'^data_entry/water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
 
                        ## Probe Reading pages
-                       url(r'^probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
-                       url(r'^probe_readings_list/$',  ProbeReadingListView.as_view(), name='probe_reading_list' ),
+                       url(r'^data_entry/probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

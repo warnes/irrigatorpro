@@ -3,12 +3,12 @@
 {% block extrahead %}
   <style type="text/css">
     table.formset, table.formset tr, table.formset td, table.formset th {
-      width: auto !important;
-      table-layout: auto !important;
-      margin: 0 auto;
+    /*width: auto !important;*/
+    /*table-layout: auto !important;*/
+    /*margin: 0 auto;*/
     }
     table.default-form {
-      margin: 0 auto;
+    margin: 0 auto;
     }
   </style>
 {% endblock %}
@@ -16,133 +16,123 @@
 {% block scripts %}
   <script type="text/javascript">
     $(function() {
-      $('select[id$=crop_event]').prop('disabled', true)           // Prevent edition of crop event selection
+    $('select[id$=crop_event]').prop('disabled', true)           // Prevent edition of crop event selection
     });
   </script>
 {% endblock %}
 
 {% block content %}
 
-  {% include 'farms/planting_navbar.html' %}
-  
-  <!-- Planting Details -->
+  <h2>Crop Season</h2>
 
-  <div class="third-level">
+  <form action="{{ request.path }}" method="post">{% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+	{{ form.non_field_errors }}
+      </div>
+    {% endif %}
 
-    <h2>Crop Season</h2>
+    <table class="default-form">
+      <tbody>
+	{% for input in form %}
+	  <tr>
+	    <td>{{ input.label_tag }}</td> 
+	    <td>{{ input }}</td>
+	    <td>
+	      {% if input.errors %}
+		<div class="inline-alert alert-danger">
+		  {{ input.errors }}
+	        </div>
+	      {% else %}
+		{% if input.field.required %}(Required){% endif %}
+	      {% endif %}	
+	    </td>
+	  </tr>
+	{% endfor %}
+      </tbody>
+    </table>
 
-    <form action="{{ request.path }}" method="post">{% csrf_token %}
-      {% if form.non_field_errors %}
-	<div class="alert alert-danger">
-	  {{ form.non_field_errors }}
-	</div>
+    <h2>Fields</h2>
+    
+    {% with form=inlines|first %}
+      
+      {{ form.management_form }}
+      
+      {% if form|first  %}
+
+	<table id="formset" class="formset default-form">
+	  <thead>
+	    <tr>
+	      <th>Event</th>
+	      <th>Date</th>
+	      <!-- {% for field in inlines|first|first %} -->
+	      <!-- 	<th>{{ field.label }}</th>  -->
+	      <!-- {% endfor %} -->
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    {% for record in form %}
+	      <tr>
+		<td>
+		  {{ record.crop_event }}
+		</td>
+		<td>
+		  {{ record.date }}
+		  {{ record.planting }} <!-- hidden -->
+		  {{ record.id }} <!-- hidden -->
+		</td>
+
+		<!-- {--% for field in record %--} -->
+		<!--   <td> -->
+		<!--     {--% if field.errors %--} -->
+		<!--       <div class="inline-alert alert-danger"> -->
+		<!-- 	{{ field.errors }} -->
+	        <!--       </div> -->
+		<!--     {--% endif %--} -->
+		<!--     {{ field }} -->
+		<!--   </td> -->
+		<!-- {--% endfor %--} -->
+	      </tr>
+	    {% endfor %}
+	  </tbody>
+	</table>
+	
+      {% else %}
+	
+	<div class="alert alert-success">Click 'Save Changes' to show events</div>
+	
+      {% endif %}
+      
+      
+    {% endwith %}
+
+
+    <div class="submit-bar">
+      
+      <button value="Submit" type="submit" class="btn btn-success">
+	<i class="fa fa-floppy-o"></i> Save Changes
+      </button>
+
+      {% if object.pk %}
+	<a class="btn btn-warning" href="{% url 'planting_list' %}{{ object.pk }}">
+	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
+	</a>
+      {% else %}
+	<a class="btn btn-warning" href="{% url 'planting_list' %}">
+	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
+	</a>
       {% endif %}
 
-      <table class="default-form">
-	<tbody>
-	  {% for input in form %}
-	    <tr>
-	      <td>{{ input.label_tag }}</td> 
-	      <td>{{ input }}</td>
-	      <td>
-		{% if input.errors %}
-		  <div class="inline-alert alert-danger">
-		    {{ input.errors }}
-	          </div>
-		{% else %}
-		  {% if input.field.required %}(Required){% endif %}
-		{% endif %}	
-	      </td>
-	    </tr>
-	  {% endfor %}
-	</tbody>
-      </table>
+      {% if object.pk %}
+	<a class="btn btn-danger" href="{% url 'planting_list' %}delete/{{ object.pk }}">
+	  <i class="fa fa-times fa-fw"></i> Delete
+	</a>
+      {% endif %}
 
-      <h2>Fields</h2>
-     
-      {% with form=inlines|first %}
-	
-	{{ form.management_form }}
-	
-	{% if form|first  %}
-
-	  <table id="formset" class="formset default-form">
-	    <thead>
-	      <tr>
-		<th>Event</th>
-		<th>Date</th>
-		<!-- {% for field in inlines|first|first %} -->
-		<!-- 	<th>{{ field.label }}</th>  -->
-		<!-- {% endfor %} -->
-	      </tr>
-	    </thead>
-
-	    <tbody>
-	      {% for record in form %}
-		<tr>
-		  <td>
-		    {{ record.crop_event }}
-		  </td>
-		  <td>
-		    {{ record.date }}
-		    {{ record.planting }} <!-- hidden -->
-		    {{ record.id }} <!-- hidden -->
-		  </td>
-
-		  <!-- {--% for field in record %--} -->
-		  <!--   <td> -->
-		  <!--     {--% if field.errors %--} -->
-		  <!--       <div class="inline-alert alert-danger"> -->
-		  <!-- 	{{ field.errors }} -->
-	          <!--       </div> -->
-		  <!--     {--% endif %--} -->
-		  <!--     {{ field }} -->
-		  <!--   </td> -->
-		  <!-- {--% endfor %--} -->
-		</tr>
-	      {% endfor %}
-	    </tbody>
-	  </table>
-	  
-	{% else %}
-	  
-	  <div class="alert alert-success">Click 'Save Changes' to show events</div>
-	  
-	{% endif %}
-	
-	
-      {% endwith %}
+    </div>
 
 
-      <div class="submit-bar">
-	
-	<button value="Submit" type="submit" class="btn btn-success">
-	  <i class="fa fa-floppy-o"></i> Save Changes
-	</button>
+  </form>
 
-	{% if object.pk %}
-	  <a class="btn btn-warning" href="{% url 'planting_list' %}{{ object.pk }}">
-	    <i class="fa fa-undo fa-fw"></i> Cancel Changes
-	  </a>
-	{% else %}
-	  <a class="btn btn-warning" href="{% url 'planting_list' %}">
-	    <i class="fa fa-undo fa-fw"></i> Cancel Changes
-	  </a>
-	{% endif %}
-
-	{% if object.pk %}
-	  <a class="btn btn-danger" href="{% url 'planting_list' %}delete/{{ object.pk }}">
-	    <i class="fa fa-times fa-fw"></i> Delete
-	  </a>
-	{% endif %}
-
-      </div>
-
-
-    </form>
-
-  </div>
-  <!-- /Planting Details -->
-
-  
 {% endblock %}

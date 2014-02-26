@@ -70,7 +70,7 @@
 
 .navbar-static-side {
     margin-top: 62px;
-    width: 185px;
+    width: 210px;
     position: fixed;
     bottom: 0;
     top: 0;
@@ -84,7 +84,7 @@
     color: DarkGreen !important; 
 }
 
-nav li.active > a {
+.nav li.active > a {
     background-color: #80B580; 
     color: DarkGreen !important;
 }
@@ -93,7 +93,7 @@ nav li.active > a {
     background-color: #80B580;
     border-color: #37aafe;
     margin-left: -20px !important;
-    width: 200px;
+    width: 210px;
 }
 
 .navbar-side-second li.active > a {
@@ -113,7 +113,19 @@ nav li.active > a {
 
 
 .third-level {
-    margin-left: 200px;
+    margin-left: 210px;
     padding-left: 20px;
 }
 
+
+.nav-secondary li {
+    padding-left: 20px;
+    font-weight: normal;
+    border: 1px;
+}
+
+.nav-secondary li.active {
+    padding-left: 20px;
+    font-weight: normal;
+    border: 1px;
+}
