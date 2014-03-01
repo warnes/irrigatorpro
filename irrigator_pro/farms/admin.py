@@ -192,9 +192,9 @@ class PlantingAdmin(AuditAdmin):
                    'field_list__farm',
                    'planting_date']
 
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
-        return super(PlantingAdmin, self).get_form(request, obj, **kwargs)
+    # def get_form(self, request, obj=None, **kwargs):
+    #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
+    #     return super(PlantingAdmin, self).get_form(request, obj, **kwargs)
 
 admin.site.register(Planting, PlantingAdmin)
 
@@ -226,9 +226,9 @@ class WaterHistoryAdmin(AuditAdmin):
     readonly_fields = [ 'available_water_content' ]
     list_filter = [ 'field_list__farm__farmer', 'field_list__farm', 'date' ]
 
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
-        return super(WaterHistoryAdmin, self).get_form(request, obj, **kwargs)
+    # def get_form(self, request, obj=None, **kwargs):
+    #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
+    #     return super(WaterHistoryAdmin, self).get_form(request, obj, **kwargs)
 
 admin.site.register(WaterHistory, WaterHistoryAdmin)
 
@@ -252,9 +252,9 @@ class ProbeAdmin(AuditAdmin):
                     'field_list__farm',
                   ] 
 
-    def get_form(self, request, obj=None, **kwargs):
-        kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
-        return super(ProbeAdmin, self).get_form(request, obj, **kwargs)
+    # def get_form(self, request, obj=None, **kwargs):
+    #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
+    #     return super(ProbeAdmin, self).get_form, obj, **kwargs)
 
 
 admin.site.register(Probe, ProbeAdmin)
