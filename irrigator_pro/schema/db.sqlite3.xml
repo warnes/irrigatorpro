@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="/Users/warnes/Consulting/USDA_NationalPeanutResearchLaboratory/irrigator_pro/db.sqlite3" type="SQLite - 3.7.15">
+   <tables>
+      <table name="account_emailaddress" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <child column="email_address_id" foreignKey="" implied="false" onDeleteCascade="false" table="account_emailconfirmation"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="0" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_user"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="1" name="email" nullable="false" remarks="" size="2000000000" type="VARCHAR(75)"/>
+         <column autoUpdated="false" digits="10" id="2" name="verified" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+         <column autoUpdated="false" digits="10" id="3" name="primary" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+      </table>
+      <table name="account_emailconfirmation" numRows="2" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="email_address_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="account_emailaddress"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="1" name="created" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="2" name="sent" nullable="true" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="key" nullable="false" remarks="" size="2000000000" type="VARCHAR(64)"/>
+      </table>
+      <table name="admin_tools_dashboard_preferences" numRows="5" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="dashboard_id" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="0" name="data" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="1" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="admin_tools_menu_bookmark" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="url" nullable="false" remarks="" size="2000000000" type="VARCHAR(255)"/>
+         <column autoUpdated="false" digits="10" id="2" name="title" nullable="false" remarks="" size="2000000000" type="VARCHAR(255)"/>
+         <index name="admin_tools_menu_bookmark_6340c63c" unique="false">
+            <column ascending="true" name="user_id"/>
+         </index>
+      </table>
+      <table name="auth_group" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <child column="group_id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_user_groups"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(80)"/>
+         <index name="sqlite_autoindex_auth_group_1" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="auth_group_permissions" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="group_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="permission_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_permission"/>
+         </column>
+      </table>
+      <table name="auth_permission" numRows="183" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <child column="permission_id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_group_permissions"/>
+            <child column="permission_id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_user_user_permissions"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+         <column autoUpdated="false" digits="10" id="1" name="content_type_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="codename" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+      </table>
+      <table name="auth_user" numRows="5" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <child column="user_id" foreignKey="" implied="false" onDeleteCascade="false" table="account_emailaddress"/>
+            <child column="user_id" foreignKey="" implied="false" onDeleteCascade="false" table="django_admin_log"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="0" name="password" nullable="false" remarks="" size="2000000000" type="VARCHAR(128)"/>
+         <column autoUpdated="false" digits="10" id="1" name="last_login" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="2" name="is_superuser" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+         <column autoUpdated="false" digits="10" id="3" name="username" nullable="false" remarks="" size="2000000000" type="VARCHAR(30)"/>
+         <column autoUpdated="false" digits="10" id="4" name="first_name" nullable="false" remarks="" size="2000000000" type="VARCHAR(30)"/>
+         <column autoUpdated="false" digits="10" id="5" name="last_name" nullable="false" remarks="" size="2000000000" type="VARCHAR(30)"/>
+         <column autoUpdated="false" digits="10" id="6" name="email" nullable="false" remarks="" size="2000000000" type="VARCHAR(75)"/>
+         <column autoUpdated="false" digits="10" id="7" name="is_staff" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+         <column autoUpdated="false" digits="10" id="8" name="is_active" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+         <column autoUpdated="false" digits="10" id="9" name="date_joined" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <index name="sqlite_autoindex_auth_user_1" unique="true">
+            <column ascending="true" name="username"/>
+         </index>
+      </table>
+      <table name="auth_user_groups" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="group_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_group"/>
+         </column>
+      </table>
+      <table name="auth_user_user_permissions" numRows="48" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="permission_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_permission"/>
+         </column>
+      </table>
+      <table name="contact_info_contact_info" numRows="4" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="address_1" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+         <column autoUpdated="false" digits="10" id="1" name="address_2" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+         <column autoUpdated="false" digits="10" id="2" name="city" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="3" name="county" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="4" name="state" nullable="false" remarks="" size="2000000000" type="VARCHAR(2)"/>
+         <column autoUpdated="false" digits="10" id="5" name="zipcode" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="6" name="country" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="7" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="8" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="9" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="10" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="11" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="12" name="phone" nullable="false" remarks="" size="2000000000" type="VARCHAR(20)"/>
+         <column autoUpdated="false" digits="10" id="13" name="mobile" nullable="false" remarks="" size="2000000000" type="VARCHAR(20)"/>
+         <column autoUpdated="false" digits="10" id="14" name="fax" nullable="false" remarks="" size="2000000000" type="VARCHAR(20)"/>
+      </table>
+      <table name="django_admin_log" numRows="73" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="action_time" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="auth_user"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="2" name="content_type_id" nullable="true" remarks="" size="2000000000" type="INTEGER">
+            <parent column="id" foreignKey="" implied="false" onDeleteCascade="false" table="django_content_type"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="3" name="object_id" nullable="true" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="4" name="object_repr" nullable="false" remarks="" size="2000000000" type="VARCHAR(200)"/>
+         <column autoUpdated="false" digits="10" id="5" name="action_flag" nullable="false" remarks="" size="2000000000" type="SMALLINT UNSIGNED"/>
+         <column autoUpdated="false" digits="10" id="6" name="change_message" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+      </table>
+      <table name="django_content_type" numRows="28" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER">
+            <child column="content_type_id" foreignKey="" implied="false" onDeleteCascade="false" table="django_admin_log"/>
+         </column>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="1" name="app_label" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="2" name="model" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+      </table>
+      <table name="django_session" numRows="3" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="session_key" nullable="false" remarks="" size="2000000000" type="VARCHAR(40)"/>
+         <column autoUpdated="false" digits="10" id="0" name="session_data" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="1" name="expire_date" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+      </table>
+      <table name="django_site" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="domain" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="1" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+      </table>
+      <table name="farms_crop" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="7" name="variety" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+      </table>
+      <table name="farms_cropevent" numRows="12" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="7" name="crop_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="8" name="days_after_emergence" nullable="false" remarks="" size="2000000000" type="SMALLINT UNSIGNED"/>
+         <column autoUpdated="false" digits="10" id="9" name="daily_water_use" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+      </table>
+      <table name="farms_farm" numRows="4" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="address_1" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+         <column autoUpdated="false" digits="10" id="3" name="address_2" nullable="false" remarks="" size="2000000000" type="VARCHAR(50)"/>
+         <column autoUpdated="false" digits="10" id="4" name="city" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="5" name="county" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="6" name="state" nullable="false" remarks="" size="2000000000" type="VARCHAR(2)"/>
+         <column autoUpdated="false" digits="10" id="7" name="zipcode" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="8" name="country" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="9" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="10" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="11" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="12" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="13" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="14" name="farmer_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="farms_farm_users" numRows="6" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="farm_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="farms_field" numRows="8" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="7" name="farm_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="8" name="acres" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="9" name="soil_type_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="10" name="irr_capacity" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+      </table>
+      <table name="farms_planting" numRows="3" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="0" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="3" name="crop_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="planting_date" nullable="false" remarks="" size="2000000000" type="DATE"/>
+         <column autoUpdated="false" digits="10" id="6" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="7" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="8" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+      </table>
+      <table name="farms_planting_field_list" numRows="5" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="planting_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="field_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="farms_plantingevent" numRows="36" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="5" name="planting_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="crop_event_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="7" name="date" nullable="false" remarks="" size="2000000000" type="DATE"/>
+      </table>
+      <table name="farms_probe" numRows="4" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="0" name="farm_code" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="1" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="2" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="3" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="probe_code" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="5" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="6" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="7" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="8" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+      </table>
+      <table name="farms_probe_field_list" numRows="4" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="probe_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="field_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="farms_probereading" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="farm_code" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="5" name="file_date" nullable="false" remarks="" size="2000000000" type="DATE"/>
+         <column autoUpdated="false" digits="10" id="6" name="reading_date" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="7" name="probe_code" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="8" name="radio_id" nullable="false" remarks="" size="2000000000" type="VARCHAR(10)"/>
+         <column autoUpdated="false" digits="10" id="9" name="battery_voltage" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="10" name="battery_percent" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="11" name="soil_potential_8" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="12" name="soil_potential_16" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="13" name="soil_potential_32" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="14" name="circuit_board_temp" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="15" name="thermocouple_1_temp" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="16" name="thermocouple_2_temp" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="17" name="minutes_awake" nullable="false" remarks="" size="2000000000" type="SMALLINT UNSIGNED"/>
+      </table>
+      <table name="farms_probesync" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="datetime" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="success" nullable="false" remarks="" size="2000000000" type="BOOL"/>
+         <column autoUpdated="false" digits="10" id="6" name="message" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="7" name="nfiles" nullable="false" remarks="" size="2000000000" type="INTEGER UNSIGNED"/>
+         <column autoUpdated="false" digits="10" id="8" name="nrecords" nullable="false" remarks="" size="2000000000" type="INTEGER UNSIGNED"/>
+         <column autoUpdated="false" digits="10" id="9" name="filenames" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+      </table>
+      <table name="farms_soiltype" numRows="3" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(32)"/>
+         <column autoUpdated="false" digits="10" id="1" name="description" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="2" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="7" name="max_available_water" nullable="true" remarks="" size="2000000000" type="DECIMAL"/>
+      </table>
+      <table name="farms_soiltypeparameter" numRows="9" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="1" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="3" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="5" name="soil_type_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="6" name="depth" nullable="false" remarks="" size="2000000000" type="SMALLINT UNSIGNED"/>
+         <column autoUpdated="false" digits="10" id="7" name="intercept" nullable="false" remarks="" size="2000000000" type="REAL"/>
+         <column autoUpdated="false" digits="10" id="8" name="slope" nullable="false" remarks="" size="2000000000" type="REAL"/>
+      </table>
+      <table name="farms_waterhistory" numRows="1" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="comment" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="0" name="irrigation" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="1" name="muser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="2" name="cuser_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="3" name="rain" nullable="false" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="4" name="cdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="5" name="date" nullable="false" remarks="" size="2000000000" type="DATE"/>
+         <column autoUpdated="false" digits="10" id="6" name="mdate" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="7" name="available_water_content" nullable="true" remarks="" size="2000000000" type="DECIMAL"/>
+         <column autoUpdated="false" digits="10" id="8" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="farms_waterhistory_field_list" numRows="2" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="waterhistory_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="field_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="socialaccount_socialaccount" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="user_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="uid" nullable="false" remarks="" size="2000000000" type="VARCHAR(255)"/>
+         <column autoUpdated="false" digits="10" id="1" name="last_login" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="2" name="provider" nullable="false" remarks="" size="2000000000" type="VARCHAR(30)"/>
+         <column autoUpdated="false" digits="10" id="3" name="extra_data" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="4" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="5" name="date_joined" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+      </table>
+      <table name="socialaccount_socialapp" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="key" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="0" name="secret" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="1" name="client_id" nullable="false" remarks="" size="2000000000" type="VARCHAR(100)"/>
+         <column autoUpdated="false" digits="10" id="2" name="provider" nullable="false" remarks="" size="2000000000" type="VARCHAR(30)"/>
+         <column autoUpdated="false" digits="10" id="3" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="name" nullable="false" remarks="" size="2000000000" type="VARCHAR(40)"/>
+      </table>
+      <table name="socialaccount_socialapp_sites" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="socialapp_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="site_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+      </table>
+      <table name="socialaccount_socialtoken" numRows="0" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="account_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="app_id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="1" name="expires_at" nullable="true" remarks="" size="2000000000" type="DATETIME"/>
+         <column autoUpdated="false" digits="10" id="2" name="token" nullable="false" remarks="" size="2000000000" type="TEXT"/>
+         <column autoUpdated="false" digits="10" id="3" name="id" nullable="true" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="4" name="token_secret" nullable="false" remarks="" size="2000000000" type="VARCHAR(200)"/>
+      </table>
+      <table name="south_migrationhistory" numRows="19" remarks="" type="TABLE">
+         <column autoUpdated="false" digits="10" id="-1" name="id" nullable="false" remarks="" size="2000000000" type="INTEGER"/>
+         <column autoUpdated="false" digits="10" id="0" name="app_name" nullable="false" remarks="" size="2000000000" type="VARCHAR(255)"/>
+         <column autoUpdated="false" digits="10" id="1" name="migration" nullable="false" remarks="" size="2000000000" type="VARCHAR(255)"/>
+         <column autoUpdated="false" digits="10" id="2" name="applied" nullable="false" remarks="" size="2000000000" type="DATETIME"/>
+      </table>
+   </tables>
+</database>

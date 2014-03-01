@@ -1,0 +1,45 @@
+// dot 2.34.0 on Mac OS X 10.9.1
+// SchemaSpy rev Unknown
+digraph "contact_info_contact_info" {
+  graph [
+    rankdir="RL"
+    bgcolor="#f7f7f7"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "contact_info_contact_info" [
+    label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">contact_info_contact_info</TD></TR>
+      <TR><TD PORT="id" COLSPAN="3" ALIGN="LEFT">id</TD></TR>
+      <TR><TD PORT="address_1" COLSPAN="3" ALIGN="LEFT">address_1</TD></TR>
+      <TR><TD PORT="address_2" COLSPAN="3" ALIGN="LEFT">address_2</TD></TR>
+      <TR><TD PORT="city" COLSPAN="3" ALIGN="LEFT">city</TD></TR>
+      <TR><TD PORT="county" COLSPAN="3" ALIGN="LEFT">county</TD></TR>
+      <TR><TD PORT="state" COLSPAN="3" ALIGN="LEFT">state</TD></TR>
+      <TR><TD PORT="zipcode" COLSPAN="3" ALIGN="LEFT">zipcode</TD></TR>
+      <TR><TD PORT="country" COLSPAN="3" ALIGN="LEFT">country</TD></TR>
+      <TR><TD PORT="cdate" COLSPAN="3" ALIGN="LEFT">cdate</TD></TR>
+      <TR><TD PORT="cuser_id" COLSPAN="3" ALIGN="LEFT">cuser_id</TD></TR>
+      <TR><TD PORT="mdate" COLSPAN="3" ALIGN="LEFT">mdate</TD></TR>
+      <TR><TD PORT="muser_id" COLSPAN="3" ALIGN="LEFT">muser_id</TD></TR>
+      <TR><TD PORT="user_id" COLSPAN="3" ALIGN="LEFT">user_id</TD></TR>
+      <TR><TD PORT="phone" COLSPAN="3" ALIGN="LEFT">phone</TD></TR>
+      <TR><TD PORT="mobile" COLSPAN="3" ALIGN="LEFT">mobile</TD></TR>
+      <TR><TD PORT="fax" COLSPAN="3" ALIGN="LEFT">fax</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">4 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+    </TABLE>>
+    URL="tables/contact_info_contact_info.html"
+    tooltip="contact_info_contact_info"
+  ];
+}

@@ -1,0 +1,39 @@
+// dot 2.34.0 on Mac OS X 10.9.1
+// SchemaSpy rev Unknown
+digraph "farms_waterhistory" {
+  graph [
+    rankdir="RL"
+    bgcolor="#f7f7f7"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "farms_waterhistory" [
+    label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">farms_waterhistory</TD></TR>
+      <TR><TD PORT="comment" COLSPAN="3" ALIGN="LEFT">comment</TD></TR>
+      <TR><TD PORT="irrigation" COLSPAN="3" ALIGN="LEFT">irrigation</TD></TR>
+      <TR><TD PORT="muser_id" COLSPAN="3" ALIGN="LEFT">muser_id</TD></TR>
+      <TR><TD PORT="cuser_id" COLSPAN="3" ALIGN="LEFT">cuser_id</TD></TR>
+      <TR><TD PORT="rain" COLSPAN="3" ALIGN="LEFT">rain</TD></TR>
+      <TR><TD PORT="cdate" COLSPAN="3" ALIGN="LEFT">cdate</TD></TR>
+      <TR><TD PORT="date" COLSPAN="3" ALIGN="LEFT">date</TD></TR>
+      <TR><TD PORT="mdate" COLSPAN="3" ALIGN="LEFT">mdate</TD></TR>
+      <TR><TD PORT="available_water_content" COLSPAN="3" ALIGN="LEFT">available_water_content</TD></TR>
+      <TR><TD PORT="id" COLSPAN="3" ALIGN="LEFT">id</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">1 row</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+    </TABLE>>
+    URL="tables/farms_waterhistory.html"
+    tooltip="farms_waterhistory"
+  ];
+}

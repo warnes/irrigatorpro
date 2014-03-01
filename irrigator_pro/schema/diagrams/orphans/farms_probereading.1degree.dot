@@ -1,0 +1,48 @@
+// dot 2.34.0 on Mac OS X 10.9.1
+// SchemaSpy rev Unknown
+digraph "farms_probereading" {
+  graph [
+    rankdir="RL"
+    bgcolor="#f7f7f7"
+    nodesep="0.18"
+    ranksep="0.46"
+    fontname="Helvetica"
+    fontsize="11"
+  ];
+  node [
+    fontname="Helvetica"
+    fontsize="11"
+    shape="plaintext"
+  ];
+  edge [
+    arrowsize="0.8"
+  ];
+  "farms_probereading" [
+    label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" BGCOLOR="#ffffff">
+      <TR><TD COLSPAN="3" BGCOLOR="#9bab96" ALIGN="CENTER">farms_probereading</TD></TR>
+      <TR><TD PORT="id" COLSPAN="3" ALIGN="LEFT">id</TD></TR>
+      <TR><TD PORT="cdate" COLSPAN="3" ALIGN="LEFT">cdate</TD></TR>
+      <TR><TD PORT="cuser_id" COLSPAN="3" ALIGN="LEFT">cuser_id</TD></TR>
+      <TR><TD PORT="mdate" COLSPAN="3" ALIGN="LEFT">mdate</TD></TR>
+      <TR><TD PORT="muser_id" COLSPAN="3" ALIGN="LEFT">muser_id</TD></TR>
+      <TR><TD PORT="farm_code" COLSPAN="3" ALIGN="LEFT">farm_code</TD></TR>
+      <TR><TD PORT="file_date" COLSPAN="3" ALIGN="LEFT">file_date</TD></TR>
+      <TR><TD PORT="reading_date" COLSPAN="3" ALIGN="LEFT">reading_date</TD></TR>
+      <TR><TD PORT="probe_code" COLSPAN="3" ALIGN="LEFT">probe_code</TD></TR>
+      <TR><TD PORT="radio_id" COLSPAN="3" ALIGN="LEFT">radio_id</TD></TR>
+      <TR><TD PORT="battery_voltage" COLSPAN="3" ALIGN="LEFT">battery_voltage</TD></TR>
+      <TR><TD PORT="battery_percent" COLSPAN="3" ALIGN="LEFT">battery_percent</TD></TR>
+      <TR><TD PORT="soil_potential_8" COLSPAN="3" ALIGN="LEFT">soil_potential_8</TD></TR>
+      <TR><TD PORT="soil_potential_16" COLSPAN="3" ALIGN="LEFT">soil_potential_16</TD></TR>
+      <TR><TD PORT="soil_potential_32" COLSPAN="3" ALIGN="LEFT">soil_potential_32</TD></TR>
+      <TR><TD PORT="circuit_board_temp" COLSPAN="3" ALIGN="LEFT">circuit_board_temp</TD></TR>
+      <TR><TD PORT="thermocouple_1_temp" COLSPAN="3" ALIGN="LEFT">thermocouple_1_temp</TD></TR>
+      <TR><TD PORT="thermocouple_2_temp" COLSPAN="3" ALIGN="LEFT">thermocouple_2_temp</TD></TR>
+      <TR><TD PORT="minutes_awake" COLSPAN="3" ALIGN="LEFT">minutes_awake</TD></TR>
+      <TR><TD ALIGN="LEFT" BGCOLOR="#f7f7f7">  </TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">0 rows</TD><TD ALIGN="RIGHT" BGCOLOR="#f7f7f7">  </TD></TR>
+    </TABLE>>
+    URL="tables/farms_probereading.html"
+    tooltip="farms_probereading"
+  ];
+}
