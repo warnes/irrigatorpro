@@ -18,7 +18,6 @@ python-openid
 requests
 requests-oauthlib
 django-allauth
-django-extra-views
 django-model-blocks
 docutils
 pygments
