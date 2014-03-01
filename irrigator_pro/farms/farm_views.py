@@ -121,7 +121,7 @@ class FarmUpdateView(FarmMixin, UpdateView):
             return super(FarmUpdateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        path = reverse('farm_new', args=[self.object.pk])
+        path = reverse('farm_id', args=[self.object.pk])
         print path
         return path
 
