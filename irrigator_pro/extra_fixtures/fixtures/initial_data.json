@@ -1667,6 +1667,114 @@
     }
 },
 {
+    "pk": 184, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_cropseason", 
+        "name": "Can add Crop Season", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 185, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_cropseason", 
+        "name": "Can change Crop Season", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 186, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_cropseason", 
+        "name": "Can delete Crop Season", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 187, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_cropseasonevent", 
+        "name": "Can add CropSeason Event", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 188, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_cropseasonevent", 
+        "name": "Can change CropSeason Event", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 189, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_cropseasonevent", 
+        "name": "Can delete CropSeason Event", 
+        "content_type": 30
+    }
+},
+{
+    "pk": 190, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailaddress", 
+        "name": "Can add email address", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 191, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailaddress", 
+        "name": "Can change email address", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 192, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailaddress", 
+        "name": "Can delete email address", 
+        "content_type": 9
+    }
+},
+{
+    "pk": 193, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_emailconfirmation", 
+        "name": "Can add email confirmation", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 194, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_emailconfirmation", 
+        "name": "Can change email confirmation", 
+        "content_type": 10
+    }
+},
+{
+    "pk": 195, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_emailconfirmation", 
+        "name": "Can delete email confirmation", 
+        "content_type": 10
+    }
+},
+{
     "pk": 1, 
     "model": "auth.user", 
     "fields": {
@@ -1769,12 +1877,6 @@
             35, 
             36, 
             37, 
-            52, 
-            53, 
-            54, 
-            55, 
-            56, 
-            57, 
             61, 
             62, 
             63, 

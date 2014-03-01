@@ -113,17 +113,17 @@
       </button>
 
       {% if object.pk %}
-	<a class="btn btn-warning" href="{% url 'planting_list' %}{{ object.pk }}">
+	<a class="btn btn-warning" href="{% url 'crop_season_list' %}{{ object.pk }}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% else %}
-	<a class="btn btn-warning" href="{% url 'planting_list' %}">
+	<a class="btn btn-warning" href="{% url 'crop_season_list' %}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% endif %}
 
       {% if object.pk %}
-	<a class="btn btn-danger" href="{% url 'planting_list' %}delete/{{ object.pk }}">
+	<a class="btn btn-danger" href="{% url 'crop_season_list' %}delete/{{ object.pk }}">
 	  <i class="fa fa-times fa-fw"></i> Delete
 	</a>
       {% endif %}

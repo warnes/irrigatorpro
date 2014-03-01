@@ -53,7 +53,7 @@ class Farms_FormsetView(ModelFormSetView):
 class ProbeFormsetView(Farms_FormsetView):
     model = Probe
     template_name = 'farms/probe_list.html'
-    fields = [ 'name', 'description', 'field_list', 'radio_id', 'comment'] 
+    fields = [ 'crop_season', 'name', 'description', 'field_list', 'radio_id', 'comment'] 
     widgets = {
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),

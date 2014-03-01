@@ -157,6 +157,7 @@ def putProbe(farm_code, file_date, line):
     rpr.minutes_awake       = minutes_awake
     rpr.muser               = user
     rpr.mdate               = now
+    rpr.source              = u'UGADB'
 
     rpr.save()
 

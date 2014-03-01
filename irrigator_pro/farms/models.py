@@ -146,20 +146,22 @@ class CropEvent(NameDesc, Comment, Audit):
            """
 
 ########################################
-### Planting (Crop + Season + Fields) ##
+### CropSeason (Crop + Season + Fields) ##
 ########################################
 
 
-class Planting(NameDesc, Comment, Audit):
+class CropSeason(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    field_list        = models.ManyToManyField(Field)
+    season_start_date = models.DateField(default=timezone.now(),
+                                         verbose_name="Season Start Date",
+                                         ) ## May need a better name
     crop              = models.ForeignKey(Crop)
-    planting_date     = models.DateField(default=timezone.now()) ## May need a better name
+    field_list        = models.ManyToManyField(Field)
 
-    def planting_year(self):
-        return planting_date.year
+    def crop_season_year(self):
+        return season_start_date.year
         
     def get_field_list(self):
         field_list = self.field_list.all()
@@ -169,20 +171,19 @@ class Planting(NameDesc, Comment, Audit):
             return ''
 
     def __unicode__(self):
-        ##return u"%s: %s - %s" % (self.farm, self.planting_date, self.crop)
         return self.name
 
-    # Create a full set of PlantingEvents when a new Planting is saved
+    # Create a full set of CropSeasonEvents when a new CropSeason is saved
     def save(self, *args, **kwargs):
-        super(Planting, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(CropSeason, self).save(*args, **kwargs) # Call the "real" save() method.
         crop_events = CropEvent.objects.filter(crop = self.crop).order_by("days_after_emergence")
-        planting_events = PlantingEvent.objects.filter(planting=self)
+        crop_season_events = CropSeasonEvent.objects.filter(crop_season=self)
         for ce in crop_events:
-            matches = filter( lambda pe: pe.crop_event==ce, planting_events)
+            matches = filter( lambda pe: pe.crop_event==ce, crop_season_events)
             if not matches:
-                pe = PlantingEvent(planting=self,
+                pe = CropSeasonEvent(crop_season=self,
                                    crop_event=ce,
-                                   date = self.planting_date + timedelta(days=ce.days_after_emergence),
+                                   date = self.season_start_date + timedelta(days=ce.days_after_emergence),
                                    cdate = timezone.now(),
                                    cuser = self.muser,
                                    mdate = timezone.now(),
@@ -192,34 +193,37 @@ class Planting(NameDesc, Comment, Audit):
 
 
     class Meta:
-        ordering = [ 'planting_date', 'crop' ]
+        ordering = [ 'season_start_date', 'crop' ]
         verbose_name = 'Crop Season'
 
 
-class PlantingEvent(Comment, Audit):
+class CropSeasonEvent(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    planting    = models.ForeignKey(Planting)
+    crop_season = models.ForeignKey(CropSeason)
     crop_event  = models.ForeignKey(CropEvent)
     date        = models.DateField(default=timezone.now())
 
     def get_days_after_emergence(self):
-        #if self.planting:
+        #if self.crop_season:
         return self.crop_event.days_after_emergence
 
-    def get_planting_date(self):
-        #if self.planting:
-        return self.planting.planting_date
+    def get_crop_season_date(self):
+        return self.crop_season.season_start_date
 
     def get_default_date(self):
-        return self.get_planting_date() + timedelta(days=self.get_days_after_emergence())
+        return self.get_season_start_date() + timedelta(days=self.get_days_after_emergence())
 
     class Meta:
-        verbose_name = "Planting Event"
+        verbose_name = "CropSeason Event"
 
     def __unicode__(self):
-        #return u"Planting Event: %s - %s: %s" % (self.planting, self.crop_event.name, self.date)
+        #return u"CropSeason Event: %s - %s: %s" % (self.crop_season, self.crop_event.name, self.date)
         return self.crop_event.name
+
+    class Meta:
+        unique_together = ( ("crop_season", "crop_event", ) , )
+        ordering = [ 'crop_season__season_start_date', 'crop_event' ]
 
 
 
@@ -266,10 +270,9 @@ class Probe(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
 
-    #!# planting    = models.ForeignKey(Planting)  # Probe assignments change with crop season
-
+    crop_season = models.ForeignKey(CropSeason)  # Probe assignments change with crop season
+    radio_id    = models.CharField(max_length=10)
     field_list  = models.ManyToManyField(Field)
-    radio_id    = models.CharField(max_length=10, unique=True)
 
     def get_field_list(self):
         field_list = self.field_list.all()
@@ -280,6 +283,10 @@ class Probe(NameDesc, Comment, Audit):
 
     def __unicode__(self):
         return u"Probe %s" % self.radio_id.strip()
+
+    class Meta:
+        unique_together = ( ("crop_season", "radio_id"), )
+
 
 
 class ProbeReading(Audit):
@@ -306,6 +313,13 @@ class ProbeReading(Audit):
     thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     minutes_awake       = models.PositiveSmallIntegerField()
+
+    SOURCE_CHOICES = ( ('UGADB', 'UGA Database'),
+                       ('User', 'User Entry'), 
+                     )
+    source             = models.CharField(max_length=6,
+                                          choices=SOURCE_CHOICES,
+                                          default="User")
 
     class Meta:
         verbose_name = "Raw Probe Reading"

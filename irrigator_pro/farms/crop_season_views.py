@@ -10,42 +10,47 @@ from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
-from farms.models import Farm, Field, Planting, PlantingEvent, Probe
+from farms.models import Farm, Field, CropSeason, CropSeasonEvent, Probe
 from farms.readonly import ReadonlyFormset
 
-def plantings_filter(user):
-        return Planting.objects.filter( Q(field_list__farm__farmer=user) |
-                                        Q(field_list__farm__users=user) ).distinct()
+def crop_seasons_filter(user):
+    crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
+                                                  Q(field_list__farm__users=user) ).distinct()
+    if crop_season_list:
+        return crop_season_list
+    else:
+        return []
 
 def fields_filter(user):
         return Field.objects.filter( Q(farm__farmer=user) |
                                      Q(farm__users=user) ).distinct()
         
 
-planting_fields = ('name',
+crop_season_fields = (
+                   'name',
                    'description',
                    'crop',
-                   'planting_date',
+                   'season_start_date',
                    'field_list',
                    'comment'
                    ) 
 
 
-class PlantingListView(ListView):
-    template_name = "farms/planting_list.html"
-    model = Planting
-    fields = planting_fields
+class CropSeasonListView(ListView):
+    template_name = "farms/crop_season_list.html"
+    model = CropSeason
+    fields = crop_season_fields
 
     def get_queryset(self):
-        return plantings_filter(self.request.user)
+        return crop_seasons_filter(self.request.user)
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(PlantingListView, self).dispatch(*args, **kwargs)
+        return super(CropSeasonListView, self).dispatch(*args, **kwargs)
 
 
-class PlantingEventsInline(InlineFormSet):
-    model = PlantingEvent
+class CropSeasonEventsInline(InlineFormSet):
+    model = CropSeasonEvent
     can_delete=False
     fields = [ 'crop_event',
                'date',
@@ -53,23 +58,23 @@ class PlantingEventsInline(InlineFormSet):
     extra = 0 
     
     def get_factory_kwargs(self):
-        kwargs = super(PlantingEventsInline, self).get_factory_kwargs()
+        kwargs = super(CropSeasonEventsInline, self).get_factory_kwargs()
         kwargs[ 'extra' ] = self.extra
         return kwargs
         
 
-class PlantingEventsInlineReadonly(ReadonlyFormset, PlantingEventsInline):
+class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
     class NewMeta:
             readonly = [ 'crop_event' ]
 
 
-class PlantingUpdateView(UpdateWithInlinesView):
-    model = Planting
-    fields = planting_fields
-    inlines = [ PlantingEventsInlineReadonly ]
-    template_name = 'farms/planting_and_planting_events.html'
+class CropSeasonUpdateView(UpdateWithInlinesView):
+    model = CropSeason
+    fields = crop_season_fields
+    inlines = [ CropSeasonEventsInlineReadonly ]
+    template_name = 'farms/crop_season_and_crop_season_events.html'
 
-    planting_list = None
+    crop_season_list = None
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -79,20 +84,20 @@ class PlantingUpdateView(UpdateWithInlinesView):
         list of primary keys constructed from a query of objects where
         this user is either the farmer or the one of the users.
         """
-        self.planting_list = plantings_filter(self.request.user)
+        self.crop_season_list = crop_seasons_filter(self.request.user)
         user_pk = int(kwargs['pk'])
-        pk_list = map( lambda x: int(x.pk), self.planting_list )
+        pk_list = map( lambda x: int(x.pk), self.crop_season_list )
         if not user_pk in pk_list:
-            return redirect( reverse('planting_list') )
+            return redirect( reverse('crop_season_list') )
         else:
-            return super(PlantingUpdateView, self).dispatch(*args, **kwargs)
+            return super(CropSeasonUpdateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('planting_id', args=[self.object.pk])
+        return reverse('crop_season_id', args=[self.object.pk])
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super(PlantingUpdateView, self).get_queryset()
+        queryset = super(CropSeasonUpdateView, self).get_queryset()
 
         queryset = queryset.filter( Q(field_list__farm__farmer=user) | 
                                     Q(field_list__farm__users=user) 
@@ -101,36 +106,36 @@ class PlantingUpdateView(UpdateWithInlinesView):
         return queryset.distinct()
 
     def get_context_data(self, **kwargs):
-        context = super(PlantingUpdateView, self).get_context_data(**kwargs)
-        context['planting_list'] = self.planting_list
+        context = super(CropSeasonUpdateView, self).get_context_data(**kwargs)
+        context['crop_season_list'] = self.crop_season_list
         return context
 
     def get_form(self, *args, **kwargs):
         """
         Ensure that the "Field List" widget only shows fields that correspind to this user
         """
-        form = super(PlantingUpdateView, self).get_form(*args, **kwargs)
+        form = super(CropSeasonUpdateView, self).get_form(*args, **kwargs)
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
 
 
-class PlantingCreateView(CreateWithInlinesView):
-    model = Planting
-    fields = planting_fields
-    inlines = [ PlantingEventsInline ]
-    template_name = 'farms/planting_and_planting_events.html'
+class CropSeasonCreateView(CreateWithInlinesView):
+    model = CropSeason
+    fields = crop_season_fields
+    inlines = [ CropSeasonEventsInline ]
+    template_name = 'farms/crop_season_and_crop_season_events.html'
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        return super(PlantingCreateView, self).dispatch(*args, **kwargs)
+        return super(CropSeasonCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('planting_id', args=[self.object.pk])
+        return reverse('crop_season_id', args=[self.object.pk])
 
     def get_queryset(self):
         user = self.request.user
-        queryset = super(PlantingCreateView, self).get_queryset()
+        queryset = super(CropSeasonCreateView, self).get_queryset()
 
         queryset = queryset.filter( Q(field_list__farm__farmer=user) | 
                                     Q(field_list__farm__users=user) 
@@ -139,30 +144,30 @@ class PlantingCreateView(CreateWithInlinesView):
         return queryset.distinct()
 
     def get_factory_kwargs(self):
-        kwargs = super(PlantingEventsInline, self).get_factory_kwargs()
+        kwargs = super(CropSeasonEventsInline, self).get_factory_kwargs()
         #kwargs[ 'widgets' ] = self.widgets
         return kwargs
 
     def get_context_data(self, **kwargs):
-        context = super(PlantingCreateView, self).get_context_data(**kwargs)
-        context['planting_list'] = plantings_filter(self.request.user)
+        context = super(CropSeasonCreateView, self).get_context_data(**kwargs)
+        context['crop_season_list'] = crop_seasons_filter(self.request.user)
         return context
 
     def get_form(self, *args, **kwargs):
-        form = super(PlantingCreateView, self).get_form(*args, **kwargs)
+        form = super(CropSeasonCreateView, self).get_form(*args, **kwargs)
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
 
 
-class PlantingDeleteView(DeleteView):
-    template_name = "farms/planting_delete.html"
-    model = Planting
+class CropSeasonDeleteView(DeleteView):
+    template_name = "farms/crop_season_delete.html"
+    model = CropSeason
     pk_field = 'pk' 
     
-    success_url = reverse_lazy('planting_list')
+    success_url = reverse_lazy('crop_season_list')
 
-    planting_list = None
+    crop_season_list = None
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -172,15 +177,15 @@ class PlantingDeleteView(DeleteView):
         list of primary keys constructed from a query of objects where
         this user is either the farmer or the one of the users.
         """
-        self.planting_list = plantings_filter(self.request.user)
+        self.crop_season_list = crop_seasons_filter(self.request.user)
         user_pk = int(kwargs['pk'])
-        pk_list = map( lambda x: int(x.pk), self.planting_list )
+        pk_list = map( lambda x: int(x.pk), self.crop_season_list )
         if not user_pk in pk_list:
-            return redirect( reverse('planting_list') )
+            return redirect( reverse('crop_season_list') )
         else:
-            return super(PlantingDeleteView, self).dispatch(*args, **kwargs)
+            return super(CropSeasonDeleteView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
-        context = super(PlantingDeleteView, self).get_context_data(*args, **kwargs)
-        context['planting_list'] = self.planting_list
+        context = super(CropSeasonDeleteView, self).get_context_data(*args, **kwargs)
+        context['crop_season_list'] = self.crop_season_list
         return context

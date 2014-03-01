@@ -165,54 +165,53 @@ class CropEventAdmin(AuditAdmin):
 admin.site.register(CropEvent, CropEventAdmin)
 
 ################
-### Planting ###
+### CropSeason ###
 ################
 
-class PlantingEventInline(admin.TabularInline):
-    model = PlantingEvent
+class CropSeasonEventInline(admin.TabularInline):
+    model = CropSeasonEvent
     fields = [ 'crop_event', 'date', 'get_default_date' ] \
              + Comment.fields
     readonly_fields = [ 'get_default_date' ]
     extra=0
 
 
-class PlantingAdmin(AuditAdmin):
-    fields = [ 'field_list', ] \
-             + NameDesc.fields \
-             + [
+class CropSeasonAdmin(AuditAdmin):
+    fields = NameDesc.fields \
+             + [ 'field_list', 
+                 'season_start_date',
                  'crop',
-                 'planting_date'
                 ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = ['pk', 'get_field_list', 'name' ] + fields[4:-5]
-    list_editable = list_display[2:]
-    inlines = [ PlantingEventInline ]
+    list_display  = ['pk', 'name', 'description', 'get_field_list', ] + fields[4:-5]
+    list_editable = [ 'name', 'description', ] + fields[4:-5]
+    inlines = [ CropSeasonEventInline ]
     list_filter = ['field_list__farm__farmer', 
                    'field_list__farm',
-                   'planting_date']
+                   'season_start_date']
 
     # def get_form(self, request, obj=None, **kwargs):
     #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
-    #     return super(PlantingAdmin, self).get_form(request, obj, **kwargs)
+    #     return super(CropSeasonAdmin, self).get_form(request, obj, **kwargs)
 
-admin.site.register(Planting, PlantingAdmin)
+admin.site.register(CropSeason, CropSeasonAdmin)
 
 ######################
-### Planting Event ###
+### CropSeason Event ###
 ######################
 
-class PlantingEventAdmin(AuditAdmin):
-    fields = [ 'planting', 'crop_event', 'date' ] \
+class CropSeasonEventAdmin(AuditAdmin):
+    fields = [ 'crop_season', 'crop_event', 'date' ] \
              + Comment.fields
     list_display  = fields[:3]
     list_editable = [ 'date' ]
-    list_filter = ['planting', 
-                   'planting__field_list__farm__farmer', 
-                   'planting__field_list__farm', 
-                   'planting__planting_date']
+    list_filter = ['crop_season', 
+                   'crop_season__field_list__farm__farmer', 
+                   'crop_season__field_list__farm', 
+                   'crop_season__season_start_date']
 
-admin.site.register(PlantingEvent, PlantingEventAdmin)
+admin.site.register(CropSeasonEvent, CropSeasonEventAdmin)
 
 #####################
 ### Water History ###
@@ -292,7 +291,9 @@ class ProbeReadingAdmin(AuditAdmin):
                'circuit_board_temp',
                'thermocouple_1_temp',
                'thermocouple_2_temp',
-               'minutes_awake' ]
+               'minutes_awake',
+               'source' 
+             ]
     list_display = [ 'radio_id', 
                      'reading_datetime',
                      'soil_potential_8', 
@@ -300,9 +301,10 @@ class ProbeReadingAdmin(AuditAdmin):
                      'soil_potential_24',
                      'battery_voltage',
                      'battery_percent', 
-                     ]
+                     'source',
+                   ]
     list_editable = []
-    list_filter = [ 'radio_id', 'reading_datetime', 'reading_datetime' ]
+    list_filter = [ 'radio_id', 'reading_datetime', 'reading_datetime', 'source' ]
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)

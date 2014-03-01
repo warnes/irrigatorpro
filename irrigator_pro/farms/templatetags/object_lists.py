@@ -1,5 +1,5 @@
 from sys import stdout, stderr
-from farms.models import Farm, Planting
+from farms.models import Farm, CropSeason
 from django.db.models import Q
 from django.template import Library, Node, TemplateSyntaxError, resolve_variable
 
@@ -50,21 +50,21 @@ def farm_list(parser, token):
 
 
 @register.tag
-def planting_list(parser, token): 
+def crop_season_list(parser, token): 
     """
-    Return a list of all Planting objects corresponding to request.user
+    Return a list of all CropSeason objects corresponding to request.user
     """
 
-    print "In planting_list tag"
+    print "In crop_season_list tag"
 
-    def planting_list_wrap(context):
+    def crop_season_list_wrap(context):
         user = context['request'].user
-        planting_list = Planting.objects.filter( Q(field_list__farm__farmer=user) |
+        crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
                                         Q(field_list__farm__users=user) ).distinct()
-        context['planting_list'] = planting_list
+        context['crop_season_list'] = crop_season_list
         return ''
 
-    return ContextNode(planting_list_wrap)
+    return ContextNode(crop_season_list_wrap)
 
 
 

@@ -40,18 +40,20 @@ function setNavigation() {
 
 /** Use jQuery DatePicker widget for any data item **/
 $(function() {
-      $('input[id$=date]').datepicker({ dateFormat: 'yy-mm-dd' }); // Use date picker widget
-      $('input[id$=date]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
-      $('input[id$=date]').width("3em") // -= $(".fa").width();    // Make narrower 
+    $.datepicker.setDefaults({
+	showButtonPanel: true, 
+	changeMonth: true, 
+	changeYear: true,
+	dateFormat: 'yy-mm-dd', 
+	showMonthAfterYear: true,
     });
+    
+    $('input[id$=date]').datepicker(); // Use date picker widget
+    $('input[id$=date]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
+    $('input[id$=date]').width("3em") // -= $(".fa").width();    // Make narrower 
 
-
-
-
-/** Use jQuery-ui-datetimepicker-addon DateTimePicker widget for any datatime item **/
-$(function() {
-      $('input[id$=datetime]').datetimepicker({ dateFormat: 'yy-mm-dd' }); // Use date picker widget
-      $('input[id$=datetime]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
-      $('input[id$=datetime]').width("6em") // -= $(".fa").width();    // Make narrower 
-    });
+    $('input[id$=datetime]').datetimepicker(); // Use date picker widget
+    $('input[id$=datetime]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
+    $('input[id$=datetime]').width("6em") // -= $(".fa").width();    // Make narrower 
+});
 

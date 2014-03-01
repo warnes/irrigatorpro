@@ -57,17 +57,17 @@ urlpatterns = patterns('',
                        ## Probe pages
                        url(r'^setup/probes/$',  ProbeFormsetView.as_view(), name='probes' ),
 
-                       # ## Planting pages
-                       url(r'^setup/planting/$',                   PlantingListView.as_view(),   name='planting_list'),
-                       url(r'^setup/planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
-                       url(r'^setup/planting/delete/(?P<pk>\d+)$', PlantingDeleteView.as_view(), name='planting_delete'),
-                       url(r'^setup/planting/(?P<pk>\d+)$',        PlantingUpdateView.as_view(), name='planting_id'),
+                       # ## CropSeason pages
+                       url(r'^setup/crop_season/$',                   CropSeasonListView.as_view(),   name='crop_season_list'),
+                       url(r'^setup/crop_season/new$',                CropSeasonCreateView.as_view(), name='crop_season_new'),
+                       url(r'^setup/crop_season/delete/(?P<pk>\d+)$', CropSeasonDeleteView.as_view(), name='crop_season_delete'),
+                       url(r'^setup/crop_season/(?P<pk>\d+)$',        CropSeasonUpdateView.as_view(), name='crop_season_id'),
 
-                       ## Planting pages
-                       url(r'^data_entry/water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
+                       ## CropSeason pages
+                       url(r'^data_entry/water_history/$', WaterHistoryFormsetView.as_view(),   name='water_history'),
 
                        ## Probe Reading pages
-                       url(r'^data_entry/probe_readings/$',  ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^data_entry/probe_readings/$', ProbeReadingFormsetView.as_view(), name='probe_readings' ),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
