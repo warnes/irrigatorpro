@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -89,16 +90,8 @@ class FarmMixin:
         return self.render_to_response(context)
 
 
-class FarmListView(ListView):
+class FarmListView(TemplateView):
     template_name = "farms/farm_list.html"
-    model = Farm
-    fields = [ 'name' ]
-
-    context_object_name = 'farm_list'
-
-    def get_queryset(self):
-        return Farm.objects.filter( Q(farmer=self.request.user) |
-                                    Q(users=self.request.user) ).distinct()
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -111,8 +104,6 @@ class FarmUpdateView(FarmMixin, UpdateView):
     pk_field = 'pk' 
     fields = farm_view_fields
 
-    farm_list = None
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         """
@@ -121,23 +112,18 @@ class FarmUpdateView(FarmMixin, UpdateView):
         list of primary keys constructed from a query of objects where
         this user is either the farmer or the one of the users.
         """
-        self.farm_list = farms_filter(self.request.user) 
+        farm_list = farms_filter(self.request.user)
         user_pk = int(kwargs['pk'])
-        pk_list = map( lambda x: int(x.pk), self.farm_list )
+        pk_list = map( lambda x: int(x.pk), farm_list )
         if not user_pk in pk_list:
             return redirect( reverse('farm_list') )
         else:
             return super(FarmUpdateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        path = self.request.path.replace('new', "%s" % self.object.pk)
+        path = reverse('farm_new', args=[self.object.pk])
         print path
         return path
-
-    def get_context_data(self, **kwargs):
-        context = super(FarmUpdateView, self).get_context_data(**kwargs)
-        context['farm_list'] = self.farm_list
-        return context
 
 
 class FarmCreateView(FarmMixin, CreateView):
@@ -146,11 +132,8 @@ class FarmCreateView(FarmMixin, CreateView):
     pk_field = 'pk' 
     fields = farm_view_fields
 
-    farm_list = None
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.farm_list = farms_filter(self.request.user) 
         return super(FarmCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
@@ -163,11 +146,6 @@ class FarmCreateView(FarmMixin, CreateView):
         dict['farmer'] = self.request.user
         return dict
         
-    def get_context_data(self, *args, **kwargs):
-        context = super(FarmCreateView, self).get_context_data(*args, **kwargs)
-        context['farm_list'] = self.farm_list
-        return context
-
     def get_object(self, queryset=None):
         return None
 
@@ -179,8 +157,6 @@ class FarmDeleteView(DeleteView):
     
     success_url = reverse_lazy('farm_list')
 
-    farm_list = None
-
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         """
@@ -189,20 +165,14 @@ class FarmDeleteView(DeleteView):
         list of primary keys constructed from a query of objects where
         this user is either the farmer or the one of the users.
         """
-        self.farm_list = Farm.objects.filter( Q(farmer=self.request.user) |
-                                              Q(users=self.request.user) ).distinct()
+        farm_list = farms_filter(self.request.user)
         user_pk = int(kwargs['pk'])
-        pk_list = map( lambda x: int(x.pk), self.farm_list )
+        pk_list = map( lambda x: int(x.pk), farm_list )
         if not user_pk in pk_list:
             return redirect( reverse('farm_list') )
         else:
             return super(FarmUpdateView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(FarmDeleteView, self).get_context_data(*args, **kwargs)
-        context['farm_list'] = Farm.objects.filter( Q(farmer=self.request.user) |
-                                                    Q(users=self.request.user) ).distinct()
-        return context
 
 
 

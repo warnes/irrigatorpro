@@ -1,5 +1,7 @@
 <!-- Sidebar -->
 
+{% load object_lists %}
+
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
@@ -10,7 +12,7 @@
 
 	  {% load account %} <!-- enable user_display tag -->
 	  
-	  <!-- For tab highlighting to work properly,   --
+	   <!-- For tab highlighting to work properly,   --
           -- hrefs should *NOT* have a trailing slash -->
 
 	  <li>
@@ -38,6 +40,8 @@
 	      Farms and Fields 
 	      <!--i class="fa fa-caret-square-o-right fa-fw"></i-->
 	    </a>
+
+	    {% farm_list %}
 	    
 	    {% if farm_list %}
 	      <ul class="nav">
@@ -61,6 +65,8 @@
 
 	  <li>
 	    <a href="/setup/planting"><i class="fa fa-pagelines fa-fw"></i> Crop Season </a>
+
+	    {% planting_list %}
 
 	    {% if planting_list %}
 	      <ul class="nav">
@@ -92,7 +98,7 @@
       </li>
 
 
-      <li><a href="/data_entry">Data Entry</a>
+      <li><a href="/data_entry">Water Records</a>
 
 	<ul class="nav nav-secondary">
 

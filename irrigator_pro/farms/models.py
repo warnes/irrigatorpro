@@ -161,14 +161,12 @@ class Planting(NameDesc, Comment, Audit):
     def planting_year(self):
         return planting_date.year
         
-
     def get_field_list(self):
         field_list = self.field_list.all()
         if field_list:
             return ', '.join([ obj.name for obj in field_list])
         else:
             return ''
-
 
     def __unicode__(self):
         ##return u"%s: %s - %s" % (self.farm, self.planting_date, self.crop)
@@ -177,15 +175,11 @@ class Planting(NameDesc, Comment, Audit):
     # Create a full set of PlantingEvents when a new Planting is saved
     def save(self, *args, **kwargs):
         super(Planting, self).save(*args, **kwargs) # Call the "real" save() method.
-
         crop_events = CropEvent.objects.filter(crop = self.crop).order_by("days_after_emergence")
         planting_events = PlantingEvent.objects.filter(planting=self)
-
         for ce in crop_events:
-            print "Checking whether Planting %s has CropEvent %s" % ( self, ce )
             matches = filter( lambda pe: pe.crop_event==ce, planting_events)
             if not matches:
-                print "Adding CropEvent %s to Planting %s" % ( ce, self )
                 pe = PlantingEvent(planting=self,
                                    crop_event=ce,
                                    date = self.planting_date + timedelta(days=ce.days_after_emergence),

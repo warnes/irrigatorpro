@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django.forms.models import inlineformset_factory, modelformset_factory
 from django.forms import Textarea
-from farms.models import Farm, Field, Probe
+from farms.models import Farm, Field, Planting, PlantingEvent, Probe
 from common.models import Audit, Comment, Location, NameDesc
 
 class FarmForm(ModelForm):
@@ -34,3 +34,16 @@ ProbeFormSet = modelformset_factory(Probe,
                                                                        'cols':20}),
                                     }
                                 )
+
+
+
+PlantingEventFormSet = inlineformset_factory(Planting, 
+                                             PlantingEvent, 
+                                             fields = [ 'crop_event',
+                                                        'date',
+                                                    ],
+                                             widgets = {
+                                                 'description': Textarea(attrs={'rows':2, 
+                                                                                'cols':20}),
+                                             }
+                                         )

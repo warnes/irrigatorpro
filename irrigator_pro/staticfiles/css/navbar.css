@@ -129,3 +129,12 @@
     font-weight: normal;
     border: 1px;
 }
+
+/* Use <a> to add line separating sections instead of <li> */
+.navbar-static-side ul li {
+    border-bottom: none;
+} 
+
+.navbar-static-side ul li > a {
+    border: 1px solid #e7e7e7;
+} 

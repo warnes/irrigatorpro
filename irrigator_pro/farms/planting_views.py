@@ -11,7 +11,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from farms.models import Farm, Field, Planting, PlantingEvent, Probe
-
+from farms.readonly import ReadonlyFormset
 
 def plantings_filter(user):
         return Planting.objects.filter( Q(field_list__farm__farmer=user) |
@@ -35,8 +35,6 @@ class PlantingListView(ListView):
     template_name = "farms/planting_list.html"
     model = Planting
     fields = planting_fields
-    
-    context_object_name = 'planting_list'
 
     def get_queryset(self):
         return plantings_filter(self.request.user)
@@ -46,14 +44,12 @@ class PlantingListView(ListView):
         return super(PlantingListView, self).dispatch(*args, **kwargs)
 
 
-
 class PlantingEventsInline(InlineFormSet):
     model = PlantingEvent
     can_delete=False
     fields = [ 'crop_event',
                'date',
              ]
-    readonly_fields = [ 'crop_event' ] #!# not implemented respected
     extra = 0 
     
     def get_factory_kwargs(self):
@@ -61,14 +57,16 @@ class PlantingEventsInline(InlineFormSet):
         kwargs[ 'extra' ] = self.extra
         return kwargs
         
-    def get_readonly_fields(self):
-        return readonly_fields
+
+class PlantingEventsInlineReadonly(ReadonlyFormset, PlantingEventsInline):
+    class NewMeta:
+            readonly = [ 'crop_event' ]
 
 
 class PlantingUpdateView(UpdateWithInlinesView):
     model = Planting
     fields = planting_fields
-    inlines = [ PlantingEventsInline ]
+    inlines = [ PlantingEventsInlineReadonly ]
     template_name = 'farms/planting_and_planting_events.html'
 
     planting_list = None
@@ -108,6 +106,9 @@ class PlantingUpdateView(UpdateWithInlinesView):
         return context
 
     def get_form(self, *args, **kwargs):
+        """
+        Ensure that the "Field List" widget only shows fields that correspind to this user
+        """
         form = super(PlantingUpdateView, self).get_form(*args, **kwargs)
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
@@ -119,6 +120,10 @@ class PlantingCreateView(CreateWithInlinesView):
     fields = planting_fields
     inlines = [ PlantingEventsInline ]
     template_name = 'farms/planting_and_planting_events.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(PlantingCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse('planting_id', args=[self.object.pk])
@@ -147,6 +152,7 @@ class PlantingCreateView(CreateWithInlinesView):
         form = super(PlantingCreateView, self).get_form(*args, **kwargs)
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
+
 
 
 class PlantingDeleteView(DeleteView):

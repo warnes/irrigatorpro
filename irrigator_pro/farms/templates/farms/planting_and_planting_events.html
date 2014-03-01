@@ -14,11 +14,11 @@
 {% endblock %}
 
 {% block scripts %}
-  <script type="text/javascript">
-    $(function() {
-    $('select[id$=crop_event]').prop('disabled', true)           // Prevent edition of crop event selection
-    });
-  </script>
+  <!-- <script type="text/javascript"> -->
+  <!--   $(function() { -->
+  <!--   $('select[id$=crop_event]').prop('disabled', true)           // Prevent edition of crop event selection -->
+  <!--   }); -->
+  <!-- </script> -->
 {% endblock %}
 
 {% block content %}
@@ -63,36 +63,34 @@
 	<table id="formset" class="formset default-form">
 	  <thead>
 	    <tr>
-	      <th>Event</th>
-	      <th>Date</th>
-	      <!-- {% for field in inlines|first|first %} -->
-	      <!-- 	<th>{{ field.label }}</th>  -->
-	      <!-- {% endfor %} -->
+	      {% for field in form|first %}
+		{% if not field.is_hidden %}
+	      	  <th>{{ field.label }}</th>
+		{% else %}
+		  <th class="hidden"></th>
+		{% endif %}
+	      {% endfor %}
 	    </tr>
 	  </thead>
 
 	  <tbody>
 	    {% for record in form %}
-	      <tr>
-		<td>
-		  {{ record.crop_event }}
-		</td>
-		<td>
-		  {{ record.date }}
-		  {{ record.planting }} <!-- hidden -->
-		  {{ record.id }} <!-- hidden -->
-		</td>
-
-		<!-- {--% for field in record %--} -->
-		<!--   <td> -->
-		<!--     {--% if field.errors %--} -->
-		<!--       <div class="inline-alert alert-danger"> -->
-		<!-- 	{{ field.errors }} -->
-	        <!--       </div> -->
-		<!--     {--% endif %--} -->
-		<!--     {{ field }} -->
-		<!--   </td> -->
-		<!-- {--% endfor %--} -->
+		{% for field in record %}
+		  {% if not field.is_hidden %}
+		    <td>
+		      {% if field.errors %}
+			<div class="inline-alert alert-danger">
+			  {{ field.errors }}
+			</div>
+		      {% endif %}
+		      {{ field }}
+		    </td>
+		  {% else %}
+		    <td class="hidden">
+		      {{ field }}
+		    </td>
+		  {% endif %}
+		{% endfor %}
 	      </tr>
 	    {% endfor %}
 	  </tbody>

@@ -51,8 +51,8 @@ urlpatterns = patterns('',
                        # ),
                        url(r'^setup/farm/$',                   FarmListView.as_view(),   name='farm_list'),
                        url(r'^setup/farm/new$',                FarmCreateView.as_view(), name='farm_new'),
-                       url(r'^setup/farm/delete/(?P<pk>\w+)$', FarmDeleteView.as_view(), name='farm_delete'),
-                       url(r'^setup/farm/(?P<pk>\w+)$',        FarmUpdateView.as_view(), name='farm_id'),
+                       url(r'^setup/farm/delete/(?P<pk>\d+)$', FarmDeleteView.as_view(), name='farm_delete'),
+                       url(r'^setup/farm/(?P<pk>\d+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
                        url(r'^setup/probes/$',  ProbeFormsetView.as_view(), name='probes' ),
@@ -60,8 +60,8 @@ urlpatterns = patterns('',
                        # ## Planting pages
                        url(r'^setup/planting/$',                   PlantingListView.as_view(),   name='planting_list'),
                        url(r'^setup/planting/new$',                PlantingCreateView.as_view(), name='planting_new'),
-                       url(r'^setup/planting/delete/(?P<pk>\w+)$', PlantingDeleteView.as_view(), name='planting_delete'),
-                       url(r'^setup/planting/(?P<pk>\w+)$',        PlantingUpdateView.as_view(), name='planting_id'),
+                       url(r'^setup/planting/delete/(?P<pk>\d+)$', PlantingDeleteView.as_view(), name='planting_delete'),
+                       url(r'^setup/planting/(?P<pk>\d+)$',        PlantingUpdateView.as_view(), name='planting_id'),
 
                        ## Planting pages
                        url(r'^data_entry/water_history/$',              WaterHistoryFormsetView.as_view(),   name='water_history'),
