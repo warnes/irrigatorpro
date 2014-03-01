@@ -3,7 +3,7 @@
 {% block content %}
 
   <form action="" method="post">{% csrf_token %}
-    <p>Are you sure you want to delete planting "{{ object.name }}"?</p>
+    <p>Are you sure you want to delete crop season "{{ object.name }}"?</p>
 
     <a class="btn btn-warning" href="{% url 'planting_list' %}{{ object.pk }}">
       <i class="fa fa-undo fa-fw"></i> Cancel Delete
