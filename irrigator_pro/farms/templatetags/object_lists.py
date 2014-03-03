@@ -36,9 +36,6 @@ def farm_list(parser, token):
     """
     Return a list of all Farm objects corresponding to request.user
     """
-
-    print "In farm_list tag"
-
     def farm_list_wrap(context):
         user = context['request'].user
         farm_list = Farm.objects.filter( Q(farmer=user) |
@@ -54,9 +51,6 @@ def crop_season_list(parser, token):
     """
     Return a list of all CropSeason objects corresponding to request.user
     """
-
-    print "In crop_season_list tag"
-
     def crop_season_list_wrap(context):
         user = context['request'].user
         crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
