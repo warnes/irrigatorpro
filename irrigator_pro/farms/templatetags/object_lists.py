@@ -10,7 +10,6 @@ class ContextNode(Node):
     self.func = func
 
   def render(self, context):
-    print "In ContextNode"
     return self.func(context) 
 
 # @register.tag
