@@ -1,6 +1,30 @@
-$(function () {
-    setNavigation();
+/** Use jQuery DatePicker widget for any data item **/
+$(function() {
+    $.datepicker.setDefaults({
+	showButtonPanel: true, 
+	changeMonth: true, 
+	changeYear: true,
+	dateFormat: 'yy-mm-dd', 
+	showMonthAfterYear: true,
+    });
+    
+    // Use date picker widget // Display calendar icon // Make narrower 
+    $('input[id$=date]').datepicker().wrap('<i class="fa fa-calendar"></i>').css({ 
+	"width":"80px", 
+	"margin": "2px" })
+
+    // Use datetime picker widget // Display calendar icon // Make narrower 
+    $('input[id$=datetime]').datetimepicker().wrap('<i class="fa fa-calendar"></i>').css({
+	"width": "120px",
+	"margin": "2px"
+    }) 
+
+    // Change defualt size of description and comment fields 
+    $('textarea[id$=description]').attr('rows',3)
+    $('textarea[id$=comment]').attr('rows',3)
+
 });
+
 
 function setNavigation() {
     var debug = 0;
@@ -37,23 +61,6 @@ function setNavigation() {
     });
 }
 
-
-/** Use jQuery DatePicker widget for any data item **/
-$(function() {
-    $.datepicker.setDefaults({
-	showButtonPanel: true, 
-	changeMonth: true, 
-	changeYear: true,
-	dateFormat: 'yy-mm-dd', 
-	showMonthAfterYear: true,
-    });
-    
-    $('input[id$=date]').datepicker(); // Use date picker widget
-    $('input[id$=date]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
-    $('input[id$=date]').width("3em") // -= $(".fa").width();    // Make narrower 
-
-    $('input[id$=datetime]').datetimepicker(); // Use date picker widget
-    $('input[id$=datetime]').wrap('<i class="fa fa-calendar"></i>'); // Display calendar icon
-    $('input[id$=datetime]').width("6em") // -= $(".fa").width();    // Make narrower 
+$(function () {
+    setNavigation();
 });
-
