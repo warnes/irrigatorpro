@@ -7,15 +7,19 @@ For more information on this file, see
 https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 """
 
-import os, site
+import os, site, sys
 
 ## Add the irrigator_pro virtual environment
-PROJECT_ROOT      = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',))
-SITE_PACKAGE_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro', 'lib', 'python2.7', 'site-packages')
+activate_this = '/prod/VirtualEnvs/irrigator_pro/bin/activate_this.py'
+execfile(activate_this, dict(__file__=activate_this))
+
+## Setup django paths
+PROJECT_ROOT      = '/prod/irrigator_pro'
+SITE_PACKAGE_ROOT = '/prod/VirtualEnvs/irrigator_pro/lib/python2.7/site-packages'
 print "ROOT=", PROJECT_ROOT
 print "SITE_PACKAGE_ROOT=", SITE_PACKAGE_ROOT
+sys.path.append(PROJECT_ROOT)
 site.addsitedir(SITE_PACKAGE_ROOT)
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
 from django.core.wsgi import get_wsgi_application
