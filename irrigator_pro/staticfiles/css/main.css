@@ -179,3 +179,38 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
     z-index: 10000 !important;
     /* color: #eefcff !important; */
 }
+
+/********************************************/
+/* Field section of CropSeason Event inline */
+/********************************************/
+
+.cropseason_field_wrapper {
+    margin: 20px; 
+    padding: 5px 20px 20px 10px;
+    background-color: white; 
+    border-style:solid;
+    border-width:1px;
+    border-color: #006B00;
+    display: inline-block;
+}
+
+.cropseason_field_wrapper h3 {
+    margin: 5px 5px 10px 5px;
+}
+
+.cropseason_field_wrapper > table {
+    background-color: #eefcff;
+}
+
+/********/
+/* Form */
+/********/
+
+form {
+    display: inline-block;
+    width: 600px;
+}
+
+table.default-form {
+    margin-left: 40px;
+}
