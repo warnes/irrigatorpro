@@ -100,11 +100,12 @@ admin.site.register(SoilTypeParameter, SoilTypeParameterAdmin)
 ############
 class CropEventInline(admin.TabularInline):
     model = CropEvent
-    fields = [ 'crop', ] \
+    fields = [ 'crop', 'order', ] \
              + NameDesc.fields \
              + [
-                 'days_after_emergence',
+                 'duration',
                  'daily_water_use',
+                 'key_event',
                 ] \
              + Comment.fields
 
@@ -146,21 +147,24 @@ if not readonly:
 ###################
 
 class CropEventAdmin(AuditAdmin):
-    fields = [ 'crop', ] \
+    fields = [ 'crop', 'order', ] \
              + NameDesc.fields \
              + [
-                 'days_after_emergence',
+                 'duration',
                  'daily_water_use',
+                 'key_event',
                 ] \
              + Comment.fields \
              + Audit.fields
     list_display  = [ 'crop', 
+                      'order',
                       'name', 
-                      'days_after_emergence',
+                      'duration',
                       'daily_water_use',
+                      'key_event',
                     ]
     list_editable = list_display[1:]
-    list_filter = ['crop']
+    list_filter = ['crop', 'key_event', ]
 
 admin.site.register(CropEvent, CropEventAdmin)
 
@@ -170,7 +174,7 @@ admin.site.register(CropEvent, CropEventAdmin)
 
 class CropSeasonEventInline(admin.TabularInline):
     model = CropSeasonEvent
-    fields = [ 'crop_event', 'date', 'get_default_date' ] \
+    fields = [ 'field', 'crop_event', 'date', 'get_default_date' ] \
              + Comment.fields
     readonly_fields = [ 'get_default_date' ]
     extra=0
@@ -202,9 +206,9 @@ admin.site.register(CropSeason, CropSeasonAdmin)
 ######################
 
 class CropSeasonEventAdmin(AuditAdmin):
-    fields = [ 'crop_season', 'crop_event', 'date' ] \
+    fields = [ 'field', 'crop_season', 'crop_event', 'date' ] \
              + Comment.fields
-    list_display  = fields[:3]
+    list_display  = fields[:-1]
     list_editable = [ 'date' ]
     list_filter = ['crop_season', 
                    'crop_season__field_list__farm__farmer', 

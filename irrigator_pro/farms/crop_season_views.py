@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.forms.models import inlineformset_factory
 
 from farms.models import Farm, Field, CropSeason, CropSeasonEvent, Probe
 from farms.readonly import ReadonlyFormset
@@ -52,7 +53,9 @@ class CropSeasonListView(ListView):
 class CropSeasonEventsInline(InlineFormSet):
     model = CropSeasonEvent
     can_delete=False
-    fields = [ 'crop_event',
+    fields = [ 
+               'field',
+               'crop_event',
                'date',
              ]
     extra = 0 
@@ -65,7 +68,7 @@ class CropSeasonEventsInline(InlineFormSet):
 
 class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
     class NewMeta:
-            readonly = [ 'crop_event' ]
+            readonly = [ 'crop_event', 'field' ]
 
 
 class CropSeasonUpdateView(UpdateWithInlinesView):
@@ -73,8 +76,6 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
     fields = crop_season_fields
     inlines = [ CropSeasonEventsInlineReadonly ]
     template_name = 'farms/crop_season_and_crop_season_events.html'
-
-    crop_season_list = None
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -107,7 +108,9 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
 
     def get_context_data(self, **kwargs):
         context = super(CropSeasonUpdateView, self).get_context_data(**kwargs)
-        context['crop_season_list'] = self.crop_season_list
+        field_list = context['object'].field_list.all()
+        context['field_list'] = field_list
+        print field_list
         return context
 
     def get_form(self, *args, **kwargs):
@@ -147,11 +150,6 @@ class CropSeasonCreateView(CreateWithInlinesView):
         kwargs = super(CropSeasonEventsInline, self).get_factory_kwargs()
         #kwargs[ 'widgets' ] = self.widgets
         return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super(CropSeasonCreateView, self).get_context_data(**kwargs)
-        context['crop_season_list'] = crop_seasons_filter(self.request.user)
-        return context
 
     def get_form(self, *args, **kwargs):
         form = super(CropSeasonCreateView, self).get_form(*args, **kwargs)

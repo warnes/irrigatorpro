@@ -1,26 +1,5 @@
 {% extends "base.html" %}
 
-{% block extrahead %}
-  <style type="text/css">
-    table.formset, table.formset tr, table.formset td, table.formset th {
-    /*width: auto !important;*/
-    /*table-layout: auto !important;*/
-    /*margin: 0 auto;*/
-    }
-    table.default-form {
-    margin: 0 auto;
-    }
-  </style>
-{% endblock %}
-
-{% block scripts %}
-  <!-- <script type="text/javascript"> -->
-  <!--   $(function() { -->
-  <!--   $('select[id$=crop_event]').prop('disabled', true)           // Prevent edition of crop event selection -->
-  <!--   }); -->
-  <!-- </script> -->
-{% endblock %}
-
 {% block content %}
 
   <h2>Crop Season</h2>
@@ -60,41 +39,58 @@
       
       {% if form|first  %}
 
-	<table id="formset" class="formset default-form">
-	  <thead>
-	    <tr>
-	      {% for field in form|first %}
-		{% if not field.is_hidden %}
-	      	  <th>{{ field.label }}</th>
-		{% else %}
-		  <th class="hidden"></th>
-		{% endif %}
-	      {% endfor %}
-	    </tr>
-	  </thead>
+	{% for field_object in field_list %}
 
-	  <tbody>
-	    {% for record in form %}
-		{% for field in record %}
+	  <div class="cropseason_field_wrapper">
+
+	  <h3>{{field_object.name}}</h3>
+	  
+	  <table id="formset" class="formset default-form">
+	    <thead>
+	      <tr>
+		{% for field in form|first %}
 		  {% if not field.is_hidden %}
-		    <td>
-		      {% if field.errors %}
-			<div class="inline-alert alert-danger">
-			  {{ field.errors }}
-			</div>
-		      {% endif %}
-		      {{ field }}
-		    </td>
+	      	    <th>{{ field.label }}</th>
 		  {% else %}
-		    <td class="hidden">
-		      {{ field }}
-		    </td>
+		    <th class="hidden"></th>
 		  {% endif %}
 		{% endfor %}
 	      </tr>
-	    {% endfor %}
-	  </tbody>
-	</table>
+	    </thead>
+
+	    <tbody>
+	      {% for record in form %}
+
+		{% if record.field.value == field_object.pk %}
+		  
+		  <tr>
+		    {% for field in record %}
+		      {% if not field.is_hidden %}
+			<td>
+			  {% if field.errors %}
+			    <div class="inline-alert alert-danger">
+			      {{ field.errors }}
+			    </div>
+			  {% endif %}
+			  {{ field }}
+			</td>
+		      {% else %}
+			<td class="hidden">
+			  {{ field }}
+			</td>
+		      {% endif %}
+		    {% endfor %}
+		  </tr>
+
+		{% endif %}
+
+	      {% endfor %}
+	    </tbody>
+	  </table>
+
+	  </div>
+
+        {% endfor %}
 	
       {% else %}
 	

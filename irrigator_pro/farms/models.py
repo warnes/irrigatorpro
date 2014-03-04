@@ -20,7 +20,6 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
 
     def get_farmer_and_user_list(self):
         retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
-        print 'retval=', retval
         return retval
 
     def get_users(self):
@@ -102,7 +101,7 @@ class SoilTypeParameter(Comment, Audit):
 
     class Meta:
         ordering = ["soil_type__name", "depth"]
-        verbose_name = "Soil Type Parameters"
+        verbose_name = "Soil Type Parameter"
 
 
 ############
@@ -129,17 +128,20 @@ class CropEvent(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    crop                    = models.ForeignKey(Crop)
-    days_after_emergence    = models.PositiveSmallIntegerField()
-    daily_water_use         = models.DecimalField(max_digits=3, 
-                                                  decimal_places=2)
+    crop             = models.ForeignKey(Crop)
+    order            = models.PositiveSmallIntegerField()
+    duration         = models.PositiveSmallIntegerField()
+    daily_water_use  = models.DecimalField(max_digits=3, 
+                                           decimal_places=2)
+    key_event        = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u"%s: %s" % (self.crop, self.name)
 
     class Meta:
-        ordering = [ 'crop__name', 'days_after_emergence' ]
+        ordering = [ 'crop__name', 'order', ]
         verbose_name = "Crop Event"
+        unique_together = ( ("crop", "order"), )
 
     todo = """
            Add code to ensure that event_order is unique and sequential.
@@ -173,24 +175,38 @@ class CropSeason(NameDesc, Comment, Audit):
     def __unicode__(self):
         return self.name
 
-    # Create a full set of CropSeasonEvents when a new CropSeason is saved
+    # Ensure each field has a full set of CropSeasonEvents, creating if necessary
     def save(self, *args, **kwargs):
         super(CropSeason, self).save(*args, **kwargs) # Call the "real" save() method.
-        crop_events = CropEvent.objects.filter(crop = self.crop).order_by("days_after_emergence")
-        crop_season_events = CropSeasonEvent.objects.filter(crop_season=self)
-        for ce in crop_events:
-            matches = filter( lambda pe: pe.crop_event==ce, crop_season_events)
-            if not matches:
-                pe = CropSeasonEvent(crop_season=self,
-                                   crop_event=ce,
-                                   date = self.season_start_date + timedelta(days=ce.days_after_emergence),
-                                   cdate = timezone.now(),
-                                   cuser = self.muser,
-                                   mdate = timezone.now(),
-                                   muser = self.muser
-                               )
-                pe.save()
 
+        # get the list of crop events for this crop (once!)
+        crop_events = CropEvent.objects.filter(crop = self.crop).order_by("order")
+
+        # delete any crop_season_events that correspond to fields no longer included in the field_list
+        CropSeasonEvent.objects.filter(crop_season=self).exclude(field=self.field_list.all()).delete()
+
+        # get the list of all existing crop_season_events for this crop_season
+        crop_season_events = CropSeasonEvent.objects.filter(crop_season=self)
+
+        for field in self.field_list.all():
+            # get any events that already exist for this field
+            field_events = crop_season_events.filter(field = field)
+
+            prev_end_date = self.season_start_date;
+            for ce in crop_events:
+                matches = field_events.filter(crop_event=ce).count()
+                if not matches:
+                    cse = CropSeasonEvent(crop_season=self,
+                                         field=field,
+                                         crop_event=ce,
+                                         date = prev_end_date,
+                                         cdate = timezone.now(),
+                                         cuser = self.muser,
+                                         mdate = timezone.now(),
+                                         muser = self.muser
+                                     )
+                    cse.save()
+                    prev_end_date += timedelta(days=ce.duration)
 
     class Meta:
         ordering = [ 'season_start_date', 'crop' ]
@@ -201,12 +217,9 @@ class CropSeasonEvent(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     crop_season = models.ForeignKey(CropSeason)
+    field       = models.ForeignKey(Field)
     crop_event  = models.ForeignKey(CropEvent)
     date        = models.DateField(default=timezone.now())
-
-    def get_days_after_emergence(self):
-        #if self.crop_season:
-        return self.crop_event.days_after_emergence
 
     def get_crop_season_date(self):
         return self.crop_season.season_start_date
@@ -221,10 +234,25 @@ class CropSeasonEvent(Comment, Audit):
         #return u"CropSeason Event: %s - %s: %s" % (self.crop_season, self.crop_event.name, self.date)
         return self.crop_event.name
 
-    class Meta:
-        unique_together = ( ("crop_season", "crop_event", ) , )
-        ordering = [ 'crop_season__season_start_date', 'crop_event' ]
 
+    # Propogate dates changes to later events #NOTE: doesn't work for formsets
+    def save(self, *args, **kwargs):
+        super(CropSeasonEvent, self).save(*args, **kwargs) # Save this object
+        crop_event = self.crop_event
+        later_events = CropSeasonEvent.objects.filter(crop_season=self.crop_season,
+                                                      field=self.field,
+                                                      crop_event__order__gt=self.crop_event.order)
+
+        prev_end_date = self.date + timedelta(crop_event.duration)
+        for event in later_events:
+            event.date = prev_end_date 
+            prev_end_date += timedelta(days=event.crop_event.duration)
+            event.save()
+
+    class Meta:
+        unique_together = ( ("crop_season", "field", "crop_event", ) , )
+        ordering = [ 'field', 'crop_event__order' ]
+        verbose_name = "Crop Season Event"
 
 
 #############
@@ -255,10 +283,7 @@ class WaterHistory(Comment, Audit):
         verbose_name_plural = "Water Histories"
 
     def __unicode__(self):
-        #return u"Water History Entry for %s %s" % (self.farm,
-        #                                           #self.get_field_list, 
-        #                                           self.date)
-        u"%s" % self.date
+        return u"Water History Entry for [%s] on %s" % (self.get_field_list(), self.date)
 
 
 #############################
@@ -322,7 +347,7 @@ class ProbeReading(Audit):
                                           default="User")
 
     class Meta:
-        verbose_name = "Raw Probe Reading"
+        verbose_name = "Probe Reading"
         unique_together = ( ("radio_id", "reading_datetime", ) , )
         #ordering = [ "reading_datetime", "radio_id", ]
 
@@ -350,7 +375,7 @@ class ProbeSync(Audit):
 
     class Meta:
         get_latest_by = "datetime"
-        verbose_name  = "Probe Synchronization"
+        verbose_name  = "Probe Data Synchronization"
 
 
     def __unicode__(self):
