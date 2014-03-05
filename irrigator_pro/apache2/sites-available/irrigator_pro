@@ -1,0 +1,79 @@
+<VirtualHost *:80>
+#  ServerName irrigatorpro.org
+  ServerAdmin webmaster@irrigatorpro.org
+
+  ####
+  # Root URL Settings
+  ####
+
+  DocumentRoot /prod/irrigator_pro/root
+  RedirectTemp /index.html http://irrigatorpro.org/farm/
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
+  <Directory /prod/irrigator_pro/root/>
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  ####
+  # Trac Settings
+  ####
+
+  Alias /trac/chrome/common /prod/irrigator_pro/trac/htdocs/common
+  Alias /trac/chrome/site /prod/irrigator_pro/trac/htdocs/site
+
+  <Directory /prod/irrigator_pro/trac/htdocs>
+    Options FollowSymLinks
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  WSGIScriptAlias /trac /prod/irrigator_pro/trac/cgi-bin/trac.wsgi
+  <Directory /prod/irrigator_pro/trac/cgi-bin>
+      <Files trac.wsgi>
+        WSGIApplicationGroup %{GLOBAL}
+        Order deny,allow
+        Allow from all
+      </Files>
+  </Directory>
+
+  
+  ####
+  # Django Settings 
+  ####
+  
+  Alias /robots.txt  /prod/irrigator_pro/static/robots.txt
+  Alias /favicon.ico /prod/irrigator_pro/static/favicon.ico
+  
+  AliasMatch ^/([^/]*\.css) /prod/irrigator_pro/static/styles/$1
+  
+  Alias /media  /prod/irrigator_pro/media
+  Alias /static /prod/irrigator_pro/static
+  
+  <Directory /prod/irrigator_pro/static >
+      Order deny,allow
+      Allow from all 
+  </Directory>
+  
+  WSGIScriptAlias /farm /prod/irrigator_pro/irrigator_pro/wsgi.py
+  
+  <Directory /prod/irrigator_pro/irrigator_pro>
+      <Files wsgi.py>
+          Order deny,allow
+          #Require all granted
+          Allow from all 
+      </Files>
+  </Directory>
+  
+  <Directory />
+      AllowOverride None
+      Order Deny,Allow
+      Deny from all
+  </Directory>
+
+</VirtualHost>
+

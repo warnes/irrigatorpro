@@ -1,0 +1,21 @@
+<VirtualHost *:80>
+  ServerName irrigatorpro.org
+  DocumentRoot /prod/irrigator_pro/trac/htdocs/
+  WSGIScriptAlias /trac /prod/irrigator_pro/trac/cgi-bin/trac.wsgi
+
+  <Directory /prod/irrigator_pro/trac/cgi-bin>
+      WSGIApplicationGroup %{GLOBAL}
+      Order deny,allow
+      Allow from all
+  </Directory>
+
+  Alias /trac/chrome/common /prod/irrigator_pro/trac/htdocs/common
+  Alias /trac/chrome/site /prod/irrigator_pro/trac/htdocs/site
+
+  <Directory /prod/irrigator_pro/trac/htdocs>
+    Options FollowSymLinks
+    Order allow,deny
+    Allow from all
+  </Directory>
+  
+</VirtualHost>
