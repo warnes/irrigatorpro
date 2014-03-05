@@ -22,13 +22,11 @@ class ProbeReadingFormsetView(ModelFormSetView):
         probes = Probe.objects.filter( Q(field_list__farm__farmer=user) | 
                                      Q(field_list__farm__users=user)
                                    ).distinct()
-        print "Probes:", probes
         return probes
 
     def getRadioIds(self, user):
         probes = self.getProbes(user)
         radio_ids = map(lambda p: p.radio_id,  probes)
-        print "Radio Ids:", radio_ids
         return radio_ids
 
     def get_queryset(self):
@@ -40,9 +38,6 @@ class ProbeReadingFormsetView(ModelFormSetView):
             query = query | Q( radio_id=radio_id )
 
         queryset = queryset.filter(query).distinct().order_by('radio_id','reading_datetime')
-        
-        print "QuerySet:",queryset
-
         return queryset.distinct()
 
     def get_factory_kwargs(self):
