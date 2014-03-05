@@ -27,7 +27,7 @@ $(function() {
 
 
 function setNavigation() {
-    var debug = 0;
+    var debug = 1;
 
     var path = window.location.pathname;
 
@@ -38,6 +38,8 @@ function setNavigation() {
     if( path > "/")
 	path = path.replace(/\/$/, "");
 
+    // trim leading 'farm/'
+    path = path.replace(/^\/farm/, "");
 
     path = decodeURIComponent(path);
 
@@ -49,6 +51,10 @@ function setNavigation() {
 	// Trim trailing slash
 	if( href > "/")
 	    href = href.replace(/\/$/, "");
+
+
+	// trim leading '/farm'
+	href = href.replace(/^\/farm/, "");
 
 	if(debug) { console.log("href='" + href + "', length=" + href.length ); }
 
