@@ -17,33 +17,32 @@ class ProbeReadingFormsetView(ModelFormSetView):
         'battery_percent', 
         'thermocouple_1_temp', 'thermocouple_2_temp'
                ]
-    # widgets = {
-    #    'comment':     Textarea(attrs={'rows':2, 'cols':20}),
-    #    'description': Textarea(attrs={'rows':2, 'cols':20}),
-    #    'date':        TextInput(attrs={'width':10, 'class':'hasDatePicker'}),
-    #    }
 
     def getProbes(self, user):
-        return Probe.objects.filter( Q(field_list__farm__farmer=user) | 
+        probes = Probe.objects.filter( Q(field_list__farm__farmer=user) | 
                                      Q(field_list__farm__users=user)
                                    ).distinct()
+        print "Probes:", probes
+        return probes
 
-    def getProbeCodes(self, user):
+    def getRadioIds(self, user):
         probes = self.getProbes(user)
-        codes = map(lambda p: p.radio_id,  probes)
-        return codes
+        radio_ids = map(lambda p: p.radio_id,  probes)
+        print "Radio Ids:", radio_ids
+        return radio_ids
 
     def get_queryset(self):
         user = self.request.user
         queryset = super(ProbeReadingFormsetView, self).get_queryset()
 
-
         query = Q()
-        for code in self.getProbeCodes(user):
-            query = query | Q( farm_code=code )
+        for radio_id in self.getRadioIds(user):
+            query = query | Q( radio_id=radio_id )
 
-        queryset = queryset.filter(query ).distinct()
+        queryset = queryset.filter(query).distinct().order_by('radio_id','reading_datetime')
         
+        print "QuerySet:",queryset
+
         return queryset.distinct()
 
     def get_factory_kwargs(self):
