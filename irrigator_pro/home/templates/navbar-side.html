@@ -6,7 +6,7 @@
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
 
-      <li><a href="/accounts">Account</a>
+      <li><a href="/farm/accounts">Account</a>
 
 	<ul class="nav nav-secondary">
 
@@ -16,26 +16,26 @@
           -- hrefs should *NOT* have a trailing slash -->
 
 	  <li>
-	    <a href="/accounts/email"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
+	    <a href="/farm/accounts/email"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
 	  </li>
 
 	  <li> <!-- class="active"-->
-	    <a href="/accounts/password/change"><i class="fa fa-user fa-fw"></i> Change Password</a>
+	    <a href="/farm/accounts/password/change"><i class="fa fa-user fa-fw"></i> Change Password</a>
 	  </li>
 
 	  <li> <!-- class="active"-->
-	    <a href="/accounts/contact_info"><i class="fa fa-home fa-fw"></i> Contact Information</a>
+	    <a href="/farm/accounts/contact_info"><i class="fa fa-home fa-fw"></i> Contact Information</a>
 	  </li>
 
 	</ul>
       </li>
 
-      <li><a href="/setup">Set Up</a>
+      <li><a href="/farm/setup">Set Up</a>
 
 	<ul class="nav nav-secondary">
 
 	  <li>
-	    <a href="/setup/farm">
+	    <a href="/farm/setup/farm">
 	      <i class="fa fa-leaf fa-fw"></i> 
 	      Farms and Fields 
 	      <!--i class="fa fa-caret-square-o-right fa-fw"></i-->
@@ -64,7 +64,7 @@
 	  </li>
 
 	  <li>
-	    <a href="/setup/crop_season"><i class="fa fa-pagelines fa-fw"></i> Crop Season </a>
+	    <a href="/farm/setup/crop_season"><i class="fa fa-pagelines fa-fw"></i> Crop Season </a>
 
 	    {% crop_season_list %}
 
@@ -91,38 +91,38 @@
 	  </li>
 
 	  <li>
-	    <a href="/setup/probes"><i class="fa fa-pencil fa-fw"></i> Probes</a>
+	    <a href="/farm/setup/probes"><i class="fa fa-pencil fa-fw"></i> Probes</a>
 	  </li>
 
 	</ul>
       </li>
 
 
-      <li><a href="/data_entry">Water Records</a>
+      <li><a href="/farm/data_entry">Water Records</a>
 
 	<ul class="nav nav-secondary">
 
 	  <li>
-	    <a href="/data_entry/probe_readings"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
+	    <a href="/farm/data_entry/probe_readings"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
 	  </li>
 
 	  <li>
-	    <a href="/data_entry/water_history"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
+	    <a href="/farm/data_entry/water_history"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
 	  </li>
 
 	</ul>
       </li>
 
 
-      <li><a href="/reports">Reports</a>
+      <li><a href="/farm/reports">Reports</a>
 
 	<ul class="nav nav-secondary">
 	  <li>
-	    <a href="/#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
+	    <a href="/farm/#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
 	  </li>
 
 	  <li>
-	    <a href="/#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+	    <a href="/farm/#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
 	  </li>
 	</ul>
       </li>
@@ -132,12 +132,12 @@
 	<ul class="nav nav-secondary">
 	  
 	  <li>
-	    <a href="/#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
+	    <a href="/farm/#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
 	  </li>
 	  
 	  {% if perms.auth.staff_status %}
 	    <li>
-	      <a href="/admin" target="_blank"><i class="fa fa-gear fa-fw"></i> Admin</a>
+	      <a href="/farm/admin" target="_blank"><i class="fa fa-gear fa-fw"></i> Admin</a>
 	    </li>
 	  {% endif %}
 	  
