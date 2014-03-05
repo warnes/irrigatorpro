@@ -10,12 +10,12 @@ $(function() {
     
     // Use date picker widget // Display calendar icon // Make narrower 
     $('input[id$=date]').datepicker().wrap('<i class="fa fa-calendar"></i>').css({ 
-	"width":"80px", 
+	"width":"7em", 
 	"margin": "2px" })
 
     // Use datetime picker widget // Display calendar icon // Make narrower 
     $('input[id$=datetime]').datetimepicker().wrap('<i class="fa fa-calendar"></i>').css({
-	"width": "120px",
+	"width": "12em",
 	"margin": "2px"
     }) 
 
