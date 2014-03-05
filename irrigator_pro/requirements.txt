@@ -22,3 +22,6 @@ django-model-blocks
 docutils
 pygments
 pytz
+#
+trac
+TracAccountManager
