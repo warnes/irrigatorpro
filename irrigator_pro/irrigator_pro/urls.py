@@ -37,7 +37,7 @@ urlpatterns = patterns('',
 
                        ## User authentication via django-allauth
                        (r'^accounts/', include('allauth.urls')),                       
-                       url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view()  ),
+                       url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
@@ -71,8 +71,8 @@ urlpatterns = patterns('',
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
-                       #url(r'^user/$', UserDetailView.as_view()  ),
-                       #url(r'^user/(?P<userid>\w+)$', UserDetailView.as_view()  ),
+                       url(r'^user/$', HomeView.as_view(), name="user"  ),
+                       url(r'^user/(?P<userid>\w+)$', UserDetailView.as_view()  ),
 
 
 )
