@@ -20,6 +20,26 @@
     }
 },
 {
+    "pk": 3, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 2, 
+        "key": "6b4b2608240dbc35817450c2752508b278c1d29ca7c33c1e653906e680b825a2", 
+        "sent": "2014-02-24T22:04:10.517Z", 
+        "created": "2014-02-24T22:04:10.202Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 3, 
+        "key": "30b3a319662fdd75b8fc557dcb229959d3623f71afdee183f002c1030f310f7c", 
+        "sent": "2014-03-03T15:00:46.505Z", 
+        "created": "2014-03-03T15:00:46.116Z"
+    }
+},
+{
     "pk": 1, 
     "model": "auth.permission", 
     "fields": {
@@ -1859,38 +1879,38 @@
         "last_login": "2014-02-05T16:34:13Z", 
         "groups": [], 
         "user_permissions": [
-            28, 
-            29, 
-            32, 
-            33, 
-            10, 
-            73, 
-            74, 
-            75, 
+            64, 
+            65, 
+            66, 
+            67, 
+            69, 
+            58, 
+            59, 
+            60, 
+            40, 
+            41, 
+            42, 
             46, 
             47, 
             48, 
             49, 
             50, 
             51, 
+            73, 
+            74, 
+            75, 
+            22, 
+            23, 
+            24, 
+            32, 
+            33, 
             34, 
             35, 
             36, 
             37, 
-            61, 
-            62, 
-            63, 
-            64, 
-            65, 
-            66, 
-            67, 
-            69, 
-            40, 
-            41, 
-            42, 
-            58, 
-            59, 
-            60, 
+            10, 
+            28, 
+            29, 
             70, 
             71, 
             72, 
@@ -1898,9 +1918,9 @@
             80, 
             81, 
             84, 
-            22, 
-            23, 
-            24
+            61, 
+            62, 
+            63
         ], 
         "password": "pbkdf2_sha256$12000$0JREYUxxJMxK$59+xg2G208CvyZMJ3GEEPlYrWeBh+n1+68L2Pqkl2SM=", 
         "email": "chris.butts@ars.usda.gov", 
@@ -1923,6 +1943,26 @@
         "user": 1, 
         "primary": true, 
         "email": "greg@warnes.net"
+    }
+},
+{
+    "pk": 2, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 5, 
+        "primary": true, 
+        "email": "chris.butts@ars.usda.gov"
+    }
+},
+{
+    "pk": 3, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 4, 
+        "primary": true, 
+        "email": "bill.edwards@ars.usda.gov"
     }
 }
 ]
