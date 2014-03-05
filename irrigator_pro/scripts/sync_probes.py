@@ -91,14 +91,14 @@ def putProbe(farm_code, file_date, line):
         print "data: %s" % line
         sys.stdout.flush()
 
-    ( reading_date,
+    ( reading_datetime,
       probe_code,
       radio_id,
       battery_voltage,
       battery_percent,
       soil_potential_8,
       soil_potential_16,
-      soil_potential_32,
+      soil_potential_24,
       circuit_board_temp,
       thermocouple_1_temp,
       thermocouple_2_temp,
@@ -106,20 +106,20 @@ def putProbe(farm_code, file_date, line):
     ) = line.split(',')
 
 
-    reading_date = datetime.strptime("%s EST" % reading_date, "%m/%d/%Y %H:%M:%S %Z")
+    reading_datetime = datetime.strptime("%s EST" % reading_datetime, "%m/%d/%Y %H:%M:%S %Z")
     try:
         # This can sometimes fail if a particular datetime falls into
         # a daylight-savings transition
-        reading_date = timezone.make_aware(reading_date, eastern)
+        reading_datetime = timezone.make_aware(reading_datetime, eastern)
     except pytz.exceptions.AmbiguousTimeError as e:
         print e
 
     # Only consider times between 1:00am and 9:00am on each date.
-    if reading_date.hour < 1 or reading_date.hour > 8:
+    if reading_datetime.hour < 1 or reading_datetime.hour > 8:
         return
 
     if DEBUG:
-        print reading_date
+        print reading_datetime
         sys.stdout.flush()
 
     battery_percent = battery_percent.replace("%","")
@@ -130,12 +130,12 @@ def putProbe(farm_code, file_date, line):
     # if a reading for this date already exists, update it
     try:
         rpr = ProbeReading.objects.get(farm_code    = farm_code,
-                                       reading_date__startswith=reading_date.date(),
+                                       reading_datetime__startswith=reading_datetime.date(),
                                        probe_code   = probe_code)
     except ProbeReading .DoesNotExist:
         # otherwise create a new one
         rpr = ProbeReading(farm_code    = farm_code,
-                           reading_date  = reading_date,
+                           reading_datetime  = reading_datetime,
                            probe_code    = probe_code)
 
         rpr.cuser               = user
@@ -143,14 +143,14 @@ def putProbe(farm_code, file_date, line):
 
         nRecords += 1
 
-    rpr.reading_date        = reading_date
+    rpr.reading_datetime    = reading_datetime
     rpr.radio_id            = radio_id
     rpr.file_date           = file_date
     rpr.battery_voltage     = battery_voltage
     rpr.battery_percent     = battery_percent
     rpr.soil_potential_8    = soil_potential_8
     rpr.soil_potential_16   = soil_potential_16
-    rpr.soil_potential_32   = soil_potential_32
+    rpr.soil_potential_24   = soil_potential_24
     rpr.circuit_board_temp  = circuit_board_temp
     rpr.thermocouple_1_temp = thermocouple_1_temp
     rpr.thermocouple_2_temp = thermocouple_2_temp
