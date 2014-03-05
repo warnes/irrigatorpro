@@ -18,12 +18,12 @@ execfile(activate_this, dict(__file__=activate_this))
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 import irrigator_pro.settings
 
-os.environ['TRAC_ENV'] = '/prod/trac'
-os.environ['PYTHON_EGG_CACHE'] = '/prod/trac/eggs'
+os.environ['TRAC_ENV'] = '/prod/irrigator_pro/trac'
+os.environ['PYTHON_EGG_CACHE'] = '/prod/irrigator_pro/trac/eggs'
 
 def application(environ, start_request):
     if not 'trac.env_parent_dir' in environ:
-        environ.setdefault('trac.env_path', '/prod/trac')
+        environ.setdefault('trac.env_path', '/prod/irrigator_pro/trac')
     if 'PYTHON_EGG_CACHE' in environ:
         os.environ['PYTHON_EGG_CACHE'] = environ['PYTHON_EGG_CACHE']
     elif 'trac.env_path' in environ:
