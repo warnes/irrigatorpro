@@ -23,7 +23,4 @@ mkvirtualenv --clear $APPNAME
 pip install -r requirements.txt --allow-unverified django-admin-tools
 easy_install -a readline
 
-# ## Link admin/static directory
-# export DJANGO_PATH=$( find $VIRTUAL_ENV -name "django")
-# mkdir -p static_extra
-# ln -s ${DJANGO_PATH}/contrib/admin/static/admin static/admin
+( cd thirdparty/TracDjangoAuth; python setup.py install )
