@@ -122,7 +122,6 @@ class FarmUpdateView(FarmMixin, UpdateView):
 
     def get_success_url(self):
         path = reverse('farm_id', args=[self.object.pk])
-        print path
         return path
 
 
@@ -138,7 +137,6 @@ class FarmCreateView(FarmMixin, CreateView):
 
     def get_success_url(self):
         path = self.request.path.replace('new', "%s" % self.object.pk)
-        print path
         return path
 
     def get_initial(self):

@@ -40,7 +40,6 @@ class Farms_FormsetView(ModelFormSetView):
         formset = super(Farms_FormsetView, self).construct_formset(*args, **kwargs)
         for form in formset:
             form.fields["field_list"].queryset = self.fields_filter(self.request.user) 
-            print form.fields["comment"]
         return formset
 
     def get_factory_kwargs(self):

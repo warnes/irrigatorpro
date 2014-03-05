@@ -110,7 +110,6 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         context = super(CropSeasonUpdateView, self).get_context_data(**kwargs)
         field_list = context['object'].field_list.all()
         context['field_list'] = field_list
-        print field_list
         return context
 
     def get_form(self, *args, **kwargs):
