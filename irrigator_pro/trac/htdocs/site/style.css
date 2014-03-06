@@ -1,0 +1,21 @@
+html, #banner, #footer {
+    background-color: rgb(0, 107, 0);
+}
+
+.nav li {
+    background-color: rgb(238, 252, 255);
+}
+
+body {
+    background-color: rgb(238, 252, 255);
+}
+
+#metanav .first {
+    border-left:2px solid rgb(238, 252, 255);
+    border-top-left-radius:5px;
+}
+
+#metanav .last {
+    border-right:2px solid rgb(238, 252, 255);
+    border-top-right-radius:5px;
+}
