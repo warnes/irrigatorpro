@@ -6,30 +6,6 @@
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
 
-      <li><a href="{% url 'home' %}accounts">Account</a>
-
-	<ul class="nav nav-secondary">
-
-	  {% load account %} <!-- enable user_display tag -->
-	  
-	   <!-- For tab highlighting to work properly,   --
-          -- hrefs should *NOT* have a trailing slash -->
-
-	  <li>
-	    <a href="{% url 'account_email' %}"><i class="fa fa-envelope fa-fw"></i> Change Email</a>
-	  </li>
-
-	  <li> <!-- class="active"-->
-	    <a href="{% url 'account_change_password' %}"><i class="fa fa-user fa-fw"></i> Change Password</a>
-	  </li>
-
-	  <li> <!-- class="active"-->
-	    <a href="{% url 'contact_info' %}"><i class="fa fa-home fa-fw"></i> Contact Information</a>
-	  </li>
-
-	</ul>
-      </li>
-
       <li><a href="{% url 'home' %}setup">Set Up</a>
 
 	<ul class="nav nav-secondary">

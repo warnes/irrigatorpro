@@ -247,6 +247,9 @@ files = os.listdir(ftp_cache_path)
 data_files = filter(lambda x: re.match("[0-9]+_[0-9]+\.txt", x), files)
 filename_farm_dates = map(parse_filename, data_files)
 
+filename_farm_dates = sorted( filename_farm_dates, key=lambda x: x[2] )
+
+
 ## Iterate across files
 for (filename, farm, file_date) in filename_farm_dates:
 
