@@ -243,21 +243,6 @@ class CropSeasonEvent(Comment, Audit):
     def __unicode__(self):
         return self.crop_event.name
 
-
-    # Propogate dates changes to later events #NOTE: doesn't work for formsets
-    def save(self, *args, **kwargs):
-        super(CropSeasonEvent, self).save(*args, **kwargs) # Save this object
-        crop_event = self.crop_event
-        later_events = CropSeasonEvent.objects.filter(crop_season=self.crop_season,
-                                                      field=self.field,
-                                                      crop_event__order__gt=self.crop_event.order)
-
-        prev_end_date = self.date + timedelta(crop_event.duration)
-        for event in later_events:
-            event.date = prev_end_date
-            prev_end_date += timedelta(days=event.crop_event.duration)
-            event.save()
-
     class Meta:
         unique_together = ( ("crop_season", "field", "crop_event", ) , )
         ordering = [ 'field', 'crop_event__order' ]
