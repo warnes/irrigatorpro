@@ -32,6 +32,7 @@ crop_season_fields = (
                    'description',
                    'crop',
                    'season_start_date',
+                   'season_end_date',
                    'field_list',
                    'comment'
                    )
@@ -92,7 +93,9 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         if not user_pk in pk_list:
             return redirect( reverse('crop_season_list') )
         else:
-            return super(CropSeasonUpdateView, self).dispatch(*args, **kwargs)
+            retval = super(CropSeasonUpdateView, self).dispatch(*args, **kwargs)
+
+        return retval
 
     def get_success_url(self):
         return reverse('crop_season_id', args=[self.object.pk])
@@ -120,7 +123,6 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         form = super(CropSeasonUpdateView, self).get_form(*args, **kwargs)
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
-
 
 
 class CropSeasonCreateView(CreateWithInlinesView):
