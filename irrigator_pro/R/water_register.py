@@ -8,11 +8,11 @@ import math
 This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
 """
 
-if __name__ == "__main__":
+try:
     # Add the directory *above* this to the python path so we can find our modules
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
-else: # assume we're running in the script directory
+except: # assume we're running in the script directory
     sys.path.append("..")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
@@ -159,22 +159,45 @@ def caclulateAWC_RainIrrigation(field, date):
         return ( 0.0, 0.0 )
 
 
+def get_daily_water_use(field, date):
+    cse = CropSeasonEvent.objects.filter(crop_season__field_list=field,
+                                         date__lte=date).distinct().order_by('-date').first()
+    dwu = cse.crop_event.daily_water_use
+    return dwu
+
 
 if __name__ == "__main__":
-    farm = Farm.objects.get(pk=1)
+
+    farm  = Farm.objects.get(pk=1)
     field = Field.objects.filter(farm=farm).first()
 
-    AWC_initial = 2.5
+    crop_season = CropSeason.objects.get(name="Corn 2013")
+
+    ## Determine the first event date (planting) to show
+    planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
+                                                    field=field,
+                                                    date__lte=date,
+                                                    crop_event__name='Planting').order_by("-date").first()
+    start_date = planting_event.date
+
+    ## Determine the last event date (end of season) to show
+    end_date = crop_season.season_end_date
+
+    AWC_initial = float(field.soil_type.max_available_water)
 
     print "** Farm         :", farm
     print "** Field        :", field
     print "** Starting AWC :", AWC_initial
     print
 
+    date = start_date
     AWC_prev = AWC_initial
-    for day_of_month in range(1,31):
-        date = datetime.date(2013, 4, day_of_month)
-        print "AWC for date: %s  " % date,
+    while date <= end_date:
+        print "Date: %s  " % date,
+
+        DWU = float(get_daily_water_use(field, date))
+        print "-%3.2f  " % DWU,
+
         AWC = calculateAWC_ProbeReading(field, date)
         if AWC:
             AWC_plus = float("NaN")
@@ -185,9 +208,10 @@ if __name__ == "__main__":
             print "%3.2f + %3.2f + %3.2f = %3.2f" % ( AWC_prev,
                                                       AWC_plus[0],
                                                       AWC_plus[1],
-                                                      AWC )
-        AWC_prev = AWC
+                                                      AWC-DWU )
+        AWC_prev = AWC-DWU
 
+        date += datetime.timedelta(days=1)
 
 
 
