@@ -6,9 +6,9 @@
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
 
-      <li><a href="{% url 'home' %}setup">Set Up</a>
+      <!-- li><a href="{% url 'home' %}setup">Set Up</a -->
 
-	<ul class="nav nav-secondary">
+	<!-- ul class="nav nav-secondary" -->
 
 	  <li>
 	    <a href="{% url 'farm_list' %}">
@@ -20,7 +20,7 @@
 	    {% farm_list %}
 
 	    {% if farm_list %}
-	      <ul class="nav">
+	      <ul class="nav nav-secondary">
 		{% for item in farm_list %}
 		  <li>
   		    <a href="{% url 'farm_list' %}{{ item.pk }}">
@@ -45,7 +45,7 @@
 	    {% crop_season_list %}
 
 	    {% if crop_season_list %}
-	      <ul class="nav">
+	      <ul class="nav nav-secondary">
 		{% for item in crop_season_list %}
 		  <li>
   		    <a href="{% url 'crop_season_list' %}{{ item.pk }}">
@@ -70,13 +70,13 @@
 	    <a href="{% url 'probes' %}"><i class="fa fa-pencil fa-fw"></i> Probes</a>
 	  </li>
 
-	</ul>
-      </li>
+	<!-- /ul -->
+      <!-- /li -->
 
 
-      <li><a href="{% url 'home' %}data_entry">Water Records</a>
+      <!-- <li><a href="{% url 'home' %}data_entry">Water Records</a> -->
 
-	<ul class="nav nav-secondary">
+      <!-- 	<ul class="nav nav-secondary"> -->
 
 	  <li>
 	    <a href="{% url 'probe_readings' %}"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
@@ -86,13 +86,13 @@
 	    <a href="{% url 'water_history' %}"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
 	  </li>
 
-	</ul>
-      </li>
+      <!-- 	</ul> -->
+      <!-- </li> -->
 
 
-      <li><a href="{% url 'home' %}reports">Reports</a>
+      <!-- <li><a href="{% url 'home' %}reports">Reports</a> -->
 
-	<ul class="nav nav-secondary">
+      <!-- 	<ul class="nav nav-secondary"> -->
 	  <li>
 	    <a href="{% url 'home' %}#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
 	  </li>
@@ -100,12 +100,12 @@
 	  <li>
 	    <a href="{% url 'home' %}#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
 	  </li>
-	</ul>
-      </li>
+      <!-- 	</ul> -->
+      <!-- </li> -->
 
-      <li><a href="">Settings</a>
+      <!-- <li><a href="">Settings</a> -->
 
-	<ul class="nav nav-secondary">
+      <!-- 	<ul class="nav nav-secondary"> -->
 
 	  <li>
 	    <a href="{% url 'home' %}#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
