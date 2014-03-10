@@ -12,13 +12,13 @@
 
 	  <li>
 	    <a href="{% url 'farm_list' %}">
-	      <i class="fa fa-leaf fa-fw"></i> 
-	      Farms and Fields 
+	      <i class="fa fa-leaf fa-fw"></i>
+	      Farms and Fields
 	      <!--i class="fa fa-caret-square-o-right fa-fw"></i-->
 	    </a>
 
 	    {% farm_list %}
-	    
+
 	    {% if farm_list %}
 	      <ul class="nav">
 		{% for item in farm_list %}
@@ -28,7 +28,7 @@
   		    </a>
 		  </li>
 		{% endfor %}
-		
+
 		<li>
 		  <a href="{% url 'farm_list' %}new">
   		    <i class="fa fa-plus fa-fw"></i> New Farm
@@ -53,10 +53,10 @@
   		    </a>
 		  </li>
 		{% endfor %}
-		
+
 		<li>
 		  <a href="{% url 'crop_season_list' %}new">
-  		    <i class="fa fa-plus fa-fw"></i> New Planting
+  		    <i class="fa fa-plus fa-fw"></i> New Season
 		  </a>
 		</li>
               </ul>
@@ -104,27 +104,27 @@
       </li>
 
       <li><a href="">Settings</a>
-	
+
 	<ul class="nav nav-secondary">
-	  
+
 	  <li>
 	    <a href="{% url 'home' %}#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
 	  </li>
-	  
+
 	  {% if perms.auth.staff_status %}
 	    <li>
 	      <a href="{% url 'home' %}admin"
 		 target="_blank"><i class="fa fa-gear fa-fw"></i>
-		Admin 
-		<i class="fa fa-external-link" 
+		Admin
+		<i class="fa fa-external-link"
 		   style="padding-left: 5px; color: #80B580; font-weight: bold;"></i>
 	      </a>
 	    </li>
 	  {% endif %}
-	  
+
 	</ul>
       </li>
-      
+
 <!-- /#side-menu -->
 </div>
 <!-- /.sidebar-collapse -->
