@@ -18,7 +18,7 @@ class FarmAdmin(AuditAdmin):
     list_display  = [ 'farmer', 'name', 'get_users' ] + Location.fields
     list_editable = ['name'] + list_display[3:]
     list_filter = ['farmer']
-                   
+
 
 admin.site.register(Farm, FarmAdmin)
 
@@ -59,25 +59,6 @@ class SoilTypeAdmin(AuditAdmin):
     list_editable = list_display[1:]
     inlines = [ SoilTypeParameterInline ]
 
-    ## Set cuser and muser for the Contact_Info inline
-    def save_formset(self, request, form, formset, change):
-        instances = formset.save(commit=False)
-
-        for instance in instances:
-            # not sure why this doesn't work:
-            #if isinstance(instance, CropEventInline):
-
-            # only set cname on create
-            if not hasattr(instance, 'cuser'):
-                instance.cuser = request.user
-
-            # always set mname
-            instance.muser = request.user
-
-            instance.save()
-
-
-
 
 admin.site.register(SoilType, SoilTypeAdmin)
 
@@ -111,35 +92,19 @@ class CropEventInline(admin.TabularInline):
 
 
 class CropAdmin(AuditAdmin):
-    fields = [ 'name', 'variety', 'description' ] \
+    fields = [ 'name', 'variety', 'description', 'max_root_depth', 'season_length' ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = ['id', 'name', 'variety', 'description']
+    list_display  = ['id', 'name', 'variety', 'description', 'max_root_depth', 'season_length' ]
     list_editable = list_display[1:]
     inlines = [ CropEventInline ]
     list_filter = ['name']
 
-
-    ## Set cuser and muser for the Contact_Info inline
-    def save_formset(self, request, form, formset, change):
-        instances = formset.save(commit=False)
-
-        for instance in instances:
-            # not sure why this doesn't work:
-
-            # only set cname on create
-            if not hasattr(instance, 'cuser'):
-                instance.cuser = request.user
-
-            # always set mname
-            instance.muser = request.user
-
-            instance.save()
-
-#readonly = False
-readonly = True
+readonly = False
+#readonly = True
 if not readonly:
     admin.site.register(Crop, CropAdmin)
+    print "!!!!!! !!!!!!"
 
 
 ###################
@@ -156,9 +121,9 @@ class CropEventAdmin(AuditAdmin):
                 ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = [ 'crop', 
+    list_display  = [ 'crop',
                       'order',
-                      'name', 
+                      'name',
                       'duration',
                       'daily_water_use',
                       'key_event',
@@ -182,8 +147,9 @@ class CropSeasonEventInline(admin.TabularInline):
 
 class CropSeasonAdmin(AuditAdmin):
     fields = NameDesc.fields \
-             + [ 'field_list', 
+             + [ 'field_list',
                  'season_start_date',
+                 'season_end_date',
                  'crop',
                 ] \
              + Comment.fields \
@@ -191,7 +157,7 @@ class CropSeasonAdmin(AuditAdmin):
     list_display  = ['pk', 'name', 'description', 'get_field_list', ] + fields[4:-5]
     list_editable = [ 'name', 'description', ] + fields[4:-5]
     inlines = [ CropSeasonEventInline ]
-    list_filter = ['field_list__farm__farmer', 
+    list_filter = ['field_list__farm__farmer',
                    'field_list__farm',
                    'season_start_date']
 
@@ -210,9 +176,9 @@ class CropSeasonEventAdmin(AuditAdmin):
              + Comment.fields
     list_display  = fields[:-1]
     list_editable = [ 'date' ]
-    list_filter = ['crop_season', 
-                   'crop_season__field_list__farm__farmer', 
-                   'crop_season__field_list__farm', 
+    list_filter = ['crop_season',
+                   'crop_season__field_list__farm__farmer',
+                   'crop_season__field_list__farm',
                    'crop_season__season_start_date']
 
 admin.site.register(CropSeasonEvent, CropSeasonEventAdmin)
@@ -248,12 +214,12 @@ class ProbeAdmin(AuditAdmin):
     list_display  = [ 'pk',
                       'radio_id',
                       'name',
-                      'get_field_list', 
+                      'get_field_list',
                     ]
     list_editable = [ 'radio_id', 'name' ]
     list_filter = [ 'field_list__farm__farmer',
                     'field_list__farm',
-                  ] 
+                  ]
 
     # def get_form(self, request, obj=None, **kwargs):
     #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
@@ -282,8 +248,8 @@ admin.site.register(ProbeSync, ProbeSyncAdmin)
 ####################
 
 class ProbeReadingAdmin(AuditAdmin):
-    fields = [ 'farm_code', 
-               'probe_code', 
+    fields = [ 'farm_code',
+               'probe_code',
                'file_date',
                'reading_datetime',
                'radio_id',
@@ -291,20 +257,20 @@ class ProbeReadingAdmin(AuditAdmin):
                'soil_potential_16',
                'soil_potential_24',
                'battery_voltage',
-               'battery_percent', 
+               'battery_percent',
                'circuit_board_temp',
                'thermocouple_1_temp',
                'thermocouple_2_temp',
                'minutes_awake',
-               'source' 
+               'source'
              ]
-    list_display = [ 'radio_id', 
+    list_display = [ 'radio_id',
                      'reading_datetime',
-                     'soil_potential_8', 
+                     'soil_potential_8',
                      'soil_potential_16',
                      'soil_potential_24',
                      'battery_voltage',
-                     'battery_percent', 
+                     'battery_percent',
                      'source',
                    ]
     list_editable = []

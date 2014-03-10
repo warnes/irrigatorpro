@@ -117,13 +117,8 @@ class Crop(NameDesc, Comment, Audit):
                                          )
     season_length_days = models.PositiveSmallIntegerField(verbose_name="Season Length (days)")
 
-
-    DEPTH_VALUES       = ( 8, 16, 24 )
-    DEPTH_CHOICES      = ( (8,  "8 inches"),
-                           (16, "16 inches"),
-                           (24, "24 inches") )
-    max_root_depth     = models.PositiveSmallIntegerField(choices=DEPTH_CHOICES,
-                                                          verbose_name="Maximum root depth",
+    max_root_depth     = models.PositiveSmallIntegerField(default=18,
+                                                          verbose_name="Maximum Root Depth (inches)"
                                                          )
 
     def __unicode__(self):
