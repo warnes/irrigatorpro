@@ -47,10 +47,10 @@ class Field(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
 
     farm          = models.ForeignKey(Farm)
-    acres         = models.DecimalField(max_digits=5, 
+    acres         = models.DecimalField(max_digits=5,
                                         decimal_places=2) # ###.##
     soil_type     = models.ForeignKey('SoilType')
-    irr_capacity  = models.DecimalField(max_digits=3, 
+    irr_capacity  = models.DecimalField(max_digits=3,
                                         verbose_name='Irrigation Capacity',
                                         decimal_places=2) # #.##
 
@@ -112,9 +112,19 @@ class Crop(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    variety = models.CharField(max_length=32,
-                               blank=True,
-    )
+    variety            = models.CharField(max_length=32,
+                                          blank=True,
+                                         )
+    season_length_days = models.PositiveSmallIntegerField(verbose_name="Season Length (days)")
+
+
+    DEPTH_VALUES       = ( 8, 16, 24 )
+    DEPTH_CHOICES      = ( (8,  "8 inches"),
+                           (16, "16 inches"),
+                           (24, "24 inches") )
+    max_root_depth     = models.PositiveSmallIntegerField(choices=DEPTH_CHOICES,
+                                                          verbose_name="Maximum root depth",
+                                                         )
 
     def __unicode__(self):
         #return u"%s - %s" % (self.name, self.variety)
@@ -131,7 +141,7 @@ class CropEvent(NameDesc, Comment, Audit):
     crop             = models.ForeignKey(Crop)
     order            = models.PositiveSmallIntegerField()
     duration         = models.PositiveSmallIntegerField()
-    daily_water_use  = models.DecimalField(max_digits=3, 
+    daily_water_use  = models.DecimalField(max_digits=3,
                                            decimal_places=2)
     key_event        = models.BooleanField(default=False)
 
@@ -158,13 +168,19 @@ class CropSeason(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
     season_start_date = models.DateField(default=timezone.now(),
                                          verbose_name="Season Start Date",
-                                         ) ## May need a better name
+                                         )
+    season_end_date = models.DateField(default=timezone.now() + timedelta(days=154),
+                                       verbose_name="Approximate Season End Date",
+                                      ) ## UI needs to increment
+                                        ## this off of user-provied
+                                        ## season_start_date
+
     crop              = models.ForeignKey(Crop)
     field_list        = models.ManyToManyField(Field)
 
     def crop_season_year(self):
         return season_start_date.year
-        
+
     def get_field_list(self):
         field_list = self.field_list.all()
         if field_list:
@@ -245,7 +261,7 @@ class CropSeasonEvent(Comment, Audit):
 
         prev_end_date = self.date + timedelta(crop_event.duration)
         for event in later_events:
-            event.date = prev_end_date 
+            event.date = prev_end_date
             prev_end_date += timedelta(days=event.crop_event.duration)
             event.save()
 
@@ -340,7 +356,7 @@ class ProbeReading(Audit):
     minutes_awake       = models.PositiveSmallIntegerField()
 
     SOURCE_CHOICES = ( ('UGADB', 'UGA Database'),
-                       ('User', 'User Entry'), 
+                       ('User', 'User Entry'),
                      )
     source             = models.CharField(max_length=6,
                                           choices=SOURCE_CHOICES,
@@ -352,7 +368,7 @@ class ProbeReading(Audit):
         #ordering = [ "reading_datetime", "radio_id", ]
 
     def __unicode__(self):
-        return u"ProbeReading %s on %s" % ( self.radio_id.strip(), 
+        return u"ProbeReading %s on %s" % ( self.radio_id.strip(),
                                             self.reading_datetime,
                                           )
     def temperature(self):
