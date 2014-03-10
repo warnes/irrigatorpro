@@ -92,10 +92,12 @@ class CropEventInline(admin.TabularInline):
 
 
 class CropAdmin(AuditAdmin):
-    fields = [ 'name', 'variety', 'description', 'max_root_depth', 'season_length' ] \
+    fields = [ 'name', 'variety', 'description', 'max_root_depth',
+               'season_length_days' ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = ['id', 'name', 'variety', 'description', 'max_root_depth', 'season_length' ]
+    list_display  = ['id', 'name', 'variety', 'description',
+                     'max_root_depth', 'season_length_days' ]
     list_editable = list_display[1:]
     inlines = [ CropEventInline ]
     list_filter = ['name']
@@ -104,8 +106,6 @@ readonly = False
 #readonly = True
 if not readonly:
     admin.site.register(Crop, CropAdmin)
-    print "!!!!!! !!!!!!"
-
 
 ###################
 ### Crop Events ###
