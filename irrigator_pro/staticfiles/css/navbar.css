@@ -13,7 +13,7 @@
 	font-weight: bold;
 }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
-	color: LimeGreen; 
+	color: LimeGreen;
 }
 .navbar-default .navbar-text {
 	color: #eefcff;
@@ -22,21 +22,21 @@
 	color: #eefcff;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-	color: LimeGreen; 
+	color: LimeGreen;
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-	color: DarkGreen; 
-	background-color: #80B580; 
+	color: DarkGreen;
+	background-color: #80B580;
 }
 .navbar-static-side > .open > a, .navbar-static-side > .open > a:hover, .navbar-static-side > .open > a:focus {
-	color: LimeGreen; 
+	color: LimeGreen;
 	background-color: #37aafe;
 }
 .navbar-default .navbar-toggle {
 	border-color: #37aafe;
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
-	color: LimeGreen; 
+	color: LimeGreen;
 	background-color: #37aafe;
 }
 .navbar-default .navbar-toggle .icon-bar {
@@ -50,20 +50,20 @@
 	color: #eefcff;
 }
 .navbar-default .navbar-link:hover {
-	color: LimeGreen; 
+	color: LimeGreen;
 }
 
 @media (max-width: 767px) {
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-	    color: LimeGreen; 
+	    color: LimeGreen;
 	}
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-	    color: LimeGreen; 
+	    color: LimeGreen;
 	    color: #fffebb;
 	}
 	.navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-	        color: DarkGreen; 
-		background-color: #80B580; 
+	        color: DarkGreen;
+		background-color: #80B580;
 	}
 }
 
@@ -81,11 +81,11 @@
 }
 
 .navbar-static-side a:hover {
-    color: DarkGreen !important; 
+    color: DarkGreen !important;
 }
 
 .nav li.active > a {
-    background-color: #80B580; 
+    background-color: #80B580;
     color: DarkGreen !important;
 }
 
@@ -133,8 +133,12 @@
 /* Use <a> to add line separating sections instead of <li> */
 .navbar-static-side ul li {
     border-bottom: none;
-} 
+}
 
 .navbar-static-side ul li > a {
     border: 1px solid #e7e7e7;
-} 
+}
+
+.fa-right {
+    float:right;
+}
