@@ -133,9 +133,9 @@ class CropEventAdmin(AuditAdmin):
 
 admin.site.register(CropEvent, CropEventAdmin)
 
-################
+##################
 ### CropSeason ###
-################
+##################
 
 class CropSeasonEventInline(admin.TabularInline):
     model = CropSeasonEvent
@@ -154,8 +154,8 @@ class CropSeasonAdmin(AuditAdmin):
                 ] \
              + Comment.fields \
              + Audit.fields
-    list_display  = ['pk', 'name', 'description', 'get_field_list', ] + fields[4:-5]
-    list_editable = [ 'name', 'description', ] + fields[4:-5]
+    list_display  = ['pk', 'name', 'description', 'get_field_list', ] + fields[3:-5]
+    list_editable = [ 'name', 'description', ] + fields[3:-5]
     inlines = [ CropSeasonEventInline ]
     list_filter = ['field_list__farm__farmer',
                    'field_list__farm',
