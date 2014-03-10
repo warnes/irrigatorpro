@@ -102,8 +102,8 @@ class CropAdmin(AuditAdmin):
     inlines = [ CropEventInline ]
     list_filter = ['name']
 
-readonly = False
-#readonly = True
+#readonly = False
+readonly = True
 if not readonly:
     admin.site.register(Crop, CropAdmin)
 
