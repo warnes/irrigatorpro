@@ -25,7 +25,7 @@ def crop_seasons_filter(user):
 def fields_filter(user):
         return Field.objects.filter( Q(farm__farmer=user) |
                                      Q(farm__users=user) ).distinct()
-        
+
 
 crop_season_fields = (
                    'name',
@@ -34,7 +34,7 @@ crop_season_fields = (
                    'season_start_date',
                    'field_list',
                    'comment'
-                   ) 
+                   )
 
 
 class CropSeasonListView(ListView):
@@ -53,22 +53,23 @@ class CropSeasonListView(ListView):
 class CropSeasonEventsInline(InlineFormSet):
     model = CropSeasonEvent
     can_delete=False
-    fields = [ 
+    fields = [
                'field',
                'crop_event',
                'date',
              ]
-    extra = 0 
-    
+    extra = 0
+
     def get_factory_kwargs(self):
         kwargs = super(CropSeasonEventsInline, self).get_factory_kwargs()
         kwargs[ 'extra' ] = self.extra
         return kwargs
-        
+
 
 class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
     class NewMeta:
-            readonly = [ 'crop_event', 'field' ]
+        readonly = [ 'crop_event', ]# 'field' ]
+        hidden = [ 'field' ]
 
 
 class CropSeasonUpdateView(UpdateWithInlinesView):
@@ -100,10 +101,10 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         user = self.request.user
         queryset = super(CropSeasonUpdateView, self).get_queryset()
 
-        queryset = queryset.filter( Q(field_list__farm__farmer=user) | 
-                                    Q(field_list__farm__users=user) 
+        queryset = queryset.filter( Q(field_list__farm__farmer=user) |
+                                    Q(field_list__farm__users=user)
                                   )
-        
+
         return queryset.distinct()
 
     def get_context_data(self, **kwargs):
@@ -139,10 +140,10 @@ class CropSeasonCreateView(CreateWithInlinesView):
         user = self.request.user
         queryset = super(CropSeasonCreateView, self).get_queryset()
 
-        queryset = queryset.filter( Q(field_list__farm__farmer=user) | 
-                                    Q(field_list__farm__users=user) 
+        queryset = queryset.filter( Q(field_list__farm__farmer=user) |
+                                    Q(field_list__farm__users=user)
                                   )
-        
+
         return queryset.distinct()
 
     def get_factory_kwargs(self):
@@ -160,8 +161,8 @@ class CropSeasonCreateView(CreateWithInlinesView):
 class CropSeasonDeleteView(DeleteView):
     template_name = "farms/crop_season_delete.html"
     model = CropSeason
-    pk_field = 'pk' 
-    
+    pk_field = 'pk'
+
     success_url = reverse_lazy('crop_season_list')
 
     crop_season_list = None

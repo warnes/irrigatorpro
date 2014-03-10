@@ -25,7 +25,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     def get_users(self):
         user_list = self.users.all()
         if user_list:
-            return ', '.join([ obj.username for obj in user_list])
+            return ', '.join([ obj.email for obj in user_list])
         else:
             return ''
 
@@ -122,8 +122,7 @@ class Crop(NameDesc, Comment, Audit):
                                                          )
 
     def __unicode__(self):
-        #return u"%s - %s" % (self.name, self.variety)
-        return self.name
+        return u"%s (%s)" % (self.name, self.variety)
 
     class Meta:
         ordering = ['name']
@@ -179,7 +178,7 @@ class CropSeason(NameDesc, Comment, Audit):
     def get_field_list(self):
         field_list = self.field_list.all()
         if field_list:
-            return ', '.join([ obj.name for obj in field_list])
+            return ', '.join([ str(obj) for obj in field_list])
         else:
             return ''
 
@@ -242,7 +241,6 @@ class CropSeasonEvent(Comment, Audit):
         verbose_name = "CropSeason Event"
 
     def __unicode__(self):
-        #return u"CropSeason Event: %s - %s: %s" % (self.crop_season, self.crop_event.name, self.date)
         return self.crop_event.name
 
 
@@ -313,7 +311,7 @@ class Probe(NameDesc, Comment, Audit):
     def get_field_list(self):
         field_list = self.field_list.all()
         if field_list:
-            return ', '.join([ obj.name for obj in field_list])
+            return ', '.join([ str(obj) for obj in field_list])
         else:
             return ''
 

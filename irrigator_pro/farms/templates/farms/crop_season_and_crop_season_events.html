@@ -15,7 +15,7 @@
       <tbody>
 	{% for input in form %}
 	  <tr>
-	    <td>{{ input.label_tag }}</td> 
+	    <td>{{ input.label_tag }}</td>
 	    <td>{{ input }}</td>
 	    <td>
 	      {% if input.errors %}
@@ -24,7 +24,7 @@
 	        </div>
 	      {% else %}
 		{% if input.field.required %}(Required){% endif %}
-	      {% endif %}	
+	      {% endif %}
 	    </td>
 	  </tr>
 	{% endfor %}
@@ -32,19 +32,19 @@
     </table>
 
     <h2>Fields</h2>
-    
+
     {% with form=inlines|first %}
-      
+
       {{ form.management_form }}
-      
+
       {% if form|first  %}
 
 	{% for field_object in field_list %}
 
 	  <div class="cropseason_field_wrapper">
 
-	  <h3>{{field_object.name}}</h3>
-	  
+	  <h3>{{ field_object }}</h3>
+
 	  <table id="formset" class="formset default-form">
 	    <thead>
 	      <tr>
@@ -62,20 +62,20 @@
 	      {% for record in form %}
 
 		{% if record.field.value == field_object.pk %}
-		  
+
 		  <tr>
 		    {% for field in record %}
-		      {% if not field.is_hidden %}
+		      {% if field.is_hidden %}
+			<td class="hidden">
+			  {{ field }}
+			</td>
+		      {% else %}
 			<td>
 			  {% if field.errors %}
 			    <div class="inline-alert alert-danger">
 			      {{ field.errors }}
 			    </div>
 			  {% endif %}
-			  {{ field }}
-			</td>
-		      {% else %}
-			<td class="hidden">
 			  {{ field }}
 			</td>
 		      {% endif %}
@@ -91,19 +91,19 @@
 	  </div>
 
         {% endfor %}
-	
+
       {% else %}
-	
+
 	<div class="alert alert-success">Click 'Save Changes' to show events</div>
-	
+
       {% endif %}
-      
-      
+
+
     {% endwith %}
 
 
     <div class="submit-bar">
-      
+
       <button value="Submit" type="submit" class="btn btn-success">
 	<i class="fa fa-floppy-o"></i> Save Changes
       </button>

@@ -1,12 +1,12 @@
 from django import forms
 from django.utils.safestring import mark_safe
 from django.db.models.base import Model
-
+from django.forms.widgets import HiddenInput
 
 class SpanWidget(forms.Widget):
     '''Renders a value wrapped in a <span> tag.
-    
-    Requires use of specific form support. (see ReadonlyForm 
+
+    Requires use of specific form support. (see ReadonlyForm
     or ReadonlyModelForm)
     '''
 
@@ -23,11 +23,11 @@ class SpanWidget(forms.Widget):
 
 class SpanField(forms.Field):
     '''A field which renders a value wrapped in a <span> tag.
-    
-    Requires use of specific form support. (see ReadonlyForm 
+
+    Requires use of specific form support. (see ReadonlyForm
     or ReadonlyModelForm)
     '''
-    
+
     def __init__(self, *args, **kwargs):
         kwargs['widget'] = kwargs.get('widget', SpanWidget)
         super(SpanField, self).__init__(*args, **kwargs)
@@ -39,27 +39,34 @@ class Readonly(object):
 
     class NewMeta:
         readonly = tuple()
+        hidden = tuple()
 
     def __init__(self, *args, **kwargs):
         super(Readonly, self).__init__(*args, **kwargs)
         readonly = self.NewMeta.readonly
-        if not readonly:
-            return
 
-        for name, field in form.fields.items():
-            if name in readonly:
-                field.widget = SpanWidget()
-            elif not isinstance(field, SpanField):
-                continue
+        hidden = self.NewMeta.hidden
+        if hidden:
+            for name, field in form.fields.items():
+                if name in hidden:
+                    field.widget = HiddenInput()
 
-                field_obj  = getattr(form.instance, name)
-                field.widget.original_str = str(field_obj)
+        if readonly:
+            for name, field in form.fields.items():
+                if name in readonly:
+                    field.widget = SpanWidget()
+                elif not isinstance(field, SpanField):
+                    continue
 
-                if isinstance(field_obj, Model):
-                    field.widget.original_value = field_obj.pk
-                else: 
-                    field.widget.original_value = str(field_obj)
+                    field_obj  = getattr(form.instance, name)
+                    field.widget.original_str = str(field_obj)
 
+                    if isinstance(field_obj, Model):
+                        field.widget.original_value = field_obj.pk
+                    else:
+                        field.widget.original_value = str(field_obj)
+
+        return
 
 
 class ReadonlyFormset(object):
@@ -69,27 +76,35 @@ class ReadonlyFormset(object):
 
     class NewMeta:
         readonly = tuple()
+        hidden = tuple()
 
 
     def construct_formset(self):
         formset = super(ReadonlyFormset, self).construct_formset()
+
+        hidden = self.NewMeta.hidden
+        if hidden:
+            for form in formset.forms:
+                for name, field in form.fields.items():
+                    if name in hidden:
+                        field.widget = HiddenInput()
+
+
         readonly = self.NewMeta.readonly
-        if not readonly:
-            return
+        if readonly:
+            for form in formset.forms:
+                for name, field in form.fields.items():
+                    if name in readonly:
+                        field.widget = SpanWidget()
+                    elif not isinstance(field, SpanField):
+                        continue
 
-        for form in formset.forms:
-            for name, field in form.fields.items():
-                if name in readonly:
-                    field.widget = SpanWidget()
-                elif not isinstance(field, SpanField):
-                    continue
+                    field_obj  = getattr(form.instance, name)
+                    field.widget.original_str = str(field_obj)
 
-                field_obj  = getattr(form.instance, name)
-                field.widget.original_str = str(field_obj)
-
-                if isinstance(field_obj, Model):
-                    field.widget.original_value = field_obj.pk
-                else: 
-                    field.widget.original_value = str(field_obj)
+                    if isinstance(field_obj, Model):
+                        field.widget.original_value = field_obj.pk
+                    else:
+                        field.widget.original_value = str(field_obj)
 
         return formset

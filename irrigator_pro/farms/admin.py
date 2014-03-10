@@ -188,10 +188,10 @@ admin.site.register(CropSeasonEvent, CropSeasonEventAdmin)
 #####################
 
 class WaterHistoryAdmin(AuditAdmin):
-    fields = [ 'field_list', 'date', 'rain', 'irrigation', 'available_water_content' ] \
+    fields = [ 'field_list', 'date', 'rain', 'irrigation' ] \
              + Comment.fields
-    list_display  = [ 'pk', 'get_field_list' ] + fields[2:-1]
-    list_editable = [ 'rain', 'irrigation' ]
+    list_display  = [ 'pk', 'get_field_list' ] + fields[1:-1]
+    list_editable = [ 'date', 'rain', 'irrigation' ]
     readonly_fields = [ 'available_water_content' ]
     list_filter = [ 'field_list__farm__farmer', 'field_list__farm', 'date' ]
 
