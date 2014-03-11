@@ -207,16 +207,21 @@ admin.site.register(WaterHistory, WaterHistoryAdmin)
 #############
 
 class ProbeAdmin(AuditAdmin):
-    fields = NameDesc.fields \
-             + [ 'field_list', 'radio_id' ] \
+    fields = [ 'crop_season', 'radio_id' ] \
+             + NameDesc.fields \
+             + [ 'field_list', ] \
              + Comment.fields \
              + Audit.fields
     list_display  = [ 'pk',
+                      'crop_season',
                       'radio_id',
                       'name',
                       'get_field_list',
                     ]
-    list_editable = [ 'radio_id', 'name' ]
+    list_editable = [ 'crop_season',
+                      'radio_id',
+                      'name'
+                    ]
     list_filter = [ 'field_list__farm__farmer',
                     'field_list__farm',
                   ]
