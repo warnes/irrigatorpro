@@ -61,7 +61,7 @@ def crop_season_list(parser, token):
         context['crop_season_list'] = crop_season_list
 
         for crop_season in crop_season_list:
-            crop_season.field_list_list = crop_season.field_list.get_query_set().all()
+            crop_season.field_list_all = crop_season.field_list.all()
 
         return ''
 
