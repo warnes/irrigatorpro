@@ -10,7 +10,7 @@ class ContextNode(Node):
     self.func = func
 
   def render(self, context):
-    return self.func(context) 
+    return self.func(context)
 
 # @register.tag
 # def some_tag(parser, tokens):
@@ -28,7 +28,7 @@ class ContextNode(Node):
 #     context[context_var] = SomeModel.objects.filter(user = resolve_variable(user_var, context))
 #     return ''
 
-#   return ContextNode(some_tag_wrap) 
+#   return ContextNode(some_tag_wrap)
 
 @register.tag
 def farm_list(parser, token):
@@ -40,13 +40,17 @@ def farm_list(parser, token):
         farm_list = Farm.objects.filter( Q(farmer=user) |
                                          Q(users=user) ).distinct()
         context['farm_list'] = farm_list
+
+        for farm in farm_list:
+            farm.field_list = farm.field_set.get_query_set()
+
         return ''
 
     return ContextNode(farm_list_wrap)
 
 
 @register.tag
-def crop_season_list(parser, token): 
+def crop_season_list(parser, token):
     """
     Return a list of all CropSeason objects corresponding to request.user
     """
@@ -55,6 +59,10 @@ def crop_season_list(parser, token):
         crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
                                         Q(field_list__farm__users=user) ).distinct()
         context['crop_season_list'] = crop_season_list
+
+        for crop_season in crop_season_list:
+            crop_season.field_list_list = crop_season.field_list.get_query_set().all()
+
         return ''
 
     return ContextNode(crop_season_list_wrap)
