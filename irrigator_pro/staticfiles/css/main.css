@@ -6,10 +6,16 @@ h1 {
     margin-bottom: 20px;
 }
 
+h2 em {
+    color: #006B00;
+    font-weight: 500;
+    font-style: normal;
+}
+
 
 #page-wrapper {
     padding: 0;
-    margin-left: 210px; 
+    margin-left: 210px;
     background-color: #eefcff;
 }
 
@@ -20,7 +26,7 @@ body {
 
 .container {
     padding: 0px;
-    margin: 0px; 
+    margin: 0px;
     width: auto;
 }
 
@@ -47,7 +53,7 @@ footer {
 }
 
 
-td { 
+td {
     padding: 2px;
 }
 
@@ -84,7 +90,7 @@ table.formset, table.formset tr, table.formset td, table.formset th {
 }
 
 tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
-    text-align: center  !important; 
+    text-align: center  !important;
 }
 
 a.add-row {
@@ -94,7 +100,7 @@ a.add-row {
     column-span: 100;
 }
 
-a.add-row, a.delete-row { 
+a.add-row, a.delete-row {
     color: #006B00;
 }
 
@@ -128,7 +134,7 @@ table.list-table, table.list-table tr, table.list-table td, table.list-table th 
 }
 
 tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
-    text-align: center  !important; 
+    text-align: center  !important;
 }
 
 
@@ -175,7 +181,7 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
     margin: 5px;
 }
 
-.ui-datepicker { 
+.ui-datepicker {
     z-index: 10000 !important;
     /* color: #eefcff !important; */
 }
@@ -185,9 +191,9 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
 /********************************************/
 
 .cropseason_field_wrapper {
-    margin: 20px; 
+    margin: 20px;
     padding: 5px 20px 20px 10px;
-    background-color: white; 
+    background-color: white;
     border-style:solid;
     border-width:1px;
     border-color: #006B00;
