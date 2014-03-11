@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import os, os.path, re, subprocess, sys
-import argparse
 import datetime
+import os, os.path
 import math
+import sys
+import time
 
 """
 This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
@@ -21,7 +22,7 @@ from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
+from django.core.exceptions import ObjectDoesNotExist
 
 ## Cache soil type parameter information
 soilTypeParametersQuery = SoilTypeParameter.objects.all()
@@ -48,7 +49,7 @@ def calculateAWC_ProbeReading(field, date):
                                             season_end_date__gte=date,
                                             )
     if( crop_season.count() > 1 ):
-        raise ImproperlyConfigured("More than one crop season for field '%s' on %s." % (field, date))
+        raise RuntimeError("More than one crop season for field '%s' on %s." % (field, date))
     crop_season = crop_season.first()
 
     ## Get the maximum root depth
@@ -73,17 +74,17 @@ def calculateAWC_ProbeReading(field, date):
     try:
         soil_type_8in  = soil_type_parameters.get(depth=8 )
     except ObjectDoesNotExist:
-        raise ImproperlyConfigured("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 8) )
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 8) )
 
     try:
         soil_type_16in = soil_type_parameters.get(depth=16)
     except ObjectDoesNotExist:
-        raise ImproperlyConfigured("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 16) )
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 16) )
 
     try:
         soil_type_24in = soil_type_parameters.get(depth=24)
     except ObjectDoesNotExist:
-        raise ImproperlyConfigured("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 24) )
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 24) )
 
     #####
     ## Calculate available water content (AWC) at each depth
@@ -168,6 +169,8 @@ def get_daily_water_use(field, date):
 
 if __name__ == "__main__":
 
+    time_start = time.time()
+
     farm  = Farm.objects.get(pk=1)
     field = Field.objects.filter(farm=farm).first()
 
@@ -185,34 +188,44 @@ if __name__ == "__main__":
 
     AWC_initial = float(field.soil_type.max_available_water)
 
-    print "** Farm         :", farm
-    print "** Field        :", field
-    print "** Starting AWC :", AWC_initial
-    print
+    out = ""
+
+    out += "\n"
+    out += "\n" + "** Farm         : %s" % farm
+    out += "\n" + "** Field        : %s" % field
+    out += "\n" + "** Starting AWC : %s" % AWC_initial
+    out += "\n"
+    #out += "\n" + "%10s | %5s | "  % ("Date", "DWU", )
+
 
     date = start_date
     AWC_prev = AWC_initial
     while date <= end_date:
-        print "Date: %s  " % date,
+        out += "\n" + "Date: %s  " % date
 
         DWU = float(get_daily_water_use(field, date))
-        print "-%3.2f  " % DWU,
+        out += "%+4.2f  " % -DWU
 
         AWC = calculateAWC_ProbeReading(field, date)
         if AWC:
             AWC_plus = float("NaN")
-            print "  (probes)  = %3.2f" % ( AWC )
+            out += "%13s = %6.2f (from probes)" % ( "", AWC )
         else:
             AWC_plus = caclulateAWC_RainIrrigation(field, date)
             AWC = AWC_prev + float(AWC_plus[0]) + float(AWC_plus[1])
-            print "%3.2f + %3.2f + %3.2f = %3.2f" % ( AWC_prev,
-                                                      AWC_plus[0],
-                                                      AWC_plus[1],
-                                                      AWC-DWU )
+            out += "%5.2f + %5.2f = %6.2f" % ( #AWC_prev,
+                                              AWC_plus[0],
+                                              AWC_plus[1],
+                                              AWC-DWU )
         AWC_prev = AWC-DWU
 
         date += datetime.timedelta(days=1)
 
+    time_end = time.time()
+
+    out += "\n"
+    out += "\n" + "Elapsed time: %4.2f" % ( time_end - time_start )
+    out += "\n"
 
 
 ## Need to construct a table with the following fields:
