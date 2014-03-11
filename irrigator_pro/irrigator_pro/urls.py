@@ -17,26 +17,26 @@ admin.autodiscover()
 urlpatterns = patterns('',
                        ## Home Page
                        url(r'^$', HomeView.as_view(), name='home'),
-                       
+
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
-                       
+
                        # ## Admin interface
                        # url(r'^admin/password_reset/$',                            'django.contrib.auth.views.password_reset',          name='admin_password_reset'),
                        # url(r'^admin/password_reset/done/$',                       'django.contrib.auth.views.password_reset_done',     name='password_reset_done'),
-                       # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm',  name='password_reset_confirm'),  
-                       # url(r'^reset/done/$',                                      'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'), 
+                       # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm',  name='password_reset_confirm'),
+                       # url(r'^reset/done/$',                                      'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
 
                        # Uncomment the admin/doc line below to enable
-                       # admin documentation: 
-                       url(r'^admin/doc/', include('django.contrib.admindocs.urls')), 
+                       # admin documentation:
+                       url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-                       ## Uncomment these to enable the admin interface: 
+                       ## Uncomment these to enable the admin interface:
                        url(r'^admin_tools/', include('admin_tools.urls')),
                        url(r'^admin/',       include(admin.site.urls)),
 
                        ## User authentication via django-allauth
-                       (r'^accounts/', include('allauth.urls')),                       
+                       (r'^accounts/', include('allauth.urls')),
                        url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
                        ## Session Timeout
@@ -49,25 +49,36 @@ urlpatterns = patterns('',
                        #                      ),
                        #                   name='farm_list_view'
                        # ),
-                       url(r'^setup/farm/$',                   FarmListView.as_view(),   name='farm_list'),
-                       url(r'^setup/farm/new$',                FarmCreateView.as_view(), name='farm_new'),
-                       url(r'^setup/farm/delete/(?P<pk>\d+)$', FarmDeleteView.as_view(), name='farm_delete'),
-                       url(r'^setup/farm/(?P<pk>\d+)$',        FarmUpdateView.as_view(), name='farm_id'),
+                       url(r'^farm/$',                   FarmListView.as_view(),   name='farm_list'),
+                       url(r'^farm/new$',                FarmCreateView.as_view(), name='farm_new'),
+                       url(r'^farm/delete/(?P<pk>\d+)$', FarmDeleteView.as_view(), name='farm_delete'),
+                       url(r'^farm/(?P<pk>\d+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
-                       url(r'^setup/probes/$',  ProbeFormsetView.as_view(), name='probes' ),
+                       url(r'^probes/$',                 ProbeFormsetView.as_view(), name='probes' ),
+                       url(r'^probes/(?P<season>\d+)$',  ProbeFormsetView.as_view(), name='probes_season' ),
+
 
                        # ## CropSeason pages
-                       url(r'^setup/crop_season/$',                   CropSeasonListView.as_view(),   name='crop_season_list'),
-                       url(r'^setup/crop_season/new$',                CropSeasonCreateView.as_view(), name='crop_season_new'),
-                       url(r'^setup/crop_season/delete/(?P<pk>\d+)$', CropSeasonDeleteView.as_view(), name='crop_season_delete'),
-                       url(r'^setup/crop_season/(?P<pk>\d+)$',        CropSeasonUpdateView.as_view(), name='crop_season_id'),
+                       url(r'^crop_season/$',                   CropSeasonListView.as_view(),   name='crop_season_list'),
+                       url(r'^crop_season/new$',                CropSeasonCreateView.as_view(), name='crop_season_new'),
+                       url(r'^crop_season/delete/(?P<pk>\d+)$', CropSeasonDeleteView.as_view(), name='crop_season_delete'),
+                       url(r'^crop_season/(?P<pk>\d+)$',        CropSeasonUpdateView.as_view(), name='crop_season_id'),
 
-                       ## CropSeason pages
-                       url(r'^data_entry/water_history/$', WaterHistoryFormsetView.as_view(),   name='water_history'),
+                       ## Water History
+                       url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),   name='water_history'),
+                       url(r'^water_history/(?P<season>\d+)$',                WaterHistoryFormsetView.as_view(),   name='water_history_season'),
+                       url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),   name='water_history_season_field'),
 
                        ## Probe Reading pages
-                       url(r'^data_entry/probe_readings/$', ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^probe_readings/$',                               ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
+                       url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
+
+                       ## Water Register
+                       url(r'^water_register/$',                               HomeView.as_view(), name='water_register'),
+                       url(r'^water_register/(?P<season>\d+)$',                HomeView.as_view(), name='water_register_season'),
+                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', HomeView.as_view(), name='water_register_season_field'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

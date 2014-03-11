@@ -19,9 +19,9 @@
 {% block content %}
 
   <h2>{{ object_name }}</h2>
-  
+
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
-    
+
     <table class="formset" >
       <!-- <thead> -->
       <!-- 	<tr> -->
@@ -36,11 +36,11 @@
       <thead>
 	<tr>
 	  <th>Date and Time</th>
-	  <th>Radio Id</th> 
-	  <th>Soil Potential 8"    <!-- " --> </th> 
-	  <th>Soil Potential 16"  <!-- " --> </th>  
+	  <!-- <th>Radio Id</th>  -->
+	  <th>Soil Potential 8"    <!-- " --> </th>
+	  <th>Soil Potential 16"  <!-- " --> </th>
 	  <th>Soil Potential 24"  <!-- " --> </th>
-	  <th>Battery %</th> 
+	  <th>Battery %</th>
 	  <th>Thermocouple 1 Temp</th>
 	  <th>Thermocouple 2 Temp</th>
 	</tr>
@@ -51,26 +51,30 @@
 	{% for field in formset %}
 	  <tr>
 	    {% for input in field %}
-	      <td>
-		{% if input.errors %}
-		  <div class="inline-alert alert-danger">
-		    {{ input.errors }}
-	          </div>
-		{% endif %}
+	      {% if input.is_hidden %}
 		{{ input }}
-	      </td>
+	      {% else %}
+		<td>
+		  {% if input.errors %}
+		    <div class="inline-alert alert-danger">
+		      {{ input.errors }}
+	            </div>
+		  {% endif %}
+		  {{ input }}
+		</td>
+	      {% endif %}
 	    {% endfor %}
 	  </tr>
 	{% endfor %}
     </table>
 
-    
+
     <div class="submit-bar">
       <button value="Submit" type="submit" class="btn btn-success">
 	<i class="fa fa-floppy-o"></i> Save Changes
       </button>
-      
-      
+
+
       {% if object.pk %}
 	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
@@ -80,19 +84,19 @@
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% endif %}
-      
+
       {% if object.pk %}
 	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
 	  <i class="fa fa-times fa-fw"></i> Delete
 	</a>
       {% endif %}
-      
+
     </div>
 
-    
+
     {{ formset.management_form }}
 
-    
+
   </form>
 
 {% endblock %}

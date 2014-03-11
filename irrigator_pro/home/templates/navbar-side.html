@@ -6,7 +6,13 @@
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
-
+      <li>
+	<a href="">
+	  <i class="fa fa-cogs fa-fw"></i>
+	  Farm Settings
+	  <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	</a>
+	<ul class="nav nav-secondary">
 	  <li>
 	    <a href="{% url 'farm_list' %}">
 	      <i class="fa fa-leaf fa-fw"></i>
@@ -16,7 +22,7 @@
 
 
 	    {% if farm_list %}
-	      <ul class="nav nav-secondary">
+	      <ul class="nav">
 		{% for farm in farm_list %}
 		  <li>
   		    <a href="{% url 'farm_list' %}{{ farm.pk }}">
@@ -38,12 +44,12 @@
 	  <li>
 	    <a href="{% url 'crop_season_list' %}">
 	      <i class="fa fa-pagelines fa-fw"></i>
-	      Crop Season
+	      Crop Seasons
 	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
 
 	    {% if crop_season_list %}
-	      <ul class="nav nav-secondary">
+	      <ul class="nav">
 		{% for item in crop_season_list %}
 		  <li>
   		    <a href="{% url 'crop_season_list' %}{{ item.pk }}">
@@ -70,7 +76,7 @@
 	    </a>
 
 	    {% if crop_season_list %}
-	      <ul class="nav nav-secondary">
+	      <ul class="nav">
 		{% for item in crop_season_list %}
 		  <li>
   		    <a href="{% url 'probes' %}{{ item.pk }}">
@@ -81,7 +87,7 @@
               </ul>
 	    {% endif %}
 	  </li>
-
+	</ul>
 
 	  <li>
 	    <a href="{% url 'probe_readings' %}">
@@ -92,11 +98,21 @@
 
 	    {% if crop_season_list %}
 	      <ul class="nav nav-secondary">
-		{% for item in crop_season_list %}
+		{% for season in crop_season_list %}
 		  <li>
-  		    <a href="{% url 'probe_readings' %}{{ item.pk }}">
-  		      {{ item.name }}
+  		    <a href="{% url 'probe_readings' %}{{ season.pk }}">
+  		      {{ season.name }}
+		      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
   		    </a>
+		    <ul class="nav">
+		      {% for field, probe in season.probe_field_list %}
+			<li>
+		    	  <a href="{% url 'probe_readings' %}{{ season.pk }}/{{ field.pk }}">
+		    	    {{ field }} [{{ probe.radio_id }}]
+		    	  </a>
+		     	</li>
+		      {% endfor %}
+		    </ul>
 		  </li>
 		{% endfor %}
               </ul>
@@ -123,7 +139,7 @@
 		      {% for field in season.field_list_all %}
 			<li>
 		    	  <a href="{% url 'water_history' %}{{ season.pk }}/{{ field.pk }}">
-		    	    {{ field.name }}
+		    	    {{ field }}
 		    	  </a>
 		     	</li>
 		      {% endfor %}
@@ -135,48 +151,49 @@
 	  </li>
 
 	  <li>
-	    <a href="{% url 'home' %}#waterregister">
+	    <a href="{% url 'water_register' %}">
 	      <i class="fa fa-cloud fa-fw"></i>
 	      Water Register
 	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
 
-	    {% if farm_list %}
+	    {% if crop_season_list %}
 	      <ul class="nav nav-secondary">
-		{% for farm in farm_list %}
+		{% for season in crop_season_list %}
 		  <li>
-  		    <a href="{% url 'water_register' %}{{ farm.pk }}">
-  		      {{ farm.name }}
+  		    <a href="{% url 'water_register' %}{{ season.pk }}">
+  		      {{ season.name }}
+		      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
   		    </a>
 		    <ul class="nav">
-		      {% for field in farm.field_list %}
+		      {% for field in season.field_list_all %}
 			<li>
-		    	  <a href="{% url 'water_register' %}{{ farm.pk }}/{{ field.pk }}">
-		    	    {{ field.name }}
+		    	  <a href="{% url 'water_register' %}{{ season.pk }}/{{ field.pk }}">
+		    	    {{ field }}
 		    	  </a>
 		     	</li>
 		      {% endfor %}
 		    </ul>
 		  </li>
 		{% endfor %}
-	      </ul>
+              </ul>
 	    {% endif %}
 
 	  </li>
 
-	  <li>
-	    <a href="{% url 'home' %}#dashboard">
-	      <i class="fa fa-dashboard fa-fw"></i>
-	      Dashboard
-	    </a>
-	  </li>
+	  <!-- <li> -->
+	  <!--   <a href="{% url 'home' %}#dashboard"> -->
+	  <!--     <i class="fa fa-dashboard fa-fw"></i> -->
+	  <!--     Dashboard -->
+	  <!--   </a> -->
+	  <!-- </li> -->
 
-	  <li>
-	    <a href="{% url 'home' %}#alerts">
-	      <i class="fa fa-bell fa-fw"></i>
-	      Alert Settings
-	    </a>
-	  </li>
+	  <!-- <li> -->
+	  <!--   <a href="{% url 'home' %}#alerts"> -->
+	  <!--     <i class="fa fa-bell fa-fw"></i> -->
+	  <!--     Alert Settings -->
+	  <!--   </a> -->
+	  <!-- </li> -->
 
 
 	  {% if perms.auth.staff_status %}

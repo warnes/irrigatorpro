@@ -1,33 +1,38 @@
 /** Use jQuery DatePicker widget for any data item **/
 $(function() {
     $.datepicker.setDefaults({
-	showButtonPanel: true, 
-	changeMonth: true, 
+	showButtonPanel: true,
+	changeMonth: true,
 	changeYear: true,
-	dateFormat: 'yy-mm-dd', 
+	dateFormat: 'yy-mm-dd',
 	showMonthAfterYear: true,
     });
-    
-    // Use date picker widget // Display calendar icon // Make narrower 
-    $('input[id$=date]').datepicker().wrap('<i class="fa fa-calendar"></i>').css({ 
-	"width":"7em", 
+
+    activateDatePicker()
+
+    setNavigation();
+});
+
+function activateDatePicker() {
+    // Use date picker widget // Display calendar icon // Make narrower
+    $('input[id$=date]').datepicker().wrap('<i class="fa fa-calendar"></i>').css({
+	"width":"7em",
 	"margin": "2px" })
 
-    // Use datetime picker widget // Display calendar icon // Make narrower 
+    // Use datetime picker widget // Display calendar icon // Make narrower
     $('input[id$=datetime]').datetimepicker().wrap('<i class="fa fa-calendar"></i>').css({
 	"width": "12em",
 	"margin": "2px"
-    }) 
+    })
 
-    // Change defualt size of description and comment fields 
+    // Change defualt size of description and comment fields
     $('textarea[id$=description]').attr('rows',3)
     $('textarea[id$=comment]').attr('rows',3)
-
-});
+}
 
 
 function setNavigation() {
-    var debug = 1;
+    var debug = 0;
 
     var path = window.location.pathname;
 
@@ -47,7 +52,7 @@ function setNavigation() {
 
     $(".nav a").each(function () {
         var href = $(this).attr('href');
-	
+
 	// Trim trailing slash
 	if( href > "/")
 	    href = href.replace(/\/$/, "");
@@ -58,15 +63,12 @@ function setNavigation() {
 
 	if(debug) { console.log("href='" + href + "', length=" + href.length ); }
 
-	if( (path==="/" && href==="/") || 
+	if( (path==="/" && href==="/") ||
 	    (href.length > 1 && path.substring(0, href.length) === href) )
 	{
-	    console.log("matched!")
+	        if(debug){ console.log("matched!") }
             $(this).closest('li').addClass('active');
         }
     });
 }
 
-$(function () {
-    setNavigation();
-});

@@ -9,7 +9,10 @@
     $(function() {
         $('#formset tbody tr').formset({
             addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
-            deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>' //'Delete Row',
+            deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
+            added: function(row) {
+                                   $("input[id$=date]").prop("class","").datepicker()
+                                 },
         })
     })
 </script>
@@ -18,10 +21,14 @@
 
 {% block content %}
 
-  <h2>Water History</h2>
-  
+  <h2>Rainfall and Irrigation for <em>{{season}}</em>
+    {% if field %}
+      for Field <em>{{ field }}</em>
+    {% endif %}
+  </h2>
+
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
-    
+
     <table class="formset" >
 
       <thead>
@@ -31,7 +38,6 @@
 	  <th>Rain</th>
 	  <th>Irrigation</th>
 	  <th>Comment</th>
-	  <th></th>
 	  <th>Delete</th>
 	</tr>
       </thead>
@@ -41,26 +47,30 @@
 	{% for field in formset %}
 	  <tr>
 	    {% for input in field %}
-	      <td>
-		{% if input.errors %}
-		  <div class="inline-alert alert-danger">
-		    {{ input.errors }}
-	          </div>
-		{% endif %}
+	      {% if not input.is_hidden %}
+		<td>
+		  {% if input.errors %}
+		    <div class="inline-alert alert-danger">
+		      {{ input.errors }}
+	            </div>
+		  {% endif %}
+		  {{ input }}
+		</td>
+	      {% else %}
 		{{ input }}
-	      </td>
+	      {% endif %}
 	    {% endfor %}
 	  </tr>
 	{% endfor %}
 	</table>
 
-	
+
     <div class="submit-bar">
       <button value="Submit" type="submit" class="btn btn-success">
 	<i class="fa fa-floppy-o"></i> Save Changes
       </button>
-      
-      
+
+
       {% if object.pk %}
 	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
@@ -70,19 +80,19 @@
 	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
 	</a>
       {% endif %}
-      
+
       {% if object.pk %}
 	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
 	  <i class="fa fa-times fa-fw"></i> Delete
 	</a>
       {% endif %}
-	    
+
     </div>
 
-    
+
     {{ formset.management_form }}
 
-    
+
   </form>
 
 {% endblock %}

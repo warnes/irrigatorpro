@@ -21,10 +21,10 @@
         <!--   <a href="/#about"><i class="fa fa-info-circle fa-fw"></i> About</a> -->
         <!-- </li> -->
         <li>
-	  <a href="/trac"><i class="fa fa-comment-o fa-fw"></i> Support</a>
+	  <a href="http://irrigatorpro.org/trac" target="_blank"><i class="fa fa-comment-o fa-fw"></i> Support</a>
 	</li>
       </ul>
-      
+
       {% if user.is_authenticated %}
 	{% load account %} <!-- enable user_display tag -->
 
@@ -34,7 +34,7 @@
             <ul class="dropdown-menu">
 
 	      <li>
-		<a href="{% url 'user' %}"><i class="fa fa-user fa-fw"></i> Account Details</a> 
+		<a href="{% url 'user' %}"><i class="fa fa-user fa-fw"></i> Account Details</a>
 	      </li>
 
 	      <li> <!-- class="active"-->
@@ -55,7 +55,7 @@
 
 	  </li>
 	  <li>
-	    <form class="navbar-form pull-right" role="form" 
+	    <form class="navbar-form pull-right" role="form"
 		  action="{% url 'account_logout' %}">
 	      <button class="btn btn-default btn-sm"><i class="fa fa-sign-out fa-fw"></i> Sign Out</button>
 	    </form>

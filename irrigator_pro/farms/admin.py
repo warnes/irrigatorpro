@@ -188,12 +188,12 @@ admin.site.register(CropSeasonEvent, CropSeasonEventAdmin)
 #####################
 
 class WaterHistoryAdmin(AuditAdmin):
-    fields = [ 'field_list', 'date', 'rain', 'irrigation' ] \
+    fields = [ 'crop_season', 'field_list', 'date', 'rain', 'irrigation' ] \
              + Comment.fields
-    list_display  = [ 'pk', 'get_field_list' ] + fields[1:-1]
-    list_editable = [ 'date', 'rain', 'irrigation' ]
+    list_display  = [ 'pk', 'crop_season', 'get_field_list' ] + fields[2:-1]
+    list_editable = [ 'crop_season', 'date', 'rain', 'irrigation' ]
     readonly_fields = [ 'available_water_content' ]
-    list_filter = [ 'field_list__farm__farmer', 'field_list__farm', 'date' ]
+    list_filter = [ 'crop_season', 'field_list__farm__farmer', 'field_list__farm', 'date' ]
 
     # def get_form(self, request, obj=None, **kwargs):
     #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
