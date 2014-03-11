@@ -256,6 +256,7 @@ class CropSeasonEvent(Comment, Audit):
 class WaterHistory(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
+    crop_season             = models.ForeignKey(CropSeason)
     field_list              = models.ManyToManyField(Field)
     date                    = models.DateField()
     rain                    = models.DecimalField("rainfall in inches",
