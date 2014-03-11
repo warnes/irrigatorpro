@@ -57,15 +57,27 @@ def crop_season_list(parser, token):
     def crop_season_list_wrap(context):
         user = context['request'].user
         crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
-                                        Q(field_list__farm__users=user) ).distinct()
+                                                      Q(field_list__farm__users=user) ).distinct()
         context['crop_season_list'] = crop_season_list
 
         for crop_season in crop_season_list:
             crop_season.field_list_all = crop_season.field_list.all()
+            crop_season.probe_list_all = crop_season.probe_set.all()
+            probe_field_list = []
+            for probe in crop_season.probe_set.all():
+                for field in probe.field_list.all():
+                    probe_field_list.append( (field, probe) )
+                    print field, probe
+
+            probe_field_list.sort(key=lambda i:str(i[0]) )
+            print "Sorted:", probe_field_list
+            crop_season.probe_field_list = probe_field_list
 
         return ''
 
     return ContextNode(crop_season_list_wrap)
+
+
 
 
 
