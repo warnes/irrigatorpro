@@ -5,10 +5,6 @@ import math
 import sys
 import time
 
-"""
-This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
-"""
-
 try:
     # Add the directory *above* this to the python path so we can find our modules
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
@@ -24,11 +20,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
-## Cache soil type parameter information
-soilTypeParametersQuery = SoilTypeParameter.objects.all()
-bool(soilTypeParametersQuery)
-
-def calculateAWC_ProbeReading(field, date):
+def calculateAWC_ProbeReading(crop_season, field, date):
     """
     Calculate the Available Water Content for the specified field and
     date from Probe Reading data (if available).  If no probe reading
@@ -37,20 +29,20 @@ def calculateAWC_ProbeReading(field, date):
 
     ## Find the probe/radio_id for this field (if any)
     try:
-        probe = Probe.objects.get(field_list=field)
+        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
     except ObjectDoesNotExist:
         return None
 
     radio_id = probe.radio_id
 
-    ## Determine the crop that corresponds to this date
-    crop_season = CropSeason.objects.filter(field_list=field,
-                                            season_start_date__lte=date,
-                                            season_end_date__gte=date,
-                                            )
-    if( crop_season.count() > 1 ):
-        raise RuntimeError("More than one crop season for field '%s' on %s." % (field, date))
-    crop_season = crop_season.first()
+    # ## Determine the crop that corresponds to this date
+    # crop_season = CropSeason.objects.filter(field_list=field,
+    #                                         season_start_date__lte=date,
+    #                                         season_end_date__gte=date,
+    #                                         )
+    # if( crop_season.count() > 1 ):
+    #     raise RuntimeError("More than one crop season for field '%s' on %s." % (field, date))
+    # crop_season = crop_season.first()
 
     ## Get the maximum root depth
     if crop_season:
@@ -124,9 +116,9 @@ def calculateAWC_ProbeReading(field, date):
     AWC_16 = soil_type_16in.slope * ( safelog(probe_reading.soil_potential_16) - ln40 ) * 24
     AWC_24 = soil_type_24in.slope * ( safelog(probe_reading.soil_potential_24) - ln40 ) * 24
 
-    if AWC_8  > field.soil_type.max_available_water: AWC_8  = field.soil_type.max_available_water
-    if AWC_16 > field.soil_type.max_available_water: AWC_16 = field.soil_type.max_available_water
-    if AWC_24 > field.soil_type.max_available_water: AWC_24 = field.soil_type.max_available_water
+    if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
+    if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
+    if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)
 
     #print 'AWC  8"=%4.2f' % AWC_8
     #print 'AWC 16"=%4.2f' % AWC_16
@@ -148,9 +140,10 @@ def calculateAWC_ProbeReading(field, date):
     return AWC
 
 
-def caclulateAWC_RainIrrigation(field, date):
+def caclulateAWC_RainIrrigation(season, field, date):
 
-    wh = WaterHistory.objects.filter(field_list=field,
+    wh = WaterHistory.objects.filter(crop_season=season,
+                                     field_list=field,
                                      date=date
                                     ).last()
 
@@ -167,19 +160,12 @@ def get_daily_water_use(field, date):
     return dwu
 
 
-if __name__ == "__main__":
-
-    time_start = time.time()
-
-    farm  = Farm.objects.get(pk=1)
-    field = Field.objects.filter(farm=farm).first()
-
-    crop_season = CropSeason.objects.get(name="Corn 2013")
+def generate_water_register(crop_season, field):
 
     ## Determine the first event date (planting) to show
     planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
                                                     field=field,
-                                                    date__lte=date,
+                                                    #date__lte=date,
                                                     crop_event__name='Planting').order_by("-date").first()
     start_date = planting_event.date
 
@@ -188,70 +174,62 @@ if __name__ == "__main__":
 
     AWC_initial = float(field.soil_type.max_available_water)
 
-    out = ""
-
-    out += "\n"
-    out += "\n" + "** Farm         : %s" % farm
-    out += "\n" + "** Field        : %s" % field
-    out += "\n" + "** Starting AWC : %s" % AWC_initial
-    out += "\n"
-    #out += "\n" + "%10s | %5s | "  % ("Date", "DWU", )
-
+    table_header = ( 'Crop Season', 'Field', 'Date', 'DWU', 'Rain', 'Irrigation', 'AWC', 'From Probes')
+    table_rows = []
 
     date = start_date
     AWC_prev = AWC_initial
     while date <= end_date:
-        out += "\n" + "Date: %s  " % date
-
         DWU = float(get_daily_water_use(field, date))
-        out += "%+4.2f  " % -DWU
 
-        AWC = calculateAWC_ProbeReading(field, date)
-        if AWC:
-            AWC_plus = float("NaN")
-            out += "%13s = %6.2f (from probes)" % ( "", AWC )
+        AWC_probes = calculateAWC_ProbeReading(crop_season, field, date)
+        if AWC_probes:
+            table_rows.append( ( crop_season,
+                                 field,
+                                 date,
+                                 DWU,
+                                 float("NaN"),
+                                 float("NaN"),
+                                 AWC_probes,
+                                 True )
+                             )
         else:
-            AWC_plus = caclulateAWC_RainIrrigation(field, date)
+            AWC_plus = caclulateAWC_RainIrrigation(crop_season, field, date)
             AWC = AWC_prev + float(AWC_plus[0]) + float(AWC_plus[1])
-            out += "%5.2f + %5.2f = %6.2f" % ( #AWC_prev,
-                                              AWC_plus[0],
-                                              AWC_plus[1],
-                                              AWC-DWU )
-        AWC_prev = AWC-DWU
 
+            table_rows.append( ( crop_season,
+                                 field,
+                                 date,
+                                 DWU,
+                                 AWC_plus[0],
+                                 AWC_plus[1],
+                                 AWC,
+                                 False )
+                             )
+
+        AWC_prev = AWC-DWU
         date += datetime.timedelta(days=1)
 
+    return ( table_header, table_rows )
+
+
+if __name__ == "__main__":
+
+    crop_season = CropSeason.objects.get(name='Corn 2013')
+    field = crop_season.field_list.all()[0]
+
+
+
+    time_start = time.time()
+    table_header, table_rows = generate_water_register(crop_season, field)
     time_end = time.time()
 
-    out += "\n"
-    out += "\n" + "Elapsed time: %4.2f" % ( time_end - time_start )
-    out += "\n"
+    print
+    print "Elapsed time: %4.2f" % ( time_end - time_start )
+    print
 
-
-## Need to construct a table with the following fields:
-#
-# Grouping:
-#   Farm,
-#   Field,
-#   Date,
-#
-# Soil & Probe Information
-#   Soil Type
-#
-# Water Debits:
-#   Growth Stage
-#   Daily Water Use
-#
-# Probe Information:
-#   soil_potential_8,
-#   soil_potential_16,
-#   soil_potential_24,
-#
-# Water Credits:
-#   rain,
-#   irrigation,
-#
-# Water Content:
+    print "\t".join( table_header )
+    print "\n".join( map(lambda x: "\t".join( map(str, x) ), table_rows) )
 
 
 
