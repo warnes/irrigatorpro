@@ -1,30 +1,26 @@
 <!-- Sidebar -->
-
 {% load object_lists %}
+{% farm_list %}
+{% crop_season_list %}
 
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
     <ul class="nav" id="side-menu">
 
-      <!-- li><a href="{% url 'home' %}setup">Set Up</a -->
-
-	<!-- ul class="nav nav-secondary" -->
-
 	  <li>
 	    <a href="{% url 'farm_list' %}">
 	      <i class="fa fa-leaf fa-fw"></i>
 	      Farms and Fields
-	      <!--i class="fa fa-caret-square-o-right fa-fw"></i-->
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
 
-	    {% farm_list %}
 
 	    {% if farm_list %}
 	      <ul class="nav nav-secondary">
-		{% for item in farm_list %}
+		{% for farm in farm_list %}
 		  <li>
-  		    <a href="{% url 'farm_list' %}{{ item.pk }}">
-  		      {{ item.name }}
+  		    <a href="{% url 'farm_list' %}{{ farm.pk }}">
+  		      {{ farm.name }}
   		    </a>
 		  </li>
 		{% endfor %}
@@ -40,9 +36,11 @@
 	  </li>
 
 	  <li>
-	    <a href="{% url 'crop_season_list' %}"><i class="fa fa-pagelines fa-fw"></i> Crop Season </a>
-
-	    {% crop_season_list %}
+	    <a href="{% url 'crop_season_list' %}">
+	      <i class="fa fa-pagelines fa-fw"></i>
+	      Crop Season
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
 
 	    {% if crop_season_list %}
 	      <ul class="nav nav-secondary">
@@ -62,54 +60,124 @@
               </ul>
 	    {% endif %}
 
+	  </li>
 
+	  <li>
+	    <a href="{% url 'probes' %}">
+	      <i class="fa fa-pencil fa-fw"></i>
+	      Probes
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
+
+	    {% if crop_season_list %}
+	      <ul class="nav nav-secondary">
+		{% for item in crop_season_list %}
+		  <li>
+  		    <a href="{% url 'probes' %}{{ item.pk }}">
+  		      {{ item.name }}
+  		    </a>
+		  </li>
+		{% endfor %}
+              </ul>
+	    {% endif %}
+	  </li>
+
+
+	  <li>
+	    <a href="{% url 'probe_readings' %}">
+	      <i class="fa fa-pencil-square-o fa-fw"></i>
+	      Probe Readings
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
+
+	    {% if crop_season_list %}
+	      <ul class="nav nav-secondary">
+		{% for item in crop_season_list %}
+		  <li>
+  		    <a href="{% url 'probe_readings' %}{{ item.pk }}">
+  		      {{ item.name }}
+  		    </a>
+		  </li>
+		{% endfor %}
+              </ul>
+	    {% endif %}
 
 	  </li>
 
 	  <li>
-	    <a href="{% url 'probes' %}"><i class="fa fa-pencil fa-fw"></i> Probes</a>
+	    <a href="{% url 'water_history' %}">
+	      <i class="fa fa-cloud fa-fw"></i>
+	      Rainfall & Irrigation
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
+
+	    {% if crop_season_list %}
+	      <ul class="nav nav-secondary">
+		{% for season in crop_season_list %}
+		  <li>
+  		    <a href="{% url 'water_history' %}{{ season.pk }}">
+  		      {{ season.name }}
+		      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+  		    </a>
+		    <ul class="nav">
+		      {% for field in season.field_list_all %}
+			<li>
+		    	  <a href="{% url 'water_history' %}{{ season.pk }}/{{ field.pk }}">
+		    	    {{ field.name }}
+		    	  </a>
+		     	</li>
+		      {% endfor %}
+		    </ul>
+		  </li>
+		{% endfor %}
+              </ul>
+	    {% endif %}
 	  </li>
-
-	<!-- /ul -->
-      <!-- /li -->
-
-
-      <!-- <li><a href="{% url 'home' %}data_entry">Water Records</a> -->
-
-      <!-- 	<ul class="nav nav-secondary"> -->
 
 	  <li>
-	    <a href="{% url 'probe_readings' %}"><i class="fa fa-pencil-square-o fa-fw"></i> Probe Readings</a>
+	    <a href="{% url 'home' %}#waterregister">
+	      <i class="fa fa-cloud fa-fw"></i>
+	      Water Register
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
+
+	    {% if farm_list %}
+	      <ul class="nav nav-secondary">
+		{% for farm in farm_list %}
+		  <li>
+  		    <a href="{% url 'water_register' %}{{ farm.pk }}">
+  		      {{ farm.name }}
+  		    </a>
+		    <ul class="nav">
+		      {% for field in farm.field_list %}
+			<li>
+		    	  <a href="{% url 'water_register' %}{{ farm.pk }}/{{ field.pk }}">
+		    	    {{ field.name }}
+		    	  </a>
+		     	</li>
+		      {% endfor %}
+		    </ul>
+		  </li>
+		{% endfor %}
+	      </ul>
+	    {% endif %}
+
 	  </li>
 
 	  <li>
-	    <a href="{% url 'water_history' %}"><i class="fa fa-cloud fa-fw"></i> Rainfall & Irrigation</a>
-	  </li>
-
-      <!-- 	</ul> -->
-      <!-- </li> -->
-
-
-      <!-- <li><a href="{% url 'home' %}reports">Reports</a> -->
-
-      <!-- 	<ul class="nav nav-secondary"> -->
-	  <li>
-	    <a href="{% url 'home' %}#waterregister"><i class="fa fa-cloud fa-fw"></i> Water Register</a>
+	    <a href="{% url 'home' %}#dashboard">
+	      <i class="fa fa-dashboard fa-fw"></i>
+	      Dashboard
+	    </a>
 	  </li>
 
 	  <li>
-	    <a href="{% url 'home' %}#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+	    <a href="{% url 'home' %}#alerts">
+	      <i class="fa fa-bell fa-fw"></i>
+	      Alert Settings
+	    </a>
 	  </li>
-      <!-- 	</ul> -->
-      <!-- </li> -->
 
-      <!-- <li><a href="">Settings</a> -->
-
-      <!-- 	<ul class="nav nav-secondary"> -->
-
-	  <li>
-	    <a href="{% url 'home' %}#alerts"><i class="fa fa-bell fa-fw"></i> Alert Settings</a>
-	  </li>
 
 	  {% if perms.auth.staff_status %}
 	    <li>
