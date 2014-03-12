@@ -283,3 +283,28 @@ class ProbeReadingAdmin(AuditAdmin):
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)
+
+
+#####################
+### WaterRegister ###
+#####################
+
+class WaterRegisterAdmin(AuditAdmin):
+    fields = [ 'crop_season',
+               'field',
+               'date',
+               'crop_stage',
+               'daily_water_use',
+               'rain',
+               'irrigation',
+               'average_water_content',
+               'computed_from_probes',
+               'irrigate_flag',
+               'check_sensors_flag',
+             ] \
+             + Audit.fields
+    list_display  = fields
+    list_editable = fields[3:]
+    list_filter = [ 'crop_season', 'field', 'date', 'crop_stage', 'computed_from_probes' ]
+
+admin.site.register(WaterRegister, WaterRegisterAdmin)

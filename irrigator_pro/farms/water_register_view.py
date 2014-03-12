@@ -153,11 +153,18 @@ def caclulateAWC_RainIrrigation(season, field, date):
         return ( 0.0, 0.0 )
 
 
-def get_daily_water_use(field, date):
+def get_stage_and_daily_water_use(field, date):
     cse = CropSeasonEvent.objects.filter(crop_season__field_list=field,
                                          date__lte=date).distinct().order_by('-date').first()
     dwu = cse.crop_event.daily_water_use
-    return dwu
+    stage = cse.crop_event.name
+    return (stage, dwu)
+
+def need_irrigation(AWC):
+    return float(AWC) < 0.00
+
+def check_sensors(AWC):
+    return float(AWC) < 0.30
 
 
 def generate_water_register(crop_season, field):
@@ -174,24 +181,40 @@ def generate_water_register(crop_season, field):
 
     AWC_initial = float(field.soil_type.max_available_water)
 
-    table_header = ( 'Crop Season', 'Field', 'Date', 'DWU', 'Rain', 'Irrigation', 'AWC', 'From Probes')
+    table_header = ( 'Crop Season',
+                     'Field',
+                     'Date',
+                     'Growth Stage',
+                     'DWU',
+                     'Rain',
+                     'Irrigation',
+                     'AWC',
+                     'From Probes',
+                     'Irrigate',
+                     'Check Sensors' )
     table_rows = []
 
     date = start_date
     AWC_prev = AWC_initial
     while date <= end_date:
-        DWU = float(get_daily_water_use(field, date))
+        (stage, DWU) = get_stage_and_daily_water_use(field, date)
 
-        AWC_probes = calculateAWC_ProbeReading(crop_season, field, date)
-        if AWC_probes:
+        DWU = float(DWU)
+
+        AWC = calculateAWC_ProbeReading(crop_season, field, date)
+        if AWC:
             table_rows.append( ( crop_season,
                                  field,
                                  date,
+                                 stage,
                                  DWU,
                                  float("NaN"),
                                  float("NaN"),
-                                 AWC_probes,
-                                 True )
+                                 AWC,
+                                 True,
+                                 need_irrigation(AWC),
+                                 check_sensors(AWC),
+                               )
                              )
         else:
             AWC_plus = caclulateAWC_RainIrrigation(crop_season, field, date)
@@ -200,11 +223,15 @@ def generate_water_register(crop_season, field):
             table_rows.append( ( crop_season,
                                  field,
                                  date,
+                                 stage,
                                  DWU,
                                  AWC_plus[0],
                                  AWC_plus[1],
                                  AWC,
-                                 False )
+                                 False,
+                                 need_irrigation(AWC),
+                                 check_sensors(AWC),
+                               )
                              )
 
         AWC_prev = AWC-DWU

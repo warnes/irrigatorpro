@@ -1775,6 +1775,33 @@
     }
 },
 {
+    "pk": 196, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_waterregister", 
+        "name": "Can add Water Register", 
+        "content_type": 31
+    }
+},
+{
+    "pk": 197, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_waterregister", 
+        "name": "Can change Water Register", 
+        "content_type": 31
+    }
+},
+{
+    "pk": 198, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_waterregister", 
+        "name": "Can delete Water Register", 
+        "content_type": 31
+    }
+},
+{
     "pk": 1, 
     "model": "auth.user", 
     "fields": {
@@ -1784,7 +1811,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-06T14:18:44.683Z", 
+        "last_login": "2014-03-11T16:41:22.602Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$HmCeClJXQW9k$0+wKCCScTi9yBV8RrqDTCohLIrm8MpFTfI4TCsXsWPA=", 
