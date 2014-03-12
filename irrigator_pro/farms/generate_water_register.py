@@ -6,12 +6,6 @@ import sys
 import time
 from decimal import Decimal
 
-if __name__ == "__main__":
-    # Add the directory *above* this to the python path so we can find our modules
-    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
-
-
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import *
 from django.contrib.auth.models import User
@@ -117,10 +111,6 @@ def calculateAWC_ProbeReading(crop_season, field, date):
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
     if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)
-
-    #print 'AWC  8"=%4.2f' % AWC_8
-    #print 'AWC 16"=%4.2f' % AWC_16
-    #print 'AWC 24"=%4.2f' % AWC_24
 
     #####
     ## Calculate average AWC at the depths accessible to the crop
@@ -238,46 +228,3 @@ def generate_water_register(crop_season, field):
         date += datetime.timedelta(days=1)
 
     return ( table_header, table_rows )
-
-
-if __name__ == "__main__":
-
-    crop_season = CropSeason.objects.get(name='Corn 2013')
-    field = crop_season.field_list.all().first()
-    user = User.objects.get(username='warnes')
-
-
-    time_start = time.time()
-    table_header, table_rows = generate_water_register(crop_season, field)
-    time_end = time.time()
-
-    ## remove old data ##
-    queryset = WaterRegister.objects.filter(crop_season=crop_season,
-                                            field=field)
-    queryset.all().delete()
-
-    print "\t".join( table_header )
-
-    for row in table_rows:
-        print "\t".join( map(str, row) )
-
-        wr = WaterRegister()
-
-        ( wr.crop_season, wr.field, wr.date, wr.crop_stage,
-          wr.daily_water_use, wr.rain, wr.irrigation,
-          wr.average_water_content, wr.computed_from_probes,
-          wr.irrigate_flag, wr.check_sensors_flag, ) = row
-
-        wr.cuser = user
-        wr.muser = user
-
-        wr.save()
-
-    print
-    print "Elapsed time: %4.2f" % ( time_end - time_start )
-    print
-
-
-
-
-
