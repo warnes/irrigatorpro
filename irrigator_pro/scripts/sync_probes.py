@@ -5,7 +5,8 @@ import os, os.path, re, subprocess, sys
 import argparse
 
 """
-This script downlaads the UGA SSA data stored on the NESPAL webserver and uploads it into the IrrigatorPro database.
+This script downlaads the UGA SSA data stored on the NESPAL webserver
+and uploads it into the IrrigatorPro database.
 """
 
 if __name__ == "__main__":
@@ -69,7 +70,11 @@ def mirror(year=2013, max_tries=20):
                 'ftp://%s/%s' % ( ftp_server, ftp_path % {'year': year} )
             ]
 
-    log = subprocess.check_output(command)
+
+    try:
+        log = subprocess.check_output(command)
+    except  subprocess.CalledProcessError as e:
+        print e
 
 
 def putProbe(farm_code, file_date, line):
