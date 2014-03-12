@@ -155,7 +155,10 @@ def check_sensors(AWC):
     return AWC < 0.30
 
 def quantize( f ):
-    return Decimal(f).quantize( Decimal('0.01') )
+    if isinstance(f, Decimal):
+        return f.quantize( Decimal('0.01') )
+    else:
+        return Decimal(f).quantize( Decimal('0.01') )
 
 def generate_water_register(crop_season, field):
 
