@@ -4,6 +4,7 @@ import os, os.path
 import math
 import sys
 import time
+from decimal import Decimal
 
 if __name__ == "__main__":
     # Add the directory *above* this to the python path so we can find our modules
@@ -158,11 +159,13 @@ def get_stage_and_daily_water_use(field, date):
     return (stage, dwu)
 
 def need_irrigation(AWC):
-    return float(AWC) < 0.00
+    return AWC < 0.00
 
 def check_sensors(AWC):
-    return float(AWC) < 0.30
+    return AWC < 0.30
 
+def quantize( f ):
+    return Decimal(f).quantize( Decimal('0.01') )
 
 def generate_water_register(crop_season, field):
 
@@ -204,10 +207,10 @@ def generate_water_register(crop_season, field):
                                  field,
                                  date,
                                  stage,
-                                 DWU,
-                                 float("NaN"),
-                                 float("NaN"),
-                                 AWC,
+                                 quantize(DWU),
+                                 Decimal('NaN'),
+                                 Decimal('NaN'),
+                                 quantize(AWC),
                                  True,
                                  need_irrigation(AWC),
                                  check_sensors(AWC),
@@ -221,10 +224,10 @@ def generate_water_register(crop_season, field):
                                  field,
                                  date,
                                  stage,
-                                 DWU,
-                                 AWC_plus[0],
-                                 AWC_plus[1],
-                                 AWC,
+                                 quantize(DWU),
+                                 quantize(AWC_plus[0]),
+                                 quantize(AWC_plus[1]),
+                                 quantize(AWC),
                                  False,
                                  need_irrigation(AWC),
                                  check_sensors(AWC),
@@ -240,20 +243,41 @@ def generate_water_register(crop_season, field):
 if __name__ == "__main__":
 
     crop_season = CropSeason.objects.get(name='Corn 2013')
-    field = crop_season.field_list.all()[0]
-
+    field = crop_season.field_list.all().first()
+    user = User.objects.get(username='warnes')
 
 
     time_start = time.time()
     table_header, table_rows = generate_water_register(crop_season, field)
     time_end = time.time()
 
+    ## remove old data ##
+    queryset = WaterRegister.objects.filter(crop_season=crop_season,
+                                            field=field)
+    queryset.all().delete()
+
+    print "\t".join( table_header )
+
+    for row in table_rows:
+        print "\t".join( map(str, row) )
+
+        wr = WaterRegister()
+
+        ( wr.crop_season, wr.field, wr.date, wr.crop_stage,
+          wr.daily_water_use, wr.rain, wr.irrigation,
+          wr.average_water_content, wr.computed_from_probes,
+          wr.irrigate_flag, wr.check_sensors_flag, ) = row
+
+        wr.cuser = user
+        wr.muser = user
+
+        wr.save()
+
     print
     print "Elapsed time: %4.2f" % ( time_end - time_start )
     print
 
-    print "\t".join( table_header )
-    print "\n".join( map(lambda x: "\t".join( map(str, x) ), table_rows) )
+
 
 
 

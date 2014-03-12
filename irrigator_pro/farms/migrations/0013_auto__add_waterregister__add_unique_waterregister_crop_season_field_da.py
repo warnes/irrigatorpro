@@ -22,7 +22,7 @@ class Migration(SchemaMigration):
             ('daily_water_use', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2)),
             ('rain', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2, blank=True)),
             ('irrigation', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2, blank=True)),
-            ('average_water_content', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2)),
+            ('average_water_content', self.gf('django.db.models.fields.DecimalField')(max_digits=4, decimal_places=2)),
             ('computed_from_probes', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('irrigate_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('check_sensors_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
@@ -264,7 +264,7 @@ class Migration(SchemaMigration):
         },
         u'farms.waterregister': {
             'Meta': {'ordering': "('crop_season', 'field', 'date')", 'unique_together': "(('crop_season', 'field', 'date'),)", 'object_name': 'WaterRegister'},
-            'average_water_content': ('django.db.models.fields.DecimalField', [], {'max_digits': '3', 'decimal_places': '2'}),
+            'average_water_content': ('django.db.models.fields.DecimalField', [], {'max_digits': '4', 'decimal_places': '2'}),
             'cdate': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'check_sensors_flag': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'computed_from_probes': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),

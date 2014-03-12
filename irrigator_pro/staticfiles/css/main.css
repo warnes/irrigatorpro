@@ -159,7 +159,7 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
     padding: 5px 5px;
     position: absolute;
     z-index: 98;
-    %width: 220px;
+    width: 220px;
 }
 
 /* .iTooltip:hover:before{ */
@@ -220,3 +220,27 @@ form {
 table.default-form {
     margin-left: 40px;
 }
+
+/******************/
+/* Water Register */
+/******************/
+
+table.formset, table.formset tr, table.formset td, table.formset th {
+    border: 1px solid #006B00;
+    text-align: center;
+    padding: 5px;
+}
+
+table.water-register, table.water-register tr, table.water-register td, table.water-register th {
+    border: 1px solid #006B00;
+    text-align: center;
+    padding: 5px;
+    background-color: lightblue;
+}
+
+
+.computed-from-probes {
+    text-decoration:line-through
+    color: gray;
+}
+

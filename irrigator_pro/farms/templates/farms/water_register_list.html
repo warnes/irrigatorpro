@@ -9,24 +9,78 @@
 
   {% if object_list %}
 
-    <table class="formset" >
+    <table class="formset water-history" >
 
       <thead>
-	<tr>
-	  {% for field in object_list|first %}
-	    <th>field.label</th>
-	  {% endfor %}
-	</tr>
+      	<tr>
+	  <!-- <th>Crop Season</th> -->
+          <!-- <th>Field</th> -->
+          <th>Date</th>
+          <th>Growth Stage</th>
+          <th>DWU</th>
+          <th>Rain</th>
+          <th>Irrigation</th>
+          <th>AWC</th>
+          <!-- <th>From Probes</th> -->
+          <th>Irrigate</th>
+          <th>Check Sensors</th>
+	  <th>From Probes</th>
+       	</tr>
       </thead>
 
       <tbody>
 	{% for object in object_list %}
 	  <tr>
-	    {% for field in object %}
+	      <!-- <td> -->
+	      <!-- 	{{ object.crop_season }} -->
+	      <!-- </td> -->
+	      <!-- <td> -->
+	      <!-- 	{{ object.field }} -->
+	      <!-- </td> -->
 	      <td>
-		{{ input }}
+		{{ object.date }}
 	      </td>
-	    {% endfor %}
+	      <td>
+		{{ object.crop_stage }}
+	      </td>
+	      <td>
+		{{ object.daily_water_use }}
+	      </td>
+	      <td>
+		{% if not object.computed_from_probes %}
+		  {{ object.rain }}
+		{% endif %}
+	      </td>
+	      <td>
+		{% if not object.computed_from_probes %}
+		  {{ object.irrigation }}
+		{% endif %}
+	      </td>
+	      <td>
+		{{ object.average_water_content }}
+	      </td>
+	      <!-- <td> -->
+	      <!-- 	{{ object.computed_from_probes }} -->
+	      <!-- </td> -->
+	      <td>
+		{% if object.irrigate_flag %}
+		  <div class="alert-inline alert-danger">
+		    <b>Irrigate</b>
+		  </div>
+		{% endif %}
+	      </td>
+	      <td>
+		{% if object.check_sensors_flag %}
+		  <div class="alert-inline alert-warning">
+		    Check Sensors
+		  </div>
+		{% endif %}
+	      </td>
+	      <td>
+		{% if object.computed_from_probes %}
+		  <i class="fa fa-rss"></i>
+		{% endif %}
+	      </td>
 	  </tr>
 	{% endfor %}
       </tbody>

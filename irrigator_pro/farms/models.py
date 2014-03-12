@@ -395,7 +395,7 @@ class WaterRegister(Audit):
     daily_water_use       = models.DecimalField(max_digits=3, decimal_places=2) # #.##
     rain                  = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
     irrigation            = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
-    average_water_content = models.DecimalField(max_digits=3, decimal_places=2) # #.##
+    average_water_content = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
     computed_from_probes  = models.BooleanField(default=False)
     irrigate_flag         = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
