@@ -20,6 +20,26 @@
     }
 },
 {
+    "pk": 3, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 2, 
+        "key": "6b4b2608240dbc35817450c2752508b278c1d29ca7c33c1e653906e680b825a2", 
+        "sent": "2014-02-24T22:04:10.517Z", 
+        "created": "2014-02-24T22:04:10.202Z"
+    }
+},
+{
+    "pk": 4, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 3, 
+        "key": "30b3a319662fdd75b8fc557dcb229959d3623f71afdee183f002c1030f310f7c", 
+        "sent": "2014-03-03T15:00:46.505Z", 
+        "created": "2014-03-03T15:00:46.116Z"
+    }
+},
+{
     "pk": 1, 
     "model": "auth.permission", 
     "fields": {
@@ -1802,6 +1822,60 @@
     }
 },
 {
+    "pk": 199, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_cropseasonevent", 
+        "name": "Can add Crop Season Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 200, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_cropseasonevent", 
+        "name": "Can change Crop Season Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 201, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_cropseasonevent", 
+        "name": "Can delete Crop Season Event", 
+        "content_type": 19
+    }
+},
+{
+    "pk": 202, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "add_waterregister", 
+        "name": "Can add Water Register", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 203, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "change_waterregister", 
+        "name": "Can change Water Register", 
+        "content_type": 29
+    }
+},
+{
+    "pk": 204, 
+    "model": "auth.permission", 
+    "fields": {
+        "codename": "delete_waterregister", 
+        "name": "Can delete Water Register", 
+        "content_type": 29
+    }
+},
+{
     "pk": 1, 
     "model": "auth.user", 
     "fields": {
@@ -1811,7 +1885,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-11T16:41:22.602Z", 
+        "last_login": "2014-03-12T11:50:42.566Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$HmCeClJXQW9k$0+wKCCScTi9yBV8RrqDTCohLIrm8MpFTfI4TCsXsWPA=", 
@@ -1950,6 +2024,26 @@
         "user": 1, 
         "primary": true, 
         "email": "greg@warnes.net"
+    }
+},
+{
+    "pk": 2, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 5, 
+        "primary": true, 
+        "email": "chris.butts@ars.usda.gov"
+    }
+},
+{
+    "pk": 3, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 4, 
+        "primary": true, 
+        "email": "bill.edwards@ars.usda.gov"
     }
 }
 ]
