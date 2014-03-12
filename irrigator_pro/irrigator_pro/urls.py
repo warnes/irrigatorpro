@@ -21,11 +21,9 @@ urlpatterns = patterns('',
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
 
-                       # ## Admin interface
-                       # url(r'^admin/password_reset/$',                            'django.contrib.auth.views.password_reset',          name='admin_password_reset'),
-                       # url(r'^admin/password_reset/done/$',                       'django.contrib.auth.views.password_reset_done',     name='password_reset_done'),
-                       # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm',  name='password_reset_confirm'),
-                       # url(r'^reset/done/$',                                      'django.contrib.auth.views.password_reset_complete', name='password_reset_complete'),
+                       ##################
+                       ## Admin interface
+                       ##################
 
                        # Uncomment the admin/doc line below to enable
                        # admin documentation:
@@ -35,6 +33,10 @@ urlpatterns = patterns('',
                        url(r'^admin_tools/', include('admin_tools.urls')),
                        url(r'^admin/',       include(admin.site.urls)),
 
+                       ######################
+                       ## User Authentication 
+                       ######################
+
                        ## User authentication via django-allauth
                        (r'^accounts/', include('allauth.urls')),
                        url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view(), name='contact_info'  ),
@@ -42,28 +44,32 @@ urlpatterns = patterns('',
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
 
+                       ###########
+                       ## Settings 
+                       ###########
+
+                       ## Top level target
+                       url(r'^settings/$', HomeView.as_view(), name='settings'),
+
                        ## Farm pages
-                       # url(r'^farm/$',  ListView.as_view(
-                       #                      model=farms.models.Farm,
-                       #                      template_name="list.html",
-                       #                      ),
-                       #                   name='farm_list_view'
-                       # ),
-                       url(r'^farm/$',                   FarmListView.as_view(),   name='farm_list'),
-                       url(r'^farm/new$',                FarmCreateView.as_view(), name='farm_new'),
-                       url(r'^farm/delete/(?P<pk>\d+)$', FarmDeleteView.as_view(), name='farm_delete'),
-                       url(r'^farm/(?P<pk>\d+)$',        FarmUpdateView.as_view(), name='farm_id'),
+                       url(r'^settings/farm/$',                   FarmListView.as_view(),   name='farm_list'),
+                       url(r'^settings/farm/new$',                FarmCreateView.as_view(), name='farm_new'),
+                       url(r'^settings/farm/delete/(?P<pk>\d+)$', FarmDeleteView.as_view(), name='farm_delete'),
+                       url(r'^settings/farm/(?P<pk>\d+)$',        FarmUpdateView.as_view(), name='farm_id'),
 
                        ## Probe pages
-                       url(r'^probes/$',                 ProbeFormsetView.as_view(), name='probes' ),
-                       url(r'^probes/(?P<season>\d+)$',  ProbeFormsetView.as_view(), name='probes_season' ),
-
+                       url(r'^settings/probes/$',                 ProbeFormsetView.as_view(), name='probes' ),
+                       url(r'^settings/probes/(?P<season>\d+)$',  ProbeFormsetView.as_view(), name='probes_season' ),
 
                        # ## CropSeason pages
-                       url(r'^crop_season/$',                   CropSeasonListView.as_view(),   name='crop_season_list'),
-                       url(r'^crop_season/new$',                CropSeasonCreateView.as_view(), name='crop_season_new'),
-                       url(r'^crop_season/delete/(?P<pk>\d+)$', CropSeasonDeleteView.as_view(), name='crop_season_delete'),
-                       url(r'^crop_season/(?P<pk>\d+)$',        CropSeasonUpdateView.as_view(), name='crop_season_id'),
+                       url(r'^settings/crop_season/$',                   CropSeasonListView.as_view(),   name='crop_season_list'),
+                       url(r'^settings/crop_season/new$',                CropSeasonCreateView.as_view(), name='crop_season_new'),
+                       url(r'^settings/crop_season/delete/(?P<pk>\d+)$', CropSeasonDeleteView.as_view(), name='crop_season_delete'),
+                       url(r'^settings/crop_season/(?P<pk>\d+)$',        CropSeasonUpdateView.as_view(), name='crop_season_id'),
+
+                       #############
+                       ## Main Pages
+                       #############
 
                        ## Water History
                        url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),   name='water_history'),
