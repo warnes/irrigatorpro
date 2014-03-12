@@ -3,8 +3,6 @@
 {% load model_blocks %}
 {% load object_name %}
 
-{% block title %}Irrigator Pro for Corn{% endblock %}
-
 {% block content %}
 
   {{ object_list|as_list_block }}
@@ -13,8 +11,7 @@
     <tr>Header</tr>
 
     {% for item in object_list %}
-      {{ item 1 }}
-      <tr> 
+      <tr>
 	<td>
 	  <a href="{{ request.get_full_path }}{{ item.pk }}">
 	    {{ item.name }}

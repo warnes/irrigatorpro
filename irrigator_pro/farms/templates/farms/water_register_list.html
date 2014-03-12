@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <h2>WaterHistory for <em>{{crop_season}}</em>
+    for field <em>{{field}}</em>
+  </h2>
+
+
+  {% if object_list %}
+
+    <table class="formset" >
+
+      <thead>
+	<tr>
+	  {% for field in object_list|first %}
+	    <th>field.label</th>
+	  {% endfor %}
+	</tr>
+      </thead>
+
+      <tbody>
+	{% for object in object_list %}
+	  <tr>
+	    {% for field in object %}
+	      <td>
+		{{ input }}
+	      </td>
+	    {% endfor %}
+	  </tr>
+	{% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+
+    <div class="alert alert-danger">
+      No data to display
+    </div>
+
+  {% endif %}
+
+{% endblock %}

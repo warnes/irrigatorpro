@@ -396,9 +396,9 @@ class WaterRegister(Audit):
     rain                  = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
     irrigation            = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
     average_water_content = models.DecimalField(max_digits=3, decimal_places=2) # #.##
-    computed_from_pobes   = models.BooleanField(default=False)
-    irrigatate_flag       = models.BooleanField(default=False)
-    check_sesors_flag     = models.BooleanField(default=False)
+    computed_from_probes  = models.BooleanField(default=False)
+    irrigate_flag         = models.BooleanField(default=False)
+    check_sensors_flag    = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Water Register"

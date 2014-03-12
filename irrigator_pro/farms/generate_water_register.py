@@ -5,12 +5,9 @@ import math
 import sys
 import time
 
-try:
+if __name__ == "__main__":
     # Add the directory *above* this to the python path so we can find our modules
     sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
-except: # assume we're running in the script directory
-    sys.path.append("..")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
 

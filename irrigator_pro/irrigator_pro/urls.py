@@ -76,9 +76,9 @@ urlpatterns = patterns('',
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
 
                        ## Water Register
-                       url(r'^water_register/$',                               HomeView.as_view(), name='water_register'),
-                       url(r'^water_register/(?P<season>\d+)$',                HomeView.as_view(), name='water_register_season'),
-                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', HomeView.as_view(), name='water_register_season_field'),
+                       url(r'^water_register/$',                               HomeView.as_view(),              name='water_register'),
+                       url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
+                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

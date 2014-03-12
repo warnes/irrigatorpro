@@ -23,9 +23,9 @@ class Migration(SchemaMigration):
             ('rain', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2, blank=True)),
             ('irrigation', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2, blank=True)),
             ('average_water_content', self.gf('django.db.models.fields.DecimalField')(max_digits=3, decimal_places=2)),
-            ('computed_from_pobes', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('irrigatate_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('check_sesors_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('computed_from_probes', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('irrigate_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('check_sensors_flag', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal(u'farms', ['WaterRegister'])
 
@@ -266,8 +266,8 @@ class Migration(SchemaMigration):
             'Meta': {'ordering': "('crop_season', 'field', 'date')", 'unique_together': "(('crop_season', 'field', 'date'),)", 'object_name': 'WaterRegister'},
             'average_water_content': ('django.db.models.fields.DecimalField', [], {'max_digits': '3', 'decimal_places': '2'}),
             'cdate': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'check_sesors_flag': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'computed_from_pobes': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'check_sensors_flag': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'computed_from_probes': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'crop_season': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['farms.CropSeason']"}),
             'crop_stage': ('django.db.models.fields.CharField', [], {'max_length': '32'}),
             'cuser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'farms_waterregister_cusers'", 'to': u"orm['auth.User']"}),
@@ -275,7 +275,7 @@ class Migration(SchemaMigration):
             'date': ('django.db.models.fields.DateField', [], {}),
             'field': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['farms.Field']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'irrigatate_flag': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'irrigate_flag': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'irrigation': ('django.db.models.fields.DecimalField', [], {'max_digits': '3', 'decimal_places': '2', 'blank': 'True'}),
             'mdate': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'muser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'farms_waterregister_musers'", 'to': u"orm['auth.User']"}),
