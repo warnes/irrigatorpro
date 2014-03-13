@@ -2,7 +2,7 @@
 from ftplib import FTP
 from datetime import date, datetime
 import os, os.path, re, subprocess, sys
-import argparse
+import argparse, socket
 
 """
 This script downlaads the UGA SSA data stored on the NESPAL webserver
@@ -10,13 +10,23 @@ and uploads it into the IrrigatorPro database.
 """
 
 if __name__ == "__main__":
-    # Add the directory *above* this to the python path so we can find our modules
-    sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+    # Add django root dir to python path
+    PROJECT_ROOT      = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',))
+    print "PROJECT_ROOT=", PROJECT_ROOT
+    sys.path.append(PROJECT_ROOT)
+
+    # Add virtualenv dirs to python path
+    if socket.gethostname()=='gregs-mbp':
+        VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
+    else:
+        VIRTUAL_ENV_ROOT = '/prod/VirtualEnvs/irrigator_pro/'
+
+    print "VIRTUAL_ENV_ROOT='%s'" % VIRTUAL_ENV_ROOT
+    activate_this = os.path.join(VIRTUAL_ENV_ROOT, 'bin', 'activate_this.py')
+    execfile(activate_this, dict(__file__=activate_this))
+
+    # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
-else: # assume we're running in the script directory
-    sys.path.append("..")
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
-    
 
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import ProbeSync, ProbeReading
