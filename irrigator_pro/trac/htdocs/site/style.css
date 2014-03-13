@@ -19,3 +19,13 @@ body {
     border-right:2px solid rgb(238, 252, 255);
     border-top-right-radius:5px;
 }
+
+a#tracpowered {
+    background-color: rgb(238, 252, 255);
+    border:2px solid rgb(238, 252, 255);
+    border-radius:5px;
+}
+
+a#tracpowered:hover, a#tracpowered:focus  {
+    background-color: #80B580 !important;
+}
