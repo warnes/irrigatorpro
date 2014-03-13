@@ -6,6 +6,18 @@ from datetime import timedelta
 
 import sys
 
+
+############
+## Display user email name instead of username when selecting users
+############
+def user_unicode_patch(self):
+    return u"%s, %s (%s)" % (self.last_name.capitalize(), 
+                             self.first_name.capitalize(), 
+                             self.email)
+
+User.__unicode__ = user_unicode_patch
+
+
 ############
 ### Farm ###
 ############
