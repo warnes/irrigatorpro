@@ -2,7 +2,7 @@
 
 .navbar-default {
 	background-color: #006B00;
-	border-color: #37aafe;
+	/* border-color: #37aafe; */
 }
 .navbar-default {
 	color: #eefcff;
@@ -30,21 +30,20 @@
 }
 .navbar-static-side > .open > a, .navbar-static-side > .open > a:hover, .navbar-static-side > .open > a:focus {
 	color: LimeGreen;
-	background-color: #37aafe;
+	background-color: #80B580;
 }
 .navbar-default .navbar-toggle {
-	border-color: #37aafe;
+	/* border-color: #37aafe; */
 }
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
 	color: LimeGreen;
-	background-color: #37aafe;
+	background-color: #80B580;
 }
 .navbar-default .navbar-toggle .icon-bar {
 	background-color: #eefcff;
 }
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
-	border-color: #eefcff;
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+	/* border-color: #eefcff; */
 }
 .navbar-default .navbar-link {
 	color: #eefcff;
@@ -69,7 +68,7 @@
 
 
 .navbar-static-side {
-    margin-top: 61px;
+    margin-top: 51px;
     width: 210px;
     position: fixed;
     bottom: 0;
@@ -91,7 +90,7 @@
 
 .navbar-side-second {
     background-color: #80B580;
-    border-color: #37aafe;
+    /* border-color: #37aafe; */
     margin-left: -20px !important;
     width: 210px;
 }
@@ -103,11 +102,11 @@
 
 
 .navbar-brand{
-    padding:22.5px;
+    padding-left:22.5px;
 }
 
 .navbar-nav {
-    padding-top: 10px;
+    /* padding-top: 10px; */
     padding-right: 10px;
 }
 

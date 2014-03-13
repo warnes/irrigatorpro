@@ -6,12 +6,15 @@ h1 {
     margin-bottom: 20px;
 }
 
-h2 em {
+h1 em, h2 em {
     color: #006B00;
     font-weight: 500;
     font-style: normal;
 }
 
+.btn-default {
+    background-color: #80B580;
+}
 
 #page-wrapper {
     padding: 0;
@@ -20,7 +23,7 @@ h2 em {
 }
 
 body {
-    padding-top: 62px;
+    padding-top: 62 px;
     padding-bottom: 40px;
 }
 
@@ -32,7 +35,8 @@ body {
 
 
 .contents {
-    padding: 20px;
+    margin-top: 50px;
+    padding: 10px 20px;
 }
 
 footer {

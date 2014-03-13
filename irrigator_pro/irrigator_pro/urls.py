@@ -21,10 +21,6 @@ urlpatterns = patterns('',
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
 
-                       ##################
-                       ## Admin interface
-                       ##################
-
                        # Uncomment the admin/doc line below to enable
                        # admin documentation:
                        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -39,7 +35,6 @@ urlpatterns = patterns('',
 
                        ## User authentication via django-allauth
                        (r'^accounts/', include('allauth.urls')),
-                       url(r'^accounts/contact_info/$',  Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
                        ## Session Timeout
                        url(r'session_security/', include('session_security.urls')),
@@ -88,9 +83,8 @@ urlpatterns = patterns('',
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
-                       url(r'^user/$', HomeView.as_view(), name="user"  ),
-                       url(r'^user/(?P<userid>\w+)$', UserDetailView.as_view()  ),
-
+                       url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
+                       url(r'^user/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
 )
 
