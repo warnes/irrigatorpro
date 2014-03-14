@@ -40,6 +40,16 @@
     }
 },
 {
+    "pk": 5, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 4, 
+        "key": "dcaa7ea2b650544a6f185e5aff73059c11d7c7c93b9685246f4c845cf1aa0e50", 
+        "sent": "2014-03-14T19:05:38.315Z", 
+        "created": "2014-03-14T19:05:37.851Z"
+    }
+},
+{
     "pk": 1, 
     "model": "auth.permission", 
     "fields": {
@@ -1885,7 +1895,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-12T11:50:42.566Z", 
+        "last_login": "2014-03-14T19:11:48.023Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$HmCeClJXQW9k$0+wKCCScTi9yBV8RrqDTCohLIrm8MpFTfI4TCsXsWPA=", 
@@ -1939,7 +1949,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-02-06T11:33:43.323Z", 
+        "last_login": "2014-03-13T14:43:02.238Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$wrYt3uSjvDQt$99W7hXg8SACXOtvIpKpK4p0sB2wpU66vDs28W/GLLto=", 
@@ -2009,6 +2019,24 @@
     }
 },
 {
+    "pk": 6, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "d", 
+        "first_name": "David", 
+        "last_name": "Reckford", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-14T19:07:08.943Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$2WfJOuO2nCZc$8z6Pj4HG4xY+7U53YNEIQB7cuZ3cRnEUhp6O4oCxfv0=", 
+        "email": "d@teamflint.us", 
+        "date_joined": "2014-03-14T19:05:37.756Z"
+    }
+},
+{
     "pk": 1, 
     "model": "sites.site", 
     "fields": {
@@ -2044,6 +2072,16 @@
         "user": 4, 
         "primary": true, 
         "email": "bill.edwards@ars.usda.gov"
+    }
+},
+{
+    "pk": 4, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 6, 
+        "primary": true, 
+        "email": "d@teamflint.us"
     }
 }
 ]
