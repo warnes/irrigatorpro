@@ -21,6 +21,7 @@ class ProbeReadingFormsetView(ModelFormSetView):
     widgets = {
         'radio_id': HiddenInput()
         }
+    can_delete = True
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
