@@ -34,7 +34,11 @@ class Contact_InfoUpdateView(UpdateView):
         return self.request.path
 
     def get_object(self):
-        obj = Contact_Info.objects.get(user = self.request.user)
+        (obj, created) = Contact_Info.objects.get_or_create(user = self.request.user, 
+                                                            defaults = { 'cuser': self.request.user,
+                                                                         'muser': self.request.user,
+                                                                       }
+                                                           )
         return obj
 
     @method_decorator(login_required)
