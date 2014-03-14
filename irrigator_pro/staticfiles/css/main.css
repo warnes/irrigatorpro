@@ -225,6 +225,11 @@ table.default-form {
     margin-left: 40px;
 }
 
+input[type="number"] {
+    width: 5em;
+}
+
+
 /******************/
 /* Water Register */
 /******************/
