@@ -11,7 +11,7 @@ Django settings for IrrigatorPro Web Site
 ###
 
 # Name displayed on pages, for easy change
-SITE_NAME = "IrrigatorPro for Corn (DEVEL)"
+SITE_NAME = "IrrigatorPro for Corn (Validation)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
