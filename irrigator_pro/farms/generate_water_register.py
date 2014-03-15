@@ -194,38 +194,27 @@ def generate_water_register(crop_season, field):
 
         DWU = float(DWU)
 
-        AWC = calculateAWC_ProbeReading(crop_season, field, date)
-        if AWC:
-            table_rows.append( ( crop_season,
-                                 field,
-                                 date,
-                                 stage,
-                                 quantize(DWU),
-                                 Decimal('NaN'),
-                                 Decimal('NaN'),
-                                 quantize(AWC),
-                                 True,
-                                 need_irrigation(AWC),
-                                 check_sensors(AWC),
-                               )
-                             )
-        else:
-            AWC_plus = caclulateAWC_RainIrrigation(crop_season, field, date)
-            AWC = AWC_prev + float(AWC_plus[0]) + float(AWC_plus[1])
+        AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
+        rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
 
-            table_rows.append( ( crop_season,
-                                 field,
-                                 date,
-                                 stage,
-                                 quantize(DWU),
-                                 quantize(AWC_plus[0]),
-                                 quantize(AWC_plus[1]),
-                                 quantize(AWC),
-                                 False,
-                                 need_irrigation(AWC),
-                                 check_sensors(AWC),
-                               )
-                             )
+        if AWC_probe: 
+            AWC = AWC_probe
+        else:
+            AWC = AWC_prev + rain + irrigation
+
+        table_rows.append( ( crop_season,
+                             field,
+                             date,
+                             stage,
+                             quantize(DWU),
+                             quantize(rain),
+                             quantize(irrigation),
+                             quantize(AWC),
+                             (not AWC_probe is None),
+                             need_irrigation(AWC),
+                             check_sensors(AWC),
+                           )
+                         )  
 
         AWC_prev = AWC-DWU
         date += datetime.timedelta(days=1)
