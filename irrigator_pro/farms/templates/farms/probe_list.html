@@ -18,7 +18,10 @@
 
 {% block content %}
 
-  <h2>Probes for <em>{{season}}</em></h2>
+  <h1>
+    <i class="fa fa-rss fa-fw"></i>
+    Probes - <em>{{season}}</em>
+  </h1>
 
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
 

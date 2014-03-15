@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
 from django.forms.widgets import HiddenInput
 
-from farms.models import CropSeason, Probe, ProbeReading
+from farms.models import CropSeason, Field, Probe, ProbeReading
 
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
@@ -25,8 +25,8 @@ class ProbeReadingFormsetView(ModelFormSetView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.season = kwargs.get('season', None)
-        self.field  = kwargs.get('field', None)
+        self.season = CropSeason.objects.get(pk=kwargs.get('season', None))
+        self.field  = Field.objects.get(pk=kwargs.get('field', None))
         return super(ProbeReadingFormsetView, self).dispatch(*args, **kwargs)
 
     def getProbes(self, user, season, field):
@@ -59,7 +59,7 @@ class ProbeReadingFormsetView(ModelFormSetView):
         queryset = queryset.filter(query).distinct().order_by('radio_id','reading_datetime')
 
         if self.season:
-            crop_season = CropSeason.objects.get(pk=int(self.season))
+            crop_season = CropSeason.objects.get(pk=self.season.pk)
             queryset = queryset.filter( reading_datetime__gte=crop_season.season_start_date,
                                         reading_datetime__lte=crop_season.season_end_date )
 
@@ -74,7 +74,15 @@ class ProbeReadingFormsetView(ModelFormSetView):
         
     def get_extra_form_kwargs(self):
         kwargs = super(ProbeReadingFormsetView, self).get_extra_form_kwargs()
-        radio_id = self.getRadioIds(self.request.user, self.season, self.field)[0]
-        print "radio_id: %s" % radio_id
-        kwargs['initial'] = { 'radio_id': radio_id }
+        self.radio_id = self.getRadioIds(self.request.user, self.season, self.field)[0]
+        print "radio_id: %s" % self.radio_id
+        kwargs['initial'] = { 'radio_id': self.radio_id }
         return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(ProbeReadingFormsetView, self).get_context_data(**kwargs)
+        context['season'] = self.season
+        context['field'] = self.field
+        context['radio_id'] = self.radio_id
+        return context
+        

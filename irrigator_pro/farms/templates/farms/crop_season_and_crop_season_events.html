@@ -2,7 +2,12 @@
 
 {% block content %}
 
-  <h2>Crop Season</h2>
+  <h1>
+    <i class="fa fa-pagelines fa-fw"></i>
+    Crop Season
+    - 
+    <em>{{form.name.value}}</em>
+  </h1>
 
   <form action="{{ request.path }}" method="post">{% csrf_token %}
     {% if form.non_field_errors %}

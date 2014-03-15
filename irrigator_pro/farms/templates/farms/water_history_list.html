@@ -18,9 +18,14 @@
 
 {% block content %}
 
-  <h2>Rainfall and Irrigation for <em>{{season}}</em>
+  <h1>
+    <i class="fa fa-cloud fa-fw"></i>
+    Rainfall and Irrigation
+  </h1>
+
+  <h2>Season: <em>{{season}}</em>
     {% if field %}
-      for Field <em>{{ field }}</em>
+      - Field: <em>{{ field }}</em>
     {% endif %}
   </h2>
 

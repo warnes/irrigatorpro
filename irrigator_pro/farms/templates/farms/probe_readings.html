@@ -18,6 +18,20 @@
 
 {% block content %}
 
+  <h1>
+    <i class="fa fa-rss fa-fw"></i>
+    Probe Readings
+  </h1>
+
+  <h2>
+    <em>{{season}}</em>
+      -
+    <em>{{field}}</em>
+      -
+    <em>{{radio_id}}</em>
+  </h2>
+
+
   <h2>{{ object_name }}</h2>
 
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}

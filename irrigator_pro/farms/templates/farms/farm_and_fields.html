@@ -15,7 +15,10 @@
 
 {% block content %}
 
-  <h2>Farm</h2>
+  <h1>Farm
+    -
+    <em>{{form.name.value}}</em>
+  </h1>
 
   <form action="{{ request.path }}" method="post">{% csrf_token %}
 
