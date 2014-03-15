@@ -21,10 +21,10 @@
           <th>Rain</th>
           <th>Irrigation</th>
           <th>AWC</th>
+	  <th></th>
           <!-- <th>From Probes</th> -->
           <th>Irrigate</th>
           <th>Check Sensors</th>
-	  <th>From Probes</th>
        	</tr>
       </thead>
 
@@ -47,21 +47,19 @@
 		{{ object.daily_water_use }}
 	      </td>
 	      <td>
-		{% if not object.computed_from_probes %}
 		  {{ object.rain }}
-		{% endif %}
 	      </td>
 	      <td>
-		{% if not object.computed_from_probes %}
 		  {{ object.irrigation }}
-		{% endif %}
 	      </td>
 	      <td>
 		{{ object.average_water_content }}
 	      </td>
-	      <!-- <td> -->
-	      <!-- 	{{ object.computed_from_probes }} -->
-	      <!-- </td> -->
+	      <td>
+		{% if object.computed_from_probes %}
+		  <i class="fa fa-rss"></i>
+		{% endif %}
+	      </td>
 	      <td>
 		{% if object.irrigate_flag %}
 		  <div class="alert-inline alert-danger">
@@ -74,11 +72,6 @@
 		  <div class="alert-inline alert-warning">
 		    Check Sensors
 		  </div>
-		{% endif %}
-	      </td>
-	      <td>
-		{% if object.computed_from_probes %}
-		  <i class="fa fa-rss"></i>
 		{% endif %}
 	      </td>
 	  </tr>
