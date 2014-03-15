@@ -2,10 +2,13 @@
 
 {% block content %}
 
-  <h2>WaterHistory for <em>{{crop_season}}</em>
-    for field <em>{{field}}</em>
-  </h2>
+  <h1>
+    Water Register
+  </h1>
 
+  <h2>Season: <em>{{crop_season}}</em> - Field: <em>{{field}}</em></h2>
+
+  <br>
 
   {% if object_list %}
 
@@ -21,8 +24,7 @@
           <th>Rain</th>
           <th>Irrigation</th>
           <th>AWC</th>
-	  <th></th>
-          <!-- <th>From Probes</th> -->
+	  <th><i class="fa fa-rss"></i></th> <!-- From Probes -->
           <th>Irrigate</th>
           <th>Check Sensors</th>
        	</tr>
