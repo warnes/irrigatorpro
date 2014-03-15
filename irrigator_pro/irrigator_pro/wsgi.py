@@ -15,10 +15,13 @@ print "PROJECT_ROOT=", PROJECT_ROOT
 sys.path.append(PROJECT_ROOT)
 
 # Add virtualenv dirs to python path
-if socket.gethostname()=='gregs-mbp':
-    VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
-else:
+host = socket.gethostname()
+print "HOSTNAME=%s" % host
+if host=='irrigatorpro':
     VIRTUAL_ENV_ROOT = '/prod/VirtualEnvs/irrigator_pro/'
+else:
+    VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
+
 
 print "VIRTUAL_ENV_ROOT='%s'" % VIRTUAL_ENV_ROOT
 activate_this = os.path.join(VIRTUAL_ENV_ROOT, 'bin', 'activate_this.py')
