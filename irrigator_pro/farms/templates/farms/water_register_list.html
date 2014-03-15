@@ -1,5 +1,23 @@
 {% extends "base.html" %}
 
+{% comment %}
+{% block extrahead %}
+  <link href="{{ STATIC_URL }}css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ STATIC_URL }}js/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="{{ STATIC_URL }}js/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+    <script>
+      $(document).ready(function() {
+        $('#water-history').dataTable();
+      });
+    </script>
+{% endblock %}
+
+{% endcomment %}
+
 {% block content %}
 
   <h1>
@@ -12,7 +30,7 @@
 
   {% if object_list %}
 
-    <table class="formset water-history" >
+    <table class="formset water-history" id="water-history">
 
       <thead>
       	<tr>
@@ -84,7 +102,8 @@
   {% else %}
 
     <div class="alert alert-danger">
-      No data to display
+      No data to display.  Check that Crop
+      Season <em>{{crop_season}}</em> has events defined for field {{field}}.
     </div>
 
   {% endif %}

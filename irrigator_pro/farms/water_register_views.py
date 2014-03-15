@@ -34,26 +34,27 @@ class WaterRegisterListView(ListView):
         table_header, table_rows = generate_water_register(crop_season, field)
 
         ## insert new data into database ##
-        for row in table_rows:
+        if table_rows:
+            for row in table_rows:
 
-            wr = WaterRegister()
+                wr = WaterRegister()
 
-            ( wr.crop_season,
-              wr.field,
-              wr.date,
-              wr.crop_stage,
-              wr.daily_water_use,
-              wr.rain,
-              wr.irrigation,
-              wr.average_water_content,
-              wr.computed_from_probes,
-              wr.irrigate_flag,
-              wr.check_sensors_flag, ) = row
-
-            wr.cuser = self.request.user
-            wr.muser = self.request.user
-
-            wr.save()
+                ( wr.crop_season,
+                  wr.field,
+                  wr.date,
+                  wr.crop_stage,
+                  wr.daily_water_use,
+                  wr.rain,
+                  wr.irrigation,
+                  wr.average_water_content,
+                  wr.computed_from_probes,
+                  wr.irrigate_flag,
+                  wr.check_sensors_flag, ) = row
+                
+                wr.cuser = self.request.user
+                wr.muser = self.request.user
+                
+                wr.save()
 
 
     ## This method needs optimization for performance ##

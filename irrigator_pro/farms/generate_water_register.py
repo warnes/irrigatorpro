@@ -165,8 +165,10 @@ def generate_water_register(crop_season, field):
     ## Determine the first event date (planting) to show
     planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
                                                     field=field,
-                                                    #date__lte=date,
                                                     crop_event__name='Planting').order_by("-date").first()
+
+    if not planting_event: return (None, None)
+
     start_date = planting_event.date
 
     ## Determine the last event date (end of season) to show
@@ -198,9 +200,9 @@ def generate_water_register(crop_season, field):
         rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
 
         if AWC_probe: 
-            AWC = AWC_probe
+            AWC = quantize(AWC_probe)
         else:
-            AWC = AWC_prev + rain + irrigation
+            AWC = quantize(AWC_prev) + quantize(rain) + quantize(irrigation)
 
         table_rows.append( ( crop_season,
                              field,
@@ -216,7 +218,7 @@ def generate_water_register(crop_season, field):
                            )
                          )  
 
-        AWC_prev = AWC-DWU
+        AWC_prev = quantize(AWC) - quantize(DWU)
         date += datetime.timedelta(days=1)
 
     return ( table_header, table_rows )
