@@ -330,21 +330,21 @@ class ProbeReading(Audit):
 
     ## From filename
     farm_code           = models.CharField(max_length=10, blank=True)
-    file_date           = models.DateField(blank=True)
+    file_date           = models.DateField(blank=True, null=True)
 
     ## From file contents
     reading_datetime    = models.DateTimeField()
     probe_code          = models.CharField(max_length=10, blank=True)
     radio_id            = models.CharField(max_length=10)
-    battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2, blank=True) #   #.##
-    battery_percent     = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True) # ###.##
-    minutes_awake       = models.PositiveSmallIntegerField(blank=True)
+    battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True) #   #.##
+    battery_percent     = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
+    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
+    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
+    circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
+    thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
+    thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
+    minutes_awake       = models.PositiveSmallIntegerField(blank=True, null=True)
 
     SOURCE_CHOICES = ( ('UGADB', 'UGA Database'),
                        ('User', 'User Entry'),
@@ -352,6 +352,8 @@ class ProbeReading(Audit):
     source             = models.CharField(max_length=6,
                                           choices=SOURCE_CHOICES,
                                           default="User")
+
+    
 
     class Meta:
         verbose_name = "Probe Reading"
