@@ -71,4 +71,10 @@ class ProbeReadingFormsetView(ModelFormSetView):
         if hasattr(self, 'widgets'):
             kwargs[ 'widgets' ] = self.widgets
         return kwargs
-
+        
+    def get_extra_form_kwargs(self):
+        kwargs = super(ProbeReadingFormsetView, self).get_extra_form_kwargs()
+        radio_id = self.getRadioIds(self.request.user, self.season, self.field)[0]
+        print "radio_id: %s" % radio_id
+        kwargs['initial'] = { 'radio_id': radio_id }
+        return kwargs
