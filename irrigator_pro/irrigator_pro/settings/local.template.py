@@ -38,6 +38,8 @@ if DEBUG:
 
     INTERNAL_IPS = WildcardNetwork(['127.0.0.1', '192.168.*.*'])
 
+    SITE_NAME = "IrrigatorPro for Corn (DEVELOPMENT)"
+
     INSTALLED_APPS += (
         'debug_toolbar',
     )
