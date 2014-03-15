@@ -63,7 +63,7 @@ class Field(NameDesc, Comment, Audit):
                                         decimal_places=2) # ###.##
     soil_type     = models.ForeignKey('SoilType')
     irr_capacity  = models.DecimalField(max_digits=3,
-                                        verbose_name='Irrigation Capacity',
+                                        verbose_name='Irrigation Capacity (per 24 hours)',
                                         decimal_places=2) # #.##
 
     def __unicode__(self):
