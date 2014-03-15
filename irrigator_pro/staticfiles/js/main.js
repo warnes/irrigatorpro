@@ -20,7 +20,7 @@ function activateDatePicker() {
 	"margin": "2px" })
 
     // Use datetime picker widget // Display calendar icon // Make narrower
-    $('input[id$=datetime]').datetimepicker().wrap('<i class="fa fa-calendar"></i>').css({
+    $('input[id$=datetime]').datetimepicker({timeFormat: "hh:mm:ss"}).wrap('<i class="fa fa-calendar"></i>').css({
 	"width": "12em",
 	"margin": "2px"
     })
