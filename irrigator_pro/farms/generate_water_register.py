@@ -148,17 +148,18 @@ def get_stage_and_daily_water_use(field, date):
     stage = cse.crop_event.name
     return (stage, dwu)
 
+
 def need_irrigation(AWC):
     return AWC < 0.00
+
 
 def check_sensors(AWC):
     return AWC < 0.30
 
+
 def quantize( f ):
-    try:
-        return Decimal(f).quantize( Decimal('0.01') )
-    except:
-        return f.quantize( Decimal('0.01') )
+    return Decimal(str(f)).quantize( Decimal('0.01') )
+
 
 def generate_water_register(crop_season, field):
 
