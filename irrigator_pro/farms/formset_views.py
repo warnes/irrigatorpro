@@ -3,7 +3,7 @@ from django.forms import Textarea, TextInput
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput as HiddenInput
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
@@ -66,9 +66,14 @@ class Farms_FormsetView(ModelFormSetView):
             if "crop_season" in form.fields:
                 form.fields["crop_season"].queryset = self.crop_season_filter(self.request.user,
                                                                               season=self.season)
-                if self.season:
-                    form.fields["crop_season"].widget.attrs['value'] = int(self.season)
         return formset
+
+
+    def get_extra_form_kwargs(self):
+        kwargs = super(Farms_FormsetView, self).get_extra_form_kwargs()
+        kwargs['initial'] = { 'crop_season': int(self.season) }
+        return kwargs
+
 
     def get_factory_kwargs(self):
         kwargs = super(Farms_FormsetView, self).get_factory_kwargs()
@@ -83,7 +88,6 @@ class Farms_FormsetView(ModelFormSetView):
         if self.field:
             context['field'] = Field.objects.get(pk=int(self.field))
         return context
-
 
 
 class ProbeFormsetView(Farms_FormsetView):
