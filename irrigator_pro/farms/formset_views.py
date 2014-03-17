@@ -100,7 +100,7 @@ class ProbeFormsetView(Farms_FormsetView):
         'description': Textarea(attrs={'rows':2, 'cols':20}),
         'crop_season': HiddenInput(),
     }
-    extra = 0
+    extra = 2
 
 
 
@@ -120,4 +120,4 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'date':        TextInput(attrs={'width':10, 'class':'hasDatePicker'}),
         'crop_season': HiddenInput(),
     }
-    extra = 0
+    extra = 2
