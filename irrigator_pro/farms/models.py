@@ -1,3 +1,5 @@
+import decimal
+
 from django.db import models
 from django.utils import timezone
 from common.models import Audit, Comment, Location, Location_Optional, NameDesc
@@ -16,6 +18,26 @@ def user_unicode_patch(self):
                              self.email)
 
 User.__unicode__ = user_unicode_patch
+
+
+############
+## Patch problem with Decimal field
+############
+
+def to_python(self, value):
+    if value is None:
+        return value
+    try:
+        return decimal.Decimal(str(value))
+    except decimal.InvalidOperation:
+        raise exceptions.ValidationError(
+            self.error_messages['invalid'],
+            code='invalid',
+            params={'value': value},
+        )
+
+
+models.DecimalField.to_python = to_python
 
 
 ############
