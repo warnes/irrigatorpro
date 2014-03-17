@@ -6,6 +6,6 @@ class HomeView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = {
-            'some_dynamic_value': 'Coming soon!',
+            'some_dynamic_value': 'Current Status: Validation',
         }
         return self.render_to_response(context)

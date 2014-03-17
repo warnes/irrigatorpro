@@ -7,29 +7,96 @@
         <h1 class="site-title"><i class="fa fa-pagelines fa-fw"></i>{{ site_name }}</h1>
         <p>{{ some_dynamic_value }}</p>
 	{% if not user.is_authenticated %}
-          <p><a class="btn btn-primary btn-large" href="{% url 'account_signup' %}">Register &raquo;</a></p>
+	  <table>
+	    <tr>
+	      <th>
+		Existing Users:
+	      </th>
+	      <td>
+		<a class="btn btn-success btn-large" href="{% url 'account_login' %}">Sign In &raquo;</a>
+	      </td>
+	    </tr>
+	    <tr>
+	      <th>
+		New Users:
+	      </th>
+	      <td>
+		<a class="btn btn-info btn-large" href="{% url 'account_signup' %}">Register &raquo;</a>
+	      </td>
+	    </tr>
+	  </table>
 	{% endif %}
     </div>
 
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
+
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-        </div>
-        <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <h2>What Is Irrigator Pro for Corn?</h2>
+	  <p>
+	    The Irrigator Pro web site provides growers of peanuts,
+	    corn and cotton with a simple tool to apply the results of
+	    long-term, multicrop research on the best irrigation
+	    management practices performed by the ARS National Peanut
+	    Research Laboratory in Dawson, Georgia.
+	  </p>
+          <p>
+	    <a class="btn btn-default" href="http://www.ars.usda.gov/is/AR/archive/nov05/water1105.htm" 
+	       role="button">
+	      More Information
+	      &raquo;
+	    </a>
+	  </p>
        </div>
+
         <div class="col-md-4">
-          <h2>Heading</h2>
-          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+          <h2>How Does It Work?</h2>
+
+	  <p>
+	    Irrigator Pro for Corn calculates soil available water
+	    content (AWC) from soil humidity sensors and/or from
+	    rainfall and irrigation levels as well as the water
+	    utilization for the specific growth stage of the planted
+	    crop.  The available water content (AWC) is the used to
+	    determine whether irrigation is necessary.  These results
+	    are then presented to the user in a tabular format similar
+	    to a check register for each field.
+	  </p>
+	  <p>
+	    Soil humidity information can be entered manually or
+	    automatically entered from from the University of Georgia
+	    (UGA) data repository for probes that wirelessly communicate
+	    with the UGA repository.
+	  </p>
+          <p>
+	    <a class="btn btn-default" 
+	       href="http://irrigatorpro.org/trac/wiki/Calculations" 
+	       role="button">
+	      More Information 
+	      &raquo;
+	    </a>
+	  </p>
         </div>
+
+        <div class="col-md-4">
+          <h2>Current Status: <em>Validation</em></h2>
+
+          <p>
+	    The 'Irrigator Pro for Corn' web site is is currently
+            undergoing validation.  All components are operational but
+            errors or issues may be present. 
+	  </p>
+
+	  <p>
+	    Please report any errors or issues by submitting a
+	    <a class="btn btn-warning" href="#" role="button">New Support Ticket &raquo;</a>
+	  </p>
+	</div>
+
       </div>
+
+
 
       <hr>
 
