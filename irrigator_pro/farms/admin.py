@@ -15,8 +15,8 @@ class FarmAdmin(AuditAdmin):
              + Comment.fields \
              + Audit.fields
 
-    list_display  = [ 'farmer', 'name', 'get_users' ] + Location.fields
-    list_editable = ['name'] + list_display[3:]
+    list_display  = [ 'pk', 'name', 'farmer', 'get_users', ] + Location.fields
+    list_editable = ['name', 'farmer', ] + list_display[4:]
     list_filter = ['farmer']
 
 
