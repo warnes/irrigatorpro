@@ -70,6 +70,16 @@
     }
 },
 {
+    "pk": 9, 
+    "model": "account.emailconfirmation", 
+    "fields": {
+        "email_address": 8, 
+        "key": "e35a410cb8fb45d5e80d035b17487827fe1a47a5842fa28a1dc7b4f3fb78ef42", 
+        "sent": "2014-03-18T12:42:16.309Z", 
+        "created": "2014-03-18T12:42:15.988Z"
+    }
+},
+{
     "pk": 1, 
     "model": "auth.permission", 
     "fields": {
@@ -1915,7 +1925,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-17T19:13:14.443Z", 
+        "last_login": "2014-03-19T15:46:32.768Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$HmCeClJXQW9k$0+wKCCScTi9yBV8RrqDTCohLIrm8MpFTfI4TCsXsWPA=", 
@@ -1987,7 +1997,7 @@
         "is_active": true, 
         "is_superuser": false, 
         "is_staff": false, 
-        "last_login": "2014-03-17T18:35:47.649Z", 
+        "last_login": "2014-03-19T15:47:56.310Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$2WfJOuO2nCZc$8z6Pj4HG4xY+7U53YNEIQB7cuZ3cRnEUhp6O4oCxfv0=", 
@@ -2000,8 +2010,8 @@
     "model": "auth.user", 
     "fields": {
         "username": "staci.ingram", 
-        "first_name": "", 
-        "last_name": "", 
+        "first_name": "Staci", 
+        "last_name": "Ingram", 
         "is_active": true, 
         "is_superuser": false, 
         "is_staff": false, 
@@ -2036,8 +2046,8 @@
     "model": "auth.user", 
     "fields": {
         "username": "aalebl", 
-        "first_name": "", 
-        "last_name": "", 
+        "first_name": "Alain", 
+        "last_name": "Leblanc", 
         "is_active": true, 
         "is_superuser": false, 
         "is_staff": false, 
@@ -2047,6 +2057,78 @@
         "password": "pbkdf2_sha256$12000$3pcrX9j2FcQk$CMa74FP8dkv3WhSg1VBBc5sBzmwSaU/v5CpeiyytzWU=", 
         "email": "aalebl@gmail.com", 
         "date_joined": "2014-03-17T15:27:47.535Z"
+    }
+},
+{
+    "pk": 10, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "jesse.childre", 
+        "first_name": "Jesse", 
+        "last_name": "Childre", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-18T18:47:31.124Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$TymkUQ8hHKVS$jFt0wBs3YSdastkVAgBvj0dQX8OOW20QmNIuBB1xK7s=", 
+        "email": "jesse.childre@ars.usda.gov", 
+        "date_joined": "2014-03-18T12:42:15.857Z"
+    }
+},
+{
+    "pk": 11, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "_contech", 
+        "first_name": "", 
+        "last_name": "Conservation Tech", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-19T15:01:53Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$Teqe50xlNxcD$lpguLOZaXHrzv4bVYsp34Npk7t5M0ABMSs4ZnaCI7l0=", 
+        "email": "tech@flintriver.neet", 
+        "date_joined": "2014-03-19T15:01:53Z"
+    }
+},
+{
+    "pk": 12, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "_imanager", 
+        "first_name": "", 
+        "last_name": "Irrigation Manager", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-19T15:03:05.945Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$xB2mGVz3Jr63$ZNtydwDJUepdeJ9Bn12YM6lcRu9KsSWanr66fQnLuxQ=", 
+        "email": "manager@flintriver.net", 
+        "date_joined": "2014-03-19T15:03:05.945Z"
+    }
+},
+{
+    "pk": 13, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "_consultant", 
+        "first_name": "", 
+        "last_name": "Crop Consultant", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-19T15:03:23Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$g7DqOyjNBHRa$2vARMuAK5/c4r3n7PEl1HHUfAjU0LeEWq1UJK3bSoOE=", 
+        "email": "consultant@flintriver.net", 
+        "date_joined": "2014-03-19T15:03:23Z"
     }
 },
 {
@@ -2115,6 +2197,16 @@
         "user": 9, 
         "primary": true, 
         "email": "aalebl@gmail.com"
+    }
+},
+{
+    "pk": 8, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 10, 
+        "primary": true, 
+        "email": "jesse.childre@ars.usda.gov"
     }
 }
 ]
