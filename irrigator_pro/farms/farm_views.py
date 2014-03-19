@@ -169,7 +169,7 @@ class FarmDeleteView(DeleteView):
         if not user_pk in pk_list:
             return redirect( reverse('farm_list') )
         else:
-            return super(FarmUpdateView, self).dispatch(*args, **kwargs)
+            return super(FarmDeleteView, self).dispatch(*args, **kwargs)
 
 
 
