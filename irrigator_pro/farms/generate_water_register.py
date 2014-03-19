@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import datetime
 import os, os.path
 import math
@@ -158,7 +157,13 @@ def check_sensors(AWC):
 
 
 def quantize( f ):
-    return Decimal(str(f)).quantize( Decimal('0.01') )
+    """ Convert to a Decimal with resolution of 0.01 """
+    # An issue within the python Decimal class causes conversion from
+    # Decimal to Decimal to fail if the module is reloaded.  Work
+    # around that issue by converting to string, then to a Decimal.
+    retval = Decimal(str(f)).quantize( Decimal('0.01') )
+
+    return retval
 
 
 def generate_water_register(crop_season, field):
@@ -175,7 +180,9 @@ def generate_water_register(crop_season, field):
     ## Determine the last event date (end of season) to show
     end_date = crop_season.season_end_date
 
-    AWC_initial = float(field.soil_type.max_available_water)
+    maxWater = float(field.soil_type.max_available_water)
+
+    AWC_initial = maxWater
 
     table_header = ( 'Crop Season',
                      'Field',
@@ -193,36 +200,35 @@ def generate_water_register(crop_season, field):
     date = start_date
     AWC_prev = AWC_initial
     while date <= end_date:
-        (stage, DWU) = get_stage_and_daily_water_use(field, date)
 
-        DWU = float(DWU)
+        (stage, DWU) = get_stage_and_daily_water_use(field, date)
 
         AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
         rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
 
-        if AWC_probe: 
-            AWC = quantize(AWC_probe)
+        if AWC_probe is None: 
+            AWC = float(AWC_prev) - float(DWU) + float(rain) + float(irrigation)
         else:
-            AWC = quantize(AWC_prev) + quantize(rain) + quantize(irrigation)
+            AWC = AWC_probe
 
-        if AWC > field.soil_type.max_available_water:
-            AWC = field.soil_type.max_available_water
+        if AWC > maxWater: AWC = maxWater
 
-        table_rows.append( ( crop_season,
-                             field,
-                             date,
-                             stage,
-                             quantize(DWU),
-                             quantize(rain),
-                             quantize(irrigation),
-                             quantize(AWC),
-                             (not AWC_probe is None),
-                             need_irrigation(AWC),
-                             check_sensors(AWC),
-                           )
-                         )  
+        row = ( crop_season,
+                field,
+                date,
+                stage,
+                quantize(DWU),
+                quantize(rain),
+                quantize(irrigation),
+                quantize(AWC),
+                (not AWC_probe is None),
+                need_irrigation(AWC),
+                check_sensors(AWC),
+                )
 
-        AWC_prev = quantize(AWC) - quantize(DWU)
+        table_rows.append( row )  
+
+        AWC_prev = AWC
         date += datetime.timedelta(days=1)
 
     return ( table_header, table_rows )

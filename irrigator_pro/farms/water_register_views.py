@@ -37,8 +37,6 @@ class WaterRegisterListView(ListView):
         if table_rows:
             for row in table_rows:
 
-                print row
-                
                 try: 
                     wr = WaterRegister.objects.get(crop_season=crop_season, 
                                                    field=field, 
