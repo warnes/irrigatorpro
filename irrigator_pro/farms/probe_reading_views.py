@@ -75,7 +75,6 @@ class ProbeReadingFormsetView(ModelFormSetView):
     def get_extra_form_kwargs(self):
         kwargs = super(ProbeReadingFormsetView, self).get_extra_form_kwargs()
         self.radio_id = self.getRadioIds(self.request.user, self.season, self.field)[0]
-        print "radio_id: %s" % self.radio_id
         kwargs['initial'] = { 'radio_id': self.radio_id }
         return kwargs
 
