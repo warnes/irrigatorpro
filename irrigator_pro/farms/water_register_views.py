@@ -37,11 +37,18 @@ class WaterRegisterListView(ListView):
         if table_rows:
             for row in table_rows:
 
-                wr = WaterRegister()
+                print row
+                
+                try: 
+                    wr = WaterRegister.objects.get(crop_season=crop_season, 
+                                                   field=field, 
+                                                   date=row[2])
+                except:
+                    wr = WaterRegister()
 
-                ( wr.crop_season,
-                  wr.field,
-                  wr.date,
+                ( wr.crop_season, #0
+                  wr.field,       #1
+                  wr.date,        #2
                   wr.crop_stage,
                   wr.daily_water_use,
                   wr.rain,
