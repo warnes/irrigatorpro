@@ -25,3 +25,4 @@ easy_install -a readline
 easy_install http://trac-hacks.org/svn/announcerplugin/trunk
 
 ( cd thirdparty/TracDjangoAuth; python setup.py install )
+( cd thirdparty/TracAnnouncer; python setup.py install )

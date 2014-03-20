@@ -25,5 +25,4 @@ pygments
 pytz
 #
 trac
-TracAccountManager
 TracPermRedirect
