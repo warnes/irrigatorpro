@@ -139,9 +139,13 @@ admin.site.register(CropEvent, CropEventAdmin)
 
 class CropSeasonEventInline(admin.TabularInline):
     model = CropSeasonEvent
-    fields = [ 'field', 'crop_event', 'date', 'get_default_date' ] \
+    fields = [ 'field', 
+               'crop_event', 
+               'date', 
+               'get_event_order',
+               'get_event_duration' ] \
              + Comment.fields
-    readonly_fields = [ 'get_default_date' ]
+    readonly_fields = [ 'get_event_duration' ]
     extra=0
 
 
@@ -172,7 +176,12 @@ admin.site.register(CropSeason, CropSeasonAdmin)
 ######################
 
 class CropSeasonEventAdmin(AuditAdmin):
-    fields = [ 'field', 'crop_season', 'crop_event', 'date' ] \
+    fields = [ 'field', 
+               'crop_season', 
+               'crop_event', 
+               'date', 
+               'get_event_order', 
+               'get_event_duration' ] \
              + Comment.fields
     list_display  = fields[:-1]
     list_editable = [ 'date' ]

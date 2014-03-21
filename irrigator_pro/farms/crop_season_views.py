@@ -72,6 +72,26 @@ class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
         readonly = [ 'crop_event', ]# 'field' ]
         hidden = [ 'field' ]
 
+    widgets = {
+        #'event_order':    HiddenInput(),
+        #'event_duration': HiddenInput(),
+    }
+
+    def add_fields(self, form, index):
+        print "Here!"
+        super(CropSeasonEventsInlineReadonly, self).add_fields(form, index)
+        form.fields["event_order"]    = forms.CharField()
+        form.fields["event_duration"] = forms.CharField()
+
+    def construct_formset(self, *args, **kwargs):
+        formset = super(CropSeasonEventsInlineReadonly, self).construct_formset(*args, **kwargs)
+        for form in formset:
+            form.instance.event_order = form.instance.get_event_order()
+            form.instance.event_duration = form.instance.get_event_duration()
+            print "form.instance.event_order =", form.instance.get_event_order()
+            print "form.data:", form.data
+        return formset
+
 
 class CropSeasonUpdateView(UpdateWithInlinesView):
     model = CropSeason

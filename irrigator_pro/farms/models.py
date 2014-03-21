@@ -265,11 +265,11 @@ class CropSeasonEvent(Comment, Audit):
     crop_event  = models.ForeignKey(CropEvent)
     date        = models.DateField(default=timezone.now())
 
-    def get_crop_season_date(self):
-        return self.crop_season.season_start_date
+    def get_event_duration(self):
+        return self.crop_event.duration
 
-    def get_default_date(self):
-        return self.get_season_start_date() + timedelta(days=self.get_days_after_emergence())
+    def get_event_order(self):
+        return self.crop_event.order
 
     class Meta:
         verbose_name = "CropSeason Event"

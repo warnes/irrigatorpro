@@ -85,6 +85,18 @@
 			</td>
 		      {% endif %}
 		    {% endfor %}
+		    <td class="hidden">
+		    <input id="crop_event_order" 
+			   name="event_order" 
+			   type="hidden" 
+			   value="{{ record.instance.event_order }}">
+
+		    <input id="crop_event_duration" 
+			   name="event_duration" 
+			   type="hidden" 
+			   value="{{ record.instance.event_duration }}">
+		    </td>
+
 		  </tr>
 
 		{% endif %}
