@@ -46,3 +46,10 @@ mr.developer.cfg
 
 # Virutal Environments 
 VirtualEnvs
+
+# sqlite database files
+db.sqlite*
+
+# OS cache files
+.DS_Store
+.dropbox
