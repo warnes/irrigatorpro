@@ -1,9 +1,15 @@
+# editor work files
+\#*
+*~
+
+# python binary files
 *.py[cod]
 
 # C extensions
 *.so
 
 # Packages
+.egg-cache
 *.egg
 *.egg-info
 dist
@@ -31,6 +37,12 @@ nosetests.xml
 *.mo
 
 # Mr Developer
-.mr.developer.cfg
+mr.developer.cfg
 .project
 .pydevproject
+
+# Log files
+*.log
+
+# Virutal Environments 
+VirtualEnvs
