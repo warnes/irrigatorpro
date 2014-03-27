@@ -252,6 +252,27 @@ class CropSeason(NameDesc, Comment, Audit):
                     cse.save()
                     prev_end_date += timedelta(days=ce.duration)
 
+
+    def delete_orphan_events(self, all=False):
+        """
+        Delete CropSeasonEvents for which there is no matching field in CropSeason.field_list
+        """
+        if all:
+            crop_season_list = CropSeason.objects.all()
+        else: 
+            crop_season_list = [ self ]
+
+        for crop_season in crop_season_list:
+            field_list = crop_season.field_list.all()
+            # First, get all events that map to this crop_season
+            events = CropSeasonEvent.objects.filter(crop_season=crop_season)
+
+            # Next, exclude events with fields that match are defined
+            events = events.exclude(field=field_list)
+
+            # Now delete the strays
+            events.delete()
+
     class Meta:
         ordering = [ 'season_start_date', 'crop' ]
         verbose_name = 'Crop Season'

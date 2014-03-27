@@ -141,6 +141,12 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
+    def forms_valid(self, form, inlines):
+        retval = super(CropSeasonUpdateView, self).forms_valid(form, inlines)
+        self.object.save()
+        self.object.delete_orphan_events(all=False)
+        return retval
+
 
 class CropSeasonCreateView(CreateWithInlinesView):
     model = CropSeason
@@ -175,6 +181,11 @@ class CropSeasonCreateView(CreateWithInlinesView):
         form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
+    def forms_valid(self, form, inlines):
+        retval = super(CropSeasonCreateView, self).forms_valid(form, inlines)
+        self.object.save()
+        self.object.delete_orphan_events(all=False)
+        return retval
 
 
 class CropSeasonDeleteView(DeleteView):

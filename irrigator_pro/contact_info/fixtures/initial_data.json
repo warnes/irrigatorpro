@@ -82,5 +82,47 @@
         "cdate": "2014-03-17T14:07:48.818Z", 
         "user": 8
     }
+},
+{
+    "pk": 5, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "", 
+        "fax": "", 
+        "mdate": "2014-03-20T18:13:27.831Z", 
+        "cuser": 6, 
+        "mobile": "", 
+        "country": "United States", 
+        "zipcode": "", 
+        "county": "", 
+        "phone": "", 
+        "state": "", 
+        "address_1": "", 
+        "address_2": "", 
+        "muser": 6, 
+        "cdate": "2014-03-20T18:13:27.831Z", 
+        "user": 6
+    }
+},
+{
+    "pk": 6, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "", 
+        "fax": "", 
+        "mdate": "2014-03-26T17:08:05.105Z", 
+        "cuser": 4, 
+        "mobile": "", 
+        "country": "United States", 
+        "zipcode": "", 
+        "county": "", 
+        "phone": "", 
+        "state": "", 
+        "address_1": "", 
+        "address_2": "", 
+        "muser": 4, 
+        "cdate": "2014-03-26T17:08:05.105Z", 
+        "user": 4
+    }
 }
 ]
