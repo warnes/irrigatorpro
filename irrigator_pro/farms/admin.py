@@ -142,8 +142,7 @@ class CropSeasonEventInline(admin.TabularInline):
     fields = [ 'field', 
                'crop_event', 
                'date', 
-               'get_event_order',
-               'get_event_duration' ] \
+               ] \
              + Comment.fields
     readonly_fields = [ 'get_event_duration' ]
     extra=0
