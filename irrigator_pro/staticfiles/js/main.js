@@ -6,6 +6,12 @@ $(function() {
 	changeYear: true,
 	dateFormat: 'yy-mm-dd',
 	showMonthAfterYear: true,
+        addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
+        deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
+        added: function(row) {
+            $("input[id$=date]").prop("class","").datepicker()
+            $("input[id$=datetime]").prop("class","").datetimepicker()
+        },
     });
 
     activateDatePicker()
