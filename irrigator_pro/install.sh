@@ -24,5 +24,6 @@ pip install -r requirements.txt --allow-unverified django-admin-tools
 easy_install -a readline
 easy_install http://trac-hacks.org/svn/announcerplugin/trunk
 
+tar xvzf thirdparty.tgz
 ( cd thirdparty/TracDjangoAuth; python setup.py install )
 ( cd thirdparty/TracAnnouncer; python setup.py install )
