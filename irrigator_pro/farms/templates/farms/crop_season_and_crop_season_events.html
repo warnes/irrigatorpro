@@ -1,5 +1,75 @@
 {% extends "base.html" %}
 
+
+{% block scripts %}
+<script type="text/javascript">
+    $(function() {
+      /**** When an event date changes, increment/decrement later dates ****/
+      $("div.cropseason_field_wrapper .hasDatepicker").change( 
+           function(){ 
+               /** Calculate change in date **/
+               var this_row = $(this).parents("tr");
+               
+               /* Row input elements */
+               var this_input_before = $(this_row).find("input[name$=event_date_before]");
+               var this_input_after  = this;
+
+               /* Dates for the current row */
+               var this_date_str_before = this_input_before.attr("value");
+               var this_date_str_after  = this.value;
+
+               /* Stash the new date into the hidden 'before' input */
+               this_input_before = this.value;
+
+               $(this).css("background-color","lightyellow");  /* Mark it for debugging */
+
+               /* Convert date strings to date objects */
+               var this_date_before = new Date( $.datepicker.parseDate( "yy-mm-dd", this_date_str_before ) );
+               var this_date_after  = new Date( $.datepicker.parseDate( "yy-mm-dd", this_date_str_after  ) );
+               console.log("this_date_before=" + this_date_before );
+               console.log("this_date_after =" + this_date_after  );
+
+               /* Calculate change in dates */
+               var delta  = this_date_after - this_date_before;
+               console.log(this_date_after + " - " + this_date_before + " = " + delta );
+
+               /** Update following rows **/
+               next_rows = $(this_row).nextAll("tr")
+
+               for(var i=0; i<next_rows.length; i++)
+                 {
+                   var next_row = next_rows[i];
+
+                   /* Row input elements */
+                   var next_date_before_input = $(next_row).find("input[name=event_date_before]");
+                   var next_date_after_input  = $(next_row).find(".hasDatepicker");
+                
+                   /* Dates for the current row */
+                   var next_date_str_before = $(next_date_before_input).attr("value");
+                   var next_date_str_after  = $(next_date_after_input ).attr("value");
+    
+                   /* Convert date strings to date objects */
+                   var next_date_before = new Date( $.datepicker.parseDate( "yy-mm-dd", next_date_str_before ) );
+                   console.log("next_date_before=" + next_date_before );
+
+                   /* Calculate new date */
+                   var next_date_after = new Date(next_date_before.valueOf() + parseInt(delta));
+                   console.log(next_date_before + " + " + delta + " = " + next_date_after);
+    
+                   /* Put the new value in place */
+                   $(next_date_before_input).attr("value", $.datepicker.formatDate("yy-mm-dd", next_date_after) );
+                   $(next_date_after_input ).attr("value", $.datepicker.formatDate("yy-mm-dd", next_date_after) );   
+
+                   $(next_date_after_input).css("background-color","lightyellow");   /* Mark it for debugging */
+                }
+
+           } 
+      );
+    })
+</script>
+{% endblock %}
+
+
 {% block content %}
 
   <h1>
@@ -86,6 +156,12 @@
 		      {% endif %}
 		    {% endfor %}
 		    <td class="hidden">
+		    
+		    <input id="event_date_before" 
+			   name="event_date_before" 
+			   type="hidden" 
+			   value="{{ record.instance.date|date:"Y-m-dd" }}">
+		    
 		    <input id="crop_event_order" 
 			   name="event_order" 
 			   type="hidden" 
