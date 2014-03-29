@@ -6,13 +6,9 @@ $(function() {
 	changeYear: true,
 	dateFormat: 'yy-mm-dd',
 	showMonthAfterYear: true,
-        addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
-        deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
-    /** Doesn't work **/
-    /*   added: function(row) {                                          */
-    /*       $("input[id$=date]").prop("class","").datepicker()          */
-    /*        $("input[id$=datetime]").prop("class","").datetimepicker() */
-    /*   },                                                              */
+	buttonImageOnly: false,
+        buttonText: '<i class="fa fa-calendar"></i>',
+	showOn:'button',
     });
 
     activateDatePicker()
@@ -20,17 +16,24 @@ $(function() {
     setNavigation();
 });
 
+function storeDate()
+{
+    this.stored_date = this.value;
+    console.log( "value=" + this.value + "\n" + "stored_date=" + this.stored_date );
+    
+}
+
 function activateDatePicker() {
     // Use date picker widget // Display calendar icon // Make narrower
-    $('input[id$=date]').datepicker().wrap('<i class="fa fa-calendar"></i>').css({
+    $('input[id$=date]').datepicker().css({
 	"width":"7em",
-	"margin": "2px" })
+	"margin": "2px" }).focus( storeDate )
 
     // Use datetime picker widget // Display calendar icon // Make narrower
-    $('input[id$=datetime]').datetimepicker({timeFormat: "hh:mm:ss"}).wrap('<i class="fa fa-calendar"></i>').css({
+    $('input[id$=datetime]').datetimepicker({timeFormat: "hh:mm:ss"}).css({
 	"width": "12em",
 	"margin": "2px"
-    })
+    }).focus( storeDate )
 
     // Change defualt size of description and comment fields
     $('textarea[id$=description]').attr('rows',3)
