@@ -3,23 +3,38 @@
 
 {% block scripts %}
 <script type="text/javascript">
+    /* This function cleans up datepickers when a new formset row is added */
+    function renewDatePickers() {
+        /* Clear out old datepicker event handlers */
+        $("input[id$=date]").datepicker('destroy');
+
+        /* Remove buttons that got copied by formset.add */
+        $("input[id$=date]").siblings("button").remove();
+
+        /* 
+           Re-activate date pickers, restricting dates to the range 
+           specified by the crop season   
+        */
+        $("input[id$=date]").datepicker({ 
+            minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
+            maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
+        });
+    }
+
     $(function() {
         /* Enable add row / delete row */
         $('#formset tbody tr').formset({
             addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
             deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
-            added: function(row) {
-                                   $("input[id$=date]").prop("class","").datepicker();
-                                   $("input[type$=number]").prop("value","0.0");
-                                 },
+            added: renewDatePickers,
+            keepFieldValues: "input[type$=number]",
         })
 
-        /* Restrict dates to range specified by crop season */
-        $('input[id$=date]').datepicker( 
-            "option", "minDate", '{{ season.season_start_date|date:"Y-m-d" }}'
-        ).datepicker(
-            "option", "maxDate", '{{ season.season_end_date|date:"Y-m-d" }}' 
-        );
+       /*
+          Instead of setting the minDate/maxDate separately, 
+          reuse renewDatePickers code 
+        */
+       renewDatePickers();
 
     })
 </script>
