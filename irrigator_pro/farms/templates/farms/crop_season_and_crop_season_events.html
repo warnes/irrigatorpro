@@ -6,8 +6,21 @@
 <script type="text/javascript">
     $(
       function() {
+        /* Update crop season event dates when crop season start date changes */
         $("#id_season_start_date").change( season_start_date_change );
+
+        /* Update later dates when earlier dates change */
         $("div.cropseason_field_wrapper .hasDatepicker").change( crop_event_date_change );
+
+        /* Restrict dates to range specified by crop season */
+        minDate = '{{ form.instance.season_start_date|date:"Y-m-d" }}';
+        maxDate = '{{ form.instance.season_end_date|date:"Y-m-d" }}';
+        $('input[id$=date]').datepicker( 
+            "option", "minDate", minDate
+        ).datepicker(
+            "option", "maxDate", maxDate
+        );
+
       }
      )
 </script>
@@ -65,6 +78,17 @@
     <h2>Fields</h2>
 
     {% with form=inlines|first %}
+  
+      {% if form.total_error_count %}
+        {% for dict in formset.errors %}
+          {% for error in dict.values %}
+  	  <div class="alert alert-danger">
+  	    {{ error }}
+  	  </div>
+            {% endfor %}
+  	{% endfor %}
+      {% endif %}
+  
 
       {{ form.management_form }}
 

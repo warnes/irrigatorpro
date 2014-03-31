@@ -4,6 +4,7 @@
 {% block scripts %}
 <script type="text/javascript">
     $(function() {
+        /* Enable add row / delete row */
         $('#formset tbody tr').formset({
             addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
             deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
@@ -12,6 +13,14 @@
                                    $("input[type$=number]").prop("value","0.0");
                                  },
         })
+
+        /* Restrict dates to range specified by crop season */
+        $('input[id$=date]').datepicker( 
+            "option", "minDate", '{{ season.season_start_date|date:"Y-m-d" }}'
+        ).datepicker(
+            "option", "maxDate", '{{ season.season_end_date|date:"Y-m-d" }}' 
+        );
+
     })
 </script>
 {% endblock %}
@@ -31,6 +40,18 @@
   </h2>
 
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
+
+
+    {% if formset.total_error_count %}
+      {% for dict in formset.errors %}
+        {% for error in dict.values %}
+  	  <div class="alert alert-danger">
+  	    {{ error }}
+  	  </div>
+        {% endfor %}
+      {% endfor %}
+    {% endif %}
+
 
     <table class="formset" >
 
