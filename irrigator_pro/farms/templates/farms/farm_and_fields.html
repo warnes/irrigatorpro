@@ -87,15 +87,17 @@
 
     <h2>Fields</h2>
 
-    {% if field_form.total_error_count %}
-      {% for dict in field_form.errors %}
-        {% for error in dict.values %}
+
+    {% if field_form.non_form_errors %}
+      {% for dict in formset.non_form_errors %}
+        {% for key,value in dict.items %}
   	  <div class="alert alert-danger">
-  	    {{ error }}
+  	    {{ value }}
   	  </div>
         {% endfor %}
       {% endfor %}
     {% endif %}
+
     
     <table id="formset" class="formset default-form">
       <thead>

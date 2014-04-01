@@ -25,17 +25,19 @@
 
   <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
 
-    {% if formset.total_error_count %}
-      {% for dict in formset.errors %}
-        {% for error in dict.values %}
+
+    {% if formset.non_form_errors %}
+      {% for dict in formset.non_form_errors %}
+        {% for key,value in dict.items %}
   	  <div class="alert alert-danger">
-  	    {{ error }}
+  	    {{ value }}
   	  </div>
         {% endfor %}
       {% endfor %}
     {% endif %}
 
-    <table class="formset" >
+
+o    <table class="formset" >
 
       <thead>
 	<tr>
