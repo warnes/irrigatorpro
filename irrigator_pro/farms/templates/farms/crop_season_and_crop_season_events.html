@@ -4,6 +4,30 @@
 {% block scripts %}
 <script src="{{ STATIC_URL }}js/update_crop_season_event_dates.js"></script>
 <script type="text/javascript">
+    function set_event_range()
+    {
+        /*** 
+           This function sets date ranges to the limits given 
+           by season_start_date and season_end_date
+         ***/ 
+
+        /* Get the season staet and end dates */
+        minDate = $('input[id=id_season_start_date]').val();
+        maxDate = $('input[id=id_season_end_date]').val();
+
+        /* Restrict season end date to start after the season start date */
+        $('input[id=id_season_end_date]').datepicker( 
+            "option", "minDate", minDate
+        )
+
+        /* Restrict event dates to range specified by crop season */
+        $('input[id$=date]').filter('[id^=id_cropseasonevent]').datepicker( 
+            "option", "minDate", minDate
+        ).datepicker(
+            "option", "maxDate", maxDate
+        );
+    } 
+
     $(
       function() {
         /* Update crop season event dates when crop season start date changes */
@@ -12,15 +36,11 @@
         /* Update later dates when earlier dates change */
         $("div.cropseason_field_wrapper .hasDatepicker").change( crop_event_date_change );
 
-        /* Restrict dates to range specified by crop season */
-        minDate = '{{ form.instance.season_start_date|date:"Y-m-d" }}';
-        maxDate = '{{ form.instance.season_end_date|date:"Y-m-d" }}';
-        $('input[id$=date]').datepicker( 
-            "option", "minDate", minDate
-        ).datepicker(
-            "option", "maxDate", maxDate
-        );
+        /* Set event date ranges on page load */ 
+        set_event_range();
 
+        $('input[id=id_season_start_date]').change(set_event_range);
+        $('input[id=id_season_end_date]').change(set_event_range);
       }
      )
 </script>
