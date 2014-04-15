@@ -1,23 +1,5 @@
 {% extends "base.html" %}
 
-{% comment %}
-{% block extrahead %}
-  <link href="{{ STATIC_URL }}css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
-{% endblock %}
-
-{% block scripts %}
-    <script src="{{ STATIC_URL }}js/plugins/dataTables/jquery.dataTables.js"></script>
-    <script src="{{ STATIC_URL }}js/plugins/dataTables/dataTables.bootstrap.js"></script>
-
-    <script>
-      $(document).ready(function() {
-        $('#water-history').dataTable();
-      });
-    </script>
-{% endblock %}
-
-{% endcomment %}
-
 {% block content %}
 
   <h1>
