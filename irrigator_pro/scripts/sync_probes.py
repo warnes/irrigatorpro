@@ -3,10 +3,13 @@ from ftplib import FTP
 from datetime import date, datetime
 import os, os.path, re, subprocess, sys
 import argparse, socket
+import psycopg2
+import warnings
 
 """
-This script downlaads the UGA SSA data stored on the NESPAL webserver
-and uploads it into the IrrigatorPro database.
+This script queries the UGA SSA data stored in the NESPAL database and
+upload the last probe reading before 9am per day for each probe into
+the IrrigatorPro database.
 """
 
 if __name__ == "__main__":
@@ -38,14 +41,14 @@ import pytz
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
 
-## FTP Configuration
-ftp_server     = "www.nespal.org"
-ftp_path       = "/cigflint/Flint%(year)s" # year will be appended
-ftp_email   = "flintcig"
-ftp_password   = "cigswcd"
-ftp_cache_path = os.path.join(ABSOLUTE_PROJECT_ROOT, "ftp_cache")
+## UGA Database Configuration
+HOST="162.243.88.127"
+DATABASE="flint"
+USER="reader"
+PASSWORD="ugatifton"
 
-print "ftp_cache_path:", ftp_cache_path
+## User to own probe readings
+OWNER='greg@warnes.net'
 
 ## Debugging
 DEBUG=False
@@ -55,58 +58,20 @@ nFiles    = 0
 nRecords  = 0
 allFiles  = ""
 
-def mirror(year=2013, max_tries=20):
+def processProbeReading(fields, store_probes=True):
     """
-    Use wget command to mirror the FTP 'daily' files to the local directory 'ftp_cache_path'
-    """
+    Write elements of current line and write to database.
 
-    ## Create target directory (if needed)
-    try:
-        os.mkdir(ftp_cache_path)
-    except:
-        pass
-
-    os.chdir(ftp_cache_path)
-
-    command = [ 'wget',
-                '--mirror',
-                '--ftp-user=%s' % ftp_email,
-                '--ftp-password=%s' % ftp_password,
-                '--exclude-directories=/*/*/*/hourly',
-                '--no-verbose',
-                '--cut-dirs=6',
-                '--tries=%d' % max_tries,
-                '--no-host-directories',
-                'ftp://%s/%s' % ( ftp_server, ftp_path % {'year': year} )
-            ]
-
-
-    try:
-        log = subprocess.check_output(command)
-    except  subprocess.CalledProcessError as e:
-        print e
-
-
-def putProbe(farm_code, file_date, line):
-    """
-    Extract elements of CSV-encoded line, write to database.
-
-    Store last entries before 9:00am on each date.
+    Store last entry before 9:00am on each date.
     """
 
     global nRecords
     global rpr
 
-    try:
-        line = line.decode("utf-8-sig")
-    except:
-        line = line.decode("utf-8")
 
-    if DEBUG:
-        print "data: %s" % line
-        sys.stdout.flush()
-
-    ( reading_datetime,
+    ( id,
+      reading_datetime,
+      farm_code,
       probe_code,
       radio_id,
       battery_voltage,
@@ -118,28 +83,17 @@ def putProbe(farm_code, file_date, line):
       thermocouple_1_temp,
       thermocouple_2_temp,
       minutes_awake
-    ) = line.split(',')
-
-
-    reading_datetime = datetime.strptime("%s EST" % reading_datetime, "%m/%d/%Y %H:%M:%S %Z")
-    try:
-        # This can sometimes fail if a particular datetime falls into
-        # a daylight-savings transition
-        reading_datetime = timezone.make_aware(reading_datetime, eastern)
-    except pytz.exceptions.AmbiguousTimeError as e:
-        print e
+    ) = fields;
 
     # Only consider times between 1:00am and 9:00am on each date.
-    if reading_datetime.hour < 1 or reading_datetime.hour > 8:
+    if (reading_datetime.hour < 1) or (reading_datetime.hour > 8):
         return
 
     if DEBUG:
         print reading_datetime
         sys.stdout.flush()
 
-    battery_percent = battery_percent.replace("%","")
-
-    user = User.objects.get(email='greg@warnes.net')
+    user = User.objects.get(email=OWNER)
     now  = timezone.now()
 
     # if a reading for this date already exists, update it
@@ -160,7 +114,7 @@ def putProbe(farm_code, file_date, line):
 
     rpr.reading_datetime    = reading_datetime
     rpr.radio_id            = radio_id
-    rpr.file_date           = file_date
+    #rpr.file_date           = file_date
     rpr.battery_voltage     = battery_voltage
     rpr.battery_percent     = battery_percent
     rpr.soil_potential_8    = soil_potential_8
@@ -174,22 +128,12 @@ def putProbe(farm_code, file_date, line):
     rpr.mdate               = now
     rpr.source              = u'UGADB'
 
-    rpr.save()
-
-
-
-def parse_filename(filename):
-    """
-    Extract farm and date from filename
-    """
-    (base, ext) = filename.split('.')
-    (farm, datestr) = base.split('_')
-    month = datestr[0:2]
-    day   = datestr[2:4]
-    year  = datestr[4:]
-    file_date = date(year=int(year), month=int(month), day=int(day), )
-    #
-    return ( filename, farm, file_date )
+    if store_probes:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            rpr.save()
+    
+    sys.stderr.write(".")
 
 
 ###########################
@@ -199,9 +143,17 @@ def parse_filename(filename):
 
 ## Handle Command Line Arguments
 today = date.today()
-date_start_default = "%s-01-01" % today.year
+
+## Default start date is the last one in the datebase
+try:
+    date_start_default = ProbeReading.objects.filter(source=u'UGADB').latest('reading_datetime').reading_datetime.date()
+except:
+    date_start_default = "%s-01-01" % today.year
+
+## Default end date is today
 date_end_default   = today.isoformat(),
 
+## Parse Arguments
 parser = argparse.ArgumentParser(description='Download probe readings and import into database')
 parser.add_argument('--date-start',
                     action='store',
@@ -250,65 +202,43 @@ if store_log:
                    mdate     = now
                   )
     ps.save()
-    
-## Synchronize with ftp site
-years = range( date_start.year, date_end.year+1 )
 
-if mirror_files:
-    for year in years: mirror(year=year)
+## Connect with the UGA database
+conn = psycopg2.connect(host=HOST, database=DATABASE, user=USER, password=PASSWORD) 
+cur = conn.cursor()
+SQL='''
+    SELECT * 
+    FROM flint.fields.data 
+    WHERE 
+      date_trunc('day', dt) >= TIMESTAMP '%s'
+      AND
+      date_trunc('day', dt) <= TIMESTAMP '%s'
+    ''' % ( date_start, date_end ) 
 
-## Select files to work on
-files = os.listdir(ftp_cache_path)
-data_files = filter(lambda x: re.match("[0-9]+_[0-9]+\.txt", x), files)
-filename_farm_dates = map(parse_filename, data_files)
+cur.execute( SQL )
 
-filename_farm_dates = sorted( filename_farm_dates, key=lambda x: x[2] )
-
+sys.stderr.write("Synchronizing probe information via direct database access\n")
+sys.stderr.write("\n")
+sys.stderr.write("Date range: %s to %s \n" % ( date_start, date_end ) )
+sys.stderr.write("\n")
+sys.stderr.write("Progress: (one dot per record)\n")
 
 ## Iterate across files
-for (filename, farm, file_date) in filename_farm_dates:
+for record in cur:
 
+   ## add line to database
+   processProbeReading(record, store_probes=store_probes)
 
-    if not (date_start <= file_date <= date_end):
-        print "File date '%s' outside range [%s to %s].  Skipped." % \
-            ( file_date, date_start, date_end  )
-        sys.stdout.flush()
-        continue
+   if store_log:
+       ## Update ProbeSync record
+       ps.nrecords  = nRecords
+       ps.save()
 
-    # If the file has been fully imported, it will be recorded in a
-    # ProbeSync object's filenames field.
-    count = ProbeSync.objects.filter( filenames__contains=filename ).count()
-    # If it does up, skip it. Otherwise proceed.
-    if count > 0:
-        print "Farm '%s' for date %s already loaded.  Skipped." % ( farm, file_date )
-        sys.stdout.flush()
-    else:
-        print "Working on farm '%s' for date %s " % ( farm, file_date )
-        sys.stdout.flush()
+sys.stderr.write("\n\n")
 
-        nFiles += 1
-        if allFiles:
-            allFiles = allFiles + ", " + filename
-        else:
-            allFiles = filename
-
-        if store_probes:
-            file = open( os.path.join(ftp_cache_path, filename), 'r' )
-
-            for line in file:
-                ## add line to database
-                putProbe(farm_code=farm, file_date=file_date, line=line)
-
-                if store_log:
-                    ## Update ProbeSync record
-                    ps.nfiles    = nFiles
-                    ps.nrecords  = nRecords
-                    ps.filenames = allFiles
-                    ps.save()
-                    
-            file.close()
-
-
+cur.close()
+conn.close()
+    
 ## Finalize ProbeSync record
 if store_log:
     ps.success   = True

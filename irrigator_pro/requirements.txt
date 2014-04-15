@@ -1,4 +1,3 @@
-
 Django #==1.6.1
 South #==0.7.6
 django-admin-tools #==0.5.1
@@ -17,6 +16,10 @@ django-model-blocks
 docutils
 pygments
 pytz
+#
+# For interacting with NESPAL probe database
+#
+psycopg2
 #
 # For Trac
 #
