@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-from ftplib import FTP
 from datetime import date, datetime
 import os, os.path, re, subprocess, sys
 import argparse, socket
 import psycopg2
 import warnings
+import ConfigParser
 
 """
 This script queries the UGA SSA data stored in the NESPAL database and
@@ -41,11 +41,22 @@ import pytz
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
 
+
+###
+# Use ConfigParser to pull private values from irrigator_pro.conf
+### 
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read(os.path.join(ABSOLUTE_PROJECT_ROOT, 
+                         "irrigator_pro", 
+                         "settings", 
+                         "irrigator_pro.conf"))
+
 ## UGA Database Configuration
-HOST="162.243.88.127"
-DATABASE="flint"
-USER="reader"
-PASSWORD="ugatifton"
+HOST     = config.get('UGA Database', 'HOST')
+DATABASE = config.get('UGA Database', 'DATABASE')
+USER     = config.get('UGA Database', 'USER')
+PASSWORD = config.get('UGA Database', 'PASSWORD')
 
 ## User to own probe readings
 OWNER='greg@warnes.net'
@@ -58,11 +69,11 @@ nFiles    = 0
 nRecords  = 0
 allFiles  = ""
 
-def processProbeReading(fields, store_probes=True):
+def processProbeReading(record, store_probes=True):
     """
-    Write elements of current line and write to database.
+    Extract elements of current record, and store to database if
+    between 1am and 9am.
 
-    Store last entry before 9:00am on each date.
     """
 
     global nRecords
@@ -83,7 +94,7 @@ def processProbeReading(fields, store_probes=True):
       thermocouple_1_temp,
       thermocouple_2_temp,
       minutes_awake
-    ) = fields;
+    ) = record;
 
     # Only consider times between 1:00am and 9:00am on each date.
     if (reading_datetime.hour < 1) or (reading_datetime.hour > 8):
@@ -99,8 +110,8 @@ def processProbeReading(fields, store_probes=True):
     # if a reading for this date already exists, update it
     try:
         rpr = ProbeReading.objects.get(farm_code    = farm_code,
-                                       reading_datetime__startswith=reading_datetime.date(),
-                                       probe_code   = probe_code)
+                    reading_datetime__startswith=reading_datetime.date(),
+                    probe_code   = probe_code)
     except ProbeReading .DoesNotExist:
         # otherwise create a new one
         rpr = ProbeReading(farm_code    = farm_code,

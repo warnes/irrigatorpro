@@ -1,13 +1,28 @@
 #! /usr/bin/env python2.7
-import os
-import sys
-
 """
 Django settings for IrrigatorPro Web Site
 """
 
+import os
+import sys
+
 ###
-# Site settings
+# Where am I?
+###
+
+ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
+
+
+###
+# Use ConfigParser to pull private values from irrigator_pro.conf
+### 
+
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read(os.path.join(ABSOLUTE_PROJECT_ROOT, "irrigator_pro", "settings", "irrigator_pro.conf"))
+
+###
+# Site settingsb
 ###
 
 # Name displayed on pages, for easy change
@@ -15,7 +30,7 @@ SITE_NAME = "IrrigatorPro for Corn (Validation)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
-SECRET_KEY = '#1tgtwm0*$zoevga2vuzguf(pf&y$p4c^$byzhswy5iic@*74r'
+SECRET_KEY = config.get('Django','SECRET_KEY').strip('"').strip("'")
 
 SITE_ID = 1
 
@@ -37,7 +52,6 @@ TEMPLATE_DEBUG = DEBUG
 # Paths
 ###
 
-ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
 ABSOLUTE_TEMPLATES_PATH = os.path.abspath(os.path.join(ABSOLUTE_PROJECT_ROOT, 'templates/'))
 
 # Absolute path to the directory static files should be collected to.
