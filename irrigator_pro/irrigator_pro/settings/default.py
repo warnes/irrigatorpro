@@ -4,6 +4,7 @@ Django settings for IrrigatorPro Web Site
 """
 
 import os
+import re
 import sys
 
 ###
