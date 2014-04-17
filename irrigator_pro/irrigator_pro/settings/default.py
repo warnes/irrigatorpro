@@ -20,6 +20,10 @@ ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), 
 import ConfigParser
 config = ConfigParser.ConfigParser()
 config.read(os.path.join(ABSOLUTE_PROJECT_ROOT, "irrigator_pro", "settings", "irrigator_pro.conf"))
+def unquote(str):
+    str = re.sub(r'^\"(.*)\"$', '\\1', str)
+    str = re.sub(r'^\'(.*)\'$', '\\1', str)
+    return str
 
 ###
 # Site settingsb
@@ -30,7 +34,7 @@ SITE_NAME = "IrrigatorPro for Corn (Validation)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
-SECRET_KEY = config.get('Django','SECRET_KEY').strip('"').strip("'")
+SECRET_KEY = unquote(config.get('Django','SECRET_KEY'))
 
 SITE_ID = 1
 

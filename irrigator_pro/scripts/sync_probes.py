@@ -51,12 +51,16 @@ config.read(os.path.join(ABSOLUTE_PROJECT_ROOT,
                          "irrigator_pro", 
                          "settings", 
                          "irrigator_pro.conf"))
+def unquote(str):
+    str = re.sub(r'^\"(.*)\"$', '\\1', str)
+    str = re.sub(r'^\'(.*)\'$', '\\1', str)
+    return str
 
 ## UGA Database Configuration
-HOST     = config.get('UGA Database', 'HOST')
-DATABASE = config.get('UGA Database', 'DATABASE')
-USER     = config.get('UGA Database', 'USER')
-PASSWORD = config.get('UGA Database', 'PASSWORD')
+HOST     = unquote(config.get('UGA Database', 'HOST'))
+DATABASE = unquote(config.get('UGA Database', 'DATABASE'))
+USER     = unquote(config.get('UGA Database', 'USER'))
+PASSWORD = unquote(config.get('UGA Database', 'PASSWORD'))
 
 ## User to own probe readings
 OWNER='greg@warnes.net'
