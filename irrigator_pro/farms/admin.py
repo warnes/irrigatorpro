@@ -287,7 +287,7 @@ class ProbeReadingAdmin(AuditAdmin):
                      'source',
                    ]
     list_editable = []
-    list_filter = [ 'farm_code', 'radio_id', 'reading_datetime', 'reading_datetime', 'source' ]
+    list_filter = [ 'farm_code', 'probe_code', 'radio_id', 'reading_datetime', 'source' ]
 
 
 admin.site.register(ProbeReading, ProbeReadingAdmin)
