@@ -148,6 +148,7 @@ class Crop(NameDesc, Comment, Audit):
     # from Audit: cdate, cuser, mdate, muser
     variety            = models.CharField(max_length=32,
                                           blank=True,
+                                          help_text="Crop variety.  Use 'All' for no specific variety."
                                          )
     season_length_days = models.PositiveSmallIntegerField(verbose_name="Season Length (days)")
 
@@ -167,12 +168,16 @@ class CropEvent(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     crop             = models.ForeignKey(Crop)
-    order            = models.PositiveSmallIntegerField()
-    duration         = models.PositiveSmallIntegerField()
+    order            = models.PositiveSmallIntegerField(help_text="Events will be displayed in the order given by this (integer) value. Must be unique.")
+    duration         = models.PositiveSmallIntegerField(help_text="length of this event (days)")
     daily_water_use  = models.DecimalField(max_digits=3,
-                                           decimal_places=2)
-    key_event        = models.BooleanField(default=False)
-    irrigate_to_max  = models.BooleanField(default=False) 
+                                           decimal_places=2,
+                                           help_text="Water absorbed by crop each day (inches)"
+                                           )
+    key_event        = models.BooleanField(default=False, 
+                                           help_text="Always display to user in crop event list")
+    irrigate_to_max  = models.BooleanField(default=False, 
+                                           help_text="Irrigate to Max AWC then no more through harvest") 
 
     def __unicode__(self):
         return self.name
