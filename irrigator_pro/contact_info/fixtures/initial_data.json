@@ -124,5 +124,26 @@
         "cdate": "2014-03-26T17:08:05.105Z", 
         "user": 4
     }
+},
+{
+    "pk": 7, 
+    "model": "contact_info.contact_info", 
+    "fields": {
+        "city": "Rochester", 
+        "fax": "", 
+        "mdate": "2014-04-21T15:49:03.389Z", 
+        "cuser": 1, 
+        "mobile": "585-478-1094", 
+        "country": "United States", 
+        "zipcode": "14608", 
+        "county": "Monroe", 
+        "phone": "", 
+        "state": "NY", 
+        "address_1": "312 State Street, Apt 318", 
+        "address_2": "", 
+        "muser": 1, 
+        "cdate": "2014-04-21T15:49:03.389Z", 
+        "user": 14
+    }
 }
 ]
