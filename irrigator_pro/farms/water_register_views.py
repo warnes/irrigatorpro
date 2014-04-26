@@ -54,7 +54,9 @@ class WaterRegisterListView(ListView):
                   wr.average_water_content,
                   wr.computed_from_probes,
                   wr.irrigate_flag,
-                  wr.check_sensors_flag, ) = row
+                  wr.check_sensors_flag,
+                  wr.description,
+                ) = row
                 
                 wr.cuser = self.request.user
                 wr.muser = self.request.user

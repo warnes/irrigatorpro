@@ -28,6 +28,17 @@
         );
     } 
 
+    function show_non_key_events()
+    {
+      $('.non-key-event').toggleClass('hidden',false)
+    }
+
+    function hide_non_key_events()
+    {
+      $('.non-key-event').toggleClass('hidden',true)
+    }
+
+
     $(
       function() {
         /* Update crop season event dates when crop season start date changes */
@@ -95,7 +106,20 @@
       </table>
     </div>
 
-    <h2>Fields</h2>
+    <h2>Fields
+      
+      <div class="float-right">
+
+      <div class="btn btn-primary" onclick="show_non_key_events()">
+	<i class="fa fa-plus-square-o"></i> Show All Events
+      </div>
+      <div class="btn btn-info" onclick="hide_non_key_events()">
+	<i class="fa fa-minus-square-o"></i> Show Only Key Events
+      </div>
+
+      </div>
+
+    </h2>
 
     {% with form=inlines|first %}
   
@@ -131,6 +155,9 @@
 		    <th class="hidden"></th>
 		  {% endif %}
 		{% endfor %}
+		<th>
+		  Description
+		</th>
 	      </tr>
 	    </thead>
 
@@ -139,7 +166,11 @@
 
 		{% if record.field.value == field_object.pk %}
 
-		  <tr>
+		  {% if not record.instance.crop_event.key_event %}
+		    <tr class="non-key-event hidden">
+		  {% else %}
+		    <tr class="key-event">
+                  {% endif %}
 		    {% for field in record %}
 		      {% if field.is_hidden %}
 			<td class="hidden">
@@ -156,28 +187,31 @@
 			</td>
 		      {% endif %}
 		    {% endfor %}
-		    <td class="hidden">
-		    
-		    <input id="event_date_before" 
-			   name="event_date_before" 
-			   type="hidden" 
-			   value="{{ record.instance.date|date:"Y-m-d" }}">
-		    
-		    <input id="crop_event_order" 
-			   name="event_order" 
-			   type="hidden" 
-			   value="{{ record.instance.event_order }}">
-
-		    <input id="crop_event_duration" 
-			   name="event_duration" 
-			   type="hidden" 
-			   value="{{ record.instance.event_duration }}">
+		    <td>
+		      {{ record.instance.event_description }}
 		    </td>
-
-		    <input id="crop_event_key_event" 
-			   name="key_event" 
-			   type="hidden" 
-			   value="{{ record.instance.crop_event.key_event }}">
+		    <td class="hidden">
+  		    
+  		      <input id="event_date_before" 
+  			     name="event_date_before" 
+  			     type="hidden" 
+  			     value="{{ record.instance.date|date:"Y-m-d" }}">
+  		      
+  		      <input id="crop_event_order" 
+  			     name="event_order" 
+  			     type="hidden" 
+  			     value="{{ record.instance.event_order }}">
+		      
+  		      <input id="crop_event_duration" 
+  			     name="event_duration" 
+  			     type="hidden" 
+  			     value="{{ record.instance.event_duration }}">
+		      
+  		      <input id="crop_event_key_event" 
+  			     name="key_event" 
+  			     type="hidden" 
+  			     value="{{ record.instance.crop_event.key_event }}">
+  
 		    </td>
 
 		  </tr>

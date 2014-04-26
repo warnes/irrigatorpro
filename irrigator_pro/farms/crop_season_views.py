@@ -54,8 +54,7 @@ class CropSeasonListView(ListView):
 class CropSeasonEventsInline(InlineFormSet):
     model = CropSeasonEvent
     can_delete=False
-    fields = [
-               'field',
+    fields = [ 'field',
                'crop_event',
                'date',
              ]
@@ -66,28 +65,28 @@ class CropSeasonEventsInline(InlineFormSet):
         kwargs[ 'extra' ] = self.extra
         return kwargs
 
-
-class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
-    class NewMeta:
-        readonly = [ 'crop_event', ]# 'field' ]
-        hidden = [ 'field' ]
-
-    widgets = {
-        #'event_order':    HiddenInput(),
-        #'event_duration': HiddenInput(),
-    }
-
     def add_fields(self, form, index):
-        super(CropSeasonEventsInlineReadonly, self).add_fields(form, index)
-        form.fields["event_order"]    = forms.CharField()
-        form.fields["event_duration"] = forms.CharField()
+        super(CropSeasonEventsInline, self).add_fields(form, index)
+        Form.fields["event_order"]       = forms.CharField()
+        form.fields["event_duration"]    = forms.CharField()
+        form.fields["event_description"] = forms.TextField()
+        form.fields["key_event"]         = forms.BooleanField()
 
     def construct_formset(self, *args, **kwargs):
-        formset = super(CropSeasonEventsInlineReadonly, self).construct_formset(*args, **kwargs)
+        formset = super(CropSeasonEventsInline, self).construct_formset(*args, **kwargs)
         for form in formset:
-            form.instance.event_order = form.instance.get_event_order()
-            form.instance.event_duration = form.instance.get_event_duration()
+            form.instance.event_order       = form.instance.get_event_order()
+            form.instance.event_duration    = form.instance.get_event_duration()
+            form.instance.event_description = form.instance.get_event_description()
+            form.instance.key_event         = form.instance.get_key_event()
         return formset
+
+
+class CropSeasonEventsInlineReadonly(ReadonlyFormset, CropSeasonEventsInline):
+
+    class NewMeta:
+        readonly = [ 'crop_event', ]
+        hidden = [ 'field', ]
 
 
 class CropSeasonUpdateView(UpdateWithInlinesView):

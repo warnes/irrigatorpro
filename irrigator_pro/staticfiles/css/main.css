@@ -87,6 +87,8 @@ td {
 /* formset */
 /***********/
 
+
+
 table.formset, table.formset tr, table.formset td, table.formset th {
     border: 1px solid #006B00;
     /*width: 100%;*/
@@ -218,7 +220,7 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
 
 form {
     display: inline-block;
-    width: 600px;
+    width: auto;
 }
 
 table.default-form {
@@ -229,6 +231,13 @@ input[type="number"] {
     width: 4em;
 }
 
+.float-right  {
+    float: right!important;
+}
+
+table.full-width {
+    width: 100%;
+}
 
 /******************/
 /* Water Register */

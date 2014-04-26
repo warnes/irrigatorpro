@@ -175,7 +175,8 @@ class CropEvent(NameDesc, Comment, Audit):
     irrigate_to_max  = models.BooleanField(default=False) 
 
     def __unicode__(self):
-        return u"%s: %s" % (self.crop, self.name)
+        return self.name
+        #return u"%s: %s" % (self.crop, self.name)
 
     class Meta:
         ordering = [ 'crop__name', 'order', ]
@@ -292,6 +293,12 @@ class CropSeasonEvent(Comment, Audit):
 
     def get_event_order(self):
         return self.crop_event.order
+
+    def get_event_description(self):
+        return self.crop_event.description
+
+    def get_key_event(self):
+        return self.crop_event.key_event
 
     class Meta:
         verbose_name = "CropSeason Event"
@@ -457,6 +464,7 @@ class WaterRegister(Audit):
     computed_from_probes  = models.BooleanField(default=False)
     irrigate_flag         = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
+    description           = models.TextField(blank=True)
 
     class Meta:
         verbose_name = "Water Register"
