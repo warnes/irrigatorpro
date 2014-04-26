@@ -1925,7 +1925,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-26T16:35:13.789Z", 
+        "last_login": "2014-04-26T13:49:20.643Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$HmCeClJXQW9k$0+wKCCScTi9yBV8RrqDTCohLIrm8MpFTfI4TCsXsWPA=", 
@@ -1979,7 +1979,7 @@
         "is_active": true, 
         "is_superuser": true, 
         "is_staff": true, 
-        "last_login": "2014-03-26T17:01:47.795Z", 
+        "last_login": "2014-04-25T12:35:03.652Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$wrYt3uSjvDQt$99W7hXg8SACXOtvIpKpK4p0sB2wpU66vDs28W/GLLto=", 
@@ -2033,7 +2033,7 @@
         "is_active": true, 
         "is_superuser": false, 
         "is_staff": false, 
-        "last_login": "2014-03-19T20:54:23.931Z", 
+        "last_login": "2014-04-25T15:32:36.234Z", 
         "groups": [], 
         "user_permissions": [], 
         "password": "pbkdf2_sha256$12000$bC6LfYbMSoFh$XDRPzIVsHvCUisX0HTRr/Nv/Wor/+lep0aFvaq/GATg=", 
@@ -2132,6 +2132,24 @@
     }
 },
 {
+    "pk": 14, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "tony@warnes.net", 
+        "first_name": "Tony", 
+        "last_name": "Winter", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-04-25T00:28:27.577Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$Mqph5NWBnZ6U$2QHCpMcHH1UrxH6YXLJgFhc66uHAgk4Fo7hBiEzyRuo=", 
+        "email": "tony@warnes.net", 
+        "date_joined": "2014-04-21T15:49:03Z"
+    }
+},
+{
     "pk": 1, 
     "model": "sites.site", 
     "fields": {
@@ -2207,6 +2225,16 @@
         "user": 10, 
         "primary": true, 
         "email": "jesse.childre@ars.usda.gov"
+    }
+},
+{
+    "pk": 9, 
+    "model": "account.emailaddress", 
+    "fields": {
+        "verified": true, 
+        "user": 14, 
+        "primary": true, 
+        "email": "tony@warnes.net"
     }
 }
 ]
