@@ -162,7 +162,9 @@ class CropSeasonAdmin(AuditAdmin):
     inlines = [ CropSeasonEventInline ]
     list_filter = ['field_list__farm__farmer',
                    'field_list__farm',
-                   'season_start_date']
+                   'season_start_date',
+                   'crop',
+                  ]
 
     # def get_form(self, request, obj=None, **kwargs):
     #     kwargs['formfield_callback'] = partial(self.formfield_for_dbfield, request=request, obj=obj)
