@@ -469,6 +469,7 @@ class WaterRegister(Audit):
     computed_from_probes  = models.BooleanField(default=False)
     irrigate_flag         = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
+    dry_down_flag         = models.BooleanField(default=False)
     description           = models.TextField(blank=True)
 
     class Meta:

@@ -30,6 +30,8 @@
 	  <th><i class="fa fa-rss"></i></th> <!-- From Probes -->
           <th>Irrigate</th>
           <th>Check Sensors</th>
+          <th>Dry-Down</th>
+	  <!--th>Description</th-->
        	</tr>
       </thead>
 
@@ -79,6 +81,16 @@
 		  </div>
 		{% endif %}
 	      </td>
+	      <td>
+		{% if object.dry_down_flag %}
+		  <div class="alert-inline alert-success">
+		    Dry-Down
+		  </div>
+		{% endif %}
+	      </td>
+	      <!-- td>
+		{{ object.description }}
+	      </td -->
 	  </tr>
 	{% endfor %}
       </tbody>

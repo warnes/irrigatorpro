@@ -118,6 +118,7 @@ class CropEventAdmin(AuditAdmin):
                  'duration',
                  'daily_water_use',
                  'key_event',
+                 'irrigate_to_max',
                 ] \
              + Comment.fields \
              + Audit.fields
@@ -127,6 +128,7 @@ class CropEventAdmin(AuditAdmin):
                       'duration',
                       'daily_water_use',
                       'key_event',
+                      'irrigate_to_max',
                     ]
     list_editable = list_display[1:]
     list_filter = ['crop', 'key_event', ]

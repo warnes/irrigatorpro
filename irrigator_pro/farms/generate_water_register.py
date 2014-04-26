@@ -197,14 +197,20 @@ def generate_water_register(crop_season, field):
                      'From Probes',
                      'Irrigate',
                      'Check Sensors',
+                     'Dry Down',
                      'Description')
     table_rows = []
 
     date = start_date
     AWC_prev = AWC_initial
+    irrigate_to_max_flag_seen = False
+    irrigate_to_max_achieved  = False
+    drydown_flag              = False 
     while date <= end_date:
 
         (stage, DWU, description, irrigate_to_max) = get_stage_and_daily_water_use(field, date)
+
+        if irrigate_to_max: irrigate_to_max_flag_seen = True
 
         AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
         rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
@@ -216,6 +222,29 @@ def generate_water_register(crop_season, field):
 
         if AWC > maxWater: AWC = maxWater
 
+        #####
+        ## If the irrigate_to_max flag has been seen, irrigate & check sensors until 
+        ## maxWater is achieved, then no more irrigation and no more sensor checks
+        ## ('drydown') 
+        #####
+        if not irrigate_to_max_flag_seen:
+            need_irrigation_flag = need_irrigation(AWC)
+            check_sensors_flag   = check_sensors(AWC)
+        else:
+            if irrigate_to_max_achieved:
+                need_irrigation_flag = False
+                check_sensors_flag = False
+            else:
+                if AWC >= maxWater:
+                    irrigate_to_max_achieved = True
+                    need_irrigation_flag     = False
+                    check_sensors_flag       = False
+                    drydown_flag             = True
+                else:
+                    need_irrigation_flag = True
+                    check_sensors_flag = True
+
+
         row = ( crop_season,
                 field,
                 date,
@@ -224,9 +253,11 @@ def generate_water_register(crop_season, field):
                 quantize(rain),
                 quantize(irrigation),
                 quantize(AWC),
+
                 (not AWC_probe is None),
-                need_irrigation(AWC),
-                check_sensors(AWC),
+                need_irrigation_flag,
+                check_sensors_flag,
+                drydown_flag,
                 description,
                 )
 

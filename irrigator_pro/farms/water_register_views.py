@@ -26,6 +26,8 @@ class WaterRegisterListView(ListView):
                'computed_from_probes',
                'irrigate_flag',
                'check_sensors_flag',
+               'dry_down_flag',
+               'description'
              ]
 
 
@@ -44,9 +46,9 @@ class WaterRegisterListView(ListView):
                 except:
                     wr = WaterRegister()
 
-                ( wr.crop_season, #0
-                  wr.field,       #1
-                  wr.date,        #2
+                ( wr.crop_season,
+                  wr.field,      
+                  wr.date,       
                   wr.crop_stage,
                   wr.daily_water_use,
                   wr.rain,
@@ -55,6 +57,7 @@ class WaterRegisterListView(ListView):
                   wr.computed_from_probes,
                   wr.irrigate_flag,
                   wr.check_sensors_flag,
+                  wr.dry_down_flag,
                   wr.description,
                 ) = row
                 
