@@ -145,7 +145,7 @@ def get_stage_and_daily_water_use(field, date):
                                          date__lte=date).distinct().order_by('-date').first()
     dwu = cse.crop_event.daily_water_use
     stage = cse.crop_event.name
-    return (stage, dwu)
+    return (stage, dwu, description)
 
 
 def need_irrigation(AWC):
@@ -194,14 +194,15 @@ def generate_water_register(crop_season, field):
                      'AWC',
                      'From Probes',
                      'Irrigate',
-                     'Check Sensors' )
+                     'Check Sensors',
+                     'Description')
     table_rows = []
 
     date = start_date
     AWC_prev = AWC_initial
     while date <= end_date:
 
-        (stage, DWU) = get_stage_and_daily_water_use(field, date)
+        (stage, DWU, description) = get_stage_and_daily_water_use(field, date)
 
         AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
         rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
@@ -224,6 +225,7 @@ def generate_water_register(crop_season, field):
                 (not AWC_probe is None),
                 need_irrigation(AWC),
                 check_sensors(AWC),
+                description,
                 )
 
         table_rows.append( row )  
