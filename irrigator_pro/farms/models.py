@@ -172,6 +172,7 @@ class CropEvent(NameDesc, Comment, Audit):
     daily_water_use  = models.DecimalField(max_digits=3,
                                            decimal_places=2)
     key_event        = models.BooleanField(default=False)
+    irrigate_to_max  = models.BooleanField(default=False) 
 
     def __unicode__(self):
         return u"%s: %s" % (self.crop, self.name)
