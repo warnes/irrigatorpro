@@ -86,6 +86,7 @@ class CropEventInline(admin.TabularInline):
              + [
                  'duration',
                  'daily_water_use',
+                 'max_temp_2in',
                  'key_event',
                 ] \
              + Comment.fields
@@ -117,6 +118,7 @@ class CropEventAdmin(AuditAdmin):
              + [
                  'duration',
                  'daily_water_use',
+                 'max_temp_2in',
                  'key_event',
                  'irrigate_to_max',
                 ] \
@@ -127,6 +129,7 @@ class CropEventAdmin(AuditAdmin):
                       'name',
                       'duration',
                       'daily_water_use',
+                      'max_temp_2in',
                       'key_event',
                       'irrigate_to_max',
                     ]
