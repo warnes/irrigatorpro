@@ -150,6 +150,14 @@ def get_stage_and_daily_water_use(field, date):
     return (stage, dwu, description, irrigate_to_max)
 
 
+def date_of_last_rainfall_or_irrigation(field, current_date):
+    pass
+
+
+def max_temp_since_last_rainfall_or_irrigation(field, current_date):
+    pass
+
+
 def need_irrigation(AWC):
     return AWC < 0.00
 
