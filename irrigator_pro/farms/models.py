@@ -178,6 +178,7 @@ class CropEvent(NameDesc, Comment, Audit):
                                            decimal_places=0,
                                            blank=True,
                                            null=True,
+                                           verbose_name="Temp threshold at 2in",
                                            help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
                                            )
     key_event        = models.BooleanField(default=False, 
