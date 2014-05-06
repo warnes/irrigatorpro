@@ -176,8 +176,8 @@ class CropEvent(NameDesc, Comment, Audit):
                                            )
     max_temp_2in     = models.DecimalField(max_digits=3, 
                                            decimal_places=0,
-                                           default=None,
                                            blank=True,
+                                           null=True,
                                            help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
                                            )
     key_event        = models.BooleanField(default=False, 
