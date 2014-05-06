@@ -174,6 +174,12 @@ class CropEvent(NameDesc, Comment, Audit):
                                            decimal_places=2,
                                            help_text="Water absorbed by crop each day (inches)"
                                            )
+    max_temp_2in     = models.DecimalField(max_digits=3, 
+                                           decimal_places=0,
+                                           default=None,
+                                           blank=True,
+                                           help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
+                                           )
     key_event        = models.BooleanField(default=False, 
                                            help_text="Always display to user in crop event list")
     irrigate_to_max  = models.BooleanField(default=False, 
