@@ -28,10 +28,7 @@
           <th>Irrigation</th>
           <th>AWC</th>
 	  <th><i class="fa fa-rss"></i></th> <!-- From Probes -->
-          <th>Irrigate</th>
-          <th>Check Sensors</th>
-          <th>Dry-Down</th>
-	  <!--th>Description</th-->
+          <th>Status</th>
        	</tr>
       </thead>
 
@@ -70,27 +67,19 @@
 	      <td>
 		{% if object.irrigate_flag %}
 		  <div class="alert-inline alert-danger">
-		    <b>Irrigate</b>
+		    <b>Irrigate Today</b>
 		  </div>
-		{% endif %}
-	      </td>
-	      <td>
-		{% if object.check_sensors_flag %}
+		{% elif object.check_sensors_flag %}
 		  <div class="alert-inline alert-warning">
-		    Check Sensors
+		    Irrigate Soon
 		  </div>
 		{% endif %}
-	      </td>
-	      <td>
 		{% if object.dry_down_flag %}
-		  <div class="alert-inline alert-success">
+		  <div class="alert-inline alert-info">
 		    Dry-Down
 		  </div>
 		{% endif %}
 	      </td>
-	      <!-- td>
-		{{ object.description }}
-	      </td -->
 	  </tr>
 	{% endfor %}
       </tbody>
