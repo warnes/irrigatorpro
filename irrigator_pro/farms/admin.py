@@ -132,6 +132,7 @@ class CropEventAdmin(AuditAdmin):
                       'max_temp_2in',
                       'key_event',
                       'irrigate_to_max',
+                      'comment'
                     ]
     list_editable = list_display[1:]
     list_filter = ['crop', 'key_event', ]
