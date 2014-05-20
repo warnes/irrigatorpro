@@ -121,18 +121,20 @@ class CropEventAdmin(AuditAdmin):
                  'max_temp_2in',
                  'key_event',
                  'irrigate_to_max',
+                 'irrigation_message',
                 ] \
              + Comment.fields \
              + Audit.fields
     list_display  = [ 'crop',
                       'order',
                       'name',
+                      'description',
                       'duration',
                       'daily_water_use',
                       'max_temp_2in',
                       'key_event',
                       'irrigate_to_max',
-                      'comment'
+                      'irrigation_message',
                     ]
     list_editable = list_display[1:]
     list_filter = ['crop', 'key_event', ]

@@ -27,45 +27,12 @@ class WaterRegisterListView(ListView):
                'irrigate_flag',
                'check_sensors_flag',
                'dry_down_flag',
-               'description'
+               'message'
              ]
 
 
     def update_water_register(self, crop_season, field):
-        ## calculate new data ##
-        table_header, table_rows = generate_water_register(crop_season, field)
-
-        ## insert new data into database ##
-        if table_rows:
-            for row in table_rows:
-
-                try: 
-                    wr = WaterRegister.objects.get(crop_season=crop_season, 
-                                                   field=field, 
-                                                   date=row[2])
-                except:
-                    wr = WaterRegister()
-
-                ( wr.crop_season,
-                  wr.field,      
-                  wr.date,       
-                  wr.crop_stage,
-                  wr.daily_water_use,
-                  wr.rain,
-                  wr.irrigation,
-                  wr.average_water_content,
-                  wr.computed_from_probes,
-                  wr.irrigate_flag,
-                  wr.check_sensors_flag,
-                  wr.dry_down_flag,
-                  wr.description,
-                ) = row
-                
-                wr.cuser = self.request.user
-                wr.muser = self.request.user
-                
-                wr.save()
-
+        generate_water_register(crop_season, field, self.request.user)
 
     ## This method needs optimization for performance ##
     ## 1: Only recompute *if* underlying water_history or probe_reading data has changed,

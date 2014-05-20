@@ -167,24 +167,25 @@ class CropEvent(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    crop             = models.ForeignKey(Crop)
-    order            = models.PositiveSmallIntegerField(help_text="Events will be displayed in the order given by this (integer) value. Must be unique.")
-    duration         = models.PositiveSmallIntegerField(help_text="length of this event (days)")
-    daily_water_use  = models.DecimalField(max_digits=3,
-                                           decimal_places=2,
-                                           help_text="Water absorbed by crop each day (inches)"
-                                           )
-    max_temp_2in     = models.DecimalField(max_digits=3, 
-                                           decimal_places=0,
-                                           blank=True,
-                                           null=True,
-                                           verbose_name="Temp threshold at 2in",
-                                           help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
-                                           )
-    key_event        = models.BooleanField(default=False, 
-                                           help_text="Always display to user in crop event list")
-    irrigate_to_max  = models.BooleanField(default=False, 
-                                           help_text="Irrigate to Max AWC then no more through harvest") 
+    crop               = models.ForeignKey(Crop)
+    order              = models.PositiveSmallIntegerField(help_text="Events will be displayed in the order given by this (integer) value. Must be unique.")
+    duration           = models.PositiveSmallIntegerField(help_text="length of this event (days)")
+    daily_water_use    = models.DecimalField(max_digits=3,
+                                             decimal_places=2,
+                                             help_text="Water absorbed by crop each day (inches)"
+                                             )
+    max_temp_2in       = models.DecimalField(max_digits=3, 
+                                             decimal_places=0,
+                                             blank=True,
+                                             null=True,
+                                             verbose_name="Temp threshold at 2in",
+                                             help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
+                                             )
+    key_event          = models.BooleanField(default=False, 
+                                             help_text="Always display to user in crop event list")
+    irrigate_to_max    = models.BooleanField(default=False, 
+                                             help_text="Irrigate to Max AWC then no more through harvest") 
+    irrigation_message = models.TextField(blank=True)
 
     def __unicode__(self):
         return self.name
@@ -477,7 +478,9 @@ class WaterRegister(Audit):
     irrigate_flag         = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
     dry_down_flag         = models.BooleanField(default=False)
-    description           = models.TextField(blank=True)
+    message               = models.TextField(blank=True)
+    irrigate_to_max       = models.BooleanField(default=False)
+
 
     class Meta:
         verbose_name = "Water Register"
