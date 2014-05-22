@@ -22,7 +22,7 @@ if __name__ == "__main__":
     if socket.gethostname()=='gregs-mbp':
         VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
     else:
-        VIRTUAL_ENV_ROOT = '/prod/VirtualEnvs/irrigator_pro/'
+        VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
 
     print "VIRTUAL_ENV_ROOT='%s'" % VIRTUAL_ENV_ROOT
     activate_this = os.path.join(VIRTUAL_ENV_ROOT, 'bin', 'activate_this.py')

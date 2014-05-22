@@ -1,4 +1,4 @@
-#!/prod/VirtualEnvs/trac/bin/python
+#!/www/VirtualEnvs/trac/bin/python
 # -*- coding: utf-8 -*-
 #
 # Copyright (C) 2003-2009 Edgewall Software
@@ -20,7 +20,7 @@ try:
     import pkg_resources
     if 'TRAC_ENV' not in os.environ and \
        'TRAC_ENV_PARENT_DIR' not in os.environ:
-        os.environ['TRAC_ENV'] = '/prod/trac'
+        os.environ['TRAC_ENV'] = '/www/prod/trac'
     if 'PYTHON_EGG_CACHE' not in os.environ:
         if 'TRAC_ENV' in os.environ:
             egg_cache = os.path.join(os.environ['TRAC_ENV'], '.egg-cache')
