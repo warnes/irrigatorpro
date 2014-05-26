@@ -27,7 +27,7 @@ def unquote(str):
     return str
 
 ###
-# Site settingsb
+# Site settings
 ###
 
 # Name displayed on pages, for easy change
@@ -52,6 +52,11 @@ MANAGERS = ADMINS
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+COMPUTE_FULL_SEASON = True   #  Calculate water register through the end of the season.
+# COMPUTE_FULL_SEASON = False  # If False, only calculate water register through today + 5 days.
+
+
 
 ###
 # Paths

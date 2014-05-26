@@ -5,7 +5,7 @@ import sys
 import time
 from decimal import Decimal
 
-from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
+from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON
 from farms.models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -15,7 +15,10 @@ def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
         yield start_date + datetime.timedelta(days=n)
 
-def calculateAWC_ProbeReading(crop_season, field, date):
+def calculateAWC_ProbeReading(crop_season, field, date, 
+                              probe=None, 
+                              probe_reading_query=None, 
+                              soil_type_parameter_query=None):
     """
     Calculate the Available Water Content for the specified field and
     date from Probe Reading data (if available).  If no probe reading
@@ -23,21 +26,13 @@ def calculateAWC_ProbeReading(crop_season, field, date):
     """
 
     ## Find the probe/radio_id for this field (if any)
-    try:
-        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-    except ObjectDoesNotExist:
-        return None
+    if probe is None:
+        try:
+            probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+        except ObjectDoesNotExist:
+            return None
 
     radio_id = probe.radio_id
-
-    # ## Determine the crop that corresponds to this date
-    # crop_season = CropSeason.objects.filter(field_list=field,
-    #                                         season_start_date__lte=date,
-    #                                         season_end_date__gte=date,
-    #                                         )
-    # if( crop_season.count() > 1 ):
-    #     raise RuntimeError("More than one crop season for field '%s' on %s." % (field, date))
-    # crop_season = crop_season.first()
 
     ## Get the maximum root depth
     if crop_season:
@@ -46,30 +41,34 @@ def calculateAWC_ProbeReading(crop_season, field, date):
     else:
         return None
 
-    ## Find any probe readings for date with this radio_id
-    probe_reading = ProbeReading.objects.filter(radio_id=radio_id,
-                                                reading_datetime__startswith=date)
+    if probe_reading_query is None:
+        probe_reading_query = ProbeReading.objects.filter(radio_id=radio_id).all()
 
-    ## Get the most recent one for this date
+        
+    ## Find any probe readings for date with this radio_id
+    probe_reading = probe_reading_query.filter(reading_datetime__startswith=date)
+
+    ## Filter down to the the most recent one for this date
     probe_reading = probe_reading.order_by('reading_datetime').last()
     if not probe_reading:
         return None
 
     ## Extract soil parameters
-    soil_type_parameters = SoilTypeParameter.objects.filter(soil_type=field.soil_type)
+    if soil_type_parameter_query is None:
+        soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
 
     try:
-        soil_type_8in  = soil_type_parameters.get(depth=8 )
+        soil_type_8in  = soil_type_parameter_query.get(depth=8 )
     except ObjectDoesNotExist:
         raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 8) )
 
     try:
-        soil_type_16in = soil_type_parameters.get(depth=16)
+        soil_type_16in = soil_type_parameter_query.get(depth=16)
     except ObjectDoesNotExist:
         raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 16) )
 
     try:
-        soil_type_24in = soil_type_parameters.get(depth=24)
+        soil_type_24in = soil_type_parameter_query.get(depth=24)
     except ObjectDoesNotExist:
         raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 24) )
 
@@ -131,12 +130,13 @@ def calculateAWC_ProbeReading(crop_season, field, date):
     return AWC
 
 
-def caclulateAWC_RainIrrigation(season, field, date):
+def calculateAWC_RainIrrigation(crop_season, field, date, water_history_query=None):
 
-    wh = WaterHistory.objects.filter(crop_season=season,
-                                     field_list=field,
-                                     date=date
-                                    ).last()
+    if water_history_query is None:
+        water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
+                                                          field_list=field).all()
+
+    wh = WaterHistory.objects.filter(date=date).last()
 
     if wh:
         return ( wh.rain, wh.irrigation )
@@ -144,9 +144,13 @@ def caclulateAWC_RainIrrigation(season, field, date):
         return ( 0.0, 0.0 )
 
 
-def get_stage_and_daily_water_use(field, date):
-    cse = CropSeasonEvent.objects.filter(crop_season__field_list=field,
-                                         date__lte=date).distinct().order_by('-date').first()
+def get_stage_and_daily_water_use(field, date, crop_season_events_query=None):
+    
+    if crop_season_events_query is None:
+        crop_season_events_query = CropSeasonEvent.objects.filter(crop_season__field_list=field).distinct().all()
+
+    cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('-date').first()
+
     dwu = cse.crop_event.daily_water_use
     stage = cse.crop_event.name
     message = cse.crop_event.irrigation_message
@@ -182,18 +186,31 @@ def generate_water_register(crop_season, field, user):
 
     if not planting_event: return (None, None)
 
+    ## Cache values / queries for later use
+    probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+    radio_id = probe.radio_id
+    probe_reading_query       = ProbeReading.objects.filter(radio_id=radio_id).all()
+    soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
+    water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
+                                                            field_list=field).all()
+    crop_season_events_query = CropSeasonEvent.objects.filter(crop_season__field_list=field).distinct().all()
 
     ## First and last event date (end of season) to show
     start_date = planting_event.date
-    end_date   = crop_season.season_end_date + datetime.timedelta(1)
+    season_end_date   = crop_season.season_end_date + datetime.timedelta(1)
 
-    if OPTIMIZE:
-        ## Cache database query ##
-        wr_query = WaterRegister.objects.filter(crop_season=crop_season,
-                                                field=field, 
-                                                date__gte=start_date,
-                                                date__lte=end_date)
-        
+    today = datetime.date.today()
+    today_plus5 = today + datetime.timedelta(days=5)
+
+    if COMPUTE_FULL_SEASON:
+        end_date = season_end_date
+    else:
+        end_date = min(today_plus5, season_end_date)
+
+    wr_query = WaterRegister.objects.filter(crop_season=crop_season,
+                                            field=field, 
+                                            date__gte=start_date,
+                                            date__lte=end_date).all()
 
     maxWater = float(field.soil_type.max_available_water)
 
@@ -206,13 +223,8 @@ def generate_water_register(crop_season, field, user):
     for  date in daterange(start_date, end_date):
         ## Get or Create a water register object (db record)
         try: 
-            if OPTIMIZE:
-                wr = wr_query.filter(date=date)[0]
-            else:
-                wr = WaterRegister.objects.get(crop_season=crop_season,
-                                               field=field, 
-                                               date=date)
-        except:
+            wr = wr_query.filter(date=date)[0]
+        except ( ObjectDoesNotExist,  IndexError, ):
             wr = WaterRegister(
                 crop_season = crop_season,
                 field = field,
@@ -222,15 +234,23 @@ def generate_water_register(crop_season, field, user):
         ( wr.crop_stage, 
           wr.daily_water_use, 
           wr.message, 
-          wr.irrigate_to_max ) = get_stage_and_daily_water_use(field, date)
+          wr.irrigate_to_max ) = get_stage_and_daily_water_use(field, date, 
+                                                               crop_season_events_query=crop_season_events_query)
 
-        AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
-        wr.rain, wr.irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
+        AWC_probe = calculateAWC_ProbeReading(crop_season, field, date, 
+                                              probe=probe, 
+                                              probe_reading_query=probe_reading_query, 
+                                              soil_type_parameter_query=soil_type_parameter_query)
+
+        wr.rain, wr.irrigation  = calculateAWC_RainIrrigation(crop_season, field, date, 
+                                                              water_history_query=water_history_query)
 
         if AWC_probe is None: 
             wr.average_water_content = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
+            wr.computed_from_probes  = False
         else:
             wr.average_water_content = float(AWC_probe)
+            wr.computed_from_probes  = True
 
         if wr.average_water_content > maxWater: 
             wr.average_water_content = maxWater
@@ -244,12 +264,11 @@ def generate_water_register(crop_season, field, user):
         wr.save()
 
 
-    if OPTIMIZE:
-        ## Refresh query
-        wr_query = WaterRegister.objects.filter(crop_season=crop_season,
-                                                field=field, 
-                                                date__gte=start_date,
-                                                date__lte=end_date)
+    ## Refresh query
+    wr_query = WaterRegister.objects.filter(crop_season=crop_season,
+                                            field=field, 
+                                            date__gte=start_date,
+                                            date__lte=end_date).all()
         
     ## Second pass, calculate flags 
     irrigate_to_max_flag_seen = False
@@ -258,20 +277,7 @@ def generate_water_register(crop_season, field, user):
     irrigate_to_max_days      = 0
     for date in daterange(start_date, end_date):
 
-        if OPTIMIZE:
-            wr = wr_query.filter(date=date)[0]
-        else:
-            wr = WaterRegister.objects.get(crop_season=crop_season,
-                                           field=field, 
-                                           date=date)
-
-        date_plus5 = date + datetime.timedelta(days=5)
-        try:
-            wr_plus5 = WaterRegister.objects.get(crop_season=crop_season, 
-                                                 field=field, 
-                                                 date=date_plus5)
-        except:
-            wr_plus5 = None
+        wr = wr_query.filter(date=date)[0]
 
         if wr.irrigate_to_max: 
             irrigate_to_max_flag_seen = True
@@ -283,10 +289,23 @@ def generate_water_register(crop_season, field, user):
         ## ('drydown') 
         #####
         if not irrigate_to_max_flag_seen:
-            wr.irrigate_flag        = wr.average_water_content       < 0.00
+            ##
+            # Check if wee need to irrigate *today*
+            wr.irrigate_flag = wr.average_water_content < 0.00
+            ##
 
-            if wr_plus5.average_water_content:
-                wr.check_sensors_flag = wr_plus5.average_water_content < 0.00
+            ##
+            # Check if we need to irrigate in the next five days
+            ##
+            wr.check_sensors_flag = False
+
+            date_plus5 = date + datetime.timedelta(days=5)
+            for date_future in daterange(date, date_plus5):
+                try:
+                    wr_future = wr_query.get(date=date_future)
+                    wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
+                except ObjectDoesNotExist:
+                    pass
 
         else:
             if irrigate_to_max_achieved or irrigate_to_max_days >= 3:
