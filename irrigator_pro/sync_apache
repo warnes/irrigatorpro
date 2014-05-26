@@ -1,3 +1,4 @@
 #!/bin/bash
 
-cp -rv /etc/apache2 .
+rsync -av --delete /etc/apache2 .
+
