@@ -171,7 +171,7 @@ def quantize( f ):
 
     return retval
 
-OPTIMIZE=TRUE
+OPTIMIZE=True
 
 def generate_water_register(crop_season, field, user):
 
