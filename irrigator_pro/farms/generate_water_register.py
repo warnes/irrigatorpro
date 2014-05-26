@@ -11,6 +11,10 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
+def daterange(start_date, end_date):
+    for n in range(int ((end_date - start_date).days)):
+        yield start_date + datetime.timedelta(days=n)
+
 def calculateAWC_ProbeReading(crop_season, field, date):
     """
     Calculate the Available Water Content for the specified field and
@@ -145,17 +149,17 @@ def get_stage_and_daily_water_use(field, date):
                                          date__lte=date).distinct().order_by('-date').first()
     dwu = cse.crop_event.daily_water_use
     stage = cse.crop_event.name
-    description = cse.crop_event.description
+    message = cse.crop_event.irrigation_message
     irrigate_to_max = cse.crop_event.irrigate_to_max
-    return (stage, dwu, description, irrigate_to_max)
+    return (stage, dwu, message, irrigate_to_max)
 
 
-def need_irrigation(AWC):
-    return AWC < 0.00
+def date_of_last_rainfall_or_irrigation(field, current_date):
+    pass
 
 
-def check_sensors(AWC):
-    return AWC < 0.30
+def max_temp_since_last_rainfall_or_irrigation(field, current_date):
+    pass
 
 
 def quantize( f ):
@@ -167,8 +171,9 @@ def quantize( f ):
 
     return retval
 
+OPTIMIZE=TRUE
 
-def generate_water_register(crop_season, field):
+def generate_water_register(crop_season, field, user):
 
     ## Determine the first event date (planting) to show
     planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
@@ -177,93 +182,127 @@ def generate_water_register(crop_season, field):
 
     if not planting_event: return (None, None)
 
-    start_date = planting_event.date
 
-    ## Determine the last event date (end of season) to show
-    end_date = crop_season.season_end_date
+    ## First and last event date (end of season) to show
+    start_date = planting_event.date
+    end_date   = crop_season.season_end_date + datetime.timedelta(1)
+
+    if OPTIMIZE:
+        ## Cache database query ##
+        wr_query = WaterRegister.objects.filter(crop_season=crop_season,
+                                                field=field, 
+                                                date__gte=start_date,
+                                                date__lte=end_date)
+        
 
     maxWater = float(field.soil_type.max_available_water)
 
+    ## Assume that each field starts with a full water profile
     AWC_initial = maxWater
 
-    table_header = ( 'Crop Season',
-                     'Field',
-                     'Date',
-                     'Growth Stage',
-                     'DWU',
-                     'Rain',
-                     'Irrigation',
-                     'AWC',
-                     'From Probes',
-                     'Irrigate',
-                     'Check Sensors',
-                     'Dry Down',
-                     'Description')
-    table_rows = []
 
-    date = start_date
+    ## First pass, calculate water profile (AWC)
     AWC_prev = AWC_initial
-    irrigate_to_max_flag_seen = False
-    irrigate_to_max_achieved  = False
-    drydown_flag              = False 
-    while date <= end_date:
+    for  date in daterange(start_date, end_date):
+        ## Get or Create a water register object (db record)
+        try: 
+            if OPTIMIZE:
+                wr = wr_query.filter(date=date)[0]
+            else:
+                wr = WaterRegister.objects.get(crop_season=crop_season,
+                                               field=field, 
+                                               date=date)
+        except:
+            wr = WaterRegister(
+                crop_season = crop_season,
+                field = field,
+                date = date
+            )
 
-        (stage, DWU, description, irrigate_to_max) = get_stage_and_daily_water_use(field, date)
-
-        if irrigate_to_max: irrigate_to_max_flag_seen = True
+        ( wr.crop_stage, 
+          wr.daily_water_use, 
+          wr.message, 
+          wr.irrigate_to_max ) = get_stage_and_daily_water_use(field, date)
 
         AWC_probe = calculateAWC_ProbeReading(crop_season, field, date)
-        rain, irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
+        wr.rain, wr.irrigation  = caclulateAWC_RainIrrigation(crop_season, field, date)
 
         if AWC_probe is None: 
-            AWC = float(AWC_prev) - float(DWU) + float(rain) + float(irrigation)
+            wr.average_water_content = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
         else:
-            AWC = AWC_probe
+            wr.average_water_content = float(AWC_probe)
 
-        if AWC > maxWater: AWC = maxWater
+        if wr.average_water_content > maxWater: 
+            wr.average_water_content = maxWater
+        AWC_prev = wr.average_water_content
+
+        from django.contrib.auth.models import User
+        user = User.objects.get(pk=1)
+        wr.muser_id = user.pk
+        wr.cuser_id = user.pk
+
+        wr.save()
+
+
+    if OPTIMIZE:
+        ## Refresh query
+        wr_query = WaterRegister.objects.filter(crop_season=crop_season,
+                                                field=field, 
+                                                date__gte=start_date,
+                                                date__lte=end_date)
+        
+    ## Second pass, calculate flags 
+    irrigate_to_max_flag_seen = False
+    irrigate_to_max_achieved  = False
+    drydown_flag              = False
+    irrigate_to_max_days      = 0
+    for date in daterange(start_date, end_date):
+
+        if OPTIMIZE:
+            wr = wr_query.filter(date=date)[0]
+        else:
+            wr = WaterRegister.objects.get(crop_season=crop_season,
+                                           field=field, 
+                                           date=date)
+
+        date_plus5 = date + datetime.timedelta(days=5)
+        try:
+            wr_plus5 = WaterRegister.objects.get(crop_season=crop_season, 
+                                                 field=field, 
+                                                 date=date_plus5)
+        except:
+            wr_plus5 = None
+
+        if wr.irrigate_to_max: 
+            irrigate_to_max_flag_seen = True
 
         #####
-        ## If the irrigate_to_max flag has been seen, irrigate & check sensors until 
-        ## maxWater is achieved, then no more irrigation and no more sensor checks
+        ## If the irrigate_to_max flag has been seen, irrigate & check
+        ## sensors until maxWater is achieved (or 3 watering days have
+        ## occured), then no more irrigation and no more sensor checks   
         ## ('drydown') 
         #####
         if not irrigate_to_max_flag_seen:
-            need_irrigation_flag = need_irrigation(AWC)
-            check_sensors_flag   = check_sensors(AWC)
+            wr.irrigate_flag        = wr.average_water_content       < 0.00
+
+            if wr_plus5.average_water_content:
+                wr.check_sensors_flag = wr_plus5.average_water_content < 0.00
+
         else:
-            if irrigate_to_max_achieved:
-                need_irrigation_flag = False
-                check_sensors_flag = False
+            if irrigate_to_max_achieved or irrigate_to_max_days >= 3:
+                wr.irrigate_flag = False
+                wr.dry_down_flag = True
             else:
-                if AWC >= maxWater:
+                irrigate_to_max_days += 1
+                if wr.average_water_content >= maxWater:
                     irrigate_to_max_achieved = True
-                    need_irrigation_flag     = False
-                    check_sensors_flag       = False
-                    drydown_flag             = True
+                    wr.irrigate_flag         = False
+                    wr.check_sensors_flag    = False
+                    wr.dry_down_flag         = True
                 else:
-                    need_irrigation_flag = True
-                    check_sensors_flag = True
+                    wr.irrigate_flag      = True
+                    wr.check_sensors_flag = True
 
+        wr.save()
 
-        row = ( crop_season,
-                field,
-                date,
-                stage,
-                quantize(DWU),
-                quantize(rain),
-                quantize(irrigation),
-                quantize(AWC),
-
-                (not AWC_probe is None),
-                need_irrigation_flag,
-                check_sensors_flag,
-                drydown_flag,
-                description,
-                )
-
-        table_rows.append( row )  
-
-        AWC_prev = AWC
-        date += datetime.timedelta(days=1)
-
-    return ( table_header, table_rows )
+    return
