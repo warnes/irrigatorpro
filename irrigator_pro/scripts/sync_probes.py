@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from datetime import date, datetime
-import os, os.path, re, subprocess, sys
+import os, os.path, re, socket, subprocess, sys
 import argparse, socket
 import psycopg2
 import warnings
@@ -18,11 +18,17 @@ if __name__ == "__main__":
     print "PROJECT_ROOT=", PROJECT_ROOT
     sys.path.append(PROJECT_ROOT)
 
+
     # Add virtualenv dirs to python path
-    if socket.gethostname()=='gregs-mbp':
-        VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
+    host = socket.gethostname()
+    print "HOSTNAME=%s" % host
+    if host=='irrigatorpro':
+        if "test" in PROJECT_ROOT:
+            VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
+        else:
+            VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
     else:
-        VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
+        VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
 
     print "VIRTUAL_ENV_ROOT='%s'" % VIRTUAL_ENV_ROOT
     activate_this = os.path.join(VIRTUAL_ENV_ROOT, 'bin', 'activate_this.py')
