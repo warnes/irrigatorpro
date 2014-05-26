@@ -18,7 +18,10 @@ sys.path.append(PROJECT_ROOT)
 host = socket.gethostname()
 print "HOSTNAME=%s" % host
 if host=='irrigatorpro':
-    VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
+    if "test" in PROJECT_ROOT:
+        VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
+    else:
+        VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
 else:
     VIRTUAL_ENV_ROOT = os.path.join( PROJECT_ROOT, 'VirtualEnvs', 'irrigator_pro')
 
