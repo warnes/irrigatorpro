@@ -1,0 +1,5 @@
+# Trac on test server is simply a redirect to the production server
+<VirtualHost *:8080>
+  ServerName irrigatorpro.org
+  Redirect /trac http://irrigatorpro.org/trac:80
+</VirtualHost>
