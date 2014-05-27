@@ -8,6 +8,7 @@
 
   DocumentRoot /www/prod/irrigator_pro/root
   RedirectTemp /index.html http://irrigatorpro.org/farm/
+  RedirectTemp /accounts/login http://irrigatorpro.org/farm/accounts/login/
 
   <Directory />
     Options FollowSymLinks
