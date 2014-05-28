@@ -136,7 +136,7 @@ def calculateAWC_RainIrrigation(crop_season, field, date, water_history_query=No
         water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
                                                           field_list=field).all()
 
-    wh_list = WaterHistory.objects.filter(date=date)
+    wh_list = WaterHistory.objects.filter(date=date).all()
 
     if wh_list:
         rainfall   = sum( map( lambda wh: wh.rain, wh_list ) )
