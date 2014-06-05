@@ -49,16 +49,16 @@
 		{{ object.crop_stage }}
 	      </td>
 	      <td>
-		{{ object.daily_water_use }}
+		{{ object.daily_water_use|floatformat:2 }}
 	      </td>
 	      <td>
-		  {{ object.rain }}
+		  {{ object.rain|floatformat:2 }}
 	      </td>
 	      <td>
-		  {{ object.irrigation }}
+		  {{ object.irrigation|floatformat:2 }}
 	      </td>
 	      <td>
-		{{ object.average_water_content }}
+		{{ object.average_water_content|floatformat:2 }}
 	      </td>
 	      <td>
 		{% if object.computed_from_probes %}
