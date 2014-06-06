@@ -17,6 +17,10 @@ docutils
 pygments
 pytz
 #
+# For numerics
+#
+numpy
+#
 # For interacting with NESPAL probe database
 #
 psycopg2
@@ -27,3 +31,4 @@ trac
 TracPermRedirect
 trac-github
 NavAdd
+

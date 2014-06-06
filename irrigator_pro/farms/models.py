@@ -170,6 +170,7 @@ class CropEvent(NameDesc, Comment, Audit):
     crop               = models.ForeignKey(Crop)
     order              = models.PositiveSmallIntegerField(help_text="Events will be displayed in the order given by this (integer) value. Must be unique.")
     duration           = models.PositiveSmallIntegerField(help_text="length of this event (days)")
+
     daily_water_use    = models.DecimalField(max_digits=3,
                                              decimal_places=2,
                                              help_text="Water absorbed by crop each day (inches)"
@@ -181,11 +182,16 @@ class CropEvent(NameDesc, Comment, Audit):
                                              verbose_name="Temp threshold at 2in",
                                              help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
                                              )
+
     key_event          = models.BooleanField(default=False, 
                                              help_text="Always display to user in crop event list")
     irrigate_to_max    = models.BooleanField(default=False, 
                                              help_text="Irrigate to Max AWC then no more through harvest") 
-    irrigation_message = models.TextField(blank=True)
+    do_not_irrigate    = models.BooleanField(default=False, 
+                                             help_text="Do not irrigate regardless of Average Water Content and Temperature") 
+
+    irrigation_message = models.TextField(blank=True,
+                                          help_text="Message to display on Water Register")
 
     def __unicode__(self):
         return self.name
@@ -429,7 +435,7 @@ class ProbeReading(Audit):
                                             self.reading_datetime,
                                           )
     def temperature(self):
-        if (0 < selt.thermocouple_1_temp < 130):
+        if (0 < self.thermocouple_1_temp < 130):
             return thermocouple_1_temp
         else:
             return thermocouple_2_temp
@@ -466,21 +472,37 @@ class WaterRegister(Audit):
 
     # from Audit: cdate, cuser, mdate, muser
 
+    # Fields specifying the Field
     crop_season           = models.ForeignKey(CropSeason)
     field                 = models.ForeignKey(Field)
     date                  = models.DateField()
-    crop_stage            = models.CharField(max_length=32)
+
+    # Fields copied from CropEvent records
+    crop_stage            = models.CharField(max_length=32) # CropEvent.name
     daily_water_use       = models.DecimalField(max_digits=3, decimal_places=2) # #.##
+    max_temp_2in          = models.DecimalField(max_digits=3, decimal_places=0, blank=True, null=True,
+                                                verbose_name="Temp threshold at 2in",
+                                                help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
+                                                )
+    do_not_irrigate      = models.BooleanField(default=False, 
+                                               help_text="Do not irrigate regardless of Average Water Content and Temperature"
+                                               ) 
+    message               = models.TextField(blank=True)
+    irrigate_to_max       = models.BooleanField(default=False)
+    
+    # Fields copied from WaterRecord records
     rain                  = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
     irrigation            = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
+
+    # Calculated fields - Numeric
     average_water_content = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
+    max_observed_temp_2in = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True) # ###.#
+
+    # Calculated fields - Boolean
     computed_from_probes  = models.BooleanField(default=False)
     irrigate_flag         = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
     dry_down_flag         = models.BooleanField(default=False)
-    message               = models.TextField(blank=True)
-    irrigate_to_max       = models.BooleanField(default=False)
-
 
     class Meta:
         verbose_name = "Water Register"
