@@ -88,6 +88,9 @@ class CropEventInline(admin.TabularInline):
                  'daily_water_use',
                  'max_temp_2in',
                  'key_event',
+                 'irrigate_to_max',
+                 'do_not_irrigate',
+                 'irrigation_message',
                 ] \
              + Comment.fields
 
@@ -311,14 +314,24 @@ class WaterRegisterAdmin(AuditAdmin):
     fields = [ 'crop_season',
                'field',
                'date',
+           
                'crop_stage',
                'daily_water_use',
+               'max_temp_2in',
+               'do_not_irrigate',
+               'message',
+               'irrigate_to_max',
+
                'rain',
                'irrigation',
+
                'average_water_content',
+               'max_observed_temp_2in',
+
                'computed_from_probes',
                'irrigate_flag',
                'check_sensors_flag',
+               'dry_down_flag'
              ] \
              + Audit.fields
     list_display  = fields
