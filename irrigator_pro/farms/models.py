@@ -247,8 +247,8 @@ class CropSeason(NameDesc, Comment, Audit):
         # get the list of crop events for this crop (once!)
         crop_events = CropEvent.objects.filter(crop = self.crop).order_by("order")
 
-        # delete any crop_season_events that correspond to fields no longer included in the field_list
-        CropSeasonEvent.objects.filter(crop_season=self).exclude(field=self.field_list.all()).delete()
+        # delete events that (no longer) match field list or crop 
+        self.delete_orphan_events()
 
         # get the list of all existing crop_season_events for this crop_season
         crop_season_events = CropSeasonEvent.objects.filter(crop_season=self)
@@ -285,14 +285,16 @@ class CropSeason(NameDesc, Comment, Audit):
 
         for crop_season in crop_season_list:
             field_list = crop_season.field_list.all()
-            # First, get all events that map to this crop_season
+
+            # Get all events that map to this crop_season
             events = CropSeasonEvent.objects.filter(crop_season=crop_season)
 
-            # Next, exclude events with fields that match are defined
-            events = events.exclude(field=field_list)
+            # Delete events with fields that are not listed in crop_season.field_list
+            events.exclude(field=field_list).delete()
 
-            # Now delete the strays
-            events.delete()
+            # Delete events that don't match crop_season.crop
+            events.exclude(crop_event__crop=self.crop).delete()
+
 
     class Meta:
         ordering = [ 'season_start_date', 'crop' ]

@@ -141,9 +141,14 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         return form
 
     def forms_valid(self, form, inlines):
-        retval = super(CropSeasonUpdateView, self).forms_valid(form, inlines)
+        # If the type of crop has changed, the CropEvent in the
+        # formset will contain invalid inforamtiom so ignore it.
+        if 'crop' in form.changed_data:
+            retval = super(CropSeasonUpdateView, self).forms_valid(form, [] )
+        else:
+            retval = super(CropSeasonUpdateView, self).forms_valid(form, inlines)
+
         self.object.save()
-        self.object.delete_orphan_events(all=False)
         return retval
 
 
