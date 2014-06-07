@@ -135,13 +135,18 @@ def calculateAWC_ProbeReading(crop_season, field, date,
     ####
     ## Extract temperature 
     ####
-    temp1 = probe_reading.thermocouple_1_temp
-    temp2 = probe_reading.thermocouple_2_temp
+    temp1 = celciusToFarenheit( probe_reading.thermocouple_1_temp )
+    temp2 = celciusToFarenheit( probe_reading.thermocouple_2_temp )
     
     temp = twoTempAverage(temp1, temp2)
 
     return (AWC, temp)
 
+def celciusToFarenheit(celcius):
+    if celcius is None:
+        return None
+    else:
+        return float(celcius) * 1.8 + 32.0 
 
 def twoTempAverage(temp1, temp2):
     """
@@ -149,10 +154,11 @@ def twoTempAverage(temp1, temp2):
     or out of range
     """
 
-    # Apply temperature sanity checks
-    if temp1 > 130 or temp1 < 10:
+    # Apply temperature sanity checks (assuming temp in degrees
+    # Fareneheit)
+    if temp1 > 140 or temp1 < 0:
         temp1 = None
-    if temp2 > 130 or temp2 < 10:
+    if temp2 > 140 or temp2 < 0:
         temp2 = None
 
     # Calculate average
@@ -356,6 +362,8 @@ def generate_water_register(crop_season,
         ## Cache this entry for tomorrow
         wr_prev = wr
 
+        wr.save()
+
     ## Refresh query
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
@@ -384,31 +392,31 @@ def generate_water_register(crop_season,
             ####
             ## Check if wee need to irrigate *today*
 
-            # Too dry:
-            if wr.average_water_content < 0.00:
-                wr.irrigate_flag = True
-            
-            # Too hot:
-            if wr.max_observed_temp_2in > wr.max_temp_2in:
-                wr.irrigate_flag = True
-
-            # Except if prohibited:
+            # never irrigate if flag is set
             if wr.do_not_irrigate:
                 wr.irrigate_flag = False
-            ##
+            else:
+                # Too dry:
+                if wr.average_water_content < 0.00:
+                    wr.irrigate_flag = True
+            
+                # Too hot:
+                if wr.max_observed_temp_2in > wr.max_temp_2in:
+                    wr.irrigate_flag = True
+                    wr.too_hot_flag  = True
 
-            ####
-            ## Check if we need to irrigate in the next five days
-            ####
-            wr.check_sensors_flag = False
+                ####
+                ## Check if we need to irrigate in the next five days
+                ####
+                wr.check_sensors_flag = False
 
-            date_plus5 = date + timedelta(days=5)
-            for date_future in daterange(date, date_plus5):
-                try:
-                    wr_future = wr_query.get(date=date_future)
-                    wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
-                except ObjectDoesNotExist:
-                    pass
+                date_plus5 = date + timedelta(days=5)
+                for date_future in daterange(date, date_plus5):
+                    try:
+                        wr_future = wr_query.get(date=date_future)
+                        wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
+                    except ObjectDoesNotExist:
+                        pass
 
         else:
             if irrigate_to_max_achieved or irrigate_to_max_days >= 3:
