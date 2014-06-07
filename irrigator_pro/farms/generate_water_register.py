@@ -262,12 +262,14 @@ def generate_water_register(crop_season,
         ## Check if we have (cached) the water register object for
         ## yesterday, if so grab the AWC, otherwise use the default
         ## maximum for the soil type
-        if wr_prev is None or wr_prev.date != yesterday: 
+        if (wr_prev is None) or (wr_prev.date != yesterday): 
             try:
                 wr_prev = wr_query.filter(date=date)[0]
                 AWC_prev = wr_prev.average_water_content
             except ( ObjectDoesNotExist,  IndexError, ):
                 AWC_prev = AWC_initial
+        else:
+            AWC_prev = wr_prev.average_water_content
         ####
         
         ####
@@ -337,9 +339,6 @@ def generate_water_register(crop_season,
         ## Write to the database
         wr.save()
         
-        ## Cache this entry for tomorrow
-        wr_prev = wr
-
         ## Calculate and store max temperature since last appreciable rainfall or irrigation
         if wr.average_water_content >= AWC_prev + 0.1:
             # Max temp is only today's value 
@@ -354,6 +353,8 @@ def generate_water_register(crop_season,
             # Calculate max temp
             wr.max_observed_temp_2in = max(temps_since_last_water_date)
 
+        ## Cache this entry for tomorrow
+        wr_prev = wr
 
     ## Refresh query
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
