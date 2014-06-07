@@ -19,17 +19,23 @@
 
       <thead>
       	<tr>
-	  <!-- <th>Crop Season</th> -->
-          <!-- <th>Field</th> -->
-          <th>Date</th>
-          <th>Growth Stage</th>
+          <th rowspan=2>Date</th>
+          <th rowspan=2>Growth Stage</th>
+          <th colspan=4>Water</th>
+	  <th colspan=2>Max Temp (&deg;F)</th>
+	  <th rowspan=2>
+	    <i class="fa fa-rss"></i> 
+	    <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
+	  </th>
+          <th rowspan=2>Status</th>
+	  <th rowspan=2>Message</th>
+       	</tr>
+      	<tr>
           <th>DWU</th>
           <th>Rain</th>
           <th>Irrigation</th>
           <th>AWC</th>
-	  <th><i class="fa fa-rss"></i></th> <!-- From Probes -->
-          <th>Status</th>
-	  <th>Message</th>
+	  <th>Limit</th>
        	</tr>
       </thead>
 
@@ -61,8 +67,17 @@
 		{{ object.average_water_content|floatformat:2 }}
 	      </td>
 	      <td>
+		{{ object.max_temp_2in|floatformat:1 }}
+	      </td>
+	      <td>
+		{{ object.max_observed_temp_2in|floatformat:1 }}
+	      </td>
+	      <td>
 		{% if object.computed_from_probes %}
 		  <i class="fa fa-rss"></i>
+		{% endif %}
+		{% if object.too_hot_flag %}
+		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
 		{% endif %}
 	      </td>
 	      <td>
