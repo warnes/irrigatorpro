@@ -276,7 +276,9 @@ class CropSeason(NameDesc, Comment, Audit):
 
     def delete_orphan_events(self, all=False):
         """
-        Delete CropSeasonEvents for which there is no matching field in CropSeason.field_list
+        Delete CropSeasonEvents for which there is no matching field
+        in CropSeason.field_list, and for events that don't match
+        crop_season.crop.
         """
         if all:
             crop_season_list = CropSeason.objects.all()
@@ -293,7 +295,7 @@ class CropSeason(NameDesc, Comment, Audit):
             events.exclude(field=field_list).delete()
 
             # Delete events that don't match crop_season.crop
-            events.exclude(crop_event__crop=self.crop).delete()
+            events.exclude(crop_event__crop=crop_season.crop).delete()
 
 
     class Meta:
@@ -503,6 +505,7 @@ class WaterRegister(Audit):
     # Calculated fields - Boolean
     computed_from_probes  = models.BooleanField(default=False)
     irrigate_flag         = models.BooleanField(default=False)
+    too_hot_flag          = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
     dry_down_flag         = models.BooleanField(default=False)
 
