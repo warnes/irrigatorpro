@@ -243,22 +243,27 @@ table.full-width {
 /* Water Register */
 /******************/
 
-table.formset, table.formset tr, table.formset td, table.formset th {
-    border: 1px solid #006B00;
-    text-align: center;
-    padding: 5px;
-}
-
-table.water-register, table.water-register tr, table.water-register td, table.water-register th {
+table#water-register {
     border: 1px solid #006B00;
     text-align: center;
     padding: 5px;
     background-color: lightblue;
 }
 
-
 .computed-from-probes {
     text-decoration:line-through
     color: gray;
+}
+
+tr.row-past, tr.row-past td {
+    color: #BBBBBB;
+}
+
+tr.row-today, tr.row-today td {
+    background-color: lightyellow;
+}
+
+tr.row-future, tr.row-future td {
+    background-color: #ddfcdd;
 }
 

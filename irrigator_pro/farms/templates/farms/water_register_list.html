@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load today_filters %}
+
 {% block content %}
 
   <h1>
@@ -41,13 +43,11 @@
 
       <tbody>
 	{% for object in object_list %}
-	  <tr>
-	      <!-- <td> -->
-	      <!-- 	{{ object.crop_season }} -->
-	      <!-- </td> -->
-	      <!-- <td> -->
-	      <!-- 	{{ object.field }} -->
-	      <!-- </td> -->
+	  <tr 
+	     {% if object.date|is_today  %}class="row-today" {% endif %}
+	     {% if object.date|is_past   %}class="row-past"  {% endif %}
+	     {% if object.date|is_future %}class="row-future"{% endif %}
+  	     >
 	      <td>
 		{{ object.date|date:"Y-m-d" }}
 	      </td>
