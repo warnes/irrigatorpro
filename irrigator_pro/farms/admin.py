@@ -124,6 +124,7 @@ class CropEventAdmin(AuditAdmin):
                  'max_temp_2in',
                  'key_event',
                  'irrigate_to_max',
+                 'do_not_irrigate',
                  'irrigation_message',
                 ] \
              + Comment.fields \
@@ -137,6 +138,7 @@ class CropEventAdmin(AuditAdmin):
                       'max_temp_2in',
                       'key_event',
                       'irrigate_to_max',
+                      'do_not_irrigate',
                       'irrigation_message',
                     ]
     list_editable = list_display[1:]
