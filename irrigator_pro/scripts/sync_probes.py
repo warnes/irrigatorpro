@@ -122,7 +122,7 @@ def processProbeReading(record, store_probes=True):
                                        reading_datetime__startswith=reading_datetime.date(),
                                        probe_code = probe_code)
         new_record = False
-        sys.stderr.write("+")
+        sys.stderr.write(".")
 
     # otherwise create a new one
     except ProbeReading.DoesNotExist:
