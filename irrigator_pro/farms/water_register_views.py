@@ -45,8 +45,8 @@ class WaterRegisterListView(ListView):
             ## remove old data ##
             queryset.all().delete()
 
-            ## generate new data ##
-            self.update_water_register(self.crop_season, self.field)
+        ## generate new data ##
+        self.update_water_register(self.crop_season, self.field)
 
         if not queryset.count():
             return queryset
