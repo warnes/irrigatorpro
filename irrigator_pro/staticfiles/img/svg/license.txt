@@ -1,0 +1,7 @@
+themometer.svg:
+    Downloaded from
+        http://www.easyicon.net/language.en/1155532-thermometer_icon.html
+    Icon Author Website
+        http://www.freepik.com/	
+    Icon instructions
+        Creative Commons Attribution-Share Alike 3.0 Unported License
