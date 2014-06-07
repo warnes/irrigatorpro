@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import os, os.path, re, socket, subprocess, sys
 import argparse, socket
 import psycopg2
@@ -106,10 +106,6 @@ def processProbeReading(record, store_probes=True):
       minutes_awake
     ) = record;
 
-    # Only consider times between 1:00am and 9:00am on each date.
-    if (reading_datetime.hour < 1) or (reading_datetime.hour > 8):
-        return
-
     if DEBUG:
         print reading_datetime
         sys.stdout.flush()
@@ -117,37 +113,59 @@ def processProbeReading(record, store_probes=True):
     user = User.objects.get(email=OWNER)
     now  = timezone.now()
 
+    ## Add local timzone to reading datetime object
+    reading_datetime = reading_datetime.replace(tzinfo=timezone.get_current_timezone())
+
     # if a reading for this date already exists, update it
     try:
-        rpr = ProbeReading.objects.get(farm_code    = farm_code,
-                    reading_datetime__startswith=reading_datetime.date(),
-                    probe_code   = probe_code)
-    except ProbeReading .DoesNotExist:
-        # otherwise create a new one
-        rpr = ProbeReading(farm_code    = farm_code,
-                           reading_datetime  = reading_datetime,
-                           probe_code    = probe_code)
+        rpr = ProbeReading.objects.get(farm_code = farm_code,
+                                       reading_datetime__startswith=reading_datetime.date(),
+                                       probe_code = probe_code)
+        new_record = False
 
-        rpr.cuser               = user
-        rpr.muser               = user
-
+    # otherwise create a new one
+    except ProbeReading.DoesNotExist:
+        rpr = ProbeReading(farm_code        = farm_code,
+                           reading_datetime = reading_datetime,
+                           probe_code       = probe_code)
         nRecords += 1
+        rpr.cuser               = user
+        new_record = True
 
-    rpr.reading_datetime    = reading_datetime
-    rpr.radio_id            = radio_id
-    #rpr.file_date           = file_date
-    rpr.battery_voltage     = battery_voltage
-    rpr.battery_percent     = battery_percent
-    rpr.soil_potential_8    = soil_potential_8
-    rpr.soil_potential_16   = soil_potential_16
-    rpr.soil_potential_24   = soil_potential_24
-    rpr.circuit_board_temp  = circuit_board_temp
-    rpr.thermocouple_1_temp = thermocouple_1_temp
-    rpr.thermocouple_2_temp = thermocouple_2_temp
-    rpr.minutes_awake       = minutes_awake
+    # except ProbeReading.MultipleObjectsReturned, e:
+        
+    #     rprs = ProbeReading.objects.filter(farm_code = farm_code,
+    #                                        reading_datetime__startswith=reading_datetime.date(),
+    #                                        probe_code = probe_code)
+    #     print "farm_codes=", map(lambda pr: pr.farm_code, rprs)
+    #     print "probe_codes=", map(lambda pr: pr.farm_code, rprs)
+    #     print "radio_ids=", map(lambda pr: pr.radio_id, rprs)
+    #     print "reading_datetime=", map(lambda pr: pr.reading_datetime, rprs)
+    #     raise e
+
     rpr.muser               = user
-    rpr.mdate               = now
-    rpr.source              = u'UGADB'
+
+    ## If the time is before 9am, store most probe information
+    if reading_datetime.hour < 9 or new_record:
+        # For most things, store the *last* entry before 9:00am
+        rpr.reading_datetime    = reading_datetime
+        rpr.radio_id            = radio_id
+        #rpr.file_date           = file_date
+        rpr.battery_voltage     = battery_voltage
+        rpr.battery_percent     = battery_percent
+        rpr.soil_potential_8    = soil_potential_8
+        rpr.soil_potential_16   = soil_potential_16
+        rpr.soil_potential_24   = soil_potential_24
+        rpr.circuit_board_temp  = circuit_board_temp
+
+        rpr.minutes_awake       = minutes_awake
+        rpr.muser               = user
+        rpr.mdate               = now
+        rpr.source              = u'UGADB'
+
+    ## Always store the *highest* temp observed over 24 hours
+    rpr.thermocouple_1_temp = max( rpr.thermocouple_1_temp, thermocouple_1_temp)
+    rpr.thermocouple_2_temp = max( rpr.thermocouple_2_temp, thermocouple_2_temp)
 
     if store_probes:
         with warnings.catch_warnings():
@@ -196,12 +214,18 @@ parser.add_argument('--no-log',
                     action='store_true',
                     help='Do not store a log of this execution into the database.'
                     ) 
+parser.add_argument('--clean',
+                    action='store_true',
+                    help='Clean out existing entries in the time range.'
+                    ) 
+
 
 args = parser.parse_args()
 
 mirror_files = not args.no_files
 store_probes = not args.no_store
 store_log    = not args.no_log
+store_clean  = args.clean
 date_start   = datetime.strptime("%s EST" % args.date_start, "%Y-%m-%d %Z").date()
 date_end     = datetime.strptime("%s EST" % args.date_end, "%Y-%m-%d %Z").date()
 
@@ -242,6 +266,20 @@ sys.stderr.write("Synchronizing probe information via direct database access\n")
 sys.stderr.write("\n")
 sys.stderr.write("Date range: %s to %s \n" % ( date_start, date_end ) )
 sys.stderr.write("\n")
+
+if store_clean:
+    pr_query = ProbeReading.objects.filter(reading_datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+                                           reading_datetime__lte=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
+                                           )
+    nrecords_before = len(pr_query)
+    pr_query.delete()
+    pr_query = ProbeReading.objects.filter(reading_datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+                                           reading_datetime__lte=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
+                                           )
+    nrecords_after = len(pr_query)
+    print "Deleted %d records." % (nrecords_before - nrecords_after)
+
+
 sys.stderr.write("Progress: (one dot per record)\n")
 
 ## Iterate across files
