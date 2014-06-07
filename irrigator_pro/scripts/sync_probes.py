@@ -122,6 +122,7 @@ def processProbeReading(record, store_probes=True):
                                        reading_datetime__startswith=reading_datetime.date(),
                                        probe_code = probe_code)
         new_record = False
+        sys.stderr.write("+")
 
     # otherwise create a new one
     except ProbeReading.DoesNotExist:
@@ -131,6 +132,8 @@ def processProbeReading(record, store_probes=True):
         nRecords += 1
         rpr.cuser               = user
         new_record = True
+        sys.stderr.write("+")
+
 
     # except ProbeReading.MultipleObjectsReturned, e:
         
@@ -171,8 +174,6 @@ def processProbeReading(record, store_probes=True):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             rpr.save()
-    
-    sys.stderr.write(".")
 
 
 ###########################
