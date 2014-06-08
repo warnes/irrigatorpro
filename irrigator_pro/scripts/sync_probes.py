@@ -118,38 +118,26 @@ def processProbeReading(record, store_probes=True):
 
     # if a reading for this date already exists, update it
     try:
-        rpr = ProbeReading.objects.get(farm_code = farm_code,
-                                       reading_datetime__startswith=reading_datetime.date(),
-                                       probe_code = probe_code)
+        rpr = ProbeReading.objects.get(reading_datetime__startswith=reading_datetime.date(),
+                                       radio_id=radio_id
+                                       )
         new_record = False
         sys.stderr.write(".")
 
     # otherwise create a new one
     except ProbeReading.DoesNotExist:
-        rpr = ProbeReading(farm_code        = farm_code,
-                           reading_datetime = reading_datetime,
-                           probe_code       = probe_code)
+        rpr = ProbeReading(reading_datetime = reading_datetime,
+                           radio_id=radio_id
+                           )
         nRecords += 1
         rpr.cuser               = user
         new_record = True
         sys.stderr.write("+")
 
-
-    # except ProbeReading.MultipleObjectsReturned, e:
-        
-    #     rprs = ProbeReading.objects.filter(farm_code = farm_code,
-    #                                        reading_datetime__startswith=reading_datetime.date(),
-    #                                        probe_code = probe_code)
-    #     print "farm_codes=", map(lambda pr: pr.farm_code, rprs)
-    #     print "probe_codes=", map(lambda pr: pr.farm_code, rprs)
-    #     print "radio_ids=", map(lambda pr: pr.radio_id, rprs)
-    #     print "reading_datetime=", map(lambda pr: pr.reading_datetime, rprs)
-    #     raise e
-
     rpr.muser               = user
 
     ## If the time is before 9am, store most probe information
-    if reading_datetime.hour < 9 or new_record:
+    if (reading_datetime.hour > rpr.reading_datetime.hour and reading_datetime.hour < 9) or new_record:
         # For most things, store the *last* entry before 9:00am
         rpr.reading_datetime    = reading_datetime
         rpr.radio_id            = radio_id
