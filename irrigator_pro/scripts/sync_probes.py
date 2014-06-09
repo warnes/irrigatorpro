@@ -115,13 +115,8 @@ def processProbeReading(record, store_probes=True):
 
     ## Add local timzone to reading datetime object
     reading_datetime = reading_datetime.replace(tzinfo=timezone.get_current_timezone())
-    reading_date = reading_datetime.date()
+    reading_date = reading_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
     one_day = timedelta(days=1)
-
-    if radio_id==u'0531D6':
-        print
-        print record
-        print
 
     # if _one_ reading for this date already exists, update it
     try:
@@ -289,7 +284,7 @@ if store_clean:
     print "Deleted %d records." % (nrecords_before - nrecords_after)
 
 
-sys.stderr.write("Progress: (one dot per record)\n")
+sys.stderr.write("Progress: (dot=one UGA record processed, plus=new local record created)\n")
 
 ## Iterate across files
 for record in cur:
