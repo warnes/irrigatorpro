@@ -241,7 +241,8 @@ def generate_water_register(crop_season,
     soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
                                                             field_list=field).all()
-    crop_season_events_query = CropSeasonEvent.objects.filter(crop_season__field_list=field).distinct().all()
+    crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
+                                                              crop_season__field_list=field).distinct().all()
     ####
 
 
@@ -401,7 +402,9 @@ def generate_water_register(crop_season,
                     wr.irrigate_flag = True
             
                 # Too hot:
-                if wr.max_observed_temp_2in > wr.max_temp_2in:
+                if wr.max_temp_2in is not None and \
+                   wr.max_observed_temp_2in is not None and \
+                   wr.max_observed_temp_2in > wr.max_temp_2in:
                     wr.irrigate_flag = True
                     wr.too_hot_flag  = True
 
