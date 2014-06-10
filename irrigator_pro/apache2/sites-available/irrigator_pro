@@ -1,5 +1,6 @@
 <VirtualHost *:80>
-#  ServerName irrigatorpro.org
+  ServerName irrigatorpro.org
+  ServerAlias www.irrigatorpro.org prod.irrigatorpro.org
   ServerAdmin webmaster@irrigatorpro.org
 
   ####
