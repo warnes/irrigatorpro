@@ -20,19 +20,19 @@
     <table class="formset water-history" id="water-history">
 
       <thead>
-      	<tr>
+      	<tr class="header1">
           <th rowspan=2>Date</th>
           <th rowspan=2>Growth Stage</th>
           <th colspan=4>Water</th>
 	  <th colspan=2>Max Soil Temp (&deg;F)</th>
-	  <th rowspan=2>
+	  <!--th rowspan=2>
 	    <i class="fa fa-rss"></i> 
 	    <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
-	  </th>
+	  </th-->
           <th rowspan=2>Status</th>
 	  <th rowspan=2>Message</th>
        	</tr>
-      	<tr>
+      	<tr class="header2">
           <th>DWU</th>
           <th>Rain</th>
           <th>Irrigation</th>
@@ -55,32 +55,47 @@
 	      <td>
 		{{ object.crop_stage }}
 	      </td>
-	      <td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
 		{{ object.daily_water_use|floatformat:2 }}
 	      </td>
-	      <td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
 		  {{ object.rain|floatformat:2 }}
 	      </td>
-	      <td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
 		  {{ object.irrigation|floatformat:2 }}
 	      </td>
 	      <td>
-		{{ object.average_water_content|floatformat:2 }}
+		  {% if object.computed_from_probes %}
+		    <i class="fa fa-rss"></i>
+		  {% endif %}
+		  {{ object.average_water_content|floatformat:2 }}
 	      </td>
 	      <td>
 		{{ object.max_temp_2in|floatformat:1 }}
 	      </td>
 	      <td>
 		{{ object.max_observed_temp_2in|floatformat:1 }}
+		{% if object.too_hot_flag %}
+		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
+		{% endif %}
 	      </td>
-	      <td>
+	      <!--td>
 		{% if object.computed_from_probes %}
 		  <i class="fa fa-rss"></i>
 		{% endif %}
 		{% if object.too_hot_flag %}
 		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
 		{% endif %}
-	      </td>
+	      </td-->
 	      <td>
 		{% if object.irrigate_flag %}
 		  <div class="alert-inline alert-danger">

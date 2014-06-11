@@ -40,15 +40,15 @@ body {
 }
 
 footer {
-   margin-left: 200px;
-   position:fixed;
-   bottom:0;
-   height:1.5em;   /* Height of the footer */
-   text-align: center;
-   background-color: #006B00;
-   color: #eefcff;
-   right: 0;
-   left: 0;
+    margin-left: 200px;
+    position:fixed;
+    bottom:0;
+    height:1.5em;   /* Height of the footer */
+    text-align: center;
+    background-color: #006B00;
+    color: #eefcff;
+    right: 0;
+    left: 0;
 }
 
 .site-title {
@@ -189,7 +189,7 @@ tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
 
 .ui-datepicker {
     z-index: 10000 !important;
-    /* color: #eefcff !important; */
+/* color: #eefcff !important; */
 }
 
 /********************************************/
@@ -243,18 +243,68 @@ table.full-width {
 /* Water Register */
 /******************/
 
-table#water-register {
+table.water-register {
     border: 1px solid #006B00;
     text-align: center;
     padding: 5px;
     background-color: lightblue;
 }
 
+tr.header1 th, tr.header2 th {
+    padding: 5px;
+}
+
+/*** Place double-line between sections ***/
+tr.header1 th:nth-child(2), tr.header1 th:nth-child(3),  tr.header1 th:nth-child(4)  {
+    border-right-width: 3px;
+    border-right-style: double;
+}
+
+tr.header2 th:nth-child(4), tr.header2 th:nth-child(6)  {
+    border-right-width: 3px;
+    border-right-style: double;
+}
+
+tr td:nth-child(2), tr td:nth-child(6), tr td:nth-child(8)  {
+    border-right-width: 3px;
+    border-right-style: double;
+}
+/***/
+
+
+/*** Set width of columns ***/
+header1 th:nth-child(1) {
+    column-width:10em;
+    -moz-column-width:10em; /* Firefox */
+    -webkit-column-width:10em; /* Safari and Chrome */
+}
+
+tr.header1 th:nth-child(5) {
+    column-width:15em;
+    -moz-column-width:15em; /* Firefox */
+    -webkit-column-width:15em; /* Safari and Chrome */
+}
+
+tr.header2 th:nth-child(4) {
+    column-width:6em;
+    -moz-column-width:6em; /* Firefox */
+    -webkit-column-width:6em; /* Safari and Chrome */
+}
+
+tr.header2 th:nth-child(10) {
+    column-width:20em;
+    -moz-column-width:20em; /* Firefox */
+    -webkit-column-width:20em; /* Safari and Chrome */
+}
+/***/
+
+
 .computed-from-probes {
-    text-decoration:line-through
+    text-decoration:line-through;
     color: gray;
 }
 
+/*** Colorize past, today, future ***/
 tr.row-past, tr.row-past td {
     color: #BBBBBB;
 }
@@ -266,4 +316,5 @@ tr.row-today, tr.row-today td {
 tr.row-future, tr.row-future td {
     background-color: #ddfcdd;
 }
+/***/
 
