@@ -90,6 +90,7 @@ DATABASES = {
         ## Use sqlite3 for development ##
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(ABSOLUTE_PROJECT_ROOT, 'db.sqlite3'),
+	'timeout': 20,
         ##
 
         # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
