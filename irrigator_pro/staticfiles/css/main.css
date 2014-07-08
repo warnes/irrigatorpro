@@ -265,7 +265,7 @@ tr.header2 th:nth-child(4), tr.header2 th:nth-child(6)  {
     border-right-style: double;
 }
 
-tr td:nth-child(2), tr td:nth-child(6), tr td:nth-child(8)  {
+tr.dynamic-form td:nth-child(2), tr.dynamic-form td:nth-child(6), tr.dynamic-form td:nth-child(8)  {
     border-right-width: 3px;
     border-right-style: double;
 }
