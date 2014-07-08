@@ -247,25 +247,24 @@ table.water-register {
     border: 1px solid #006B00;
     text-align: center;
     padding: 5px;
-    background-color: lightblue;
 }
 
-tr.header1 th, tr.header2 th {
+table.water-register tr.header1 th, table.water-register tr.header2 th {
     padding: 5px;
 }
 
 /*** Place double-line between sections ***/
-tr.header1 th:nth-child(2), tr.header1 th:nth-child(3),  tr.header1 th:nth-child(4)  {
+table.water-register tr.header1 th:nth-child(2), table.water-register tr.header1 th:nth-child(3),  table.water-register tr.header1 th:nth-child(4)  {
     border-right-width: 3px;
     border-right-style: double;
 }
 
-tr.header2 th:nth-child(4), tr.header2 th:nth-child(6)  {
+table.water-register tr.header2 th:nth-child(4), table.water-register tr.header2 th:nth-child(6)  {
     border-right-width: 3px;
     border-right-style: double;
 }
 
-tr.dynamic-form td:nth-child(2), tr.dynamic-form td:nth-child(6), tr.dynamic-form td:nth-child(8)  {
+table.water-register tr td:nth-child(2), table.water-register tr td:nth-child(6), table.water-register tr td:nth-child(8)  {
     border-right-width: 3px;
     border-right-style: double;
 }
@@ -273,25 +272,25 @@ tr.dynamic-form td:nth-child(2), tr.dynamic-form td:nth-child(6), tr.dynamic-for
 
 
 /*** Set width of columns ***/
-header1 th:nth-child(1) {
+table.water-register header1 th:nth-child(1) {
     column-width:10em;
     -moz-column-width:10em; /* Firefox */
     -webkit-column-width:10em; /* Safari and Chrome */
 }
 
-tr.header1 th:nth-child(5) {
+table.water-register tr.header1 th:nth-child(5) {
     column-width:15em;
     -moz-column-width:15em; /* Firefox */
     -webkit-column-width:15em; /* Safari and Chrome */
 }
 
-tr.header2 th:nth-child(4) {
+table.water-register tr.header2 th:nth-child(4) {
     column-width:6em;
     -moz-column-width:6em; /* Firefox */
     -webkit-column-width:6em; /* Safari and Chrome */
 }
 
-tr.header2 th:nth-child(10) {
+table.water-register tr.header2 th:nth-child(10) {
     column-width:20em;
     -moz-column-width:20em; /* Firefox */
     -webkit-column-width:20em; /* Safari and Chrome */
