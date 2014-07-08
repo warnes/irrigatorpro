@@ -49,9 +49,11 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     # from Location: address_1, address_2, city, state, zipcode, country
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    farmer      = models.ForeignKey(User, related_name="farmers")
-    users       = models.ManyToManyField(User, blank=True, verbose_name="Authorized Users")
-
+    farmer        = models.ForeignKey(User, related_name="farmers")
+    users         = models.ManyToManyField(User, blank=True, verbose_name="Authorized Users")
+    gps_latitude  = models.FloatField("GPS Latitude",  blank=True, null=True)
+    gps_longitude = models.FloatField("GPS Longitude", blank=True, null=True)	
+    
     def get_farmer_and_user_list(self):
         retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
         return retval

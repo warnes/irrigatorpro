@@ -21,6 +21,8 @@ farm_view_fields =  ('farmer',
                      'county',
                      'state',
                      'zipcode',
+                     'gps_latitude', 
+                     'gps_longitude'
                  )
 
 

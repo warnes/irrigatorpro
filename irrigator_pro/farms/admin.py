@@ -12,10 +12,14 @@ class FarmAdmin(AuditAdmin):
              + NameDesc.fields \
              + [ 'users' ]  \
              + Location.fields \
+             + [ 'gps_latitude', 'gps_longitude' ] \
              + Comment.fields \
              + Audit.fields
 
-    list_display  = [ 'pk', 'name', 'farmer', 'get_users', ] + Location.fields
+    list_display  = [ 'pk', 'name', 'farmer', 'get_users', ] \
+                    +  Location.fields \
+                    + [ 'gps_latitude', 'gps_longitude' ] 
+
     list_editable = ['name', 'farmer', ] + list_display[4:]
     list_filter = ['farmer']
 
