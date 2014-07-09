@@ -285,9 +285,9 @@ table.water-register tr.header1 th:nth-child(5) {
 }
 
 table.water-register tr.header2 th:nth-child(4) {
-    column-width:6em;
-    -moz-column-width:6em; /* Firefox */
-    -webkit-column-width:6em; /* Safari and Chrome */
+    column-width:12em;
+    -moz-column-wdth:12em; /* Firefox */
+    -webkit-column-width:12em; /* Safari and Chrome */
 }
 
 table.water-register tr.header2 th:nth-child(10) {

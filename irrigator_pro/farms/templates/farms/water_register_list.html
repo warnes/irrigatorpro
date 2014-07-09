@@ -78,6 +78,9 @@
 		    <i class="fa fa-rss"></i>
 		  {% endif %}
 		  {{ object.average_water_content|floatformat:2 }}
+		  {% if object.average_water_content <= 0.0 %}
+		 <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
+		 {% endif %}
 	      </td>
 	      <td>
 		{{ object.max_temp_2in|floatformat:1 }}
@@ -85,7 +88,7 @@
 	      <td>
 		{{ object.max_observed_temp_2in|floatformat:1 }}
 		{% if object.too_hot_flag %}
-		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
+		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>	
 		{% endif %}
 	      </td>
 	      <!--td>
