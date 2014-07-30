@@ -138,15 +138,32 @@ def calculateAWC_ProbeReading(crop_season, field, date,
     temp1 = celciusToFarenheit( probe_reading.thermocouple_1_temp )
     temp2 = celciusToFarenheit( probe_reading.thermocouple_2_temp )
     
-    temp = twoTempAverage(temp1, temp2)
+    ### Current probes don't actually have two temperature probes
+    ### installed.  Only the first probe is installed and operational,
+    ### so ignore the second and simply use the first one.
+    ## temp = twoTempAverage(temp1, temp2)
+    temp = tempRangeCheck(temp1)
 
     return (AWC, temp)
+
 
 def celciusToFarenheit(celcius):
     if celcius is None:
         return None
     else:
         return float(celcius) * 1.8 + 32.0 
+
+
+def tempRangeCheck(temp):
+    """
+    Apply temperature sanity check (assuming temp in degrees
+    Fareneheit)
+    """
+    if temp > 140 or temp < 0:
+        temp = None
+
+    return temp
+
 
 def twoTempAverage(temp1, temp2):
     """
@@ -156,10 +173,8 @@ def twoTempAverage(temp1, temp2):
 
     # Apply temperature sanity checks (assuming temp in degrees
     # Fareneheit)
-    if temp1 > 140 or temp1 < 0:
-        temp1 = None
-    if temp2 > 140 or temp2 < 0:
-        temp2 = None
+    temp1 = tempRangeCheck(temp1)
+    temp2 = tempRangeCheck(temp1)
 
     # Calculate average
     if temp1 is None and temp2 is None:
@@ -173,7 +188,10 @@ def twoTempAverage(temp1, temp2):
     return temp
 
 
-def calculateAWC_RainIrrigation(crop_season, field, date, water_history_query=None):
+def calculateAWC_RainIrrigation(crop_season, 
+                                field, 
+                                date, 
+                                water_history_query=None):
 
     if water_history_query is None:
         water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
