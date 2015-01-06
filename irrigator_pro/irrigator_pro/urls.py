@@ -81,6 +81,9 @@ urlpatterns = patterns('',
                        url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
 
+                       ## Summary report
+                       url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
+
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
                        url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
