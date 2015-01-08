@@ -190,7 +190,7 @@
 		<ul class = "nav">
 		  {% for item in crop_season_list %}
 		  <li>
-  		    <a href="{% url 'summary_report' %}{{ farm.pk }}{{ item.pk}}">
+  		    <a href="{% url 'summary_report' %}{{ farm.pk }}/{{ item.pk}}">
 		      {{ item.name }}
 		    </a>
 		  </li>
