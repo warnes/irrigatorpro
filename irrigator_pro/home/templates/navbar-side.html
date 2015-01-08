@@ -82,7 +82,7 @@
 	  </li>
 	</ul>
 
-	  <li>
+	<li>
 	    <a href="{% url 'probe_readings' %}">
 	      <i class="fa fa-rss fa-fw"></i>
 	      Probe Readings
@@ -177,10 +177,28 @@
 
 	  <li>
 	    <a href="{% url 'summary_report' %}">
-	      <i class="fa fa-pencil-square-o fa-fw"></i>
+	      <i class="fa fa-cogs fa-fw"></i>
 	      Summary Report
 	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
+	    <ul class="nav nav-secondary">
+	      {% for farm in farm_list %}
+	      <li>
+  		<a href="{% url 'summary_report' %}{{ farm.pk }}">
+		  {{ farm.name}}
+		</a>
+		<ul class = "nav">
+		  {% for item in crop_season_list %}
+		  <li>
+  		    <a href="{% url 'summary_report' %}{{ farm.pk }}{{ item.pk}}">
+		      {{ item.name }}
+		    </a>
+		  </li>
+		  {% endfor %}
+		</ul>
+	      </li>
+	      {% endfor %}
+	    </ul>
 	  </li>
 
 
