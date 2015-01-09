@@ -83,8 +83,8 @@ urlpatterns = patterns('',
 
                        ## Summary report
                        url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^summary_report/(?P<farm>\d+)$',                    SummaryReportListView.as_view(),   name='summary_report_farm'),
-                       url(r'^summary_report/(?P<farm>\d+)/(?P<field>\d+)$',         SummaryReportListView.as_view(),   name='summary_report_farm_crop'),
+                       url(r'^summary_report/(?P<farm>\d+)$',                  SummaryReportListView.as_view(),   name='summary_report_farm'),
+                       url(r'^summary_report/(?P<farm>\d+)/(?P<crop_season>\d+)$',   SummaryReportListView.as_view(),   name='summary_report_farm_crop'),
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
                        url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),

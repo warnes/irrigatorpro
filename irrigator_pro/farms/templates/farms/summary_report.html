@@ -55,10 +55,42 @@
 
 {% block content %}
 
-  <h1>Summary report -- more to come.
-
+  <h1>
+    <i class="fa fa-pencil-square-o fa-fw"></i>
+    Summary report
   </h1>
 
+  <h2>
+    <em>{{crop_season}}</em>
+  </h2>
 
+    
+    {% if object_list %}
+
+  <!-- Add table header here -->
+  <table>
+    <thead>
+
+
+
+      {% for object in object_list %}
+         field: {{ object.field }}<br/>
+  <!-- table row here. -->
+         growth_stage: {{ object.growth_stage }}<br/>
+         last_event_date: {{ object.time_last_data_entry }}<br/>
+         last_event_type: {{ object.last_data_entry_type }}<br/>
+
+  {{ object.dwu }}<br/>
+  {{ object.awc }}<br/>
+  {{ object.cumulative_rain }}<br/>
+  {{ object.cumulative_irrigation_vol }}<br/>
+
+      {% endfor %}
   
+  <!-- End of table here. -->
+
+    {% else %}
+      <b> Nothing to display yet. </b>
+    {% endif %}
+
 {% endblock %}
