@@ -1,9 +1,5 @@
 {% extends "base.html" %}
 
-<!-- AL: Just copied farms_and_fields.html in order to test the flow, -->
-<!-- have the basic imports, test git from my account. -->
-
-
 {% block scripts %}
   <script type="text/javascript">
     $(function() {
@@ -67,27 +63,42 @@
     
     {% if object_list %}
 
-  <!-- Add table header here -->
-  <table>
+  <table class="formset summary-report" id="summary-report" >
     <thead>
-
-
-
+      <tr class = "header1">
+	<th rowspan=2>Field</th>
+	<th rowspan=2>Growth Stage</th>
+	<th colspan=4>Water</th>
+	<th colspan=2>Last Entry</th>
+	<th>Water Register</th>
+      </tr>
+      <tr class="header2">
+	<th>DWU</th>
+	<th>AWC</th>
+	<th>Rain</th>
+	<th>Irrigation</th>
+	<th>Type</th>
+	<th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
       {% for object in object_list %}
-         field: {{ object.field }}<br/>
-  <!-- table row here. -->
-         growth_stage: {{ object.growth_stage }}<br/>
-         last_event_date: {{ object.time_last_data_entry }}<br/>
-         last_event_type: {{ object.last_data_entry_type }}<br/>
-
-  {{ object.dwu }}<br/>
-  {{ object.awc }}<br/>
-  {{ object.cumulative_rain }}<br/>
-  {{ object.cumulative_irrigation_vol }}<br/>
+      <tr>
+	<td>{{ object.field}} </td>
+	<td>{{ object.growth_stage }}</td>
+	<td>{{ object.dwu }}</td>
+	<td>{{ object.awc }}</td>
+	<td>{{ object.cumulative_rain }}</td>
+	<td>{{ object.cumulative_irrigation_vol }}</td>
+	<td>{{ object.last_data_entry_type }}</td>
+	<td>{{ object.time_last_data_entry }}</td>
+	<td></td>
+      </tr>
 
       {% endfor %}
   
-  <!-- End of table here. -->
+    </tbody>
+  </table>
 
     {% else %}
       <b> Nothing to display yet. </b>
