@@ -8,7 +8,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.db.models import DateField
 from django.utils import timezone
 
-from farms.models import CropSeason, Field, WaterRegister, Farm, CropSeasonEvent
+from farms.models import CropSeason, Field, WaterRegister, WaterHistory, Farm, CropSeasonEvent, Probe, ProbeReading
 from farms.generate_water_register import generate_water_register
 
 
@@ -68,12 +68,61 @@ class SummaryReportListView(ListView):
                     srf.cumulative_rain = wr.rain
                     srf.cumulative_irrigation_vol = wr.irrigation
 
-                # Get the last event
-                cse = CropSeasonEvent.objects.latest('date')
-                if (cse is not None):
-                    srf.time_last_data_entry = cse.date
-                    srf.last_data_entry_type = cse.get_event_description
+                # Get the last event for the field. It will be either rain, irrigation,
+                # manual reading or automated reading.
 
+                # First get the latest water event from water history
+                # The water history contains a field list (although right now it
+                # may be limited to one field.) Still, assume there could be more
+                # than one.
+
+                whList = WaterHistory.objects.filter(crop_season = self.crop_season)
+                # Just keep the ones with one of the fields equal to current fiels.
+
+                if (whList is not None):
+                    latestWH = whList.filter(field_list = field) #.latest('date')
+                    latest_water_record = whList.latest('date')
+
+                # Now get the latest measurement record from the probes.
+                # First all the probes for a given pair (field, crop season)
+
+                probe_list = Probe.objects.filter(field_list = field, crop_season = self.crop_season)
+                if (len(probe_list) > 0):
+                    radio_id = probe_list[0].radio_id
+                    probe_readings = ProbeReading.objects.filter(radio_id = radio_id)
+                    # Same radio id can be used across seasons. Filter based on (Start, end) of 
+                    # crop season
+                    print 'Number of readings: ', len(probe_readings)
+                    probe_readings = probe_readings.filter(reading_datetime__gte = self.crop_season.season_start_date,
+                                                           reading_datetime__lte = self.crop_season.season_end_date)
+                    if (probe_readings is not None):
+                        latest_probe_reading = probe_readings.latest('reading_datetime')
+                
+                        
+
+                # Compare both records, keep most recent.
+                # Probably easier way in python to do this. Can worry later.
+                if (latest_water_record is None and latest_probe_reading is None): pass
+                elif  (latest_water_record is not None and latest_probe_reading is not None):
+                    latest_is_wr = True if (latest_water_record.date > latest_probe_reading.reading_datetime.date()) else False
+                else:
+                    if (latest_water_record is not None):
+                        latest_is_wr = True
+                    else:
+                        latest_is_wr = False
+                if (latest_is_wr is not None):
+                    if (latest_is_wr):
+                        srf.last_data_entry_type = "Rain or irrigation"
+                        srf.time_last_data_entry = latest_water_record.date
+                    else:
+                        srf.last_data_entry_type = "Probe reading"
+                        srf.time_last_data_entry = latest_probe_reading.reading_datetime
+
+            
+                # Add link to water register
+                srf.water_registry_url = self.request.get_host() +'/water_register/' + str(self.crop_season.pk) + '/' + str(field.pk)
+                print 'url: ', srf.water_registry_url
+                
         return ret_list
 
 
@@ -97,6 +146,7 @@ class SummaryReportFields:
     time_last_data_entry = DateField(default=timezone.now())
     cumulative_rain             = 0.0
     cumulative_irrigation_vol   = 0.0
+    water_registry_url          = ''
 
     
     

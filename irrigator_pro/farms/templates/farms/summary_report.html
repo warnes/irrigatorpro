@@ -70,7 +70,7 @@
 	<th rowspan=2>Growth Stage</th>
 	<th colspan=4>Water</th>
 	<th colspan=2>Last Entry</th>
-	<th>Water Register</th>
+	<th rowspan=2>Water Register</th>
       </tr>
       <tr class="header2">
 	<th>DWU</th>
@@ -92,7 +92,7 @@
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
 	<td>{{ object.time_last_data_entry }}</td>
-	<td></td>
+	<td><a href = 'http://{{ object.water_registry_url }}'> link </a></td>
       </tr>
 
       {% endfor %}
