@@ -11,6 +11,9 @@ from django.utils import timezone
 from farms.models import CropSeason, Field, WaterRegister, WaterHistory, Farm, CropSeasonEvent, Probe, ProbeReading
 from farms.generate_water_register import generate_water_register
 
+from datetime import date
+
+
 
 class SummaryReportListView(ListView):
     template_name = "farms/summary_report.html"
@@ -122,6 +125,11 @@ class SummaryReportListView(ListView):
                 # Add link to water register
                 srf.water_registry_url = self.request.get_host() +'/water_register/' + str(self.crop_season.pk) + '/' + str(field.pk)
                 print 'url: ', srf.water_registry_url
+
+                # Add the water register object to get next irrigation date, or status.
+                # Only add if planting season is not over.
+                if (self.crop_season.season_end_date >= date.today()):
+                    srf.water_registry_object = wr
                 
         return ret_list
 
@@ -140,14 +148,13 @@ class SummaryReportFields:
     growth_stage                = 'Undetermined stage'
     dwu                         = 0.0
     awc                         = 0.0
-    next_irrigation_date        = False
     link_to_water_reg           = ''
     last_data_entry_type        = ''
-    time_last_data_entry = DateField(default=timezone.now())
+    time_last_data_entry        = DateField(default=timezone.now())
     cumulative_rain             = 0.0
     cumulative_irrigation_vol   = 0.0
     water_registry_url          = ''
-
+    water_registry_object       = None
     
     
     

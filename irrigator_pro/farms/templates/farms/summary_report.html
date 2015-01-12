@@ -70,6 +70,7 @@
 	<th rowspan=2>Growth Stage</th>
 	<th colspan=4>Water</th>
 	<th colspan=2>Last Entry</th>
+	<th rowspan=2>Status</th>
 	<th rowspan=2>Water Register</th>
       </tr>
       <tr class="header2">
@@ -92,6 +93,32 @@
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
 	<td>{{ object.time_last_data_entry }}</td>
+
+
+	<!-- Copy code from water_register for the status. -->
+	<td>
+		{% if object.water_registry_object.irrigate_flag %}
+		  <div class="alert-inline alert-danger">
+		    <b>Irrigate Today</b>
+		    {% if object.water_registry_object.average_water_content <= 0.0 %}
+		      AWC
+		    {% endif %}
+		    {% if object.water_registry_object.max_temp_2in < object.water_registry_object.max_observed_temp_2in %}
+		      Temp
+		    {% endif %}
+		  </div>
+		{% elif object.water_registry_object.check_sensors_flag %}
+		  <div class="alert-inline alert-warning">
+		    Irrigate 1-5 Days
+		  </div>
+		{% endif %}
+		{% if object.water_registry_object.dry_down_flag %}
+		  <div class="alert-inline alert-info">
+		    Dry-Down
+		  </div>
+		{% endif %}
+	</td>
+
 	<td><a href = 'http://{{ object.water_registry_url }}'> link </a></td>
       </tr>
 
