@@ -32,3 +32,9 @@ TracPermRedirect==3.0
 trac-github==2.0.0
 NavAdd==0.1.1
 
+# For plotting
+
+matplotlib==1.4.2
+
+
+

@@ -28,9 +28,20 @@
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/timepicker.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/navbar.css">
+
     <link rel="stylesheet" href="{{ STATIC_URL }}css/django-model-blocks.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css?t=<?= time(); ?>">
-    <script src="{{ STATIC_URL }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+
+
+      <!-- links to tablesorter css -->
+
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.blue.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.default.css">
+
+<!--    <script src="{{ STATIC_URL
+		 }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
+
+
 
 
     {% block extrahead %}{% endblock %}
@@ -91,6 +102,10 @@
         <script src="//code.jquery.com/jquery-1.9.1.js"></script>
         <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
       <!--- /jQuery --->
+
+      <script src="{{ STATIC_URL }}js/tablesorter/jquery.tablesorter.js"></script>
+
+
 
       <!-- Bootstrap -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>

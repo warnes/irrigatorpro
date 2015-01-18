@@ -181,24 +181,6 @@
 	      Summary Report
 	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
-	    <ul class="nav nav-secondary">
-	      {% for farm in farm_list %}
-	      <li>
-  		<a href="{% url 'summary_report' %}{{ farm.pk }}">
-		  {{ farm.name}}
-		</a>
-		<ul class = "nav">
-		  {% for crop_season in crop_season_list %}
-		  <li>
-  		    <a href="{% url 'summary_report' %}{{ farm.pk }}/{{ crop_season.pk}}">
-		      {{ crop_season.name }}
-		    </a>
-		  </li>
-		  {% endfor %}
-		</ul>
-	      </li>
-	      {% endfor %}
-	    </ul>
 	  </li>
 
 

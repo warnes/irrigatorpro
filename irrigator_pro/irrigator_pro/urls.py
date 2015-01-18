@@ -70,8 +70,9 @@ urlpatterns = patterns('',
                        url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),   name='water_history'),
                        url(r'^water_history/(?P<season>\d+)$',                WaterHistoryFormsetView.as_view(),   name='water_history_season'),
                        url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),   name='water_history_season_field'),
+                       
 
-                       ## Probe Reading pages
+                       ## Probe Reading pagesw
                        url(r'^probe_readings/$',                               ProbeReadingFormsetView.as_view(), name='probe_readings' ),
                        url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
@@ -80,11 +81,11 @@ urlpatterns = patterns('',
                        url(r'^water_register/$',                               HomeView.as_view(),              name='water_register'),
                        url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
+                       url(r'^water_register/plot/daily/temp.png', 'farms.water_register_plots.plot_daily_use', name='daily_use'),
 
                        ## Summary report
                        url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^summary_report/(?P<farm>\d+)$',                  SummaryReportListView.as_view(),   name='summary_report_farm'),
-                       url(r'^summary_report/(?P<farm>\d+)/(?P<crop_season>\d+)$',   SummaryReportListView.as_view(),   name='summary_report_farm_crop'),
+
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
                        url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
