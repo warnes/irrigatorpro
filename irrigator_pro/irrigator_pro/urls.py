@@ -85,6 +85,7 @@ urlpatterns = patterns('',
 
                        ## Summary report
                        url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
+                       url(r'^summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

@@ -39,16 +39,6 @@ class SummaryReportListView(ListView):
                'message'
              ]
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(SummaryReportListView, self).dispatch(*args, **kwargs)
-
-    def get_queryset(self):
-        queryset = self.get_object_list()
-        return queryset
-
-
-
     #####################################################
     ## Method to gather data and create the query set. ##
     ## Get information for all the farms this user has ##
@@ -60,42 +50,41 @@ class SummaryReportListView(ListView):
         ret_list = []
         #        image = plot_daily_use(self.request)
 
-        
-        # Get the list of active crop_seasons right now.
-        # Will make it faster iterating in the inner loop.
+
+        print "Year: ", self.year
+
+        # For testing allow URL to end with .../summary_report/2013/07/31
+        self.today_date = date.today()
+        if self.year is not None:
+            self.today_date = date(self.year, self.month, self.day)
 
 
-
+ 
         farm_list = farms_filter(self.request.user)
 
         # TODO Change the date for either today, or a date given in the url for debugging purpose.
-        crop_season_list = CropSeason.objects.filter(season_start_date__lt = date(2014,6,3),
-                                                     season_end_date__gte = date(2014,6,3)).all()
+        crop_season_list = CropSeason.objects.filter(season_start_date__lt = self.today_date,
+                                                     season_end_date__gte = self.today_date).all()
 
         # Create a dictionary with ('field', 'crop_season')
         all_fields = {}
         for x in crop_season_list:
-            print 'crop_season: ', x
             for field in x.field_list.all():
                 all_fields[field] = x
     
-        print 'All fields: ', all_fields
 
         ## TODO Much too long, hard to follow. Break down into subroutines.
 
 
         for farm in farm_list:
-            print 'farm :', farm
 
             field_list = Field.objects.filter(farm = farm)
             for field in field_list:
-                print 'field: ', field
 
                 # Get all the crop_season objects that:
                 #    - field_list contains the field
 
                 if field not in all_fields: continue
-                print '*** will use this field.'
                 crop_season = all_fields[field]
                 
                 # Will add an entry for this field and farm
@@ -103,6 +92,7 @@ class SummaryReportListView(ListView):
                 srf = SummaryReportFields()
                 srf.field = field
                 srf.farm = farm
+                srf.crop = crop_season.crop
                 ret_list.append(srf)
 
                 # Get the water registry for the crop season / field
@@ -139,7 +129,6 @@ class SummaryReportListView(ListView):
                         probe_readings = ProbeReading.objects.filter(radio_id = radio_id)
                         # Same radio id can be used across seasons. Filter based on (Start, end) of 
                         # crop season
-                        print 'Number of readings: ', len(probe_readings)
                         probe_readings = probe_readings.filter(reading_datetime__gte = crop_season.season_start_date,
                                                                reading_datetime__lte = crop_season.season_end_date)
                         if (probe_readings is not None):
@@ -167,7 +156,6 @@ class SummaryReportListView(ListView):
             
                     # Add link to water register
                     srf.water_registry_url = self.request.get_host() +'/water_register/' + str(crop_season.pk) + '/' + str(field.pk)
-                    print 'url: ', srf.water_registry_url
 
                     # Add the water register object to get next irrigation date, or status.
                     # Only add if planting season is not over.
@@ -179,7 +167,25 @@ class SummaryReportListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(SummaryReportListView, self).get_context_data(**kwargs)
+        context['today_date'] = self.today_date
         return context
+
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+
+        # There are either parameters for year, month, day, or none.
+        year_param = kwargs.get('year', None)
+        if year_param is not None:
+            self.year = int(year_param)
+            self.month= int(kwargs.get('month', None))
+            self.day = int(kwargs.get('day', None))
+        return super(SummaryReportListView, self).dispatch(*args, **kwargs)
+
+
+    def get_queryset(self):
+        queryset = self.get_object_list()
+        return queryset
 
 
 
@@ -188,6 +194,7 @@ class SummaryReportFields:
     # Provide default values for all the fields
     farm                        = 'Unknown farm'
     field                       = 'Unknown field'
+    crop                        = 'Unknown crop'
     growth_stage                = 'Undetermined stage'
     dwu                         = 0.0
     awc                         = 0.0
