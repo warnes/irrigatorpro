@@ -15,6 +15,8 @@
     <em>{{field}}</em>
   </h2>
 
+
+
   {% if object_list %}
 
     <table class="formset water-register" id="water-register">
@@ -45,9 +47,9 @@
       <tbody>
 	{% for object in object_list %}
 	  <tr 
-	     {% if object.date|is_today  %}class="row-today" {% endif %}
-	     {% if object.date|is_past   %}class="row-past"  {% endif %}
-	     {% if object.date|is_future %}class="row-future"{% endif %}
+	     {% if object.date == today_date  %}class="row-today" {% endif %}
+	     {% if object.date < today_date   %}class="row-past"  {% endif %}
+	     {% if object.date > today_date %}class="row-future"{% endif %}
   	     >
 	      <td>
 		{{ object.date|date:"Y-m-d" }}

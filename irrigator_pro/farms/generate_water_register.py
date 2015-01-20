@@ -1,4 +1,8 @@
-from datetime import timedelta
+from django.utils import timezone
+
+import datetime
+#from datetime import timedelta, date
+
 import os, os.path
 import math
 import sys
@@ -218,11 +222,13 @@ def quantize( f ):
 
 OPTIMIZE=True
 
+# In order to test we change the definition of "Today". It is passed
+# as a parameter, set to current day if not defined.
 def generate_water_register(crop_season, 
                             field, 
                             user, 
                             start_date=None, 
-                            end_date=None):
+                            today_date=None):
 
     ####
     ## Determine planting date, and stop calculation if no planting has been done
@@ -230,27 +236,28 @@ def generate_water_register(crop_season,
                                                         field=field,
                                                         crop_event__name='Planting').order_by("-date").first()
 
+    delta_days = 5
     if not planting_event: return (None, None)
     ####
 
 
     ####
-    ## Determine the and last first event date to show
+    ## Determine the first and last first event date to show
     if start_date is None:
         start_date = planting_event.date
 
-    if end_date is None:
-        if COMPUTE_FULL_SEASON:
-            end_date = crop_season.season_end_date + timedelta(1)
-        else:
-            today_plus5 = date.today() + timedelta(days=5)
-            end_date = min(today_plus5, crop_season.season_end_date)
+    if today_date is None:
+        today_date = datetime.date.today();
+
+    print "Today date: ", today_date
+    if COMPUTE_FULL_SEASON:
+        end_date = crop_season.season_end_date + timedelta(1)
+    else:
+        today_plus_delta = today_date + timedelta(days=delta_days)
+        end_date = min(today_plus_delta, crop_season.season_end_date)
+    
     ####
 
-
-
-
-    
     ####
     ## Cache values / queries for later use
     probe = Probe.objects.get(crop_season=crop_season, field_list=field)
@@ -271,6 +278,11 @@ def generate_water_register(crop_season,
 
     maxWater = float(field.soil_type.max_available_water)
 
+    last_wr = wr_query.order_by('-date').first()
+    if last_wr is not None:
+        print "last wr: ", last_wr.date
+
+
     ## Assume that each field starts with a full water profile
     AWC_initial = maxWater
 
@@ -278,7 +290,16 @@ def generate_water_register(crop_season,
     ## First pass, calculate water profile (AWC)
     temps_since_last_water_date = []
     wr_prev = None
-    for  date in daterange(start_date, end_date):
+
+    # Will only update the records starting at last_wr.date - delta_days -1,
+    # assuming that everything before has been processed.
+
+    first_process_date = start_date
+    if (last_wr is not None):
+        first_process_date = max(start_date, last_wr.date - timedelta(delta_days-1))
+    print 'first process date: ', first_process_date
+    for  date in daterange(first_process_date, end_date):
+        print "Computing for date: ", date
         ####
         ## Get AWC for yesterday
         ##
@@ -297,6 +318,7 @@ def generate_water_register(crop_season,
             AWC_prev = wr_prev.average_water_content
         ####
         
+
         ####
         ## Get or Create a water register object (db record) for today
         try: 
@@ -309,6 +331,7 @@ def generate_water_register(crop_season,
             )
         ##
         ####
+
 
         ####
         ## Copy information from crop event record 
@@ -365,7 +388,7 @@ def generate_water_register(crop_season,
         wr.save()
         
         ## Calculate and store max temperature since last appreciable rainfall or irrigation
-        if wr.average_water_content >= AWC_prev + 0.1:
+        if wr.average_water_content >= float(AWC_prev) + 0.1:
             # Max temp is only today's value 
             wr.max_observed_temp_2in = temp
 
@@ -394,7 +417,7 @@ def generate_water_register(crop_season,
     irrigate_to_max_achieved  = False
     drydown_flag              = False
     irrigate_to_max_days      = 0
-    for date in daterange(start_date, end_date):
+    for date in daterange(first_process_date, end_date):
 
         wr = wr_query.filter(date=date)[0]
 

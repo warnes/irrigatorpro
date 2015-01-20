@@ -50,9 +50,6 @@ class SummaryReportListView(ListView):
         ret_list = []
         #        image = plot_daily_use(self.request)
 
-
-        print "Year: ", self.year
-
         # For testing allow URL to end with .../summary_report/2013/07/31
         self.today_date = date.today()
         if self.year is not None:

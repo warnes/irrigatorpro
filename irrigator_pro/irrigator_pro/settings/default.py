@@ -50,11 +50,11 @@ MANAGERS = ADMINS
 # Debug settings
 ###
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-COMPUTE_FULL_SEASON = True   #  Calculate water register through the end of the season.
-# COMPUTE_FULL_SEASON = False  # If False, only calculate water register through today + 5 days.
+#COMPUTE_FULL_SEASON = True   #  Calculate water register through the end of the season.
+COMPUTE_FULL_SEASON = False  # If False, only calculate water register through today + 5 days.
 
 
 
