@@ -94,7 +94,9 @@ class SummaryReportListView(ListView):
 
                 # Get the water registry for the crop season / field
 
-                wr = WaterRegister.objects.filter(crop_season = all_fields[field], field = field).latest('date')
+                wr_list = WaterRegister.objects.filter(crop_season = crop_season, field = field).order_by('-date')
+                if len(wr_list) == 0: continue
+                wr = wr_list[0]
                 if (wr is not None):
                     srf.growth_stage    = wr.crop_stage
                     srf.dwu             = wr.daily_water_use
@@ -173,6 +175,7 @@ class SummaryReportListView(ListView):
 
         # There are either parameters for year, month, day, or none.
         year_param = kwargs.get('year', None)
+        self.year = None
         if year_param is not None:
             self.year = int(year_param)
             self.month= int(kwargs.get('month', None))
@@ -196,8 +199,8 @@ class SummaryReportFields:
     dwu                         = 0.0
     awc                         = 0.0
     link_to_water_reg           = ''
-    last_data_entry_type        = ''
-    time_last_data_entry        = DateField(default=timezone.now())
+    last_data_entry_type        = 'No Entry'
+    time_last_data_entry        = 'No Entry' #DateField(default=timezone.now())
     cumulative_rain             = 0.0
     cumulative_irrigation_vol   = 0.0
     water_registry_url          = ''

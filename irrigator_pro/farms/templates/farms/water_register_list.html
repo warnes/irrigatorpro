@@ -133,6 +133,11 @@
       </tbody>
     </table>
 
+  <h3>Plots of recent activity</h3>
+  <img class = "align-left water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
+  <img class = "align-right water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
+
+
   {% else %}
 
     <div class="alert alert-danger">

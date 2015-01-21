@@ -222,6 +222,74 @@ def quantize( f ):
 
 OPTIMIZE=True
 
+
+##
+# Determine the earliest water register to update. This is based
+# on the modification dates for the WaterHistory, ProbeReadings,
+# and WaterRegister. Want to allow for a WaterHistory or ProbeReading
+# to be entered or modified long after the date of the event.
+def earliest_register_to_update(today_date,
+                               crop_season,
+                               field):
+
+    earliest_to_update = today_date
+    wh_list = WaterHistory.objects.filter(crop_season=crop_season,
+                                          field_list=field).all().order_by('-mdate')
+
+    wr_query = WaterRegister.objects.filter(crop_season=crop_season,
+                                            field=field
+                                            ).all()
+
+    if len(wr_query) == 0:
+        return crop_season.season_start_date
+
+    probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+    probe_reading_list = ProbeReading.objects.filter(radio_id=probe.radio_id).all().order_by('-mdate')
+    
+    
+    for wh in wh_list:
+        # Already know that we're updating this far back.
+        if wh.date > earliest_to_update: continue
+
+        try:
+            water_register = wr_query.get(date = wh.date)
+        except ObjectDoesNotExist:
+            continue
+
+        # Start earlier if the register does not exist, 
+        # or the modification date of the wather history
+        # predates the modification date on the register.
+
+        if (water_register is None or
+            water_register.mdate <= wh.mdate):
+            print "############## changing"
+            earliest_to_update = wh.date
+
+
+    # Also look at probe readings. The query
+    # may have bougt readings from pervious seasons,
+    # so interrupt the loop when we go before
+    # corp_season start_date
+
+    for pr in probe_reading_list:
+        if pr.reading_datetime.date() < crop_season.season_start_date: break
+        if pr.reading_datetime.date() > earliest_to_update: continue
+        
+        try:
+            water_register = wr_query.get(date = pr.reading_datetime.date())
+        except ObjectDoesNotExist:
+            continue
+
+        if (water_register is None or
+            water_register.mdate <= pr.mdate):
+            print "####### Probe changing"
+            earliest_to_update = pr.reading_datetime.date()
+
+    return earliest_to_update
+        
+
+
+
 # In order to test we change the definition of "Today". It is passed
 # as a parameter, set to current day if not defined.
 def generate_water_register(crop_season, 
@@ -241,6 +309,8 @@ def generate_water_register(crop_season,
     ####
 
 
+
+
     ####
     ## Determine the first and last first event date to show
     if start_date is None:
@@ -258,11 +328,28 @@ def generate_water_register(crop_season,
     
     ####
 
+
+    ## Find out what is the earliest water register to update, based on modification dates.
+
+    earliest = earliest_register_to_update(today_date, crop_season, field)
+    print 'Earliest to update: ', earliest
+
+
     ####
     ## Cache values / queries for later use
-    probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-    radio_id = probe.radio_id
-    probe_reading_query       = ProbeReading.objects.filter(radio_id=radio_id).all()
+
+
+    try:
+        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+        radio_id = probe.radio_id
+        probe_reading_query       = ProbeReading.objects.filter(radio_id=radio_id).all()
+    except ObjectDoesNotExist:
+        probe = None
+        radio_id = None
+        probe_reading_query = None
+
+
+
     soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
                                                             field_list=field).all()
@@ -273,7 +360,7 @@ def generate_water_register(crop_season,
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
-                                            date__gte=start_date,
+                                            date__gte=earliest,
                                             date__lte=end_date).all()
 
     maxWater = float(field.soil_type.max_available_water)
@@ -291,13 +378,8 @@ def generate_water_register(crop_season,
     temps_since_last_water_date = []
     wr_prev = None
 
-    # Will only update the records starting at last_wr.date - delta_days -1,
-    # assuming that everything before has been processed.
 
-    first_process_date = start_date
-    if (last_wr is not None):
-        first_process_date = max(start_date, last_wr.date - timedelta(delta_days-1))
-    print 'first process date: ', first_process_date
+    first_process_date = earliest
     for  date in daterange(first_process_date, end_date):
         print "Computing for date: ", date
         ####
@@ -349,10 +431,14 @@ def generate_water_register(crop_season,
 
         ####
         ## Get (automatic) probe reading information and calculate AWC
-        AWC_probe, temp = calculateAWC_ProbeReading(crop_season, field, date, 
-                                                    probe=probe, 
-                                                    probe_reading_query=probe_reading_query, 
-                                                soil_type_parameter_query=soil_type_parameter_query)
+
+        AWC_probe = None
+        temp = None
+        if probe is not None:
+            AWC_probe, temp = calculateAWC_ProbeReading(crop_season, field, date, 
+                                                        probe=probe, 
+                                                        probe_reading_query=probe_reading_query, 
+                                                        soil_type_parameter_query=soil_type_parameter_query)
         ##
         ####
 
@@ -409,7 +495,7 @@ def generate_water_register(crop_season,
     ## Refresh query
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
-                                            date__gte=start_date,
+                                            date__gte=earliest,
                                             date__lte=end_date).all()
         
     ## Second pass, calculate flags 

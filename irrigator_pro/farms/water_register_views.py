@@ -70,11 +70,13 @@ class WaterRegisterListView(ListView):
         if not self.request.user in user_list:
             redirect( reverse('home') )
 
+        # Add today_date to request so it can be used for the plots
+        self.request.session['today_date'] = self.today_date.isoformat()
         return queryset.distinct()
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.crop_season = CropSeason.objects.get(pk=int(kwargs.get('season', None)))
+        self.crop_season =  CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
         self.year = None
         year_param = kwargs.get('year', None)

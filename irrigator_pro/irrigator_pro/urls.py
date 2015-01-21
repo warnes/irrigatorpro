@@ -82,7 +82,9 @@ urlpatterns = patterns('',
                        url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
-                       url(r'^water_register/plot/daily/temp.png', 'farms.water_register_plots.plot_daily_use', name='daily_use'),
+
+                       url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_daily_use', name='daily_use'),
+                       url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
 
                        ## Summary report
                        url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),

@@ -376,3 +376,24 @@ table.summary-report tr.header2 th:nth-child(10) {
     -moz-column-width:20em; /* Firefox */
     -webkit-column-width:20em; /* Safari and Chrome */
 }
+
+
+
+/**
+ * Plots for water register
+ */
+
+img.water-register-plot {
+    width: 400px;
+    height: 400px;
+}
+
+img.align-right {
+    float: left;
+    margin-left: 10px;
+}
+
+img.align-left {
+    float: right;
+    margin-right: 10px;
+}
