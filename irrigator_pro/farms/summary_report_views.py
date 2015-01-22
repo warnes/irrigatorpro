@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.db.models import Q
 
 from farms.models import Farm, CropSeason, Field, WaterRegister, WaterHistory, Farm, CropSeasonEvent, Probe, ProbeReading
+from farms.generate_water_register import generate_water_register
 
 from datetime import date, datetime
 
@@ -18,6 +19,18 @@ from datetime import date, datetime
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
+
+
+# Could probably use lamdba...
+def cumulative_water(wr_list):
+    total_rain = 0
+    total_irr = 0
+    for wr in wr_list:
+        total_rain += wr.rain
+        total_irr += wr.irrigation
+
+    return (total_rain, total_irr)
+
 
 
 
@@ -83,6 +96,12 @@ class SummaryReportListView(ListView):
 
                 if field not in all_fields: continue
                 crop_season = all_fields[field]
+                generate_water_register(crop_season,
+                                        field,
+                                        self.request.user,
+                                        None,
+                                        self.today_date)
+
                 
                 # Will add an entry for this field and farm
 
@@ -101,8 +120,8 @@ class SummaryReportListView(ListView):
                     srf.growth_stage    = wr.crop_stage
                     srf.dwu             = wr.daily_water_use
                     srf.awc             = wr.average_water_content
-                    srf.cumulative_rain = wr.rain
-                    srf.cumulative_irrigation_vol = wr.irrigation
+                    srf.message         = wr.message
+                    (srf.cumulative_rain, srf.cumulative_irrigation_vol) = cumulative_water(wr_list)
 
                     # Get the last event for the field. It will be either rain, irrigation,
                     # manual reading or automated reading.
@@ -115,7 +134,8 @@ class SummaryReportListView(ListView):
                     whList = WaterHistory.objects.filter(crop_season = crop_season)
                     # Just keep the ones with one of the fields equal to current fiels.
                     
-                    if (whList is not None):
+                    latest_water_record = None
+                    if len(whList) > 0:
                         latestWH = whList.filter(field_list = field) #.latest('date')
                         latest_water_record = whList.latest('date')
 
@@ -123,6 +143,7 @@ class SummaryReportListView(ListView):
                     # First all the probes for a given pair (field, crop season)
 
                     probe_list = Probe.objects.filter(field_list = field, crop_season = crop_season)
+                    latest_probe_reading = None
                     if (len(probe_list) > 0):
                         radio_id = probe_list[0].radio_id
                         probe_readings = ProbeReading.objects.filter(radio_id = radio_id)
@@ -137,6 +158,7 @@ class SummaryReportListView(ListView):
 
                     # Compare both records, keep most recent.
                     # Probably easier way in python to do this. Can worry later.
+                    latest_is_wr = None
                     if (latest_water_record is None and latest_probe_reading is None): pass
                     elif  (latest_water_record is not None and latest_probe_reading is not None):
                         latest_is_wr = True if (latest_water_record.date > latest_probe_reading.reading_datetime.date()) else False
@@ -154,12 +176,12 @@ class SummaryReportListView(ListView):
                             srf.time_last_data_entry = latest_probe_reading.reading_datetime
             
                     # Add link to water register
-                    srf.water_registry_url = self.request.get_host() +'/water_register/' + str(crop_season.pk) + '/' + str(field.pk)
+                    srf.water_register_url = self.request.get_host() +'/water_register/' + str(crop_season.pk) + '/' + str(field.pk)
 
                     # Add the water register object to get next irrigation date, or status.
                     # Only add if planting season is not over.
-                    if (crop_season.season_end_date >= date.today()):
-                        srf.water_registry_object = wr
+                    if (crop_season.season_end_date >= self.today_date):
+                        srf.water_register_object = wr
                 
         return ret_list
 
@@ -203,9 +225,6 @@ class SummaryReportFields:
     time_last_data_entry        = 'No Entry' #DateField(default=timezone.now())
     cumulative_rain             = 0.0
     cumulative_irrigation_vol   = 0.0
-    water_registry_url          = ''
-    water_registry_object       = None
-    
-    
-    
-    
+    water_register_url          = ''
+    water_register_object       = None
+    message                     = 'something'

@@ -21,16 +21,17 @@
       	<th rowspan=2>Field</th>
       	<th rowspan=2>Crop</th>
       	<th rowspan=2 class="sorter-false">Growth Stage</th>
+      	<th rowspan=2 class="sorter-false">Status</th>
+      	<th rowspan=2 class="sorter-false">Message</th>
       	<th colspan=4 class="sorter-false">Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
-      	<th rowspan=2 class="sorter-false">Status</th>
       	<th rowspan=2 class="sorter-false">Water Register</th>
       </tr>
       <tr class="header2">
       	<th class="sorter-false">DWU</th>
       	<th class="sorter-false">AWC</th>
-      	<th class="sorter-false">Rain</th>
-      	<th class="sorter-false">Irrigation</th>
+      	<th class="sorter-false">Rain (Total)</th>
+      	<th class="sorter-false">Irrigation (Total)</th>
       	<th class="sorter-false">Type</th>
       	<th class="sorter-false">Date</th>
       </tr>
@@ -55,6 +56,30 @@
 	<td>{{ object.field}} </td>
 	<td>{{ object.crop }}</td>
 	<td>{{ object.growth_stage }}</td>
+	<!-- Copy code from water_register for the status. -->
+	<td>
+		{% if object.water_register_object.irrigate_flag %}
+		  <div class="alert-inline alert-danger">
+		    <b>Irrigate Today</b>
+		    {% if object.water_register_object.average_water_content <= 0.0 %}
+		      AWC
+		    {% endif %}
+		    {% if object.water_register_object.max_temp_2in < object.water_register_object.max_observed_temp_2in %}
+		      Temp
+		    {% endif %}
+		  </div>
+		{% elif object.water_register_object.check_sensors_flag %}
+		  <div class="alert-inline alert-warning">
+		    Irrigate 1-5 Days
+		  </div>
+		{% endif %}
+		{% if object.water_register_object.dry_down_flag %}
+		  <div class="alert-inline alert-info">
+		    Dry-Down
+		  </div>
+		{% endif %}
+	</td>
+	<td>{{ object.message }}</td>
 	<td>{{ object.dwu }}</td>
 	<td>{{ object.awc }}</td>
 	<td>{{ object.cumulative_rain }}</td>
@@ -63,31 +88,8 @@
 	<td>{{ object.time_last_data_entry }}</td>
 
 
-	<!-- Copy code from water_register for the status. -->
-	<td>
-		{% if object.water_registry_object.irrigate_flag %}
-		  <div class="alert-inline alert-danger">
-		    <b>Irrigate Today</b>
-		    {% if object.water_registry_object.average_water_content <= 0.0 %}
-		      AWC
-		    {% endif %}
-		    {% if object.water_registry_object.max_temp_2in < object.water_registry_object.max_observed_temp_2in %}
-		      Temp
-		    {% endif %}
-		  </div>
-		{% elif object.water_registry_object.check_sensors_flag %}
-		  <div class="alert-inline alert-warning">
-		    Irrigate 1-5 Days
-		  </div>
-		{% endif %}
-		{% if object.water_registry_object.dry_down_flag %}
-		  <div class="alert-inline alert-info">
-		    Dry-Down
-		  </div>
-		{% endif %}
-	</td>
 
-	<td><a href = 'http://{{ object.water_registry_url }}'> link </a></td>
+	<td><a href = 'http://{{ object.water_register_url }}'> link </a></td>
       </tr>
 
       {% endfor %}
@@ -118,7 +120,7 @@ headers: {
         0: { sorter: "text" },
         1: { sorter: "text" },
         2: { sorter:  "text"},
-        3: { sorter:  false},
+        3: { sorter:  "text"},
         4: { sorter:  false},
         5: { sorter:  false},
         6: { sorter:  false},

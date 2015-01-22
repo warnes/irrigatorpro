@@ -243,9 +243,12 @@ def earliest_register_to_update(today_date,
     if len(wr_query) == 0:
         return crop_season.season_start_date
 
-    probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-    probe_reading_list = ProbeReading.objects.filter(radio_id=probe.radio_id).all().order_by('-mdate')
-    
+    try:
+        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+        probe_reading_list = ProbeReading.objects.filter(radio_id=probe.radio_id).all().order_by('-mdate')
+    except ObjectDoesNotExist:
+        probe = None
+        probe_reading_list = None
     
     for wh in wh_list:
         # Already know that we're updating this far back.
@@ -270,6 +273,8 @@ def earliest_register_to_update(today_date,
     # may have bougt readings from pervious seasons,
     # so interrupt the loop when we go before
     # corp_season start_date
+
+    if  probe_reading_list is None:  return earliest_to_update
 
     for pr in probe_reading_list:
         if pr.reading_datetime.date() < crop_season.season_start_date: break
