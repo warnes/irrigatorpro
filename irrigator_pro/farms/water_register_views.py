@@ -8,6 +8,10 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.db.models import Q
 from django.utils import timezone
 
+import json
+import os
+
+
 from farms.models import CropSeason, Field, WaterRegister
 from farms.generate_water_register import generate_water_register
 
@@ -35,20 +39,9 @@ class WaterRegisterListView(ListView):
         generate_water_register(crop_season, field, self.request.user, None, today)
 
 
-
-    ## This method needs optimization for performance ##
-    ## 1: Only recompute *if* underlying water_history or probe_reading data has changed,
-    ## 2: Use a date range filter with default range that spans +2/-2 weeks
     def get_queryset(self):
         queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
                                                 field=self.field)
-
-        ##if True:
-            ## remove old data ##
-        ##    queryset.all().delete()
-
-        ## generate new data ##
-
         # For testing allow URL to end with .../summary_report/2013/07/31
         self.today_date = datetime.date.today()
         if self.year is not None:
@@ -72,7 +65,13 @@ class WaterRegisterListView(ListView):
 
         # Add today_date to request so it can be used for the plots
         self.request.session['today_date'] = self.today_date.isoformat()
+        self.nb_records = len(queryset.distinct())
         return queryset.distinct()
+
+
+
+
+
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -88,9 +87,20 @@ class WaterRegisterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(WaterRegisterListView, self).get_context_data(**kwargs)
+        print 'Current dir: ', os.getcwd()
         context['crop_season'] = self.crop_season
         context['field']       = self.field
         context['today_date'] = self.today_date
+        context['cwd'] = os.getcwd
+        context['nb_records'] = self.nb_records
 
         return context
 
+
+
+# dthandler = lambda obj: (
+# ...     obj.isoformat()
+# ...     if isinstance(obj, datetime.datetime)
+# ...     or isinstance(obj, datetime.date)
+# ...     else None)
+# >>> json.dumps(datetime.datetime.now(), default=dthandler)

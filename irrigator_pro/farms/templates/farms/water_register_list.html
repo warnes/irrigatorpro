@@ -1,8 +1,172 @@
 {% extends "base.html" %}
 
 {% load today_filters %}
+{% load static %}
 
 {% block content %}
+
+
+<script>
+
+function createTH(rowSpan, colSpan, value) {
+   th = document.createElement("TH");
+   th.rowSpan = rowSpan;
+   th.colSpan = colSpan;
+   //th.appendChild(document.createTextNode(value));
+   th.innerHTML = value;
+   return th;
+}
+
+
+function redrawTable() {
+    var section = document.getElementById("newTable");
+    var nbRows = document.getElementById("numb").value;
+console.log(nbRows);
+    section.innerHTML = "";
+    section.appendChild(tableCreate(nbRows));
+
+}
+
+function tableCreate(nbToDisplay){
+
+
+    tbl  = document.createElement('table');
+    tbl.className = 'formset water-register id="water-register"';
+
+    var header = tbl.createTHead();
+    var headerRow0 = header.insertRow();
+    headerRow0.className = "header1";
+    headerRow0.appendChild(createTH(2, 1, "Date"));
+    headerRow0.appendChild(createTH(2, 1, "Growth Stge"));
+    headerRow0.appendChild(createTH(1, 4, "Water"));
+    headerRow0.appendChild(createTH(1, 2, "Max Soil Temp (&deg;F)"));
+    headerRow0.appendChild(createTH(2, 1, "Status"));
+    headerRow0.appendChild(createTH(2, 1, "Message"));
+
+    var headerRow1 = header.insertRow();
+    headerRow1.className = "header2";
+    headerRow1.appendChild(createTH(1, 1, "DWU"));
+    headerRow1.appendChild(createTH(1, 1, "RAIN"));
+    headerRow1.appendChild(createTH(1, 1, "Irrigation"));
+    headerRow1.appendChild(createTH(1, 1, "AWC"));
+    headerRow1.appendChild(createTH(1, 1, "Permitted"));
+    headerRow1.appendChild(createTH(1, 1, "Observed"));
+
+    var nbRecords = {{nb_records}};
+    var firstToDisplay = Math.max(nbRecords - nbToDisplay, 0);
+    console.log(nbRecords);
+
+   // Insert the data
+        var row;
+        var td;
+        var recNO = 0;
+   	{% for object in object_list %}
+        if (recNO++ >= firstToDisplay) {
+
+        row = tbl.insertRow();
+             {% if object.date == today_date  %}row.className = "row-today" {% endif %}
+	     {% if object.date < today_date   %}row.className = "row-past"  {% endif %}
+	     {% if object.date > today_date   %}row.className = "row-future"{% endif %}
+      
+        td = row.insertCell();
+        td.innerHTML = "{{ object.date|date:'Y-m-d' }}";
+
+        td = row.insertCell();
+        td.innerHTML = "{{ object.crop_stage}}";
+
+        td = row.insertCell();
+        {% if object.computed_from_probes %}
+           td.className = "computed-from-probes"
+        {% endif %}
+        td.appendChild(document.createTextNode("{{ object.daily_water_use|floatformat:2 }}"));
+
+
+        td = row.insertCell();
+        {% if object.computed_from_probes %}
+           td.className = "computed-from-probes"
+        {% endif %}
+        td.appendChild(document.createTextNode("{{object.rain|floatformat:2 }}"));
+
+
+        td = row.insertCell();
+        {% if object.computed_from_probes %}
+           td.className = "computed-from-probes"
+        {% endif %}
+        td.appendChild(document.createTextNode("{{object.irrigation|floatformat:2 }}"));
+
+
+
+        // NEED TO ADD IMAGE
+        td = row.insertCell();
+        var cellContent = "";
+        {% if object.computed_from_probes %}
+           cellContent += "<i class=\"fa fa-rss\"></i>";
+        {% endif %}
+        cellContent += "{{ object.average_water_content|floatformat:2 }}";
+        {% if object.average_water_content <= 0.0 %}
+            cellContent += ' <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> ';
+        {% endif %}
+        td.innerHTML = cellContent;
+
+
+        td = row.insertCell();
+        td.appendChild(document.createTextNode("{{ object.max_temp_2in|floatformat:1}}"));
+
+        td = row.insertCell();
+        {% if not object.date|is_future %}
+          var cellContent =  "{{ object.max_observed_temp_2in|floatformat:1 }}";
+          {% if object.max_temp_2in < object.max_observed_temp_2in %}
+             cellContent +=  ' <img src="/static/img/svg/thermometer.svg" alt="therm" height= "14px" style="vertical-align:text-bottom;" ></img>';
+          {% endif %}
+          td.innerHTML = cellContent;
+        {% endif %}
+
+        td = row.insertCell();
+        {% if object.irrigate_flag %}
+            td.className = "alert-inline alert-danger";
+            b = td.appendChild(document.createElement("B"));
+            b.appendChild(document.createTextNode("Irrigate Today"));
+            {% if object.average_water_content <= 0.0 %}
+                td.appendChild(document.createTextNode(" AWC "));
+	    {% endif %}
+	    {% if object.max_temp_2in < object.max_observed_temp_2in %}
+                td.appendChild(document.createTextNode(" Temp "));
+	    {% endif %}
+
+
+	{% elif object.check_sensors_flag %}
+            td.className = "alert-inline alert-warning";
+            td.appendChild(document.createTextNode("Irrigate 1-5 Days"));
+        {% endif %}
+
+        {% if object.dry_down_flag %}
+            td.className = "alert-inline alert-info";
+            td.appendChild(document.createTextNode("Dry-Down"));
+
+        {% endif %}
+
+
+
+        td = row.insertCell();
+        td.innerHTML = "{{ object.message}}";
+
+     }
+
+	{% endfor %}
+
+    return tbl;
+}
+	   
+</script>
+
+
+
+
+
+
+
+
+
 
   <h1>
     <i class="fa fa-pencil-square-o fa-fw"></i>
@@ -17,126 +181,29 @@
 
 
 
+
+
+
+
+
+
   {% if object_list %}
+  
+  <div>
+    Display only the last <input id="numb" type="number" value="15"/> records. <br/>
+    Of this number 7 will be after today, or till the end of the season.<br/>
+    For the entire season enter 0.<br/>
+   <button type="button" onclick="redrawTable()">Update</button>
 
-    <table class="formset water-register" id="water-register">
+  </div>
 
-      <thead>
-      	<tr class="header1">
-          <th rowspan=2>Date</th>
-          <th rowspan=2>Growth Stage</th>
-          <th colspan=4>Water</th>
-	  <th colspan=2>Max Soil Temp (&deg;F)</th>
-	  <!--th rowspan=2>
-	    <i class="fa fa-rss"></i> 
-	    <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
-	  </th-->
-          <th rowspan=2>Status</th>
-	  <th rowspan=2>Message</th>
-       	</tr>
-      	<tr class="header2">
-          <th>DWU</th>
-          <th>Rain</th>
-          <th>Irrigation</th>
-          <th>AWC</th>
-	  <th>Permitted</th>
-	  <th>Observed</th>
-       	</tr>
-      </thead>
-
-      <tbody>
-	{% for object in object_list %}
-	  <tr 
-	     {% if object.date == today_date  %}class="row-today" {% endif %}
-	     {% if object.date < today_date   %}class="row-past"  {% endif %}
-	     {% if object.date > today_date %}class="row-future"{% endif %}
-  	     >
-	      <td>
-		{{ object.date|date:"Y-m-d" }}
-	      </td>
-	      <td>
-		{{ object.crop_stage }}
-	      </td>
-	      <td {% if object.computed_from_probes %}
-		  class="computed-from-probes"
-		  {% endif %}
-		  >
-		{{ object.daily_water_use|floatformat:2 }}
-	      </td>
-	      <td {% if object.computed_from_probes %}
-		  class="computed-from-probes"
-		  {% endif %}
-		  >
-		  {{ object.rain|floatformat:2 }}
-	      </td>
-	      <td {% if object.computed_from_probes %}
-		  class="computed-from-probes"
-		  {% endif %}
-		  >
-		  {{ object.irrigation|floatformat:2 }}
-	      </td>
-	      <td>
-		  {% if object.computed_from_probes %}
-		    <i class="fa fa-rss"></i>
-		  {% endif %}
-		  {{ object.average_water_content|floatformat:2 }}
-		  {% if object.average_water_content <= 0.0 %}
-		    <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
-		  {% endif %}
-	      </td>
-	      <td>
-		    {{ object.max_temp_2in|floatformat:1 }}
-	      </td>
-	      <td>
-		  {% if not object.date|is_future %}
-			{{ object.max_observed_temp_2in|floatformat:1 }}
-			{% if object.max_temp_2in < object.max_observed_temp_2in %}
-			<img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>	
-			{% endif %}
-		  {% endif %}
-	      </td>
-	      <!--td>
-		{% if object.computed_from_probes %}
-		  <i class="fa fa-rss"></i>
-		{% endif %}
-		{% if object.too_hot_flag %}
-		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
-		{% endif %}
-	      </td-->
-	      <td>
-		{% if object.irrigate_flag %}
-		  <div class="alert-inline alert-danger">
-		    <b>Irrigate Today</b>
-		    {% if object.average_water_content <= 0.0 %}
-		      AWC
-		    {% endif %}
-		    {% if object.max_temp_2in < object.max_observed_temp_2in %}
-		      Temp
-		    {% endif %}
-		  </div>
-		{% elif object.check_sensors_flag %}
-		  <div class="alert-inline alert-warning">
-		    Irrigate 1-5 Days
-		  </div>
-		{% endif %}
-		{% if object.dry_down_flag %}
-		  <div class="alert-inline alert-info">
-		    Dry-Down
-		  </div>
-		{% endif %}
-	      </td>
-	      <td>
-		{{ object.message }}
-	      </td>
-	  </tr>
-	{% endfor %}
-      </tbody>
-    </table>
+  <div id = "newTable">  </div>
 
   <h3>Plots of recent activity</h3>
   <img class = "align-left water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
   <img class = "align-right water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
 
+  <script> document.getElementById("newTable").appendChild(tableCreate(17))</script> 
 
   {% else %}
 
@@ -147,4 +214,11 @@
 
   {% endif %}
 
+
+
+
+{% endblock %}
+
+
+{% block scripts %}
 {% endblock %}
