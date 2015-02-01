@@ -39,10 +39,6 @@ def get_water_register_list(today_date, crop_season, field):
                                            field = fld,
                                            date__lte = end_date,
                                            date__gte = start_date).order_by('date')
-    print 'wr records, ordered:'
-    for wr in wr_list:
-        print wr.date
-
     return wr_list
     
 

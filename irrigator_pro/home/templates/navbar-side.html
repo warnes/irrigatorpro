@@ -3,8 +3,13 @@
 {% farm_list %}
 {% crop_season_list %}
 
+<!--
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
+-->
+<div class = "col-xs-6 col-sm-3 col-md-3 navbar-default navbar-static-side sidebar-offcanvas" id="sidebar"
+     role="navigation">
+
     <ul class="nav" id="side-menu">
       <li>
 	<a href="{% url 'settings' %}">
@@ -184,22 +189,6 @@
 	  </li>
 
 
-
-	  <!-- <li> -->
-	  <!--   <a href="{% url 'home' %}#dashboard"> -->
-	  <!--     <i class="fa fa-dashboard fa-fw"></i> -->
-	  <!--     Dashboard -->
-	  <!--   </a> -->
-	  <!-- </li> -->
-
-	  <!-- <li> -->
-	  <!--   <a href="{% url 'home' %}#alerts"> -->
-	  <!--     <i class="fa fa-bell fa-fw"></i> -->
-	  <!--     Alert Settings -->
-	  <!--   </a> -->
-	  <!-- </li> -->
-
-
 	  {% if perms.auth.staff_status %}
 	    <li>
 	      <a href="{% url 'home' %}admin"
@@ -211,12 +200,6 @@
 	    </li>
 	  {% endif %}
 
-	</ul>
-      </li>
+	</ul> <!-- class  = nav -->
 
-<!-- /#side-menu -->
-</div>
-<!-- /.sidebar-collapse -->
-</nav><!-- /.navbar-static-side -->
-
-<!-- /Sidebar -->
+</div> <!-- col xs-6-->

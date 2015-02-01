@@ -200,8 +200,16 @@ function tableCreate(nbToDisplay){
   <div id = "newTable">  </div>
 
   <h3>Plots of recent activity</h3>
-  <img class = "align-left water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
-  <img class = "align-right water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
+
+
+  <div class = "row">
+    <div class = "col-md-6 col-xs-12">
+      <img class = " water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
+    </div> <!-- col-md-6-->
+    <div class = "col-md-6 col-xs-12">
+      <img class = " water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
+    </div> <!-- col-md-6-->
+  </div> <!-- row -->
 
   <script> document.getElementById("newTable").appendChild(tableCreate(17))</script> 
 

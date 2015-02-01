@@ -25,6 +25,8 @@
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/sb-admin.css">
+<!--    <link rel="stylesheet" href="{{ STATIC_URL }}css/bootstrap-3/bootstrap.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}js/bootstrap-3/simple-sidebar.css">-->
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/timepicker.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/navbar.css">
@@ -44,50 +46,65 @@
 
 
 
-    {% block extrahead %}{% endblock %}
+   {% block extrahead %}{% endblock %}
 
   </head>
+
   <body>
-    <!--[if lt IE 7]>
-        <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+<!--    <div  id = "wrapper contents"> -->
 
-    <div id="wrapper">
-           
-      {% include 'navbar-top.html' %} 
+   {% include 'navbar-top.html' %} 
+   {% if user.is_authenticated %}
+
+       <div class="container">
+
+	  <div class="row row-offcanvas row-offcanvas-left ">
+          {% include 'navbar-side.html' %} 
+
+             <div class="col-xs-12 col-sm-9 col-md-9 background-default contents">
+		<p class="pull-left visible-xs">
+		  <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">
+		    Toggle nav</button>
+		</p>
+             <!--<div id = "page-wrapper">-->
+
+    {% else %}
+
+         <div id="page-wrapper">
+            <div class = "container">
+              <div class = "contents">
+     {% endif %}
+ 
+
+     <!-- Common for both authenticated un non-authenticated users -->
       
-      {% if user.is_authenticated %}
-	{% include 'navbar-side.html' %} 
-	
-	<div id="page-wrapper">
+    <h1 class="title">
+    {% block title %}{% endblock %}
+    </h1>
+    {% block content %}{% endblock %}   
 
-      {% endif %}
+    {% if user.is_authenticated %}
+<!--          </div> -->
+	</div> <!-- col-xs-12-->
+       </div> <!-- row row-offcanvas-->
+     </div> <!-- container-->	      
 
-      <div class="container">
-	<div class="contents">
+   {% else %}
+          </div>
+        </div>
+      </div>
 
-	  <h1 class="title">
-	    {% block title %}{% endblock %}
-	  </h1>
-
-	  {% block content %}{% endblock %}   
-	</div> <!-- /contents -->
-      </div> <!-- /container -->
-
-      {% if user.is_authenticated %}
-
-	</div>
-	<!-- /#page-wrapper -->
-
-      {% endif %}
+   {% endif %}
 
 
-      <footer>
-	<!--p>&copy; 2014 Gregory R. Warnes Consulting </p-->
+<!--      <footer>
 	<p>Developed by GRW Consulting for the USDA ARS National Peanut Reserch Laboratory</p>
-      </footer>
+      </footer> -->
 
-    </div>
+<!--    </div>  wrapper -->
+
+
+
 
     <!-- Start of scripts -->
     <span>
@@ -109,7 +126,7 @@
 
       <!-- Bootstrap -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-        <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
+<!--        <script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script>-->
       <!-- /Bootstrap -->
 
       <script src="{{ STATIC_URL }}js/plugins.js"></script>
@@ -118,6 +135,7 @@
 
       <!-- SB Admin -->
       <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+      <!--<link rel="stylesheet" href="{{ STATIC_URL }}js/bootstrap-3/bootstrap.js">-->
       <!-- /SB Admin -->
       
       <!-- django-jquery-formset - support formsets -->
@@ -128,6 +146,9 @@
       <script src="{{ STATIC_URL }}js/jquery-ui-timepicker-addon.min.js"></script>
       <!-- /dJango-ui-timepicker-addon -->
 
+
+
+
       <!-- uncomment and adjust for google analytics -->
       {% comment %}
 	<script>
@@ -137,6 +158,16 @@
 	  s.parentNode.insertBefore(g,s)}(document,'script'));
 	</script>
       {% endcomment %}
+
+
+<script>
+$(document).ready(function() {
+$('[data-toggle=offcanvas]').click(function() {
+$('.row-offcanvas').toggleClass('active');
+});
+});
+</script>
+
 
       {% block scripts %}{% endblock %}
 
