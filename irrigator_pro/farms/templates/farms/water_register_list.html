@@ -21,7 +21,11 @@ function createTH(rowSpan, colSpan, value) {
 function redrawTable() {
     var section = document.getElementById("newTable");
     var nbRows = document.getElementById("numb").value;
-console.log(nbRows);
+    if (nbRows <= 0 ) {
+        nbRows = 1000; // Number high enough to cover whole season
+    } 
+
+    console.log(nbRows);
     section.innerHTML = "";
     section.appendChild(tableCreate(nbRows));
 
@@ -159,15 +163,6 @@ function tableCreate(nbToDisplay){
 	   
 </script>
 
-
-
-
-
-
-
-
-
-
   <h1>
     <i class="fa fa-pencil-square-o fa-fw"></i>
     Water Register
@@ -190,7 +185,8 @@ function tableCreate(nbToDisplay){
   {% if object_list %}
   
   <div>
-    Display only the last <input id="numb" type="number" value="15"/> records. <br/>
+    Display only the last <input id="numb" type="number" value="15"
+				 onchange="redrawTable()" /> records. <br/>
     Of this number 7 will be after today, or till the end of the season.<br/>
     For the entire season enter 0.<br/>
    <button type="button" onclick="redrawTable()">Update</button>
