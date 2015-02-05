@@ -54,9 +54,14 @@
 
 /* This controls how the display changes when the screen is narrow than 767px */
 @media (max-width: 767px) {
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
-	    color: LimeGreen;
-	}
+
+    body {
+        -webkit-text-size-adjust: none;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+	color: LimeGreen;
+	font-size: 0.875em;
+    }
 	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
 	    color: LimeGreen;
 	    color: #fffebb;
@@ -70,7 +75,8 @@
 
 .navbar-static-side {
     margin-top: 51px;
-    width: 210px;
+    width: 260px;
+    padding-right:0px;
     position: relative;
     bottom: 0;
     top: 0;
@@ -93,7 +99,6 @@
     background-color: #80B580;
     /* border-color: #37aafe; */
     margin-left: -20px !important;
-    width: 210px;
 }
 
 .navbar-side-second li.active > a {
@@ -107,16 +112,16 @@
 }
 
 .navbar-nav {
-    /* padding-top: 10px; */
+   /* padding-top: 10px;*/
     padding-right: 10px;
 }
 
-
+/*
 .third-level {
-    margin-left: 210px;
+    margin-left: 240px;
     padding-left: 20px;
 }
-
+*/
 
 .nav-secondary li {
     padding-left: 20px;
@@ -171,7 +176,7 @@ footer {
  * Off Canvas
  * --------------------------------------------------
  */
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 769px) {
   .row-offcanvas {
     position: relative;
     -webkit-transition: all .25s ease-out;
