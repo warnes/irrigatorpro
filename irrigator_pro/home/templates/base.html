@@ -25,7 +25,6 @@
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/sb-admin.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}js/bootstrap-3/simple-sidebar.css">-->
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/timepicker.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/navbar.css">
@@ -50,8 +49,6 @@
   </head>
 
   <body>
-<!--    <div  id = "wrapper contents"> -->
-
    {% include 'navbar-top.html' %} 
    {% if user.is_authenticated %}
 
@@ -65,13 +62,11 @@
 		  <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">
 		    Toggle nav</button>
 		</p>
-             <!--<div id = "page-wrapper">-->
-
     {% else %}
 
-         <div id="page-wrapper">
-            <div class = "container">
-              <div class = "contents">
+	<div id="wrapper">
+	  <div class = "container">
+            <div class = "contents">
      {% endif %}
  
 
@@ -83,15 +78,14 @@
     {% block content %}{% endblock %}   
 
     {% if user.is_authenticated %}
-<!--          </div> -->
 	</div> <!-- col-xs-12-->
        </div> <!-- row row-offcanvas-->
      </div> <!-- container-->	      
 
    {% else %}
-          </div>
-        </div>
-      </div>
+          </div> <!-- page wrapper -->
+        </div> <!-- container -->
+      </div> <!-- contents -->
 
    {% endif %}
 
@@ -99,11 +93,6 @@
 <!--      <footer>
 	<p>Developed by GRW Consulting for the USDA ARS National Peanut Reserch Laboratory</p>
       </footer> -->
-
-<!--    </div>  wrapper -->
-
-
-
 
     <!-- Start of scripts -->
     <span>
