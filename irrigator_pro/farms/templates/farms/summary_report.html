@@ -25,7 +25,6 @@
       	<th rowspan=2 class="sorter-false">Message</th>
       	<th colspan=4 class="sorter-false">Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
-      	<th rowspan=2 class="sorter-false">Water Register</th>
       </tr>
       <tr class="header2">
       	<th class="sorter-false">DWU</th>
@@ -53,7 +52,7 @@
       {% for object in object_list %}
       <tr>
 	<td>{{ object.farm}} </td>
-	<td>{{ object.field}} </td>
+	<td><a href = 'http://{{ object.water_register_url }}'>{{ object.field}}</a> </td>
 	<td>{{ object.crop }}</td>
 	<td>{{ object.growth_stage }}</td>
 	<!-- Copy code from water_register for the status. -->
@@ -87,9 +86,6 @@
 	<td>{{ object.last_data_entry_type }}</td>
 	<td>{{ object.time_last_data_entry }}</td>
 
-
-
-	<td><a href = 'http://{{ object.water_register_url }}'> link </a></td>
       </tr>
 
       {% endfor %}
@@ -121,14 +117,12 @@ headers: {
         1: { sorter: "text" },
         2: { sorter:  "text"},
         3: { sorter:  "text"},
-        4: { sorter:  false},
+        4: { sorter:  "text"},
         5: { sorter:  false},
         6: { sorter:  false},
         7: { sorter:  false},
         8: { sorter:  false},
         9: { sorter:  false},
-        10: { sorter:  false},
-
     }
     } 
 );
