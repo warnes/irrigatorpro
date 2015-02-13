@@ -92,8 +92,8 @@ urlpatterns = patterns('',
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
-                       url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
-                       url(r'^user/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
+                       url(r'^settings/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
+                       url(r'^settings/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
 )
 
