@@ -31,7 +31,7 @@ def unquote(str):
 ###
 
 # Name displayed on pages, for easy change
-SITE_NAME = "IrrigatorPro (Validation)"
+SITE_NAME = "IrrigatorPro (Devel)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
