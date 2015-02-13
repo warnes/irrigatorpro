@@ -52,8 +52,8 @@
 	color: LimeGreen;
 }
 
-/* This controls how the display changes when the screen is narrow than 767px */
-@media (max-width: 767px) {
+/* This controls how the display changes when the screen is narrow than 1009px */
+@media (max-width: 1009px) {
 
     body {
         -webkit-text-size-adjust: none;
@@ -75,7 +75,7 @@
 
 .navbar-static-side {
     margin-top: 51px;
-    width: 260px;
+    width: 225px;
     padding-right:0px;
     position: relative;
     bottom: 0;
@@ -176,7 +176,7 @@ footer {
  * Off Canvas
  * --------------------------------------------------
  */
-@media screen and (max-width: 769px) {
+@media screen and (max-width: 1009px) {
   .row-offcanvas {
     position: relative;
     -webkit-transition: all .25s ease-out;
