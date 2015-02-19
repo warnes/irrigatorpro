@@ -191,15 +191,27 @@
 
 	  </li>
 
-
 	  <li>
-	    <a href="{% url 'summary_report' %}">
-	      <i class="fa fa-cogs fa-fw"></i>
-	      Summary Report
+	    <a href="{% url 'report' %}">
+	      <i class="fa fa-bar-chart fa-fw"></i>
+	      Reports
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
+
+	    <ul class="nav nav-secondary">
+	      <li>
+		<a href="{% url 'summary_report' %}">
+		  Daily Report
+		</a>
+	      </li>
+	      <li>
+		<a href="{% url 'cumulative_report' %}">
+		  Cumulative Report
+		</a>
+	      </li>
+	    </ul>
 	  </li>
-
-
+	    
 	  {% if perms.auth.staff_status %}
 	    <li>
 	      <a href="{% url 'home' %}admin"
