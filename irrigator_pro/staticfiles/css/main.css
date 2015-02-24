@@ -22,9 +22,17 @@ h1 em, h2 em {
     background-color: #eefcff;
 }
 
+.background-default {
+    padding: 0;
+    margin-left: 0px;
+    background-color: #eefcff;
+}
+
+
 body {
     padding-top: 62 px;
     padding-bottom: 40px;
+    background-color: #eefcff;
 }
 
 .container {
@@ -396,4 +404,13 @@ img.align-right {
 img.align-left {
     float: right;
     margin-right: 10px;
+}
+
+
+@media (max-width: 769px) {
+    img.water-register-plot {
+	width: 400px;
+	height: 400px;
+	padding: 25px;
+    }
 }

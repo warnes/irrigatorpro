@@ -3,17 +3,34 @@
 {% farm_list %}
 {% crop_season_list %}
 
+<!--
 <nav class="navbar-default navbar-static-side" role="navigation">
   <div class="sidebar-collapse">
+-->
+<div class = "col-xs-6 col-sm-3 col-md-3 navbar-default navbar-static-side sidebar-offcanvas" id="sidebar"
+     role="navigation">
+
     <ul class="nav" id="side-menu">
+      <li>
+	<a href="{% url 'home' %}">
+	  <i class="fa fa-home fa-fw"></i>
+	  Home
+	</a>
+      </li>
       <li>
 	<a href="{% url 'settings' %}">
 	  <i class="fa fa-cogs fa-fw"></i>
-	  Farm Settings
+	  Settings
 	  <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	</a>
 	<ul class="nav nav-secondary">
-	  <li>
+          <li>
+            <a href="{% url 'contact_info' %}">
+	      <i class="fa fa-user fw"></i> 
+	      Account Information
+	    </a>
+	  </li>
+          <li>
 	    <a href="{% url 'farm_list' %}">
 	      <i class="fa fa-leaf fa-fw"></i>
 	      Farms and Fields
@@ -174,32 +191,27 @@
 
 	  </li>
 
-
 	  <li>
-	    <a href="{% url 'summary_report' %}">
-	      <i class="fa fa-cogs fa-fw"></i>
-	      Summary Report
+	    <a href="{% url 'report' %}">
+	      <i class="fa fa-bar-chart fa-fw"></i>
+	      Reports
 	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
 	    </a>
+
+	    <ul class="nav nav-secondary">
+	      <li>
+		<a href="{% url 'summary_report' %}">
+		  Daily Report
+		</a>
+	      </li>
+	      <li>
+		<a href="{% url 'cumulative_report' %}">
+		  Cumulative Report
+		</a>
+	      </li>
+	    </ul>
 	  </li>
-
-
-
-	  <!-- <li> -->
-	  <!--   <a href="{% url 'home' %}#dashboard"> -->
-	  <!--     <i class="fa fa-dashboard fa-fw"></i> -->
-	  <!--     Dashboard -->
-	  <!--   </a> -->
-	  <!-- </li> -->
-
-	  <!-- <li> -->
-	  <!--   <a href="{% url 'home' %}#alerts"> -->
-	  <!--     <i class="fa fa-bell fa-fw"></i> -->
-	  <!--     Alert Settings -->
-	  <!--   </a> -->
-	  <!-- </li> -->
-
-
+	    
 	  {% if perms.auth.staff_status %}
 	    <li>
 	      <a href="{% url 'home' %}admin"
@@ -211,12 +223,18 @@
 	    </li>
 	  {% endif %}
 
-	</ul>
-      </li>
+          <li>
+	    <a href="http://irrigatorpro.org/trac" target="_blank">
+	      <i class="fa fa-comment-o fa-fw"></i> 
+	      Support</a>
+	  </li>
 
-<!-- /#side-menu -->
-</div>
-<!-- /.sidebar-collapse -->
-</nav><!-- /.navbar-static-side -->
+	  <li style="text-align:center;">
+	    <a href="{% url 'account_logout' %}">
+	      <button class="btn btn-default btn-sm"><i class="fa fa-sign-out fa-fw"></i> Sign Out</button>
+	    </a>
+	  </li>
 
-<!-- /Sidebar -->
+	</ul> <!-- class  = nav -->
+
+</div> <!-- col xs-6-->

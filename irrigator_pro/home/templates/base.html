@@ -16,11 +16,7 @@
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-    <!-- link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css" -->
-    <link href="{{ STATIC_URL }}font-awesome/css/font-awesome.css" rel="stylesheet">
-
-
-    <!--link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome.min.css"-->
+    <link href="{{ STATIC_URL }}/css/font-awesome.css" rel="stylesheet">
 
     <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
 
@@ -32,62 +28,63 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/django-model-blocks.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css?t=<?= time(); ?>">
 
-
       <!-- links to tablesorter css -->
+      <!-- May want to grab directly from web site -->
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.blue.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.default.css">
 
-<!--    <script src="{{ STATIC_URL
-		 }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>-->
+    <script src="{{ STATIC_URL }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
-
-
-
-    {% block extrahead %}{% endblock %}
+   {% block extrahead %}{% endblock %}
 
   </head>
+
   <body>
-    <!--[if lt IE 7]>
-        <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
+   {% include 'navbar-top.html' %} 
+   {% if user.is_authenticated %}
 
-    <div id="wrapper">
-           
-      {% include 'navbar-top.html' %} 
+       <div class="container">
+
+	  <div class="row row-offcanvas row-offcanvas-left ">
+          {% include 'navbar-side.html' %} 
+
+             <div class="col-xs-12 col-sm-9 col-md-9 background-default contents">
+		<p class="pull-left visible-xs">
+		  <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">
+		    Toggle nav  </button>
+		</p>
+    {% else %}
+
+	<div id="wrapper">
+	  <div class = "container">
+            <div class = "contents">
+     {% endif %}
+ 
+
+     <!-- Common for both authenticated un non-authenticated users -->
       
-      {% if user.is_authenticated %}
-	{% include 'navbar-side.html' %} 
-	
-	<div id="page-wrapper">
+    <h1 class="title">
+    {% block title %}{% endblock %}
+    </h1>
+    {% block content %}{% endblock %}   
 
-      {% endif %}
+    {% if user.is_authenticated %}
+	</div> <!-- col-xs-12-->
+       </div> <!-- row row-offcanvas-->
+     </div> <!-- container-->	      
 
-      <div class="container">
-	<div class="contents">
+   {% else %}
+          </div> <!-- page wrapper -->
+        </div> <!-- container -->
+      </div> <!-- contents -->
 
-	  <h1 class="title">
-	    {% block title %}{% endblock %}
-	  </h1>
-
-	  {% block content %}{% endblock %}   
-	</div> <!-- /contents -->
-      </div> <!-- /container -->
-
-      {% if user.is_authenticated %}
-
-	</div>
-	<!-- /#page-wrapper -->
-
-      {% endif %}
+   {% endif %}
 
 
-      <footer>
-	<!--p>&copy; 2014 Gregory R. Warnes Consulting </p-->
+<!--      <footer>
 	<p>Developed by GRW Consulting for the USDA ARS National Peanut Reserch Laboratory</p>
-      </footer>
-
-    </div>
+      </footer> -->
 
     <!-- Start of scripts -->
     <span>
@@ -98,19 +95,14 @@
       </script>
 
       <!--- jQuery --->
-        <!--script src="{{ STATIC_URL }}js/lib/jquery-ui-1.9.2.min.js"></script-->
         <script src="//code.jquery.com/jquery-1.9.1.js"></script>
         <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
       <!--- /jQuery --->
 
       <script src="{{ STATIC_URL }}js/tablesorter/jquery.tablesorter.js"></script>
 
-
-
       <!-- Bootstrap -->
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
-        <!--script src="{{ STATIC_URL }}js/lib/bootstrap.min.js"></script-->
-      <!-- /Bootstrap -->
 
       <script src="{{ STATIC_URL }}js/plugins.js"></script>
       <script src="{{ STATIC_URL }}js/main.js"></script>
@@ -128,15 +120,29 @@
       <script src="{{ STATIC_URL }}js/jquery-ui-timepicker-addon.min.js"></script>
       <!-- /dJango-ui-timepicker-addon -->
 
+
       <!-- uncomment and adjust for google analytics -->
-      {% comment %}
-	<script>
-	  var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-	  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-	  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-	  s.parentNode.insertBefore(g,s)}(document,'script'));
-	</script>
-      {% endcomment %}
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '{{GA_KEY}}', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+<script>
+$(document).ready(function() {
+$('[data-toggle=offcanvas]').click(function() {
+$('.row-offcanvas').toggleClass('active');
+});
+});
+</script>
+
 
       {% block scripts %}{% endblock %}
 

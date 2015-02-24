@@ -72,7 +72,7 @@ urlpatterns = patterns('',
                        url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),   name='water_history_season_field'),
                        
 
-                       ## Probe Reading pagesw
+                       ## Probe Reading pages
                        url(r'^probe_readings/$',                               ProbeReadingFormsetView.as_view(), name='probe_readings' ),
                        url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
@@ -86,14 +86,16 @@ urlpatterns = patterns('',
                        url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_daily_use', name='daily_use'),
                        url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
 
-                       ## Summary report
-                       url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
+                       ## Reports 
+                       url(r'^report/$',                               HomeView.as_view(),              name='report'),
+                       url(r'^report/summary_report/$',                                           SummaryReportListView.as_view(),   name='summary_report'),
+                       url(r'^report/summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
+                       url(r'^report/cumulative_report$',                               HomeView.as_view(),              name='cumulative_report'),
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
-                       url(r'^user/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
-                       url(r'^user/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
+                       url(r'^settings/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
+                       url(r'^settings/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
 
 )
 

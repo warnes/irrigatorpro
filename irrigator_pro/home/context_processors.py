@@ -6,3 +6,8 @@ def sitevars(request):
         'site_name': settings.SITE_NAME,
            }
     return vars
+
+def global_settings(request):
+    return {
+        'GA_KEY': settings.GA_KEY
+    } 

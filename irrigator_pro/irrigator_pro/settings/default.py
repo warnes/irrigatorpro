@@ -31,7 +31,7 @@ def unquote(str):
 ###
 
 # Name displayed on pages, for easy change
-SITE_NAME = "IrrigatorPro (Validation)"
+SITE_NAME = "IrrigatorPro (Devel)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
@@ -42,6 +42,7 @@ SITE_ID = 1
 ADMINS = (
     ('Gregory R. Warnes', 'greg@warnes.net'),
     ('Bill Edwards', 'edwardsb2001@yahoo.com'),
+    ('Alain Leblanc', 'aalebl@gmail.com')
 )
 
 MANAGERS = ADMINS
@@ -189,6 +190,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     #'django.contrib.messages.context_processors.messages',
     'allauth.account.context_processors.account',
     'allauth.socialaccount.context_processors.socialaccount',    
+    'home.context_processors.global_settings',
+    
 )
 
 ###

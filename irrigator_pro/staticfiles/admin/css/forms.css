@@ -323,7 +323,7 @@ body.popup .submit-row {
     font-size: 9px;
     font-weight: bold;
     color: #666;
-    _width: 700px;
+    width: 700px;
 }
 
 .inline-group ul.tools {
