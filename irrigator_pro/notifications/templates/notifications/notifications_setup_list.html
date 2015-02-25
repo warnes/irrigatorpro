@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% load today_filters %}
+{% load static %}
+
+{% block content %}
+
+<script>
+
+	function unicodeToChar(text) {
+   		return text.replace(/\\u[\dABCDEFabcdef][\dABCDEFabcdef][\dABCDEFabcdef][\dABCDEFabcdef]/g, 
+          function (match) {
+               return String.fromCharCode(parseInt(match.replace(/\\u/g, ''), 16));
+          });
+	}
+
+	function swapElements(fromList, toList) {
+		console.log(fromList);
+		var selectOptions = document.getElementById(fromList);
+		for (var i = 0; i < selectOptions.length; i++) {
+			var opt = selectOptions[i];
+			if (opt.selected) {
+				document.getElementById(fromList).removeChild(opt);
+				document.getElementById(toList).appendChild(opt);
+				i--;
+			}
+		}
+	}
+
+
+	function deleteRow(notifications_pk) {
+		if (confirm("Are you sure you want to delete this row?")) {
+			window.location="/notifications/?delete_row=" + notifications_pk;
+		} 
+	}
+	
+	
+	
+	function editRow(notifications_pk) {
+		console.log("will edit row:" + notifications_pk);
+		document.getElementById("new_row_pk").value = notifications_pk;
+		var mydiv = document.getElementById("edit-entry");
+		mydiv.style.visibility = "visible";
+		
+		var tableRow = document.getElementById("row_"+notifications_pk);
+		
+		console.log(tableRow.cells[1].id);
+		
+		var farmOptions = document.getElementById("select-farms");
+		for (var i = 0; i < farmOptions.length; i++) {
+			var opt = farmOptions[i];
+			if ("farm_" + opt.id == tableRow.cells[1].id) {
+				opt.selected = true;
+			}
+		}
+		
+		update_fields_and_recipients(document.getElementById("select-farms").options[0].id);
+	
+		// Add select tag to fields. n^2 (or worse) algorithm, can improve if needed
+		var fieldOptions = document.getElementById("select-fields");
+		for (var i = 0; i < fieldOptions.length; i++) {
+			var field_id = fieldOptions[i].id;
+			var field_element = document.getElementById("field_" + notifications_pk + "_" + field_id)
+		
+			if (field_element != undefined) {
+				fieldOptions[i].selected = true;
+			} 
+		}
+		
+		// Set option for communication type
+		var comm_type_option = tableRow.cells[3].innerHTML;		
+		document.getElementById("edit_row_" + comm_type_option).selected = true; 		
+		document.getElementById("edit_row_" + tableRow.cells[4].innerHTML).selected = true;
+		
+		// Add selected tags for users. Use same procedure as for fields.
+		
+		var recipientOptions = document.getElementById("select-users");
+		for (var i = 0; i < recipientOptions.length; i++) {
+			var recipient_value = recipientOptions[i].value;
+			var recipient_element = document.getElementById("recipient_" + notifications_pk + "_" + recipient_value)
+		
+			if (recipient_element != undefined) {
+				console.log("recipient matches");
+				recipientOptions[i].selected = true;
+			} else {
+				console.log("no recipient match");
+			}
+		}		
+	}
+	
+
+
+	function addRow() {
+		var mydiv = document.getElementById("edit-entry");
+		mydiv.style.visibility = "visible";
+		
+		// To make sure that something is displayed in the fields and 
+		// recipients lists, set the first farms to selected, call the
+		// update method
+		
+		document.getElementById("select-farms").selectedIndex = 0;
+		update_fields_and_recipients(document.getElementById("select-farms").options[0].id);
+	}
+	
+	function get_fields_for_farm(farm_pk) {
+		var fields = {};
+		
+		if (typeof get_fields_for_farm.fields == 'undefined') {
+			console.log("creating options. Only once!!!")
+			{% for farm, fields in farm_fields.items %}
+		
+			
+			new_list = [];
+			{% for field in fields %}
+				opt = document.createElement('option');
+				opt. value = {{field.pk}};
+				opt.id = "{{field.pk}}";
+				opt.innerHTML = "{{field}}";	
+				new_list.push(opt);
+			{% endfor %};
+			fields["{{farm.pk}}"]=new_list;
+			{% endfor %}
+		}
+		return fields["" + farm_pk];
+	}
+	
+	
+	function get_users_for_farm(farm_pk) {
+		var users = {};
+		if (typeof get_users_for_farm.users == 'undefined') {
+			{% for farm, users in farm_users.items %}
+		
+			
+			new_list = [];
+			{% for user in users %}
+				opt = document.createElement('option');
+				opt.id = "recipient_" + {{user.pk}};
+				opt.value={{user.pk}};
+				opt.text = "{{user}}";	
+				new_list.push(opt);
+			{% endfor %};
+			users["{{farm.pk}}"]=new_list;
+			{% endfor %}
+		}
+		return users["" + farm_pk];
+		
+	}
+	
+	
+	
+	function update_fields(f_pk) {
+		console.log("updating for");
+		console.log(f_pk);
+		select_list = document.getElementById("select-fields");
+		
+		// Remove the children
+		while (select_list.firstChild) {
+    		select_list.removeChild(select_list.firstChild);
+		}
+		
+		console.log("New fields");
+		console.log(get_fields_for_farm(f_pk));
+		
+		options = get_fields_for_farm(f_pk);
+		for (i = 0; i < options.length; i++) {
+			select_list.appendChild(options[i]);
+		}
+	}
+	
+	function update_recipients(farm_pk) {
+		select_list = document.getElementById("select-users");
+		// Remove the children
+		while (select_list.firstChild) {
+    		select_list.removeChild(select_list.firstChild);
+		}
+		
+		console.log("New users");
+		console.log(get_users_for_farm(farm_pk));
+		
+		options = get_users_for_farm(farm_pk);
+		for (i = 0; i < options.length; i++) {
+			select_list.appendChild(options[i]);
+		}
+	}
+	
+	
+	function update_fields_and_recipients() {
+		farm_node = document.getElementById("select-farms");
+		console.log(farm_node);
+		console.log(farm_node.options.length);
+		farm_pk = farm_node.options[farm_node.selectedIndex].id;
+		console.log("farm_pk is");
+		console.log(farm_pk);
+		update_fields(farm_pk);
+		update_recipients(farm_pk);
+	}
+	
+	
+	function validate_form(myform) {
+		var returnedValue = true;
+		document.getElementById("field-needed").innerHTML="";
+		document.getElementById("recipient-needed").innerHTML="";
+		if (document.getElementById("select-fields").selectedIndex < 0) {
+			document.getElementById("field-needed").innerHTML="You need to select at least one field.";
+			returnedValue = false;
+		}
+		if (document.getElementById("select-users").selectedIndex < 0) {
+			document.getElementById("recipient-needed").innerHTML="You need to select at least one recipient.";
+			returnedValue = false;
+		}
+		if (returnedValue == false){
+			return false;
+		}
+		window.onbeforeunload = null;
+		myform.submit();
+		
+	}
+
+</script>
+
+<h1><i class="fa fa-pencil-square-o fa-fw"> </i> Field assignments </h1>
+
+<section id="field-assignments">
+
+	<table class = "notifications" id="notifications_table">
+
+		<thead>
+			<tr>
+				<th>Action</th>
+				<th>Farm</th>
+				<th>Fields</th>
+				<th>Communication Type</th>
+				<th>Level</th>
+				<th>Recipients</th>
+			</tr>
+		</thead>
+		{% for rec in notifications_list %}
+		<tr id="row_{{rec.pk}}">
+			<td id="{{rec.pk}}">
+				<button type="button" onclick="editRow({{rec.pk}})">
+					<i class="fa fa-pencil-square-o"></i>
+				</button>
+				<button type="button" onclick="deleteRow({{rec.pk}})">
+					<i class="fa fa-times"></i>
+				</button>
+			</td>
+
+			<td id = "farm_{{rec.field_list.all.0.farm.pk}}">
+				{{rec.field_list.all.0.farm}}
+				
+			</td>
+
+			<td><!-- list of fields--> 
+				{% for f in rec.field_list.all %}
+					<div id="field_{{rec.pk}}_{{f.pk}}">{{f}}</div>
+					
+				{% endfor %} 
+			</td>
+			
+			<!-- Don't leave spaces in the contents for the following two cells.
+				It will break the javascript 
+			-->
+			<td id="row_notification_type" >{{rec.notification_type}}</td>
+			<td id = "row_notification_level">{{rec.level}}</td>
+
+			<td style="text-align: left"> {% for u in rec.recipients.all %}
+				<div id="recipient_{{rec.pk}}_{{u.pk}}">
+					{{u}}
+				</div>
+			{% endfor %} </td>
+		</tr>
+		{% endfor %}
+		<tr>
+			<td colspan="6">
+				<button type="button" onclick="addRow()">
+					Add row
+				</button>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<div id="edit-entry" style="visibility:hidden">	
+	<form action="#" method="post">		{% csrf_token %}
+		<input type="hidden" id = "new_row_pk" name="pk" value="-1"/> 
+		
+		<table class="notifications-new">
+			
+			<thead>
+			<tr>
+				<th>Farm</th>
+				<th>Fields</th>
+				<th>Communication Type</th>
+				<th>Level</th>
+				<th>Recipients</th>
+			</tr>
+		</thead>
+			
+			
+			<tr>
+				<td>		
+					<select id="select-farms" onchange="update_fields_and_recipients()">
+					{% for f in farms %}
+						<option id="{{f.pk}}" value="{{f}}">{{f}}</option>
+					{% endfor %}
+				
+					</select>
+			
+
+				</td>
+				<td>
+					<div id="field-needed" style="color:red"></div>
+					<select id="select-fields" name = "select-fields" multiple>
+				
+					</select>
+			
+			
+	     		</td>
+		
+				<td>
+					<select id="communication-type" name="communication-type">
+						{% for type in notifications_types %}
+						<option id="edit_row_{{type}}" value="{{type}}">{{type}}</option>
+						{% endfor %}
+				
+					</select>
+				</td>
+				
+				
+				<td> 
+					<select id="alert-level" name="alert-level">
+						{% for level in alert_levels %}
+						<option id="edit_row_{{level}}" value="{{level}}">{{level}}</option>
+						{% endfor %}
+					</select>
+				</td>
+				
+				<td> 
+					<div id="recipient-needed" style="color: red"></div>
+					<select id="select-users" name="select-users" multiple>
+				
+					</select>
+					
+				</td>
+			</tr>
+			<tr>
+				<td colspan="5" style="align:left">
+					<input type="button" value="submit" onclick="validate_form(this.form)"></input>
+					<button type="button" onclick="window.location='/notifications/'">Cancel</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+
+</div>
+
+{% endblock %}
