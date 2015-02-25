@@ -58,12 +58,30 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
         retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
         return retval
 
+    def get_farmer_and_user_objects(self):
+        retval = [self.farmer] + map(lambda x: x, self.users.all())
+        return retval
+
+
+
     def get_users(self):
         user_list = self.users.all()
         if user_list:
             return ', '.join([ obj.email for obj in user_list])
         else:
             return ''
+
+
+    def get_fields(self):
+        if len(self.attached_fields) == 0:
+            self.attached_fields = Field.objects.filter(farm = self)
+    
+        return self.attached_fields
+
+    def __init__(self, *args, **kwargs):
+        super(Farm, self).__init__(*args, **kwargs)
+        self.attached_fields = []
+    
 
     def __unicode__(self):
         return self.name
@@ -89,6 +107,8 @@ class Field(NameDesc, Comment, Audit):
     irr_capacity  = models.DecimalField(max_digits=3,
                                         verbose_name='Irrigation Capacity (per 24 hours)',
                                         decimal_places=2) # #.##
+
+        
 
     def __unicode__(self):
         return u"%s: %s" % (self.farm, self.name)
