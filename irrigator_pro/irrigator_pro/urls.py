@@ -9,6 +9,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from home.views import HomeView
 from farms.views import *
+from notifications.views import *
 from contact_info.views import *
 import farms.models
 
@@ -73,7 +74,7 @@ urlpatterns = patterns('',
                        
 
                        ## Probe Reading pagesw
-                       url(r'^probe_readings/$',                               ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^probe_readings/$',                               HomeView.as_view(), name='probe_readings' ),
                        url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
 
@@ -89,6 +90,11 @@ urlpatterns = patterns('',
                        ## Summary report
                        url(r'^summary_report/$',                               SummaryReportListView.as_view(),   name='summary_report'),
                        url(r'^summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
+
+                       ## Notification pages
+
+                       url(r'^notifications/$',                           NotificationsSetupView.as_view(), name="notifications"),
+
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),
