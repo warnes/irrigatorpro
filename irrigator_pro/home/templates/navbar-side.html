@@ -189,6 +189,15 @@
 	  </li>
 
 
+	  <li>
+	    <a href="{% url 'notifications' %}">
+	      <i class="fa fa-pencil-square-o fa-fw"></i>
+	      Notifications
+	      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+	    </a>
+	  </li>
+
+
 	  {% if perms.auth.staff_status %}
 	    <li>
 	      <a href="{% url 'home' %}admin"
