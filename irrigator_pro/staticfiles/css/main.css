@@ -32,6 +32,7 @@ h1 em, h2 em {
 body {
     padding-top: 62 px;
     padding-bottom: 40px;
+    background-color: #eefcff;
 }
 
 .container {
@@ -406,7 +407,7 @@ img.align-left {
 }
 
 
-@media (max-width: 970px) {
+@media (max-width: 769px) {
     img.water-register-plot {
 	width: 400px;
 	height: 400px;

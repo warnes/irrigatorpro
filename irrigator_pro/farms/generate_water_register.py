@@ -272,7 +272,7 @@ def earliest_register_to_update(today_date,
     # Also look at probe readings. The query
     # may have bougt readings from pervious seasons,
     # so interrupt the loop when we go before
-    # corp_season start_date
+    # crop_season start_date
 
     if  probe_reading_list is None:  return earliest_to_update
 

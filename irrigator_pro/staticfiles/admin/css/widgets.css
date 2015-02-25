@@ -547,7 +547,7 @@ ul.orderer li.deleted:hover, ul.orderer li.deleted a.selector:hover {
 /* EDIT INLINE - STACKED */
 
 .editinline-stacked {
-    min-width: 758px;
+    min-width: 768px;
 }
 
 .editinline-stacked .inline-object {

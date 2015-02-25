@@ -31,7 +31,7 @@ def unquote(str):
 ###
 
 # Name displayed on pages, for easy change
-SITE_NAME = "IrrigatorPro (Validation)"
+SITE_NAME = "IrrigatorPro (Devel)"
 
 # Make this unique, and don't share it with anybody.
 # http://www.miniwebtool.com/django-secret-key-generator/
@@ -378,3 +378,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 ###
 ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
 
+###
+## Google Analytics 
+##
+# Google Analytics Key --  This is a placeholder to avoid errors if not set.
+# Set the actual value in local.py
+GA_KEY = ""   
