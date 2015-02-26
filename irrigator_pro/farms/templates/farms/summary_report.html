@@ -32,12 +32,12 @@
       	<th rowspan=2>Status</th>
       	<th rowspan=2 class="sorter-false">Message</th>
       	<th rowspan=2 class="sorter-false">Days to Irrigation</th>
-      	<th colspan=2 class="sorter-false">Water</th>
+      	<th colspan=2 class="sorter-false">Cumulative Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
       </tr>
       <tr class="header2">
-      	<th class="sorter-false">Cumulative Water - Rain</th>
-      	<th class="sorter-false">Cumulative Water - Irrigation</th>
+      	<th class="sorter-false">Rain</th>
+      	<th class="sorter-false">Irrigation</th>
       	<th class="sorter-false">Type</th>
       	<th class="sorter-false">Date</th>
       </tr>
@@ -90,7 +90,7 @@
 	<td>{{ object.cumulative_rain }}</td>
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
-	<td>{{ object.time_last_data_entry }}</td>
+	<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
 
       </tr>
 

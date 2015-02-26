@@ -149,8 +149,6 @@
 	
 	
 	function update_fields(f_pk) {
-		console.log("updating for");
-		console.log(f_pk);
 		select_list = document.getElementById("select-fields");
 		
 		// Remove the children
@@ -158,8 +156,6 @@
     		select_list.removeChild(select_list.firstChild);
 		}
 		
-		console.log("New fields");
-		console.log(get_fields_for_farm(f_pk));
 		
 		options = get_fields_for_farm(f_pk);
 		for (i = 0; i < options.length; i++) {
@@ -173,10 +169,7 @@
 		while (select_list.firstChild) {
     		select_list.removeChild(select_list.firstChild);
 		}
-		
-		console.log("New users");
-		console.log(get_users_for_farm(farm_pk));
-		
+				
 		options = get_users_for_farm(farm_pk);
 		for (i = 0; i < options.length; i++) {
 			select_list.appendChild(options[i]);
@@ -189,8 +182,6 @@
 		console.log(farm_node);
 		console.log(farm_node.options.length);
 		farm_pk = farm_node.options[farm_node.selectedIndex].id;
-		console.log("farm_pk is");
-		console.log(farm_pk);
 		update_fields(farm_pk);
 		update_recipients(farm_pk);
 	}
@@ -212,7 +203,10 @@
 			return false;
 		}
 		window.onbeforeunload = null;
-		myform.submit();
+		myform.submit();	
+	}
+	
+	function cancelUpdate() {
 		
 	}
 
@@ -230,7 +224,7 @@
 				<th>Farm</th>
 				<th>Fields</th>
 				<th>Communication Type</th>
-				<th>Level</th>
+				<th>Frequency</th>
 				<th>Recipients</th>
 			</tr>
 		</thead>
@@ -291,7 +285,7 @@
 				<th>Farm</th>
 				<th>Fields</th>
 				<th>Communication Type</th>
-				<th>Level</th>
+				<th>Frequency</th>
 				<th>Recipients</th>
 			</tr>
 		</thead>
@@ -345,8 +339,8 @@
 			</tr>
 			<tr>
 				<td colspan="5" style="align:left">
-					<input type="button" value="submit" onclick="validate_form(this.form)"></input>
-					<button type="button" onclick="window.location='/notifications/'">Cancel</button>
+					<input type="button" value="Submit" onclick="validate_form(this.form)"></input>
+					<button type="button" onclick="cancelUpdate()">Cancel</button>
 				</td>
 			</tr>
 		</table>

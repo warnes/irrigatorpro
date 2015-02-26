@@ -161,7 +161,9 @@ class SummaryReportListView(TemplateView):
                     if (latest_is_wr is not None):
                         if (latest_is_wr):
                             srf.last_data_entry_type = "Rain or irrigation"
-                            srf.time_last_data_entry = latest_water_record.date
+                            # Ensure we have a datetime object for consistency in data
+                            x = latest_water_record.date
+                            srf.time_last_data_entry = datetime(x.year, x.month, x.day)
                         else:
                             srf.last_data_entry_type = "Probe reading"
                             srf.time_last_data_entry = latest_probe_reading.reading_datetime
