@@ -73,7 +73,7 @@ class NotificationsSetupView(TemplateView):
         
 
         notifications.save();
-        return HttpResponseRedirect('/notifications')
+        return HttpResponseRedirect('')  # back to the same page
 
 
     # Get all the notifications for this user and any crop season not yet

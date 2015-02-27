@@ -95,7 +95,7 @@ urlpatterns = patterns('',
 
                        ## Notification pages
 
-                       url(r'^notifications/$',                           NotificationsSetupView.as_view(), name="notifications"),
+                       url(r'^settings/notifications/$',                           NotificationsSetupView.as_view(), name="notifications"),
 
 
                        ## User pages
