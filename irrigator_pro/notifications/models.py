@@ -19,7 +19,7 @@ class NotificationsRule(Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
 
-    NOTIFICATION_TYPE_VALUES    = ['SMS', 'Email']
+    NOTIFICATION_TYPE_VALUES    = ['Email', 'SMS']
     LEVEL_CHOICES               = ['Daily', 'Any Flag', 'Irrigate Today', 'None']
 
     field_list          = models.ManyToManyField(Field)
