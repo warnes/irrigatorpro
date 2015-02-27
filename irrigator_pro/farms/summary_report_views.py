@@ -9,6 +9,8 @@ from django.db.models import DateField
 from django.utils import timezone
 from django.db.models import Q
 
+from django.views.generic import TemplateView
+
 from farms.models import Farm, CropSeason, Field, WaterRegister, WaterHistory, Farm, CropSeasonEvent, Probe, ProbeReading
 from farms.generate_water_register import generate_water_register
 
@@ -34,23 +36,23 @@ def cumulative_water(wr_list):
 
 
 
-class SummaryReportListView(ListView):
+class SummaryReportListView(TemplateView):
     template_name = "farms/summary_report.html"
-    model = WaterRegister
-    fields = [ 'crop_season',
-               'field',
-               'date',
-               'crop_stage',
-               'daily_water_use',
-               'rain',
-               'irrigation',
-               'average_water_content',
-               'computed_from_probes',
-               'irrigate_flag',
-               'check_sensors_flag',
-               'dry_down_flag',
-               'message'
-             ]
+
+
+
+    def get(self, request, *args, **kwargs):
+        print "into get: ", request.GET.get('date')
+        the_date = request.GET.get('date')
+        if the_date is not None:
+            print 'We have a date: ', the_date
+            self.today_date = datetime.strptime(the_date, "%Y-%m-%d").date()
+        else:
+            self.today_date = date.today()
+
+        return render(request, self.template_name, self.get_context_data())
+
+
 
     #####################################################
     ## Method to gather data and create the query set. ##
@@ -61,18 +63,9 @@ class SummaryReportListView(ListView):
 
     def get_object_list(self):
         ret_list = []
-        #        image = plot_daily_use(self.request)
-
-        # For testing allow URL to end with .../summary_report/2013/07/31
-        self.today_date = date.today()
-        if self.year is not None:
-            self.today_date = date(self.year, self.month, self.day)
-
-
- 
+            
         farm_list = farms_filter(self.request.user)
 
-        # TODO Change the date for either today, or a date given in the url for debugging purpose.
         crop_season_list = CropSeason.objects.filter(season_start_date__lt = self.today_date,
                                                      season_end_date__gte = self.today_date).all()
 
@@ -118,8 +111,6 @@ class SummaryReportListView(ListView):
                 wr = wr_list[0]
                 if (wr is not None):
                     srf.growth_stage    = wr.crop_stage
-                    srf.dwu             = wr.daily_water_use
-                    srf.awc             = wr.average_water_content
                     srf.message         = wr.message
                     (srf.cumulative_rain, srf.cumulative_irrigation_vol) = cumulative_water(wr_list)
 
@@ -170,7 +161,9 @@ class SummaryReportListView(ListView):
                     if (latest_is_wr is not None):
                         if (latest_is_wr):
                             srf.last_data_entry_type = "Rain or irrigation"
-                            srf.time_last_data_entry = latest_water_record.date
+                            # Ensure we have a datetime object for consistency in data
+                            x = latest_water_record.date
+                            srf.time_last_data_entry = datetime(x.year, x.month, x.day)
                         else:
                             srf.last_data_entry_type = "Probe reading"
                             srf.time_last_data_entry = latest_probe_reading.reading_datetime
@@ -189,25 +182,13 @@ class SummaryReportListView(ListView):
     def get_context_data(self, **kwargs):
         context = super(SummaryReportListView, self).get_context_data(**kwargs)
         context['today_date'] = self.today_date
+        context['object_list'] = self.get_object_list()
         return context
 
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-
-        # There are either parameters for year, month, day, or none.
-        year_param = kwargs.get('year', None)
-        self.year = None
-        if year_param is not None:
-            self.year = int(year_param)
-            self.month= int(kwargs.get('month', None))
-            self.day = int(kwargs.get('day', None))
         return super(SummaryReportListView, self).dispatch(*args, **kwargs)
-
-
-    def get_queryset(self):
-        queryset = self.get_object_list()
-        return queryset
 
 
 
@@ -218,13 +199,12 @@ class SummaryReportFields:
     field                       = 'Unknown field'
     crop                        = 'Unknown crop'
     growth_stage                = 'Undetermined stage'
-    dwu                         = 0.0
-    awc                         = 0.0
     link_to_water_reg           = ''
     last_data_entry_type        = 'No Entry'
     time_last_data_entry        = 'No Entry' #DateField(default=timezone.now())
     cumulative_rain             = 0.0
     cumulative_irrigation_vol   = 0.0
+    days_to_irrigation          = 0
     water_register_url          = ''
     water_register_object       = None
     message                     = 'something'

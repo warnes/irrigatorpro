@@ -414,3 +414,30 @@ img.align-left {
 	padding: 25px;
     }
 }
+
+
+/**
+ * Tables for the sms/email entering
+*/
+
+
+table.notifications, table.notifications td, table.notifications th, table.notifications tr {
+    border: 1px solid #006B00;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #006B00;
+
+}
+
+table.notifications-new, table.notifications th, table.notifications tr {
+    border: 1px solid #006B00;
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #006B00;
+
+}
+
+
+table.notifications-new td {
+    border: 1px solid #006B00;
+}

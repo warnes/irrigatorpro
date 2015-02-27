@@ -9,6 +9,7 @@ from django.views.generic.edit import CreateView, UpdateView
 
 from home.views import HomeView
 from farms.views import *
+from notifications.views import *
 from contact_info.views import *
 import farms.models
 
@@ -91,6 +92,11 @@ urlpatterns = patterns('',
                        url(r'^report/summary_report/$',                                           SummaryReportListView.as_view(),   name='summary_report'),
                        url(r'^report/summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
                        url(r'^report/cumulative_report$',                               HomeView.as_view(),              name='cumulative_report'),
+
+                       ## Notification pages
+
+                       url(r'^notifications/$',                           NotificationsSetupView.as_view(), name="notifications"),
+
 
                        ## User pages
                        #url(r'^user/edit$',  edit_user  ),

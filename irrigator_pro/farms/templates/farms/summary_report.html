@@ -4,9 +4,17 @@
 {% block content %}
 
   <h1>
-    <i class="fa fa-pencil-square-o fa-fw"></i>
-    Summary report
+  	
+    <i class="fa fa-pencil-square-o fa-fw"> </i>
+   
+    <form method="get">
+    	Daily report for <input type="text" id="datepicker" 
+    	name="date"
+    	value='{{today_date |date:"Y-m-d" }}' 
+    	style="width: 6em">
+    </form>
   </h1>
+ <!--   	onchange="this.form.submit()" -->
 
   <h2>
     <em>{{crop_season}}</em>
@@ -23,14 +31,13 @@
       	<th rowspan=2>Growth Stage</th>
       	<th rowspan=2>Status</th>
       	<th rowspan=2 class="sorter-false">Message</th>
-      	<th colspan=4 class="sorter-false">Water</th>
+      	<th rowspan=2 class="sorter-false">Days to Irrigation</th>
+      	<th colspan=2 class="sorter-false">Cumulative Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
       </tr>
       <tr class="header2">
-      	<th class="sorter-false">DWU</th>
-      	<th class="sorter-false">AWC</th>
-      	<th class="sorter-false">Rain (Total)</th>
-      	<th class="sorter-false">Irrigation (Total)</th>
+      	<th class="sorter-false">Rain</th>
+      	<th class="sorter-false">Irrigation</th>
       	<th class="sorter-false">Type</th>
       	<th class="sorter-false">Date</th>
       </tr>
@@ -79,12 +86,11 @@
 		{% endif %}
 	</td>
 	<td>{{ object.message }}</td>
-	<td>{{ object.dwu }}</td>
-	<td>{{ object.awc }}</td>
+	<td>{{ object.days_to_irrigation }}</td>
 	<td>{{ object.cumulative_rain }}</td>
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
-	<td>{{ object.time_last_data_entry }}</td>
+	<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
 
       </tr>
 
@@ -107,6 +113,16 @@
 
 
 <script>
+
+$(function() {
+	$( "#datepicker" ).datepicker(
+		{
+			onSelect: function (dateText, inst) {
+				$(this).parent('form').submit();
+			}
+		}		
+	);
+});
 
 $(document).ready(function() 
     { 
