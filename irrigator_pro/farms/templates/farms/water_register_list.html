@@ -222,15 +222,18 @@ leaving the page. Very annoying.
 
   {% else %}
 
-    <div class="alert alert-danger">
-      No data to display.  Check that Crop
-      Season <em>{{crop_season}}</em> has events defined for field {{field}}.
-    </div>
+    {% if not crop_season.season_start_date <= today_data <= crop_season.season_end_date %}
+        <div class="alert alert-danger">
+          No data to display.  Today ({{today_date|date:'Y-m-d'}}) is outside the crop season period
+          ({{crop_season.season_start_date|date:'Y-m-d'}} to {{crop_season.season_end_date|date:'Y-m-d'}}).
+        </div>
+    {% else %}    
+        <div class="alert alert-danger">
+          No data to display.
+        </div>
+    {% endif %}
 
   {% endif %}
-
-
-
 
 {% endblock %}
 

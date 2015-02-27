@@ -42,6 +42,7 @@ class WaterRegisterListView(ListView):
     def get_queryset(self):
         queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
                                                 field=self.field)
+
         # For testing allow URL to end with .../summary_report/2013/07/31
         self.today_date = datetime.date.today()
         if self.year is not None:
@@ -50,9 +51,11 @@ class WaterRegisterListView(ListView):
         self.update_water_register(self.crop_season, self.field, self.today_date)
 
         if not queryset.count():
+            print "No Water_Register records"
+            self.nb_records = 0
             return queryset
 
-        field = queryset[0].field
+        field = self.field
         farm = field.farm
 
         farmer = farm.farmer
@@ -66,11 +69,8 @@ class WaterRegisterListView(ListView):
         # Add today_date to request so it can be used for the plots
         self.request.session['today_date'] = self.today_date.isoformat()
         self.nb_records = len(queryset.distinct())
+
         return queryset.distinct()
-
-
-
-
 
 
     @method_decorator(login_required)
@@ -87,7 +87,6 @@ class WaterRegisterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(WaterRegisterListView, self).get_context_data(**kwargs)
-        print 'Current dir: ', os.getcwd()
         context['crop_season'] = self.crop_season
         context['field']       = self.field
         context['today_date'] = self.today_date
