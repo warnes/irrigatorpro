@@ -30,7 +30,7 @@
 
 	function deleteRow(notifications_pk) {
 		if (confirm("Are you sure you want to delete this row?")) {
-			window.location="?delete_row=" + notifications_pk;
+			window.location="{% url 'notifications' %}?delete_row=" + notifications_pk;
 		} 
 	}
 	

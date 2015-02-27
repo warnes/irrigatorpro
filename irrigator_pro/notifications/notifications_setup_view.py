@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.db.models import Q
 from django.core.context_processors import csrf
+from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 
@@ -73,7 +74,7 @@ class NotificationsSetupView(TemplateView):
         
 
         notifications.save();
-        return HttpResponseRedirect('')  # back to the same page
+        return HttpResponseRedirect(reverse('notifications'))  # back to the same page
 
 
     # Get all the notifications for this user and any crop season not yet
