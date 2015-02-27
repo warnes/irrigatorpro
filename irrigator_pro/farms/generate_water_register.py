@@ -422,6 +422,7 @@ def generate_water_register(crop_season,
         ####
         ## Copy information from crop event record 
         cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('-date').first()
+	if cse is None: return
         ce = cse.crop_event
 
         wr.crop_stage      = ce.name
