@@ -30,7 +30,7 @@
 
 	function deleteRow(notifications_pk) {
 		if (confirm("Are you sure you want to delete this row?")) {
-			window.location="/notifications/?delete_row=" + notifications_pk;
+			window.location="{% url 'notifications' %}?delete_row=" + notifications_pk;
 		} 
 	}
 	
@@ -212,7 +212,7 @@
 
 </script>
 
-<h1><i class="fa fa-pencil-square-o fa-fw"> </i> Field assignments </h1>
+<h1><i class="fa fa-pencil-square-o fa-fw"> </i> Notifications</h1>
 
 <section id="field-assignments">
 
@@ -267,7 +267,7 @@
 		<tr>
 			<td colspan="6">
 				<button type="button" onclick="addRow()">
-					Add row
+					Add Notification
 				</button>
 			</td>
 		</tr>
@@ -275,7 +275,7 @@
 </section>
 
 <div id="edit-entry" style="visibility:hidden">	
-	<form action="#" method="post">		{% csrf_token %}
+	<form action="{% url 'notifications' %}" method="post">		{% csrf_token %}
 		<input type="hidden" id = "new_row_pk" name="pk" value="-1"/> 
 		
 		<table class="notifications-new">
