@@ -206,10 +206,6 @@ parser.add_argument('--date-end',
                     action='store',
                     default=date_end_default,
                     help="Latest probe reading date to process, in yyyy-mm-ddd format - Default is %s" % date_end_default)
-parser.add_argument('--no-files',
-                    action='store_true',
-                    help='Do not update local copy of server files.'
-                    ) 
 parser.add_argument('--no-store',
                     action='store_true',
                     help='Do not store probe readings into the database.'
@@ -226,7 +222,6 @@ parser.add_argument('--clean',
 
 args = parser.parse_args()
 
-mirror_files = not args.no_files
 store_probes = not args.no_store
 store_log    = not args.no_log
 store_clean  = args.clean
@@ -286,7 +281,7 @@ if store_clean:
 
 sys.stderr.write("Progress: (dot=one UGA record processed, plus=new local record created)\n")
 
-## Iterate across files
+## Iterate across records
 for record in cur:
 
    ## add line to database
