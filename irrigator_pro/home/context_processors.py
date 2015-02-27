@@ -9,5 +9,6 @@ def sitevars(request):
 
 def global_settings(request):
     return {
-        'GA_KEY': settings.GA_KEY
+        'GA_KEY': settings.GA_KEY,
+        'WATER_REGISTER_DELTA' : settings.WATER_REGISTER_DELTA
     } 

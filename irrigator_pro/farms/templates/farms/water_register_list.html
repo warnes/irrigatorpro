@@ -21,7 +21,7 @@ function createTH(rowSpan, colSpan, value) {
 
 function redrawTable() {
     var complete = "Show complete season"; // Must match exactly label in button below. Yes. Ugly.
-    var partial =  "Show 15 days";
+    var partial =  "Show " +  (2 * {{WATER_REGISTER_DELTA}} + 1) + " days";
     var tableSection = document.getElementById("newTable");
     tableSection.innerHTML = "";
 
