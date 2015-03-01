@@ -10,7 +10,7 @@
     <form method="get">
     	Daily report for <input type="text" id="datepicker" 
     	name="date"
-    	value='{{today_date |date:"Y-m-d" }}' 
+    	value='{{report_date |date:"Y-m-d" }}' 
     	style="width: 6em">
     </form>
   </h1>
@@ -24,7 +24,7 @@
 
   <table class="tablesorter formset summary-report" id="summaryreport" >
     <thead>
-      <tr class class="header1">
+      <tr class="header1">
       	<th rowspan=2>Farm</th>
       	<th rowspan=2>Field</th>
       	<th rowspan=2>Crop</th>
@@ -86,7 +86,7 @@
 		{% endif %}
 	</td>
 	<td>{{ object.message }}</td>
-	<td>{{ object.days_to_irrigation }}</td>
+	<td class="dti">{{ object.days_to_irrigation }}</td>
 	<td>{{ object.cumulative_rain }}</td>
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
@@ -114,7 +114,26 @@
 
 <script>
 
-$(function() {
+
+$(document).ready(function() 
+    {
+    	$('table').tablesorter( {
+		headers: {
+        	// set "sorter: false" (no quotes) to disable the column
+        	0: { sorter: "text" },
+        	1: { sorter: "text" },
+       	 	2: { sorter:  "text"},
+        	3: { sorter:  "text"},
+        	4: { sorter:  "text"},
+        	5: { sorter:  false},
+        	6: { sorter:  "digit"},
+        	7: { sorter:  false},
+        	8: { sorter:  false},
+        	9: { sorter:  false},
+    	}
+      } 
+	);
+	
 	$( "#datepicker" ).datepicker(
 		{
 			onSelect: function (dateText, inst) {
@@ -122,27 +141,25 @@ $(function() {
 			}
 		}		
 	);
+	
+	$(".dti").each(function() {
+		var days = parseInt($(this).html());
+		if (isNaN(days) || days < 0) {
+			$(this).html("");
+			return;
+		}
+		if ( days == 0) {
+			$(this).css("backgroundColor", "red");
+		}
+		else if (days < 4) {
+			$(this).css("backgroundColor", "yellow");
+		}
+		else {
+			$(this).css("backgroundColor", "green");
+		}
+	});
 });
 
-$(document).ready(function() 
-    { 
-        $('table').tablesorter( {
-headers: {
-        // set "sorter: false" (no quotes) to disable the column
-        0: { sorter: "text" },
-        1: { sorter: "text" },
-        2: { sorter:  "text"},
-        3: { sorter:  "text"},
-        4: { sorter:  "text"},
-        5: { sorter:  false},
-        6: { sorter:  false},
-        7: { sorter:  false},
-        8: { sorter:  false},
-        9: { sorter:  false},
-    }
-    } 
-);
-}) 
 
 </script>
 {% endblock %}

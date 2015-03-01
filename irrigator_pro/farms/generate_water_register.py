@@ -539,28 +539,36 @@ def generate_water_register(crop_season,
                 wr.irrigate_flag = False
             else:
                 # Too dry:
+                wr.days_to_irrigation = -1 # Just in case it had been changed previously
                 if wr.average_water_content < 0.00:
                     wr.irrigate_flag = True
+                    wr.days_to_irrigation = 0
             
                 # Too hot:
                 if wr.max_temp_2in is not None and \
                    wr.max_observed_temp_2in is not None and \
                    wr.max_observed_temp_2in > wr.max_temp_2in:
                     wr.irrigate_flag = True
+                    wr.days_to_irrigation = 0
                     wr.too_hot_flag  = True
 
                 ####
-                ## Check if we need to irrigate in the next five days
+                ## Check if we need to irrigate in the next few days, based on WATER_REGISTER_DELTA
                 ####
                 wr.check_sensors_flag = False
-
-                date_plus_delta = date + timedelta(days=WATER_REGISTER_DELTA)
-                for date_future in daterange(date, date_plus_delta):
-                    try:
-                        wr_future = wr_query.get(date=date_future)
-                        wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
-                    except ObjectDoesNotExist:
-                        pass
+                if wr.days_to_irrigation < 0:
+                    date_plus_delta = date + timedelta(days=WATER_REGISTER_DELTA)
+                    for date_future in daterange(date + timedelta(days=1), date_plus_delta):
+                        try:
+                            wr_future = wr_query.get(date=date_future)
+                            #wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
+                            if wr_future.average_water_content < 0.00:
+                                wr.check_sensors_flag = True
+                                wr.days_to_irrigation = (date_future - date).days
+                                print 'Will water in: ',  wr.days_to_irrigation, ' on ', date
+                                break
+                        except ObjectDoesNotExist:
+                            pass
 
         else:  # execute below if irrigate_to_max_flag_seen is true
             if wr.irrigate_to_max_achieved or irrigate_to_max_achieved or irrigate_to_max_days >= 3:

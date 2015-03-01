@@ -46,9 +46,9 @@ class SummaryReportListView(TemplateView):
         the_date = request.GET.get('date')
         if the_date is not None:
             print 'We have a date: ', the_date
-            self.today_date = datetime.strptime(the_date, "%Y-%m-%d").date()
+            self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
         else:
-            self.today_date = date.today()
+            self.report_date = date.today()
 
         return render(request, self.template_name, self.get_context_data())
 
@@ -66,8 +66,8 @@ class SummaryReportListView(TemplateView):
             
         farm_list = farms_filter(self.request.user)
 
-        crop_season_list = CropSeason.objects.filter(season_start_date__lt = self.today_date,
-                                                     season_end_date__gte = self.today_date).all()
+        crop_season_list = CropSeason.objects.filter(season_start_date__lt = self.report_date,
+                                                     season_end_date__gte = self.report_date).all()
 
         # Create a dictionary with ('field', 'crop_season')
         all_fields = {}
@@ -93,7 +93,7 @@ class SummaryReportListView(TemplateView):
                                         field,
                                         self.request.user,
                                         None,
-                                        self.today_date)
+                                        self.report_date)
 
                 
                 # Will add an entry for this field and farm
@@ -106,13 +106,18 @@ class SummaryReportListView(TemplateView):
 
                 # Get the water registry for the crop season / field
 
-                wr_list = WaterRegister.objects.filter(crop_season = crop_season, field = field).order_by('-date')
+                wr_list = WaterRegister.objects.filter(crop_season = crop_season, 
+                                                       field = field).order_by('-date').filter(Q(date__lte =  self.report_date))
+        
+                
+                
                 if len(wr_list) == 0: continue
                 wr = wr_list[0]
                 if (wr is not None):
                     srf.growth_stage    = wr.crop_stage
                     srf.message         = wr.message
                     (srf.cumulative_rain, srf.cumulative_irrigation_vol) = cumulative_water(wr_list)
+                    srf.days_to_irrigation = wr.days_to_irrigation
 
                     # Get the last event for the field. It will be either rain, irrigation,
                     # manual reading or automated reading.
@@ -173,7 +178,7 @@ class SummaryReportListView(TemplateView):
 
                     # Add the water register object to get next irrigation date, or status.
                     # Only add if planting season is not over.
-                    if (crop_season.season_end_date >= self.today_date):
+                    if (crop_season.season_end_date >= self.report_date):
                         srf.water_register_object = wr
                 
         return ret_list
@@ -181,7 +186,7 @@ class SummaryReportListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SummaryReportListView, self).get_context_data(**kwargs)
-        context['today_date'] = self.today_date
+        context['report_date'] = self.report_date
         context['object_list'] = self.get_object_list()
         return context
 
