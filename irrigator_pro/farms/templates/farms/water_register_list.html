@@ -6,169 +6,19 @@
 {% block content %}
 
 
-<script>
 
-function createTH(rowSpan, colSpan, value) {
-   th = document.createElement("TH");
-   th.rowSpan = rowSpan;
-   th.colSpan = colSpan;
-   //th.appendChild(document.createTextNode(value));
-   th.innerHTML = value;
-   return th;
-}
-
-
-
-function redrawTable() {
-    var complete = "Show complete season"; // Must match exactly label in button below. Yes. Ugly.
-    var partial =  "Show 15 days";
-    var tableSection = document.getElementById("newTable");
-    tableSection.innerHTML = "";
-
-    if (document.getElementById("nb_rows_selection").innerHTML == complete) {
-       document.getElementById("nb_rows_selection").innerHTML = partial;
-       tableSection.appendChild(tableCreate(1000));  
-    } else {
-       document.getElementById("nb_rows_selection").innerHTML = complete;
-       tableSection.appendChild(tableCreate(15));  
-    }
-}
-
-function tableCreate(nbToDisplay){
-
-
-    tbl  = document.createElement('table');
-    tbl.className = 'formset water-register id="water-register"';
-
-    var header = tbl.createTHead();
-    var headerRow0 = header.insertRow();
-    headerRow0.className = "header1";
-    headerRow0.appendChild(createTH(2, 1, "Date"));
-    headerRow0.appendChild(createTH(2, 1, "Growth Stge"));
-    headerRow0.appendChild(createTH(1, 4, "Water"));
-    headerRow0.appendChild(createTH(1, 2, "Max Soil Temp (&deg;F)"));
-    headerRow0.appendChild(createTH(2, 1, "Status"));
-    headerRow0.appendChild(createTH(2, 1, "Message"));
-
-    var headerRow1 = header.insertRow();
-    headerRow1.className = "header2";
-    headerRow1.appendChild(createTH(1, 1, "DWU"));
-    headerRow1.appendChild(createTH(1, 1, "RAIN"));
-    headerRow1.appendChild(createTH(1, 1, "Irrigation"));
-    headerRow1.appendChild(createTH(1, 1, "AWC"));
-    headerRow1.appendChild(createTH(1, 1, "Permitted"));
-    headerRow1.appendChild(createTH(1, 1, "Observed"));
-
-    var nbRecords = {{nb_records}};
-    var firstToDisplay = Math.max(nbRecords - nbToDisplay, 0);
-
-   // Insert the data
-        var row;
-        var td;
-        var recNO = 0;
-   	{% for object in object_list %}
-        if (recNO++ >= firstToDisplay) {
-
-        row = tbl.insertRow();
-             {% if object.date == today_date  %}row.className = "row-today" {% endif %}
-	     {% if object.date < today_date   %}row.className = "row-past"  {% endif %}
-	     {% if object.date > today_date   %}row.className = "row-future"{% endif %}
-      
-        td = row.insertCell();
-        td.innerHTML = "{{ object.date|date:'Y-m-d' }}";
-
-        td = row.insertCell();
-        td.innerHTML = "{{ object.crop_stage}}";
-
-        td = row.insertCell();
-        {% if object.computed_from_probes %}
-           td.className = "computed-from-probes"
-        {% endif %}
-        td.appendChild(document.createTextNode("{{ object.daily_water_use|floatformat:2 }}"));
-
-
-        td = row.insertCell();
-        {% if object.computed_from_probes %}
-           td.className = "computed-from-probes"
-        {% endif %}
-        td.appendChild(document.createTextNode("{{object.rain|floatformat:2 }}"));
-
-
-        td = row.insertCell();
-        {% if object.computed_from_probes %}
-           td.className = "computed-from-probes"
-        {% endif %}
-        td.appendChild(document.createTextNode("{{object.irrigation|floatformat:2 }}"));
-
-
-
-        // NEED TO ADD IMAGE
-        td = row.insertCell();
-        var cellContent = "";
-        {% if object.computed_from_probes %}
-           cellContent += "<i class=\"fa fa-rss\"></i>";
-        {% endif %}
-        cellContent += "{{ object.average_water_content|floatformat:2 }}";
-        {% if object.average_water_content <= 0.0 %}
-            cellContent += ' <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> ';
-        {% endif %}
-        td.innerHTML = cellContent;
-
-
-        td = row.insertCell();
-        td.appendChild(document.createTextNode("{{ object.max_temp_2in|floatformat:1}}"));
-
-        td = row.insertCell();
-        {% if not object.date|is_future %}
-          var cellContent =  "{{ object.max_observed_temp_2in|floatformat:1 }}";
-          {% if object.max_temp_2in < object.max_observed_temp_2in %}
-             cellContent +=  ' <img src="/static/img/svg/thermometer.svg" alt="therm" height= "14px" style="vertical-align:text-bottom;" ></img>';
-          {% endif %}
-          td.innerHTML = cellContent;
-        {% endif %}
-
-        td = row.insertCell();
-        {% if object.irrigate_flag %}
-            td.className = "alert-inline alert-danger";
-            b = td.appendChild(document.createElement("B"));
-            b.appendChild(document.createTextNode("Irrigate Today"));
-            {% if object.average_water_content <= 0.0 %}
-                td.appendChild(document.createTextNode(" AWC "));
-	    {% endif %}
-	    {% if object.max_temp_2in < object.max_observed_temp_2in %}
-                td.appendChild(document.createTextNode(" Temp "));
-	    {% endif %}
-
-
-	{% elif object.check_sensors_flag %}
-            td.className = "alert-inline alert-warning";
-            td.appendChild(document.createTextNode("Irrigate 1-5 Days"));
-        {% endif %}
-
-        {% if object.dry_down_flag %}
-            td.className = "alert-inline alert-info";
-            td.appendChild(document.createTextNode("Dry-Down"));
-
-        {% endif %}
-
-
-
-        td = row.insertCell();
-        td.innerHTML = "{{ object.message}}";
-
-     }
-
-	{% endfor %}
-
-    return tbl;
-}
-	   
-</script>
-
-  <h1>
-    <i class="fa fa-pencil-square-o fa-fw"></i>
-    Water Register
+  
+ <h1>
+  	
+    <i class="fa fa-pencil-square-o fa-fw"> </i>
+   
+     	Water register for <input type="text" id="datepicker" 
+    	name="date"
+    	value='{{report_date |date:"Y-m-d" }}' 
+    	style="width: 6em">
   </h1>
+  
+  
 
   <h2>
     <em>{{crop_season}}</em>
@@ -179,32 +29,136 @@ function tableCreate(nbToDisplay){
 
 
 
-
-
-
-
   {% if object_list %}
-
-<!-- Doing with radio buttons prompts the browser to ask the user about
-leaving the page. Very annoying.
-<div>
   
-<form novalidate>
-  Select what to display: <br>
-    Display complete planting season: <input type="radio" name="water"
-					     onclick="redrawTable(1000)"/> <br/>
-    Display previous and next 7 days: <input type="radio" name="water"
-					     onclick="redrawTable(15)"/> <br/>
-</form>
+  
 
-</div>
--->
 
-<button id="nb_rows_selection" type="button" onclick="redrawTable()" style = "margin-bottom: 10px">Show complete season</button>
+
+<button id="rows_option" type="button" 
+		style = "margin-bottom: 10px">Show complete season</button>
 <br/>
 
 
-  <div id = "newTable">  </div>
+    <table class="formset water-register" id="water-register-table">
+
+      <thead>
+      	<tr class="header1">
+          <th rowspan=2>Date</th>
+          <th rowspan=2>Growth Stage</th>
+          <th colspan=4>Water</th>
+	  <th colspan=2>Max Soil Temp (&deg;F)</th>
+	  <!--th rowspan=2>
+	    <i class="fa fa-rss"></i> 
+	    <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
+	  </th-->
+          <th rowspan=2>Status</th>
+	  <th rowspan=2>Message</th>
+       	</tr>
+      	<tr class="header2">
+          <th>DWU</th>
+          <th>Rain</th>
+          <th>Irrigation</th>
+          <th>AWC</th>
+	  <th>Permitted</th>
+	  <th>Observed</th>
+       	</tr>
+      </thead>
+
+      <tbody>
+	{% for object in object_list %}
+	  <tr 
+	     {% if object.date|is_today  %}class="row-today" {% endif %}
+	     {% if object.date|is_past   %}class="row-past"  {% endif %}
+	     {% if object.date|is_future %}class="row-future"{% endif %}
+  	     >
+	      <td>
+		{{ object.date|date:"Y-m-d" }}
+	      </td>
+	      <td>
+		{{ object.crop_stage }}
+	      </td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
+		{{ object.daily_water_use|floatformat:2 }}
+	      </td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
+		  {{ object.rain|floatformat:2 }}
+	      </td>
+	      <td {% if object.computed_from_probes %}
+		  class="computed-from-probes"
+		  {% endif %}
+		  >
+		  {{ object.irrigation|floatformat:2 }}
+	      </td>
+	      <td>
+		  {% if object.computed_from_probes %}
+		    <i class="fa fa-rss"></i>
+		  {% endif %}
+		  {{ object.average_water_content|floatformat:2 }}
+		  {% if object.average_water_content <= 0.0 %}
+		    <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
+		  {% endif %}
+	      </td>
+	      <td>
+		    {{ object.max_temp_2in|floatformat:1 }}
+	      </td>
+	      <td>
+		  {% if not object.date|is_future %}
+			{{ object.max_observed_temp_2in|floatformat:1 }}
+			{% if object.max_temp_2in < object.max_observed_temp_2in %}
+			<img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>	
+			{% endif %}
+		  {% endif %}
+	      </td>
+	      <!--td>
+		{% if object.computed_from_probes %}
+		  <i class="fa fa-rss"></i>
+		{% endif %}
+		{% if object.too_hot_flag %}
+		  <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>		  
+		{% endif %}
+	      </td-->
+	      <td>
+		{% if object.irrigate_flag %}
+		  <div class="alert-inline alert-danger">
+		    <b>Irrigate Today</b>
+		    {% if object.average_water_content <= 0.0 %}
+		      AWC
+		    {% endif %}
+		    {% if object.max_temp_2in < object.max_observed_temp_2in %}
+		      Temp
+		    {% endif %}
+		  </div>
+		{% elif object.check_sensors_flag %}
+		  <div class="alert-inline alert-warning">
+		    Irrigate 1-5 Days
+		  </div>
+		{% endif %}
+		{% if object.dry_down_flag %}
+		  <div class="alert-inline alert-info">
+		    Dry-Down
+		  </div>
+		{% endif %}
+	      </td>
+	      <td>
+		{{ object.message }}
+	      </td>
+	  </tr>
+	{% endfor %}
+      </tbody>
+    </table>
+
+
+
+
+
+
 
   <h3>Plots of recent activity</h3>
 
@@ -218,13 +172,12 @@ leaving the page. Very annoying.
     </div> <!-- col-md-6-->
   </div> <!-- row -->
 
-  <script> document.getElementById("newTable").appendChild(tableCreate(17))</script> 
 
   {% else %}
 
-    {% if not crop_season.season_start_date <= today_data <= crop_season.season_end_date %}
+    {% if not crop_season.season_start_date <= report_date <= crop_season.season_end_date %}
         <div class="alert alert-danger">
-          No data to display.  Today ({{today_date|date:'Y-m-d'}}) is outside the crop season period
+          No data to display.  Today ({{report_date|date:'Y-m-d'}}) is outside the crop season period
           ({{crop_season.season_start_date|date:'Y-m-d'}} to {{crop_season.season_end_date|date:'Y-m-d'}}).
         </div>
     {% else %}    
@@ -239,5 +192,114 @@ leaving the page. Very annoying.
 
 
 {% block scripts %}
+<script>
+							
+var showComplete = "From season start";	
+var showLast15 = "Show last 15"	
+var report_date_index;			
+
+var startDate = new Date({{crop_season.season_start_date.year}},
+							  {{crop_season.season_start_date.month}}-1,
+							  {{crop_season.season_start_date.day}});
+							  
+var reportDate = new Date({{report_date.year}},
+							  {{report_date.month}}-1,
+							  {{report_date.day}});
+
+// # of observed (non-predicted) records.							   
+var lastToShow = {{object_list | length}};
+
+$(document).ready(function() 
+    {
+    	
+    	last15();
+    	
+    	
+    	// Apply toggle to 
+    	$("#rows_option").click(
+    		function() {
+    			if ($(this).html() == showComplete) {
+    				var tableRows = document.getElementById("water-register-table").rows;
+					// Hide everything past lastToShow. Fir WR is in row 2 of table
+					$("#water-register-table tr").css("display", "");
+					for (var i = lastToShow + 2; i < tableRows.length; i++) {
+						tableRows[i].style.display = "none";
+					}
+    				
+    				$("#rows_option").html(showLast15);
+    			} else {
+     				$("#rows_option").html(showComplete);
+    				last15();
+	
+    			}
+    			
+    		}
+    	);
+    	
+    	// Original setting
+    	$("#rows_option").html(showComplete);
+    	
+    }
+  );
+
+
+
+// Show the last 15 records. Will be
+// indexOfCurrent plus up to 7 more
+// As many previously to make 15 records
+
+function last15() {
+	
+	// First eerything to display
+	$("#water-register-table tr").css("display", "");
+	
+	var tableRows = document.getElementById("water-register-table").rows;
+	
+	// Hide beginning of table
+	// Starts at 2 otherwise hide table headers as well
+	for (var i = 2; i < lastToShow - 15; i++) {
+		tableRows[i].style.display = "none";
+		
+	}
+	
+	// Hide everything past lastToShow. Fir WR is in row 2 of table
+				
+	for (var i = lastToShow + 2; i < tableRows.length; i++) {
+		tableRows[i].style.display = "none";
+	}
+}
+
+
+
+
+/**
+ * Code adpated from stackoverflow and google.
+ */
+function daysBetween(firstDate, secondDate) {
+	var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+	return   Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+}
+
+$(function() {
+	$( "#datepicker" ).datepicker(
+		{
+			onSelect: function (dateText, inst) {
+				var newDate = new Date(dateText);
+				lastToShow = Math.min(daysBetween(startDate, newDate)+7, {{object_list | length }});
+				last15();
+				
+			
+				
+			},
+			minDate: new Date({{crop_season.season_start_date.year}},
+							  {{crop_season.season_start_date.month}}-1,
+							  {{crop_season.season_start_date.day}}),
+			maxDate: new Date({{crop_season.season_end_date.year}},
+							  {{crop_season.season_end_date.month}}-1,
+							  {{crop_season.season_end_date.day}})
+		}		
+	);
+});
+</script>
 {% endblock %}
 

@@ -264,7 +264,6 @@ def earliest_register_to_update(today_date,
 
         if (water_register is None or
             water_register.mdate <= wh.mdate):
-            print "############## changing"
             earliest_to_update = wh.date
 
 
@@ -286,7 +285,6 @@ def earliest_register_to_update(today_date,
 
         if (water_register is None or
             water_register.mdate <= pr.mdate):
-            print "####### Probe changing"
             earliest_to_update = pr.reading_datetime.date()
 
     return earliest_to_update
@@ -323,7 +321,6 @@ def generate_water_register(crop_season,
     if report_date is None:
         report_date = datetime.date.today();
 
-    print "Report date: ", report_date
     if COMPUTE_FULL_SEASON:
         end_date = crop_season.season_end_date + timedelta(1)
     else:
@@ -336,8 +333,6 @@ def generate_water_register(crop_season,
     ## Find out what is the earliest water register to update, based on modification dates.
 
     earliest = earliest_register_to_update(report_date, crop_season, field)
-    print 'Earliest to update: ', earliest
-
 
     ####
     ## Cache values / queries for later use
@@ -369,10 +364,6 @@ def generate_water_register(crop_season,
 
     maxWater = float(field.soil_type.max_available_water)
 
-    last_wr = wr_query.order_by('-date').first()
-    if last_wr is not None:
-        print "last wr: ", last_wr.date
-
 
     ## Assume that each field starts with a full water profile
     AWC_initial = maxWater
@@ -384,10 +375,11 @@ def generate_water_register(crop_season,
 
 
     first_process_date = earliest
+
+    ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
-        print "Computing for date: ", date
         ####
-        ## Get AWC for yesterday
+        ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
         ##
         yesterday = date - timedelta(days=1)
 
@@ -398,10 +390,23 @@ def generate_water_register(crop_season,
             try:
                 wr_prev = wr_query.filter(date=yesterday)[0]
                 AWC_prev = wr_prev.average_water_content
+                irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+                irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
             except ( ObjectDoesNotExist,  IndexError, ):
                 AWC_prev = AWC_initial
+                irrigate_to_max_seen_prev = False
+                irrigate_to_max_achieved_prev = False
+
         else:
             AWC_prev = wr_prev.average_water_content
+            irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+            irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
+
+            irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+            irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
+
+
+
         ####
         
 
@@ -475,6 +480,7 @@ def generate_water_register(crop_season,
             wr.cuser_id = user.pk
         wr.muser_id = user.pk
 
+
         ## Write to the database
         wr.save()
         
@@ -512,8 +518,11 @@ def generate_water_register(crop_season,
 
         wr = wr_query.filter(date=date)[0]
 
-        if wr.irrigate_to_max: 
+        ## Will handle both the case where the first irrigate_to_flag set to 
+        ## true was in a register not updated for this report.
+        if wr.irrigate_to_max or wr.irrigate_to_max_seen: 
             irrigate_to_max_flag_seen = True
+            wr.irrigate_to_max_seen = True
 
         #####
         ## If the irrigate_to_max flag has been seen, irrigate & check
@@ -553,13 +562,14 @@ def generate_water_register(crop_season,
                     except ObjectDoesNotExist:
                         pass
 
-        else:
-            if irrigate_to_max_achieved or irrigate_to_max_days >= 3:
+        else:  # execute below if irrigate_to_max_flag_seen is true
+            if wr.irrigate_to_max_achieved or irrigate_to_max_achieved or irrigate_to_max_days >= 3:
                 wr.irrigate_flag = False
                 wr.dry_down_flag = True
             else:
                 irrigate_to_max_days += 1
                 if wr.average_water_content >= maxWater:
+                    wr.irrigate_to_max_achieved = True
                     irrigate_to_max_achieved = True
                     wr.irrigate_flag         = False
                     wr.check_sensors_flag    = False
