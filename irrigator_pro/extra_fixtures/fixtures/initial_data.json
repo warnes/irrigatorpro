@@ -2153,8 +2153,8 @@
     "pk": 1, 
     "model": "sites.site", 
     "fields": {
-        "domain": "example.com", 
-        "name": "example.com"
+        "domain": "irrigatorpro.org", 
+        "name": "irrigatorpro.org"
     }
 },
 {
