@@ -40,15 +40,11 @@ class NotificationsSetupView(TemplateView):
 
     # Post method is used when adding or editing a row
     def post(self, request, *args, **kwargs):
-        print "Into post"
 
         pk = request.POST["pk"]
-        print "pk of row to add or edit: ", pk
         if (pk == "-1"):
-            print "New Rule"
             notifications = NotificationsRule()
         else:
-            print "Existing rule"
             notifications = NotificationsRule.objects.get(pk = pk)
             notifications.recipients.clear()
             notifications.field_list.clear()
@@ -58,17 +54,13 @@ class NotificationsSetupView(TemplateView):
         notifications.save()
         
         for x in request.POST.getlist("select-fields"):
-            print "Adding field: ", x
             notifications.field_list.add(Field.objects.get(pk=x))
 
-        print request.POST.get('communication-type')
         notifications.notification_type = request.POST.get('communication-type')
-
-        print request.POST.get('alert-level')
         notifications.level = request.POST.get('alert-level')
+        notifications.label = request.POST.get('label')
 
         for x in request.POST.getlist("select-users"):
-            print "Adding user: ", x
             notifications.recipients.add(User.objects.get(pk=x))
 
         
@@ -91,11 +83,9 @@ class NotificationsSetupView(TemplateView):
         for farm in farms_filter(self.request.user):
             fields = []
             for field in farm.get_fields():
-                print "Adding ", field, " to ", farm
                 fields.append(field)
             farm_fields[farm] = fields
 
-        print "returning ", farm_fields
         return farm_fields
 
 
@@ -105,11 +95,9 @@ class NotificationsSetupView(TemplateView):
         for farm in farms_filter(self.request.user):
             users = []
             for user in farm.get_farmer_and_user_objects():
-                print "Adding ", user, " to ", farm
                 users.append(user)
             farm_users[farm] = users
 
-        print "returning ", farm_users
         return farm_users
 
 
@@ -117,7 +105,6 @@ class NotificationsSetupView(TemplateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        print "Into dispatch"
         # There are either parameters for year, month, day, or none.
         year_param = kwargs.get('year', None)
         self.year = None
