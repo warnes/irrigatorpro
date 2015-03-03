@@ -343,7 +343,12 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+LOGIN_REDIRECT_URL = '/report/summary_report/'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/settings/contact_info/'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/settings/contact_info/'
+ACCOUNT_LOGIN_REDIRECT_URL = '/farms/settings/contact_info/'
+
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"      # User can login using either userid or email
 ACCOUNT_EMAIL_REQUIRED        = True         # User is required to hand over an e-mail address when signing up.
