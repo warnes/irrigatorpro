@@ -7,14 +7,18 @@
   	
     <i class="fa fa-pencil-square-o fa-fw"> </i>
    
-    <form method="get">
+    <form id = "change-date" method="get">
     	Daily report for <input type="text" id="datepicker" 
     	name="date"
     	value='{{report_date |date:"Y-m-d" }}' 
+    	onchange="validateAndSubmit()"
     	style="width: 6em">
     </form>
   </h1>
- <!--   	onchange="this.form.submit()" -->
+   <div id="date-error" style="color:red; visibility: hidden">
+  		Date must be entered in the format YYYY-MM-DD and be a valid day
+  </div>
+
 
   <h2>
     <em>{{crop_season}}</em>
@@ -115,6 +119,20 @@
 <script>
 
 
+function validateAndSubmit() {
+	
+	var newDate;
+	try {
+		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+		$("#change-date").submit();
+	} catch (e) {
+		console.log("Wrong date format");
+		$("#date-error").css("visibility", "visible");
+		return;
+	}
+	
+}
+
 $(document).ready(function() 
     {
     	$('table').tablesorter( {
@@ -136,9 +154,8 @@ $(document).ready(function()
 	
 	$( "#datepicker" ).datepicker(
 		{
-			onSelect: function (dateText, inst) {
-				$(this).parent('form').submit();
-			}
+			maxDate: new Date(),
+			minDate: new Date(2013, 03, 01)
 		}		
 	);
 	
