@@ -13,10 +13,15 @@
     <i class="fa fa-pencil-square-o fa-fw"> </i>
    
      	Water register for <input type="text" id="datepicker" 
+     	onchange="dateChangedManually()"
     	name="date"
     	value='{{report_date |date:"Y-m-d" }}' 
     	style="width: 6em">
   </h1>
+  
+  <div id="date-error" style="color:red; visibility: hidden">
+  		Date must be entered in the format YYYY-MM-DD and be a valid day
+  </div>
   
   
 
@@ -31,10 +36,6 @@
 
   {% if object_list %}
   
-  
-
-
-
 <button id="rows_option" type="button" 
 		style = "margin-bottom: 10px">Show complete season</button>
 <br/>
@@ -280,17 +281,25 @@ function daysBetween(firstDate, secondDate) {
 	return   Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
 }
 
+
+function dateChangedManually() {
+	
+	var newDate;
+	try {
+		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+		$("#date-error").css("visibility", "hidden");
+	} catch (e) {
+		console.log("Wrong date format");
+		$("#date-error").css("visibility", "visible");
+		return;
+	}
+	lastToShow = Math.min(daysBetween(startDate, newDate)+7, {{object_list | length }});
+	last15();
+}
+
 $(function() {
 	$( "#datepicker" ).datepicker(
 		{
-			onSelect: function (dateText, inst) {
-				var newDate = new Date(dateText);
-				lastToShow = Math.min(daysBetween(startDate, newDate)+7, {{object_list | length }});
-				last15();
-				
-			
-				
-			},
 			minDate: new Date({{crop_season.season_start_date.year}},
 							  {{crop_season.season_start_date.month}}-1,
 							  {{crop_season.season_start_date.day}}),
