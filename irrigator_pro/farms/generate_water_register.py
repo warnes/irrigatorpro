@@ -227,11 +227,11 @@ OPTIMIZE=True
 # on the modification dates for the WaterHistory, ProbeReadings,
 # and WaterRegister. Want to allow for a WaterHistory or ProbeReading
 # to be entered or modified long after the date of the event.
-def earliest_register_to_update(today_date,
+def earliest_register_to_update(report_date,
                                crop_season,
                                field):
 
-    earliest_to_update = today_date
+    earliest_to_update = report_date
     wh_list = WaterHistory.objects.filter(crop_season=crop_season,
                                           field_list=field).all().order_by('-mdate')
 
@@ -249,6 +249,9 @@ def earliest_register_to_update(today_date,
         probe = None
         probe_reading_list = None
     
+    # The water history list is sorted in decreasing order of data. If there is
+    # nocorresponding water register for this date then we need to updated
+    # the earliest to update
     for wh in wh_list:
         # Already know that we're updating this far back.
         if wh.date > earliest_to_update: continue
@@ -256,38 +259,43 @@ def earliest_register_to_update(today_date,
         try:
             water_register = wr_query.get(date = wh.date)
         except ObjectDoesNotExist:
+            earliest_to_update = wh.date
             continue
 
-        # Start earlier if the register does not exist, 
-        # or the modification date of the wather history
+        # Start earlier if or the modification date of the wather history
         # predates the modification date on the register.
 
-        if (water_register is None or
-            water_register.mdate <= wh.mdate):
+        if water_register.mdate <= wh.mdate:
             earliest_to_update = wh.date
 
 
     # Also look at probe readings. The query
-    # may have bougt readings from pervious seasons,
+    # may have brought readings from previous seasons,
     # so interrupt the loop when we go before
     # crop_season start_date
 
-    if  probe_reading_list is None:  return earliest_to_update
+    if  probe_reading_list is not None:
 
-    for pr in probe_reading_list:
-        if pr.reading_datetime.date() < crop_season.season_start_date: break
-        if pr.reading_datetime.date() > earliest_to_update: continue
+        for pr in probe_reading_list:
+            if pr.reading_datetime.date() < crop_season.season_start_date: break
+            if pr.reading_datetime.date() > earliest_to_update: continue
         
-        try:
-            water_register = wr_query.get(date = pr.reading_datetime.date())
-        except ObjectDoesNotExist:
-            continue
+            try:
+                water_register = wr_query.get(date = pr.reading_datetime.date())
+            except ObjectDoesNotExist:
+                continue
 
-        if (water_register is None or
-            water_register.mdate <= pr.mdate):
-            earliest_to_update = pr.reading_datetime.date()
+            if (water_register is None or
+                water_register.mdate <= pr.mdate):
+                earliest_to_update = pr.reading_datetime.date()
 
-    return earliest_to_update
+    # Still have to consider the case that there is nothing to update
+    # based on the water history, but the water registers have not have
+    # not been created up to the report date
+
+    latest_wr = wr_query.latest('date')
+    return min(earliest_to_update, latest_wr.date + timedelta(1))
+
         
 
 
@@ -325,14 +333,11 @@ def generate_water_register(crop_season,
         end_date = crop_season.season_end_date + timedelta(1)
     else:
         today_plus_delta = report_date + timedelta(days=WATER_REGISTER_DELTA)
-        end_date = min(today_plus_delta, crop_season.season_end_date)
+        end_date = min(today_plus_delta, crop_season.season_end_date) + timedelta(1)
     
     ####
 
 
-    ## Find out what is the earliest water register to update, based on modification dates.
-
-    earliest = earliest_register_to_update(report_date, crop_season, field)
 
     ####
     ## Cache values / queries for later use
@@ -355,6 +360,10 @@ def generate_water_register(crop_season,
     crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
                                                               crop_season__field_list=field).distinct().all()
     ####
+
+    ## Find out what is the earliest water register to update, based on modification dates.
+
+    earliest = earliest_register_to_update(report_date, crop_season, field)
 
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
@@ -565,7 +574,6 @@ def generate_water_register(crop_season,
                             if wr_future.average_water_content < 0.00:
                                 wr.check_sensors_flag = True
                                 wr.days_to_irrigation = (date_future - date).days
-                                print 'Will water in: ',  wr.days_to_irrigation, ' on ', date
                                 break
                         except ObjectDoesNotExist:
                             pass

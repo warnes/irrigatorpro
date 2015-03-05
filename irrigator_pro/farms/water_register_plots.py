@@ -12,18 +12,18 @@ import django
 
     
 
-def get_today_date(date_str):
+def get_report_date(date_str):
     # date_str has the form yyyy-mm-dd.
     pattern = re.compile("(\d+)\-(\d+)\-(\d+)")
     m = pattern.match(date_str)
 
-    today_date = datetime.date(int (m.group(1)), int (m.group(2)), int (m.group(3)))
-    print 'today_date: ', today_date
-    return today_date
+    report_date = datetime.date(int (m.group(1)), int (m.group(2)), int (m.group(3)))
+    print 'report_date: ', report_date
+    return report_date
 
 
 
-def get_water_register_list(today_date, crop_season, field):
+def get_water_register_list(report_date, crop_season, field):
 
     # Different formulas whether today is during or after crop season:
     # Within crop season: everything till today plus 10 days
@@ -32,7 +32,7 @@ def get_water_register_list(today_date, crop_season, field):
     cs = CropSeason.objects.get(pk=crop_season)
     fld = Field.objects.get(pk=field)
     start_date = cs.season_start_date
-    end_date = min(today_date + datetime.timedelta(days = 10),
+    end_date = min(report_date + datetime.timedelta(days = 10),
                    cs.season_end_date)
 
     wr_list = WaterRegister.objects.filter(crop_season = cs,
@@ -45,8 +45,8 @@ def get_water_register_list(today_date, crop_season, field):
 # @method_decorator(login_required)
 def plot_daily_use(request, crop_season, field):
 
-    today_date = get_today_date(request.session['today_date'])
-    wr_list = get_water_register_list(today_date, crop_season, field)
+    report_date = get_report_date(request.session['report_date'])
+    wr_list = get_water_register_list(report_date, crop_season, field)
 
     fig=Figure()
 
@@ -71,12 +71,12 @@ def plot_daily_use(request, crop_season, field):
     ir_post=[]
     for wr in wr_list:
         x.append(wr.date)
-        if (wr.date <= today_date):
+        if (wr.date <= report_date):
             wu_pre.append(wr.daily_water_use)
             rf_pre.append(wr.rain)
             ir_pre.append(wr.irrigation)
             x_pre.append(wr.date)
-        if (wr.date >= today_date):
+        if (wr.date >= report_date):
             wu_post.append(wr.daily_water_use)
             rf_post.append(wr.rain)
             ir_post.append(wr.irrigation)
@@ -108,8 +108,8 @@ def plot_daily_use(request, crop_season, field):
 
 def plot_cumulative_use(request, crop_season, field):
 
-    today_date = get_today_date(request.session['today_date'])
-    wr_list = get_water_register_list(today_date, crop_season, field)
+    report_date = get_report_date(request.session['report_date'])
+    wr_list = get_water_register_list(report_date, crop_season, field)
 
     fig=Figure()
 
