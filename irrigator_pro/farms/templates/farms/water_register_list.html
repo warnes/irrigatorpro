@@ -37,7 +37,7 @@
   {% if object_list %}
   
 <button id="rows_option" type="button" 
-		style = "margin-bottom: 10px">Show complete season</button>
+		style = "margin-bottom: 10px"></button>
 <br/>
 
 
@@ -68,11 +68,7 @@
 
       <tbody>
 	{% for object in object_list %}
-	  <tr 
-	     {% if object.date|is_today  %}class="row-today" {% endif %}
-	     {% if object.date|is_past   %}class="row-past"  {% endif %}
-	     {% if object.date|is_future %}class="row-future"{% endif %}
-  	     >
+	  <tr>
 	      <td>
 		{{ object.date|date:"Y-m-d" }}
 	      </td>
@@ -196,8 +192,7 @@
 <script>
 							
 var showComplete = "From season start";	
-var showLast15 = "Show last 15"	
-var report_date_index;			
+var showLast15 = "Show last 15"		
 
 var startDate = new Date({{crop_season.season_start_date.year}},
 							  {{crop_season.season_start_date.month}}-1,
@@ -213,15 +208,15 @@ var lastToShow = {{object_list | length}};
 $(document).ready(function() 
     {
     	
+    	assignRowColoring(reportDate);
     	last15();
+    	$("#rows_option").html(showComplete);
     	
-    	
-    	// Apply toggle to 
-    	$("#rows_option").click(
+       	$("#rows_option").click(
     		function() {
     			if ($(this).html() == showComplete) {
     				var tableRows = document.getElementById("water-register-table").rows;
-					// Hide everything past lastToShow. Fir WR is in row 2 of table
+					// Hide everything past lastToShow. First WR is in row 2 of table
 					$("#water-register-table tr").css("display", "");
 					for (var i = lastToShow + 2; i < tableRows.length; i++) {
 						tableRows[i].style.display = "none";
@@ -236,10 +231,6 @@ $(document).ready(function()
     			
     		}
     	);
-    	
-    	// Original setting
-    	$("#rows_option").html(showComplete);
-    	
     }
   );
 
@@ -251,14 +242,14 @@ $(document).ready(function()
 
 function last15() {
 	
-	// First eerything to display
+	// First set everything to display
 	$("#water-register-table tr").css("display", "");
 	
 	var tableRows = document.getElementById("water-register-table").rows;
 	
 	// Hide beginning of table
 	// Starts at 2 otherwise hide table headers as well
-	for (var i = 2; i < lastToShow - 15; i++) {
+	for (var i = 2; i < lastToShow - 13; i++) {
 		tableRows[i].style.display = "none";
 		
 	}
@@ -281,20 +272,39 @@ function daysBetween(firstDate, secondDate) {
 	return   Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
 }
 
+// Reassign coloring based on new date
+
+function assignRowColoring(thisDate) {
+	
+	var today_index = daysBetween(startDate, thisDate) + 2;
+	var tableRows = document.getElementById("water-register-table").rows;
+	for (var i = 2; i < today_index; i++) {
+		tableRows[i].className = "row-past";
+	}
+	for (var i = today_index + 1; i < tableRows.length; i++) {
+		tableRows[i].className = "row-future";
+	}
+	tableRows[today_index].className = "row-today";
+}
+
 
 function dateChangedManually() {
 	
-	var newDate;
+	var newReportDate;
 	try {
-		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+		newReportDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
 		$("#date-error").css("visibility", "hidden");
+		
+		assignRowColoring(newReportDate);
+		
+		lastToShow = Math.min(daysBetween(startDate, newReportDate)+8, {{object_list | length }});
+		last15();
 	} catch (e) {
-		console.log("Wrong date format");
+		
 		$("#date-error").css("visibility", "visible");
 		return;
 	}
-	lastToShow = Math.min(daysBetween(startDate, newDate)+7, {{object_list | length }});
-	last15();
+	
 }
 
 $(function() {
