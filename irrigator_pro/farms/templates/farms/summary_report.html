@@ -74,7 +74,7 @@
 		    {% if object.water_register_object.average_water_content <= 0.0 %}
 		      AWC
 		    {% endif %}
-		    {% if object.water_register_object.max_temp_2in < object.water_register_object.max_observed_temp_2in %}
+		    {% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
 		      Temp
 		    {% endif %}
 		  </div>
