@@ -29,6 +29,12 @@
     <em>{{crop_season}}</em>
     - 
     <em>{{field}}</em>
+
+    <button id="rows_option" 
+            class="btn btn-default float-right"
+            type="button" 
+            style="margin-bottom: 10px">Show Entire Season</button>
+
   </h2>
 
 
@@ -36,11 +42,6 @@
 
   {% if object_list %}
   
-<button id="rows_option" type="button" 
-		style = "margin-bottom: 10px">Show complete season</button>
-<br/>
-
-
     <table class="formset water-register" id="water-register-table">
 
       <thead>
@@ -156,13 +157,8 @@
     </table>
 
 
-
-
-
-
-
-  <h3>Plots of recent activity</h3>
-
+  <BR>
+  <BR>
 
   <div class = "row">
     <div class = "col-md-6 col-xs-12">
@@ -195,82 +191,90 @@
 {% block scripts %}
 <script>
 							
-var showComplete = "From season start";	
-var showLast15 = "Show last 15"	
+var showCompleteText = "Show Entire Season";	
+var showLast15Text   = "Show &plusmn;7 Days"	
 var report_date_index;			
 
 var startDate = new Date({{crop_season.season_start_date.year}},
-							  {{crop_season.season_start_date.month}}-1,
-							  {{crop_season.season_start_date.day}});
+                         {{crop_season.season_start_date.month}}-1,
+                         {{crop_season.season_start_date.day}});
 							  
 var reportDate = new Date({{report_date.year}},
-							  {{report_date.month}}-1,
-							  {{report_date.day}});
+			  {{report_date.month}}-1,
+			  {{report_date.day}});
 
 // # of observed (non-predicted) records.							   
 var lastToShow = {{object_list | length}};
 
-$(document).ready(function() 
+$(document).ready(
+    function() 
     {
+    	// Initial settings
+    	$("#rows_option").html(showCompleteText);
+    	show15();
     	
-    	last15();
-    	
-    	
-    	// Apply toggle to 
+    	// Apply toggle to table
     	$("#rows_option").click(
     		function() {
-    			if ($(this).html() == showComplete) {
-    				var tableRows = document.getElementById("water-register-table").rows;
-					// Hide everything past lastToShow. Fir WR is in row 2 of table
-					$("#water-register-table tr").css("display", "");
-					for (var i = lastToShow + 2; i < tableRows.length; i++) {
-						tableRows[i].style.display = "none";
-					}
-    				
-    				$("#rows_option").html(showLast15);
+    			if ($(this).html() == showCompleteText) {
+    				$("#rows_option").html(showLast15Text);
+    				showAll();
     			} else {
-     				$("#rows_option").html(showComplete);
-    				last15();
-	
+     				$("#rows_option").html(showCompleteText);
+    				show15();
     			}
-    			
     		}
     	);
-    	
-    	// Original setting
-    	$("#rows_option").html(showComplete);
-    	
     }
   );
 
 
-
-// Show the last 15 records. Will be
-// indexOfCurrent plus up to 7 more
-// As many previously to make 15 records
-
-function last15() {
-	
-	// First eerything to display
-	$("#water-register-table tr").css("display", "");
-	
+// Show rows within 7 days of the report date
+function show15() {
 	var tableRows = document.getElementById("water-register-table").rows;
+        var reportDateVal = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val() );
 	
-	// Hide beginning of table
 	// Starts at 2 otherwise hide table headers as well
-	for (var i = 2; i < lastToShow - 15; i++) {
-		tableRows[i].style.display = "none";
-		
+	for (var i = 2; i < tableRows.length; i++) {
+                thisDate= $.datepicker.parseDate('yy-mm-dd', $.trim(tableRows[i].cells[0].innerHTML) ); 
+		if ( Math.abs(daysBetween(reportDateVal, thisDate)) <= 7) 
+                  {
+		    tableRows[i].style.display = "";
+                  } 
+                else
+                  {
+		    tableRows[i].style.display = "none";
+                  } 
 	}
-	
-	// Hide everything past lastToShow. Fir WR is in row 2 of table
-				
-	for (var i = lastToShow + 2; i < tableRows.length; i++) {
-		tableRows[i].style.display = "none";
-	}
+        colorPastTodayFuture();
 }
 
+function colorPastTodayFuture() {
+        var tableRows = document.getElementById("water-register-table").rows;
+        var reportDateVal = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val() );
 
+        // Starts at 2 otherwise hide table headers as well
+        for (var i = 2; i < tableRows.length; i++) {
+                thisDate= $.datepicker.parseDate('yy-mm-dd', $.trim(tableRows[i].cells[0].innerHTML) );
+                if (daysBetween(reportDateVal, thisDate) < 0)
+                  {
+                    tableRows[i].className="row-past";
+                  }
+                else if (daysBetween(reportDateVal, thisDate) == 0)
+                  {
+                    tableRows[i].className="row-today";
+                  }
+                else if (daysBetween(reportDateVal, thisDate) > 0)
+                  {
+                    tableRows[i].className="row-future";
+                  }
+        }
+}
+
+function showAll() {
+	$("#water-register-table tr").css("display", "");
+        colorPastTodayFuture();
+}
 
 
 /**
@@ -278,7 +282,7 @@ function last15() {
  */
 function daysBetween(firstDate, secondDate) {
 	var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
-	return   Math.round(Math.abs((firstDate.getTime() - secondDate.getTime())/(oneDay)));
+	return   Math.round((secondDate.getTime() - firstDate.getTime())/(oneDay));
 }
 
 
@@ -294,7 +298,7 @@ function dateChangedManually() {
 		return;
 	}
 	lastToShow = Math.min(daysBetween(startDate, newDate)+7, {{object_list | length }});
-	last15();
+	show15();
 }
 
 $(function() {
