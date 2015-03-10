@@ -35,7 +35,7 @@
       	<th rowspan=2>Growth Stage</th>
       	<th rowspan=2>Status</th>
       	<th rowspan=2 class="sorter-false">Message</th>
-      	<th rowspan=2 class="sorter-false">Days to Irrigation</th>
+      	<th rowspan=2>Days to Irrigation</th>
       	<th colspan=2 class="sorter-false">Cumulative Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
       </tr>
@@ -74,7 +74,7 @@
 		    {% if object.water_register_object.average_water_content <= 0.0 %}
 		      AWC
 		    {% endif %}
-		    {% if object.water_register_object.max_temp_2in < object.water_register_object.max_observed_temp_2in %}
+		    {% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
 		      Temp
 		    {% endif %}
 		  </div>

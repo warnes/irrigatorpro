@@ -344,10 +344,10 @@ AUTHENTICATION_BACKENDS = (
 )
 
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
-LOGIN_REDIRECT_URL = '/report/summary_report/'
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/settings/contact_info/'
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/settings/contact_info/'
-ACCOUNT_LOGIN_REDIRECT_URL = '/farms/settings/contact_info/'
+LOGIN_REDIRECT_URL = '/farm/report/summary_report/'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/farm/settings/contact_info/'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/farm/settings/contact_info/'
+ACCOUNT_LOGIN_REDIRECT_URL = '/farm/settings/contact_info/'
 
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"      # User can login using either userid or email
