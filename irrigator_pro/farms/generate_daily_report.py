@@ -155,6 +155,22 @@ def get_daily_report(farm, field, crop_season, user, report_date, host):
     return srf
 
 
+
+
+###
+### Create a daily report for the fields, indexed be field pk.
+###
+
+
+def daily_report_by_field(report_date, user, host):
+    reports = generate_daily_report(report_date, user, host)
+    ret = {};
+    for report in reports:
+        ret[report.field.pk] = report
+    return ret
+
+
+
 class SummaryReportFields:
 
     # Provide default values for all the fields

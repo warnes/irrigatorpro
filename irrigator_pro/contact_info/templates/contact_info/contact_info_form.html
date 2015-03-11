@@ -79,6 +79,11 @@
 	<tr>
 	  <td>{{ field.label_tag }}</td> 
 	  <td>{{ field }}</td>
+	  {% if field.label == 'Mobile' %}
+	  <td>
+	  	Do something about mobile
+	  </td>
+	  {% else %}
 	  <td>
 	    {% if field.errors %}
 	      <div class="inline-alert alert-danger">
@@ -88,6 +93,7 @@
 	      {% if field.field.required %}(Required){% endif %}
 	    {% endif %}	
 	  </td>
+	  {% endif %}
 	</tr>
       {% endfor %}
 
