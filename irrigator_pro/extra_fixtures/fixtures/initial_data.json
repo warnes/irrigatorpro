@@ -18,6 +18,42 @@
     }
 },
 {
+    "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "test", 
+        "first_name": "Tim", 
+        "last_name": "Test", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": true, 
+        "last_login": "2014-02-17T19:41:25Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$TXzU6VjQZ85W$fvT3ZeTL94we1l39glOMk8RS4ZNXEhnp1GSkai3gRZ4=", 
+        "email": "tim@test.net", 
+        "date_joined": "2014-01-06T20:38:27Z"
+    }
+},
+{
+    "pk": 3, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "example", 
+        "first_name": "Example", 
+        "last_name": "Farmer", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-01-06T22:59:37Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$1GjNnnfen7kI$uQqc3GK+/zXJgA+LwudQtd/C44YivuCp7XfPD7f0Dsg=", 
+        "email": "farmer@null.com", 
+        "date_joined": "2014-01-06T22:59:37Z"
+    }
+},
+{
     "pk": 4, 
     "model": "auth.user", 
     "fields": {
@@ -33,6 +69,24 @@
         "password": "pbkdf2_sha256$12000$wrYt3uSjvDQt$99W7hXg8SACXOtvIpKpK4p0sB2wpU66vDs28W/GLLto=", 
         "email": "bill.edwards@ars.usda.gov", 
         "date_joined": "2014-02-05T02:47:52Z"
+    }
+},
+{
+    "pk": 6, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "d", 
+        "first_name": "David", 
+        "last_name": "Reckford", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-03-20T12:30:32.966Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$2WfJOuO2nCZc$8z6Pj4HG4xY+7U53YNEIQB7cuZ3cRnEUhp6O4oCxfv0=", 
+        "email": "d@teamflint.us", 
+        "date_joined": "2014-03-14T19:05:37.756Z"
     }
 },
 {
@@ -177,6 +231,78 @@
         "password": "pbkdf2_sha256$12000$Mqph5NWBnZ6U$2QHCpMcHH1UrxH6YXLJgFhc66uHAgk4Fo7hBiEzyRuo=", 
         "email": "tony@warnes.net", 
         "date_joined": "2014-04-21T15:49:03Z"
+    }
+},
+{
+    "pk": 15, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "usdashellman", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-05-23T14:08:38.729Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$KyWI8UKhZjA1$P/BNd2Zqs9o+I1qfcic+2Zb08iCxY14pZeSASmStllk=", 
+        "email": "usdashellman@windstream.net", 
+        "date_joined": "2014-05-23T14:07:40.242Z"
+    }
+},
+{
+    "pk": 16, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "caseycox", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-06-20T16:35:53.968Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$iHLYctVeN90V$oZwdFbpIPHxYxjLxQ+21fD8CqLrMk46ogWrcDKHM/60=", 
+        "email": "caseycox@teamflint.us", 
+        "date_joined": "2014-06-03T13:05:49.435Z"
+    }
+},
+{
+    "pk": 17, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "joseph.powell", 
+        "first_name": "Larry", 
+        "last_name": "Powell", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2014-07-07T15:35:34.836Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$oBGEK6Uz6ahG$vA/fZZkU9ycgiOW3UVjfuU/j2NJ7dkBPYLqxlBPOOVE=", 
+        "email": "joseph.powell@ars.usda.gov", 
+        "date_joined": "2014-06-18T14:13:59.586Z"
+    }
+},
+{
+    "pk": 18, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "edwardsb2001", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2015-01-29T14:52:52.207Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$12000$fBIWKxotoZba$J6Z2rhtJt4N51HMt5r0tF6EhBSUnHzu74TnKXy/YGSo=", 
+        "email": "edwardsb2001@yahoo.com", 
+        "date_joined": "2015-01-29T14:52:15.339Z"
     }
 },
 {
