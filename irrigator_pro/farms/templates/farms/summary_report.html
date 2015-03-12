@@ -35,7 +35,6 @@
       	<th rowspan=2>Growth Stage</th>
       	<th rowspan=2>Status</th>
       	<th rowspan=2 class="sorter-false">Message</th>
-      	<th rowspan=2>Days to Irrigation</th>
       	<th colspan=2 class="sorter-false">Cumulative Water</th>
       	<th colspan=2 class="sorter-false">Last Entry</th>
       </tr>
@@ -67,7 +66,7 @@
 	<td>{{ object.crop }}</td>
 	<td>{{ object.growth_stage }}</td>
 	<!-- Copy code from water_register for the status. -->
-	<td>
+	<td class="dti">
 		{% if object.water_register_object.irrigate_flag %}
 		  <div class="alert-inline alert-danger">
 		    <b>Irrigate Today</b>
@@ -80,7 +79,11 @@
 		  </div>
 		{% elif object.water_register_object.check_sensors_flag %}
 		  <div class="alert-inline alert-warning">
-		    Irrigate 1-5 Days
+		  	{%if object.days_to_irrigation == 1 %}
+		    Irrigate Tomorrow
+		    {% else %}
+		    Irrigate in {{object.days_to_irrigation}} days
+		    {% endif %}
 		  </div>
 		{% endif %}
 		{% if object.water_register_object.dry_down_flag %}
@@ -90,7 +93,6 @@
 		{% endif %}
 	</td>
 	<td>{{ object.message }}</td>
-	<td class="dti">{{ object.days_to_irrigation }}</td>
 	<td>{{ object.cumulative_rain }}</td>
 	<td>{{ object.cumulative_irrigation_vol }}</td>
 	<td>{{ object.last_data_entry_type }}</td>
@@ -126,31 +128,65 @@ function validateAndSubmit() {
 		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
 		$("#change-date").submit();
 	} catch (e) {
-		console.log("Wrong date format");
 		$("#date-error").css("visibility", "visible");
 		return;
 	}
 	
 }
 
+var data_sort_value = 'data-sort-value';
+
 $(document).ready(function() 
     {
+    	
+      $(".dti").each(function() {
+		
+		var contents = $(this).text();
+		
+		$(this).attr(data_sort_value, "100");
+		
+		if (contents.indexOf("Today") > 0) {
+			$(this).attr(data_sort_value, "1")
+		}else if (contents.indexOf("Tomorrow") > 0) {
+			$(this).attr(data_sort_value, "2")
+		} else {
+			number = contents.replace(/\D/g, '');
+			if (number != "") {
+				$(this).attr(data_sort_value, "" + (parseInt(number) + 1))
+			}
+		}
+		
+		
+		});
+		
+
+    	
+    	
+    	
     	$('table').tablesorter( {
-		headers: {
-        	// set "sorter: false" (no quotes) to disable the column
-        	0: { sorter: "text" },
-        	1: { sorter: "text" },
-       	 	2: { sorter:  "text"},
-        	3: { sorter:  "text"},
-        	4: { sorter:  "text"},
-        	5: { sorter:  false},
-        	6: { sorter:  "digit"},
-        	7: { sorter:  false},
-        	8: { sorter:  false},
-        	9: { sorter:  false},
-    	}
-      } 
-	);
+    		textExtraction: function(node) {
+      			var attr = $(node).attr(data_sort_value);
+        		if (typeof attr !== 'undefined' && attr !== false) {
+             		return attr;
+        		}
+        		return $(node).text(); 
+        		
+      		},
+    	
+    		
+			headers: {
+        		// set "sorter: false" (no quotes) to disable the column
+        		0: { sorter: "text" },
+        		1: { sorter: "text" },
+       		 	2: { sorter:  "text"},
+        		3: { sorter:  "text"},
+        		4: { sorter:  "digit"},
+       		 	5: { sorter:  false},
+       		 	6: { sorter:  false},
+        		7: { sorter:  false},
+        		8: { sorter:  false},
+    		}
+      });
 	
 	$( "#datepicker" ).datepicker(
 		{
@@ -159,22 +195,6 @@ $(document).ready(function()
 		}		
 	);
 	
-	$(".dti").each(function() {
-		var days = parseInt($(this).html());
-		if (isNaN(days) || days < 0) {
-			$(this).html("");
-			return;
-		}
-		if ( days == 0) {
-			$(this).css("backgroundColor", "red");
-		}
-		else if (days < 4) {
-			$(this).css("backgroundColor", "yellow");
-		}
-		else {
-			$(this).css("backgroundColor", "green");
-		}
-	});
 });
 
 
