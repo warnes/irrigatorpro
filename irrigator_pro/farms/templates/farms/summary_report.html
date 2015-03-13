@@ -126,6 +126,7 @@ function validateAndSubmit() {
 	var newDate;
 	try {
 		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+		window.onbeforeunload = null;
 		$("#change-date").submit();
 	} catch (e) {
 		$("#date-error").css("visibility", "visible");
