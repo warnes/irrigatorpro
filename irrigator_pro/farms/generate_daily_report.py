@@ -1,6 +1,7 @@
 from django.db.models import DateField
 from django.utils import timezone
 from django.db.models import Q
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from farms.models import Farm, CropSeason, Field, WaterRegister, WaterHistory, Farm, CropSeasonEvent, Probe, ProbeReading
 from datetime import date, datetime
@@ -145,7 +146,10 @@ def get_daily_report(farm, field, crop_season, user, report_date, host):
                     srf.time_last_data_entry = latest_probe_reading.reading_datetime
             
                     # Add link to water register
-                    srf.water_register_url = host +'/water_register/' + str(crop_season.pk) + '/' + str(field.pk)
+                    srf.water_register_url = reverse('water_register_season_field', 
+                                                     kwargs={'season':crop_season.pk,
+                                                             'field':field.pk }
+                                                    )
 
             # Add the water register object to get next irrigation date, or status.
             # Only add if planting season is not over.
