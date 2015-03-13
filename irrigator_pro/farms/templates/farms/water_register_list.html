@@ -19,8 +19,8 @@
     	style="width: 6em">
   </h1>
   
-  <div id="date-error" style="color:red; visibility: hidden">
-  		Date must be entered in the format YYYY-MM-DD and be a valid day
+  <div id="date-error" style="color:red; display: none">
+      Date must be a valid date in the format YYYY-MM-DD between {{crop_season.season_start_date|date:"Y-m-d"}} and {{crop_season.season_end_date|date:"Y-m-d"}}.
   </div>
   
   
@@ -199,6 +199,10 @@ var startDate = new Date({{crop_season.season_start_date.year}},
                          {{crop_season.season_start_date.month}}-1,
                          {{crop_season.season_start_date.day}});
 							  
+var endDate   = new Date({{crop_season.season_end_date.year}},
+                         {{crop_season.season_end_date.month}}-1,
+                         {{crop_season.season_end_date.day}});
+							  
 var reportDate = new Date({{report_date.year}},
 			  {{report_date.month}}-1,
 			  {{report_date.day}});
@@ -299,13 +303,20 @@ function dateChangedManually() {
 	var newDate;
 	try {
 		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
-		$("#date-error").css("visibility", "hidden");
+		$("#date-error").css("display", "none");
 	} catch (e) {
-		console.log("Wrong date format");
-		$("#date-error").css("visibility", "visible");
+		$("#date-error").css("display", "inline");
 		return;
 	}
+
+        if( newDate < startDate || newDate > endDate )
+        {
+                $("#date-error").css("display", "inline");
+                return; 
+        }
+
 	show15();
+        
 }
 
 $(function() {
