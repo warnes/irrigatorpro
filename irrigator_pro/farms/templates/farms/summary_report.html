@@ -68,7 +68,7 @@
 	<!-- Copy code from water_register for the status. -->
 	<td class="dti">
 		{% if object.water_register_object.irrigate_flag %}
-		  <div class="alert-inline alert-danger">
+		  <div >
 		    <b>Irrigate Today</b>
 		    {% if object.water_register_object.average_water_content <= 0.0 %}
 		      AWC
@@ -78,7 +78,7 @@
 		    {% endif %}
 		  </div>
 		{% elif object.water_register_object.check_sensors_flag %}
-		  <div class="alert-inline alert-warning">
+		  <div >
 		  	{%if object.days_to_irrigation == 1 %}
 		    Irrigate Tomorrow
 		    {% else %}
@@ -147,13 +147,21 @@ $(document).ready(function()
 		$(this).attr(data_sort_value, "100");
 		
 		if (contents.indexOf("Today") > 0) {
-			$(this).attr(data_sort_value, "1")
-		}else if (contents.indexOf("Tomorrow") > 0) {
-			$(this).attr(data_sort_value, "2")
+			$(this).attr(data_sort_value, "1");
+			$(this).children().first().addClass("alert-inline alert-danger");
+		} else if (contents.indexOf("Tomorrow") > 0) {
+			$(this).attr(data_sort_value, "2");
+			$(this).children().first().addClass("alert-inline alert-warning");
 		} else {
 			number = contents.replace(/\D/g, '');
 			if (number != "") {
-				$(this).attr(data_sort_value, "" + (parseInt(number) + 1))
+				$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
+				if (number < 4) {
+					$(this).children().first().addClass("alert-inline alert-warning");
+				} else {
+					$(this).children().first().addClass("alert-inline alert-success");
+				}
+				
 			}
 		}
 		
@@ -174,6 +182,7 @@ $(document).ready(function()
         		
       		},
     	
+    		sortList: [[4,0]],
     		
 			headers: {
         		// set "sorter: false" (no quotes) to disable the column
