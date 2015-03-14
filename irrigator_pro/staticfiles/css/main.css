@@ -343,7 +343,7 @@ table.summary-report tr.header1 th, table.summary-report tr.header2 th {
 
 
 
-table.summary-report tr.header1 th:nth-child(7), table.summary-report tr.header1 th:nth-child(8)  {
+table.summary-report tr.header1 th:nth-child(6), table.summary-report tr.header1 th:nth-child(7)  {
     border-right-width: 3px;
     border-right-style: double;
 }
@@ -354,7 +354,7 @@ table.summary-report tr.header2 th:nth-child(2)  {
 }
 
 
-table.summary-report tr td:nth-child(7), table.summary-report tr td:nth-child(9)   {
+table.summary-report tr td:nth-child(6), table.summary-report tr td:nth-child(8)   {
     border-right-width: 3px;
     border-right-style: double;
 }
