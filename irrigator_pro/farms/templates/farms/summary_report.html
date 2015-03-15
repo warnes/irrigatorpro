@@ -145,8 +145,10 @@ $(document).ready(function()
 		var contents = $(this).text();
 		
 		$(this).attr(data_sort_value, "100");
-		
-		if (contents.indexOf("Today") > 0) {
+		if (contents.indexOf("Dry-") > 0) {
+			
+			$(this).children().first().addClass("alert-inline alert-info");
+		} else if (contents.indexOf("Today") > 0) {
 			$(this).attr(data_sort_value, "1");
 			$(this).children().first().addClass("alert-inline alert-danger");
 		} else if (contents.indexOf("Tomorrow") > 0) {

@@ -237,8 +237,10 @@ $(document).ready(
 		var contents = $(this).text();
 		
 		
-		
-		if (contents.indexOf("Today") > 0) {
+		if (contents.indexOf("Dry-") > 0) {
+			
+			$(this).children().first().addClass("alert-inline alert-info");
+		} else if (contents.indexOf("Today") > 0) {
 			
 			$(this).children().first().addClass("alert-inline alert-danger");
 		} else if (contents.indexOf("Tomorrow") > 0) {
