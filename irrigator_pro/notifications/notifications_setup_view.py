@@ -43,6 +43,15 @@ def get_available_timezones():
     filtered_list = [ValidID(i) for i in common_timezones if (i.find('Africa') != 0)]
     return filtered_list 
 
+
+def get_available_levels():
+    ret = []
+    for x in NotificationsRule.LEVEL_CHOICES:
+        ret.append(ValidID(x))
+    return ret
+
+
+
 # Could probably use the ListView since we only need the notification 
 # objects for the current crop_season
 class NotificationsSetupView(TemplateView):
@@ -151,7 +160,7 @@ class NotificationsSetupView(TemplateView):
         context['farm_fields']          = self.get_farm_fields()
         context['farm_users']           = self.get_farm_users()
         context['notifications_types']  = NotificationsRule.NOTIFICATION_TYPE_VALUES
-        context['alert_levels']         = NotificationsRule.LEVEL_CHOICES
+        context['alert_levels']         = get_available_levels
         context['available_times']      = get_available_times
         context['available_timezones']  = get_available_timezones
         return context

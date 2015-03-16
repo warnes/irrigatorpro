@@ -33,4 +33,3 @@ class NotificationsRule(Comment, Audit):
     # Will use format "hh:mm" to save the time
     delivery_time       = models.CharField(max_length = 10)
     time_zone           = models.CharField(max_length = 50)
- 

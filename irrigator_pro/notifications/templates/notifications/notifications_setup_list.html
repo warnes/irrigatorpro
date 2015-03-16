@@ -10,7 +10,9 @@
 	var labelCell 	= 1;
 	var farmCell 	= 2;
 	var commTypeCell = 4;
-	var frequencyCell = 5;
+	var alertLevelCell = 5;
+	var notificationTime_col = 6;
+	var timezone_col = 7;
 	
 	/**
 	 * Functionality duplicated in notifications_setup_view.py. Would
@@ -74,18 +76,10 @@
 		
 		
 		
-		// Set selected values for communication type, level
+		// Set selected values for communication type, level. notification time, timezone
 		// Could wrap next two into utility function if needed in other places.
 		
-		var selected_comm_type = tableRow.cells[commTypeCell].innerHTML.trim();
-		$("#communication-type option").each(
-			function() {
-				if ($(this)[0].innerHTML.trim() == selected_comm_type) {
-					$(this)[0].selected = true;
-				}
-			}
-		);
-		
+/*		
 		var selected_level = tableRow.cells[frequencyCell].innerHTML.trim();
 		$("#alert-level option").each(
 			function() {
@@ -94,6 +88,13 @@
 				}
 			}
 		);
+		*/
+		
+		$("#edit_row_alert_level_" + createValidID(tableRow.cells[alertLevelCell].innerHTML.trim()))[0].selected = true;
+		$("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
+		$("#edit_row_nt_" + createValidID(tableRow.cells[notificationTime_col].innerHTML.trim()))[0].selected = true;
+		$("#edit_row_tz_" + createValidID(tableRow.cells[timezone_col].innerHTML.trim()))[0].selected = true;
+		
 
 	}
 	
@@ -379,7 +380,7 @@
 				<td>
 					<select id="communication-type" name="communication-type">
 						{% for type in notifications_types %}
-						<option id="edit_row_{{type}}" value="{{type}}">{{type}}</option>
+						<option id="edit_row_comm_type_{{type}}" value="{{type}}">{{type}}</option>
 						{% endfor %}
 				
 					</select>
@@ -389,7 +390,7 @@
 				<td> 
 					<select id="alert-level" name="alert-level">
 						{% for level in alert_levels %}
-						<option id="edit_row_{{level}}" value="{{level}}">{{level}}</option>
+						<option id="edit_row_alert_level_{{level.id}}" value="{{level.value}}">{{level.value}}</option>
 						{% endfor %}
 					</select>
 				</td>
