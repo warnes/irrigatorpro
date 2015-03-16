@@ -19,8 +19,8 @@ class Migration(SchemaMigration):
             ('level', self.gf('django.db.models.fields.CharField')(max_length=15)),
             ('notification_type', self.gf('django.db.models.fields.CharField')(max_length=15)),
             ('label', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('delivery_time', self.gf('django.db.models.fields.CharField')(max_length=5)),
-            ('time_zone', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('delivery_time', self.gf('django.db.models.fields.CharField')(max_length=10)),
+            ('time_zone', self.gf('django.db.models.fields.CharField')(max_length=50)),
         ))
         db.send_create_signal(u'notifications', ['NotificationsRule'])
 
@@ -145,7 +145,7 @@ class Migration(SchemaMigration):
             'cdate': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'comment': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'cuser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'notifications_notificationsrule_cusers'", 'to': u"orm['auth.User']"}),
-            'delivery_time': ('django.db.models.fields.CharField', [], {'max_length': '5'}),
+            'delivery_time': ('django.db.models.fields.CharField', [], {'max_length': '10'}),
             'field_list': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['farms.Field']", 'symmetrical': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'label': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
@@ -154,7 +154,7 @@ class Migration(SchemaMigration):
             'muser': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "u'notifications_notificationsrule_musers'", 'to': u"orm['auth.User']"}),
             'notification_type': ('django.db.models.fields.CharField', [], {'max_length': '15'}),
             'recipients': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.User']", 'symmetrical': 'False'}),
-            'time_zone': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+            'time_zone': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         }
     }
 

@@ -12,6 +12,16 @@
 	var commTypeCell = 4;
 	var frequencyCell = 5;
 	
+	/**
+	 * Functionality duplicated in notifications_setup_view.py. Would
+	 * be nice to find a way around.
+	 */
+	function createValidID(oldString) {
+		newString = oldString.replace(/\W/g, "_");
+		console.log("Replacing " + oldString + " with " + newString);
+		return newString;		
+	}
+	
 	function editRow(notifications_pk) {
 				
 		$("#notifications_table button").each(
@@ -49,10 +59,6 @@
 			} 
 		}
 		
-
-	//	$("#edit_row_" + tableRow.cells[commTypeCell].innerHTML)[0].selected = true;
-	//	$("#edit_row_" + tableRow.cells[frequencyCell].innerHTML)[0].selected = true;
-		
 		// Add selected tags for users. Use same procedure as for fields.
 		
 		var recipientOptions = document.getElementById("select-users");
@@ -64,7 +70,31 @@
 				console.log("recipient matches");
 				recipientOptions[i].selected = true;
 			}
-		}		
+		}	
+		
+		
+		
+		// Set selected values for communication type, level
+		// Could wrap next two into utility function if needed in other places.
+		
+		var selected_comm_type = tableRow.cells[commTypeCell].innerHTML.trim();
+		$("#communication-type option").each(
+			function() {
+				if ($(this)[0].innerHTML.trim() == selected_comm_type) {
+					$(this)[0].selected = true;
+				}
+			}
+		);
+		
+		var selected_level = tableRow.cells[frequencyCell].innerHTML.trim();
+		$("#alert-level option").each(
+			function() {
+				if ($(this)[0].innerHTML.trim() == selected_level) {
+					$(this)[0].selected = true;
+				}
+			}
+		);
+
 	}
 	
 
@@ -94,6 +124,11 @@
 		
 		document.getElementById("select-farms").selectedIndex = 0;
 		update_fields_and_recipients(document.getElementById("select-farms").options[0].id);
+		
+		// Use default selection for time zone, notification time
+		
+		$("#edit_row_tz_US_Eastern")[0].selected = true;
+		$("#edit_row_nt_5_00_am")[0].selected = true;
 	}
 	
 	function get_fields_for_farm(farm_pk) {
@@ -183,16 +218,27 @@
 	
 	function validate_form(myform) {
 		var returnedValue = true;
-		document.getElementById("field-needed").innerHTML="";
-		document.getElementById("recipient-needed").innerHTML="";
+		$("#field-needed").css("display", "none");
+		$("#recipient-needed").css("display", "none");
+		$("#label-needed").css("display", "none");
+	
 		if (document.getElementById("select-fields").selectedIndex < 0) {
-			document.getElementById("field-needed").innerHTML="You need to select at least one field.";
+			$("#field-needed").css("display", "");
 			returnedValue = false;
 		}
 		if (document.getElementById("select-users").selectedIndex < 0) {
-			document.getElementById("recipient-needed").innerHTML="You need to select at least one recipient.";
+			$("#recipient-needed").css("display", "");
 			returnedValue = false;
 		}
+		
+		if (document.getElementById("edit-label").value.trim() == "") {
+			$("#label-needed").css("display", "");
+			returnedValue = false;
+		}
+		
+		// Check that the label is not null
+		
+		
 		if (returnedValue == false){
 			return false;
 		}
@@ -200,6 +246,7 @@
 		myform.submit();	
 	}
 	
+
 
 
 </script>
@@ -211,14 +258,20 @@
 	<table class = "notifications" id="notifications_table">
 
 		<thead>
-			<tr>
-				<th>Action</th>
-				<th>Label</th>
-				<th>Farm</th>
-				<th>Fields</th>
-				<th>Communication Type</th>
-				<th>Frequency</th>
-				<th>Recipients</th>
+			<tr class="header1">
+				<th rowspan="2">Action</th>
+				<th rowspan="2">Label</th>
+				<th rowspan="2">Farm</th>
+				<th rowspan="2">Fields</th>
+				<th rowspan="2">Communication Type</th>
+				<th rowspan="2">Frequency</th>
+				<th colspan="2">Notification Time</th>
+				<th rowspan="2">Recipients</th>
+			</tr>
+			<tr class="header2">
+				<th>Time</th>
+				<th>Time Zone</th>
+				
 			</tr>
 		</thead>
 		{% for rec in notifications_list %}
@@ -254,8 +307,11 @@
 			<!-- Don't leave spaces in the contents for the following two cells.
 				It will break the javascript 
 			-->
-			<td id="row_notification_type_{{rec.pk}}" >{{rec.notification_type}}</td>
+			<td id = "row_notification_type_{{rec.pk}}" >{{rec.notification_type}}</td>
 			<td id = "row_notification_level_{{rec.pk}}">{{rec.level}}</td>
+			
+			<td id = "row_notification_time_{{rec.pk}}">{{rec.delivery_time}}</td>
+			<td id = "row_timezone_{{rec.pk}}">{{rec.time_zone}}</td>
 
 			<td style="text-align: left"> {% for u in rec.recipients.all %}
 				<div id="recipient_{{rec.pk}}_{{u.pk}}">
@@ -265,7 +321,7 @@
 		</tr>
 		{% endfor %}
 		<tr>
-			<td colspan="6">
+			<td colspan="9">
 				<button type="button" onclick="addRow()">
 					Add Notification
 				</button>
@@ -287,6 +343,8 @@
 				<th>Fields</th>
 				<th>Communication Type</th>
 				<th>Frequency</th>
+				<th>Notification time</th>
+				<th>Time Zone</th>
 				<th>Recipients</th>
 			</tr>
 		</thead>
@@ -294,6 +352,7 @@
 			
 			<tr>
 				<td>
+					<div id="label-needed" style="color:red; display: none">The label can not be blank.</div>
 					<input type="text" id="edit-label" name="label" style="text-align: left;"/>
 				</td>
 				
@@ -309,7 +368,7 @@
 
 				</td>
 				<td>
-					<div id="field-needed" style="color:red"></div>
+					<div id="field-needed" style="color:red; display: none">You need to select at least one field.</div>
 					<select id="select-fields" name = "select-fields" multiple>
 				
 					</select>
@@ -335,8 +394,26 @@
 					</select>
 				</td>
 				
+				<td>
+					<select id="notification-time" name="notification-time">
+						{% for ntime in available_times %}
+						<option id="edit_row_nt_{{ntime.id}}" value="{{ntime.value}}">{{ntime.value}}</option>
+						{% endfor %}
+					</select>
+				</td>
+				
+				<td>
+					<select id="timezone" name="timezone">
+						{% for tz in available_timezones %}
+						<option id="edit_row_tz_{{tz.id}}" value="{{tz.value}}">{{tz.value}}</option>
+						{% endfor %}
+					</select>
+				</td>
+				
+				
+				
 				<td> 
-					<div id="recipient-needed" style="color: red"></div>
+					<div id="recipient-needed" style="color: red; display: none">You need to select at least one recipient</div>
 					<select id="select-users" name="select-users" multiple>
 				
 					</select>

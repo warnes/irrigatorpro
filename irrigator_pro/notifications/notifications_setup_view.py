@@ -18,9 +18,30 @@ from notifications.models import NotificationsRule, Field
 
 from farms.models import CropSeason, Farm, Field
 
+from pytz import common_timezones
+
+import re
+
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
+
+# Return an list of times in 15 minutes increments
+def get_available_times():
+
+    ret = []
+    for am_pm in ['am', 'pm']:
+        for hour in [12] + ( range(1, 12)):
+            for minutes in ['00', '15', '30', '45']:
+                x =  str(hour) + ":" +  minutes + " "+ am_pm
+                ret.append(ValidID(x))
+    return ret
+
+
+# Return list of timezones. Will remove some we know are wnot needed (Antarctica?)
+def get_available_timezones():
+    filtered_list = [ValidID(i) for i in common_timezones if (i.find('Africa') != 0)]
+    return filtered_list 
 
 # Could probably use the ListView since we only need the notification 
 # objects for the current crop_season
@@ -59,6 +80,8 @@ class NotificationsSetupView(TemplateView):
         notifications.notification_type = request.POST.get('communication-type')
         notifications.level = request.POST.get('alert-level')
         notifications.label = request.POST.get('label')
+        notifications.delivery_time = request.POST.get('notification-time')
+        notifications.time_zone = request.POST.get('timezone')
 
         for x in request.POST.getlist("select-users"):
             notifications.recipients.add(User.objects.get(pk=x))
@@ -103,6 +126,7 @@ class NotificationsSetupView(TemplateView):
 
 
 
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         # There are either parameters for year, month, day, or none.
@@ -128,4 +152,17 @@ class NotificationsSetupView(TemplateView):
         context['farm_users']           = self.get_farm_users()
         context['notifications_types']  = NotificationsRule.NOTIFICATION_TYPE_VALUES
         context['alert_levels']         = NotificationsRule.LEVEL_CHOICES
+        context['available_times']      = get_available_times
+        context['available_timezones']  = get_available_timezones
         return context
+
+
+
+# May want to move somewhere else. May need again.
+
+class ValidID:
+
+    def __init__(self, value):
+
+        self.value = value
+        self.id = re.sub('\W', "_", value)

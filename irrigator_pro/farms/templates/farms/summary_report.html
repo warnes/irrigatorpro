@@ -146,7 +146,7 @@ $(document).ready(function()
 		
 		$(this).attr(data_sort_value, "100");
 		if (contents.indexOf("Dry-") > 0) {
-			
+			$(this).attr(data_sort_value, "50");
 			$(this).children().first().addClass("alert-inline alert-info");
 		} else if (contents.indexOf("Today") > 0) {
 			$(this).attr(data_sort_value, "1");
