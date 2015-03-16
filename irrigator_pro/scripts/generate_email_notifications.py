@@ -4,19 +4,14 @@ import os, os.path, sys
 
 import socket
 
-
-
-
 def get_emails(notification_rec):
 
     
     # Use a set instead of list as there could be duplicates.
-    ret = set()
+    ret = []
 
     for recipient in notification_rec.recipients.all():
-        ret.add(recipient.email)
-
-    print "returning: ", ret
+        ret.append(recipient.email)
     return ret
 
 
@@ -55,9 +50,11 @@ if __name__ == "__main__":
 
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 
-from datetime import date, datetime
+from datetime import date, datetime, time
 from django.utils import timezone
+
 import pytz
+import re
 
 from notifications.models import NotificationsRule
 from notifications.notification_email import EmailMessage
@@ -77,10 +74,42 @@ daily_reports = {}
 
 # Set to doday when done testing
 today = date(2013, 07, 03);
+
+p = re.compile('(\d+):(\d+)\s+(\w+)')
 for notify in notifications_query:
+
+    # Check that it is the right time: send only in time in notification record is within last 15 minutes
+    # Will convert everything to UTC
+
+    workingTimezone = pytz.timezone(notify.time_zone)
+    localCurrentTime = datetime.now(workingTimezone)
+
+    m = p.match(notify.delivery_time)
+
+    adjusted_hour = int(m.group(1))
+    if m.group(3) == 'pm' and adjusted_hour != 12:
+        adjusted_hour = adjusted_hour + 12
+    if m.group(3) == 'am' and adjusted_hour == 12:
+        adjusted_hour = 0
+    
+    localNotificationTime = workingTimezone.localize(datetime(localCurrentTime.year,
+                                                      localCurrentTime.month,
+                                                      localCurrentTime.day,
+                                                      adjusted_hour,
+                                                      int(m.group(2)),
+                                                      0))
+
+
+    difference = localNotificationTime - localCurrentTime
+    if difference.days != -1 or (86399 - difference.seconds) > (60*14):
+        print "Would not normally send email, but do it now for testing."
+        # continue
+
+    print "Will send email for notification: ", notify.label
+
     user = notify.cuser
     if user not in daily_reports:
-        daily_reports[user] = daily_report_by_field(today, user, "www.cccc.ttt");
+        daily_reports[user] = daily_report_by_field(today, user, "path.to.host");
     reports = daily_reports[user];
 
 

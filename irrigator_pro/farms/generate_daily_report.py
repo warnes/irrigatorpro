@@ -162,7 +162,8 @@ def get_daily_report(farm, field, crop_season, user, report_date, host):
 
 
 ###
-### Create a daily report for the fields, indexed be field pk.
+### Create a daily report for one user, indexed be field pk,
+### for the given report date.
 ###
 
 
