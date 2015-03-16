@@ -74,22 +74,6 @@
 			}
 		}	
 		
-		
-		
-		// Set selected values for communication type, level. notification time, timezone
-		// Could wrap next two into utility function if needed in other places.
-		
-/*		
-		var selected_level = tableRow.cells[frequencyCell].innerHTML.trim();
-		$("#alert-level option").each(
-			function() {
-				if ($(this)[0].innerHTML.trim() == selected_level) {
-					$(this)[0].selected = true;
-				}
-			}
-		);
-		*/
-		
 		$("#edit_row_alert_level_" + createValidID(tableRow.cells[alertLevelCell].innerHTML.trim()))[0].selected = true;
 		$("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
 		$("#edit_row_nt_" + createValidID(tableRow.cells[notificationTime_col].innerHTML.trim()))[0].selected = true;
