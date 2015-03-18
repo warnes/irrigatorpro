@@ -394,3 +394,12 @@ ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
 # Google Analytics Key --  This is a placeholder to avoid errors if not set.
 # Set the actual value in local.py
 GA_KEY = ""   
+
+## Setting for the notification emails. Actual values need to be set in local.py
+
+NOTIFICATION_SMTP = ""
+NOTIFICATION_HOST = ""
+NOTIFICATION_PORT = ""
+
+
+

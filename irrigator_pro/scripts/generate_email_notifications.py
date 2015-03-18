@@ -73,7 +73,7 @@ print "# of notifications: ", notifications_query.count()
 daily_reports = {}
 
 # Set to doday when done testing
-today = date(2013, 07, 03);
+today = date(2014, 07, 03);
 
 p = re.compile('(\d+):(\d+)\s+(\w+)')
 for notify in notifications_query:
