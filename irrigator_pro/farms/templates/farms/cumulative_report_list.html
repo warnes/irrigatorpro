@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+  <h1>
+  	
+    <i class="fa fa-pencil-square-o fa-fw"> </i>
+   
+    <form id = "change-date" method="get">
+    	Cumulative for for starting on<input type="text" id="datepicker" 
+    	name="start_date"
+    	value='{{report_start_date |date:"Y-m-d" }}' 
+    	onchange="validateAndSubmit()"
+    	style="width: 6em">
+    	
+    	ending on
+    	
+    	<input type="text" id="datepicker" 
+    	name="end_date"
+    	value='{{report_end_date |date:"Y-m-d" }}' 
+    	onchange="validateAndSubmit()"
+    	style="width: 6em">
+    	
+    </form>
+  </h1>
+   <div id="date-error" style="color:red; visibility: hidden">
+  		Date must be entered in the format YYYY-MM-DD and be a valid day
+  </div>
+  
+ {% if object_list %}
+ 
+ 
+ 
+ 
+ 
+ 
+ {% endif %}
+ {% endblock %}
+  
+  
+  
+

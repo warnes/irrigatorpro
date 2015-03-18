@@ -78,4 +78,4 @@ class EmailMessage():
 
 
 
-        return ret + "\n\n" + tabulate(table, headers = ['Field', 'Crop', 'Growth Stage', 'Status', 'Message'])
+        return ret + "\n\n" + tabulate(table, headers = ['Field', 'Crop', 'Growth Stage', 'Status', 'Message'], tablefmt="grid" )
