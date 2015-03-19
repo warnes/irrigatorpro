@@ -44,70 +44,56 @@
       	<th class="sorter-false">Type</th>
       	<th class="sorter-false">Date</th>
       </tr>
-<!-- <tr> -->
-<!--       <th> col1 </th> -->
-<!--       <th> col2 </th> -->
-<!--       <th> col3 </th> -->
-<!--       <th> col4 </th> -->
-<!--       <th> col5 </th> -->
-<!--       <th> col6 </th> -->
-<!--       <th> col7 </th> -->
-<!--       <th> col8 </th> -->
-<!--       <th> col9 </th> -->
-<!--       <th> col10 </th> -->
-<!--       <th> col11</th> -->
-<!-- </tr> -->
     </thead>
     <tbody>
       {% for object in object_list %}
       <tr>
-	<td>{{ object.farm}} </td>
-	<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
-	<td>{{ object.crop }}</td>
-	<td>{{ object.growth_stage }}</td>
-	<!-- Copy code from water_register for the status. -->
-	<td class="dti">
-		{% if object.water_register_object.irrigate_flag %}
-		  <div >
-		    <b>Irrigate Today</b>
-		    {% if object.water_register_object.average_water_content <= 0.0 %}
-		      AWC
-		    {% endif %}
-		    {% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
-		      Temp
-		    {% endif %}
-		  </div>
-		{% elif object.water_register_object.check_sensors_flag %}
-		  <div >
-		  	{%if object.days_to_irrigation == 1 %}
-		    Irrigate Tomorrow
-		    {% else %}
-		    Irrigate in {{object.days_to_irrigation}} days
-		    {% endif %}
-		  </div>
-		{% endif %}
-		{% if object.water_register_object.dry_down_flag %}
-		  <div class="alert-inline alert-info">
-		    Dry-Down
-		  </div>
-		{% endif %}
-	</td>
-	<td>{{ object.message }}</td>
-	<td>{{ object.cumulative_rain }}</td>
-	<td>{{ object.cumulative_irrigation_vol }}</td>
-	<td>{{ object.last_data_entry_type }}</td>
-	<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
+		<td>{{ object.farm}} </td>
+		<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
+		<td>{{ object.crop }}</td>
+		<td>{{ object.growth_stage }}</td>
+		<!-- Copy code from water_register for the status. -->
+		<td class="dti">
+			{% if object.water_register_object.irrigate_flag %}
+			<div >
+		    	<b>Irrigate Today</b>
+		    	{% if object.water_register_object.average_water_content <= 0.0 %}
+		      	AWC
+		    	{% endif %}
+		    	{% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
+		      	Temp
+		    	{% endif %}
+		  	</div>
+			{% elif object.water_register_object.check_sensors_flag %}
+		  	<div >
+		  		{%if object.days_to_irrigation == 1 %}
+		    	Irrigate Tomorrow
+		    	{% else %}
+		    	Irrigate in {{object.days_to_irrigation}} days
+		    	{% endif %}
+		  	</div>
+			{% endif %}
+			{% if object.water_register_object.dry_down_flag %}
+		  	<div class="alert-inline alert-info">
+		    	Dry-Down
+		  	</div>
+			{% endif %}
+		</td>
+		<td>{{ object.message }}</td>
+		<td>{{ object.cumulative_rain }}</td>
+		<td>{{ object.cumulative_irrigation_vol }}</td>
+		<td>{{ object.last_data_entry_type }}</td>
+		<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
+	</tr>
 
-      </tr>
-
-      {% endfor %}
+   {% endfor %}
   
     </tbody>
   </table>
 
-    {% else %}
+  {% else %}
       <b> Nothing to display yet. </b>
-    {% endif %}
+  {% endif %}
 
 
 	
@@ -140,38 +126,35 @@ var data_sort_value = 'data-sort-value';
 $(document).ready(function() 
     {
     	
-      $(".dti").each(function() {
-		
-		var contents = $(this).text();
-		
-		$(this).attr(data_sort_value, "100");
-		if (contents.indexOf("Dry-") > 0) {
-			$(this).attr(data_sort_value, "50");
-			$(this).children().first().addClass("alert-inline alert-info");
-		} else if (contents.indexOf("Today") > 0) {
-			$(this).attr(data_sort_value, "1");
-			$(this).children().first().addClass("alert-inline alert-danger");
-		} else if (contents.indexOf("Tomorrow") > 0) {
-			$(this).attr(data_sort_value, "2");
-			$(this).children().first().addClass("alert-inline alert-warning");
-		} else {
-			number = contents.replace(/\D/g, '');
-			if (number != "") {
-				$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
-				if (number < 4) {
-					$(this).children().first().addClass("alert-inline alert-warning");
-				} else {
-					$(this).children().first().addClass("alert-inline alert-success");
-				}
-				
-			}
-		}
-		
-		
-		});
-		
-
     	
+		$(".dti").each(function() {
+              
+			var contents = $(this).text();
+               
+			$(this).attr(data_sort_value, "100");
+         	if (contents.indexOf("Dry") > 0) {
+				$(this).attr(data_sort_value, "50");
+				$(this).children().first().addClass("alertinline alertinfo");
+			} else if (contents.indexOf("Today") > 0) {
+				$(this).attr(data_sort_value, "1");
+				$(this).children().first().addClass("alertinline alertdanger");
+			} else if (contents.indexOf("Tomorrow") > 0) {
+				$(this).attr(data_sort_value, "2");
+				$(this).children().first().addClass("alertinline alertwarning");
+			} else {
+				number = contents.replace(/\D/g, '');
+				if (number != "") {
+					$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
+					if (number < 4) {
+						$(this).children().first().addClass("alertinline alertwarning");
+					} else {
+						$(this).children().first().addClass("alertinline alertsuccess");
+					}
+				}
+			}
+		});
+               
+
     	
     	
     	$('table').tablesorter( {
