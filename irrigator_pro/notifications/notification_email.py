@@ -61,7 +61,9 @@ class EmailMessage():
 
     def createEmailMessage(self):
 
-        ret = "This is and abbreviated daily report for " + date.today().isoformat()
+        
+        ret = "<style>table{border:1px;} </style>"
+        ret += "This is and abbreviated daily report for " + date.today().isoformat()
         ret += "\n If you want a more detailed report you can follow this link: "
         ret += NOTIFICATION_HOST
         ret += "\n"
