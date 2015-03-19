@@ -28,5 +28,8 @@ class NotificationsRule(Comment, Audit):
     level               = models.CharField(max_length = 15)
     notification_type   = models.CharField(max_length = 15)
 
+    label               = models.CharField(max_length = 50)
 
-    
+    # Will use format "hh:mm" to save the time
+    delivery_time       = models.CharField(max_length = 10)
+    time_zone           = models.CharField(max_length = 50)

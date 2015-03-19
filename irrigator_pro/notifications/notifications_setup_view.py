@@ -18,9 +18,39 @@ from notifications.models import NotificationsRule, Field
 
 from farms.models import CropSeason, Farm, Field
 
+from pytz import common_timezones
+
+import re
+
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
+
+# Return an list of times in 15 minutes increments
+def get_available_times():
+
+    ret = []
+    for am_pm in ['am', 'pm']:
+        for hour in [12] + ( range(1, 12)):
+            for minutes in ['00', '15', '30', '45']:
+                x =  str(hour) + ":" +  minutes + " "+ am_pm
+                ret.append(ValidID(x))
+    return ret
+
+
+# Return list of timezones. Will remove some we know are wnot needed (Antarctica?)
+def get_available_timezones():
+    filtered_list = [ValidID(i) for i in common_timezones if (i.find('Africa') != 0)]
+    return filtered_list 
+
+
+def get_available_levels():
+    ret = []
+    for x in NotificationsRule.LEVEL_CHOICES:
+        ret.append(ValidID(x))
+    return ret
+
+
 
 # Could probably use the ListView since we only need the notification 
 # objects for the current crop_season
@@ -40,15 +70,11 @@ class NotificationsSetupView(TemplateView):
 
     # Post method is used when adding or editing a row
     def post(self, request, *args, **kwargs):
-        print "Into post"
 
         pk = request.POST["pk"]
-        print "pk of row to add or edit: ", pk
         if (pk == "-1"):
-            print "New Rule"
             notifications = NotificationsRule()
         else:
-            print "Existing rule"
             notifications = NotificationsRule.objects.get(pk = pk)
             notifications.recipients.clear()
             notifications.field_list.clear()
@@ -58,17 +84,15 @@ class NotificationsSetupView(TemplateView):
         notifications.save()
         
         for x in request.POST.getlist("select-fields"):
-            print "Adding field: ", x
             notifications.field_list.add(Field.objects.get(pk=x))
 
-        print request.POST.get('communication-type')
         notifications.notification_type = request.POST.get('communication-type')
-
-        print request.POST.get('alert-level')
         notifications.level = request.POST.get('alert-level')
+        notifications.label = request.POST.get('label')
+        notifications.delivery_time = request.POST.get('notification-time')
+        notifications.time_zone = request.POST.get('timezone')
 
         for x in request.POST.getlist("select-users"):
-            print "Adding user: ", x
             notifications.recipients.add(User.objects.get(pk=x))
 
         
@@ -91,11 +115,9 @@ class NotificationsSetupView(TemplateView):
         for farm in farms_filter(self.request.user):
             fields = []
             for field in farm.get_fields():
-                print "Adding ", field, " to ", farm
                 fields.append(field)
             farm_fields[farm] = fields
 
-        print "returning ", farm_fields
         return farm_fields
 
 
@@ -105,19 +127,17 @@ class NotificationsSetupView(TemplateView):
         for farm in farms_filter(self.request.user):
             users = []
             for user in farm.get_farmer_and_user_objects():
-                print "Adding ", user, " to ", farm
                 users.append(user)
             farm_users[farm] = users
 
-        print "returning ", farm_users
         return farm_users
+
 
 
 
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        print "Into dispatch"
         # There are either parameters for year, month, day, or none.
         year_param = kwargs.get('year', None)
         self.year = None
@@ -140,5 +160,18 @@ class NotificationsSetupView(TemplateView):
         context['farm_fields']          = self.get_farm_fields()
         context['farm_users']           = self.get_farm_users()
         context['notifications_types']  = NotificationsRule.NOTIFICATION_TYPE_VALUES
-        context['alert_levels']         = NotificationsRule.LEVEL_CHOICES
+        context['alert_levels']         = get_available_levels
+        context['available_times']      = get_available_times
+        context['available_timezones']  = get_available_timezones
         return context
+
+
+
+# May want to move somewhere else. May need again.
+
+class ValidID:
+
+    def __init__(self, value):
+
+        self.value = value
+        self.id = re.sub('\W', "_", value)

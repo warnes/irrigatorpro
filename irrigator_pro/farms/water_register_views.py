@@ -16,6 +16,7 @@ from farms.models import CropSeason, Field, WaterRegister
 from farms.generate_water_register import generate_water_register
 
 import datetime
+from datetime import date
 
 class WaterRegisterListView(ListView):
     template_name = "farms/water_register_list.html"
@@ -35,6 +36,24 @@ class WaterRegisterListView(ListView):
                'message'
              ]
 
+
+
+    ## User can specify a date for the report on the page.
+
+    # def get(self, request, *args, **kwargs):
+    #     print "into get: ", request.GET.get('date')
+    #     the_date = request.GET.get('date')
+    #     if the_date is not None:
+    #         print 'We have a date: ', the_date
+    #         self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
+    #     else:
+    #         self.report_date = self.crop_season.season_end_date
+
+    #     return render(request, self.template_name, self.get_context_data())
+
+
+
+
     def update_water_register(self, crop_season, field, today):
         generate_water_register(crop_season, field, self.request.user, None, today)
 
@@ -43,12 +62,11 @@ class WaterRegisterListView(ListView):
         queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
                                                 field=self.field)
 
-        # For testing allow URL to end with .../summary_report/2013/07/31
-        self.today_date = datetime.date.today()
-        if self.year is not None:
-            self.today_date = datetime.date(self.year, self.month, self.day)
+        # self.report_date = datetime.date.today()
+        # if self.year is not None:
+        #     self.report_date = datetime.date(self.year, self.month, self.day)
 
-        self.update_water_register(self.crop_season, self.field, self.today_date)
+        self.update_water_register(self.crop_season, self.field, self.report_date)
 
         if not queryset.count():
             print "No Water_Register records"
@@ -66,10 +84,10 @@ class WaterRegisterListView(ListView):
         if not self.request.user in user_list:
             redirect( reverse('home') )
 
-        # Add today_date to request so it can be used for the plots
-        self.request.session['today_date'] = self.today_date.isoformat()
+        # Add report_date to request so it can be used for the plots
+        self.request.session['report_date'] = self.report_date.isoformat()
         self.nb_records = len(queryset.distinct())
-
+        print 'nb_records: ', self.nb_records
         return queryset.distinct()
 
 
@@ -77,29 +95,21 @@ class WaterRegisterListView(ListView):
     def dispatch(self, *args, **kwargs):
         self.crop_season =  CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
-        self.year = None
-        year_param = kwargs.get('year', None)
-        if year_param is not None:
-            self.year = int(year_param)
-            self.month= int(kwargs.get('month', None))
-            self.day = int(kwargs.get('day', None))
+
+        self.report_date = min(self.crop_season.season_end_date, date.today())
+        print 'report date: ', self.report_date
+        
         return super(WaterRegisterListView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
+
+
         context = super(WaterRegisterListView, self).get_context_data(**kwargs)
         context['crop_season'] = self.crop_season
         context['field']       = self.field
-        context['today_date'] = self.today_date
-        context['cwd'] = os.getcwd
-        context['nb_records'] = self.nb_records
+        context['report_date'] = self.report_date
+        context['cwd'] = os.getcwd # Needed?
+        context['nb_records'] = self.nb_records # Needed?
 
         return context
 
-
-
-# dthandler = lambda obj: (
-# ...     obj.isoformat()
-# ...     if isinstance(obj, datetime.datetime)
-# ...     or isinstance(obj, datetime.date)
-# ...     else None)
-# >>> json.dumps(datetime.datetime.now(), default=dthandler)

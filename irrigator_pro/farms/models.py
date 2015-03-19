@@ -202,7 +202,7 @@ class CropEvent(NameDesc, Comment, Audit):
                                              blank=True,
                                              null=True,
                                              verbose_name="Temp threshold at 2in",
-                                             help_text="Maximum allowed soil tempoerature at 2 inch depth (Farenheit)"
+                                             help_text="Maximum allowed soil temperature at 2 inch depth (Farenheit)"
                                              )
 
     key_event          = models.BooleanField(default=False, 
@@ -530,6 +530,16 @@ class WaterRegister(Audit):
     too_hot_flag          = models.BooleanField(default=False)
     check_sensors_flag    = models.BooleanField(default=False)
     dry_down_flag         = models.BooleanField(default=False)
+
+    # Field tracking status of irrigate_to_max, based on previous wr records and crop events.
+
+    irrigate_to_max_seen = models.BooleanField(default=False)
+    irrigate_to_max_achieved = models.BooleanField(default=False)
+
+    # Days to watering. Established using future records.
+
+    days_to_irrigation  = models.SmallIntegerField(default = -1)
+
 
     class Meta:
         verbose_name = "Water Register"

@@ -13,6 +13,9 @@ import sys
 
 ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
 
+# Number of days in future where we generate a water register.
+WATER_REGISTER_DELTA = 7
+
 
 ###
 # Use ConfigParser to pull private values from irrigator_pro.conf
@@ -340,7 +343,12 @@ AUTHENTICATION_BACKENDS = (
     "allauth.account.auth_backends.AuthenticationBackend",
 )
 
-LOGIN_REDIRECT_URL = '/'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = False
+LOGIN_REDIRECT_URL = '/farm/report/summary_report/'
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/farm/settings/contact_info/'
+ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = '/farm/settings/contact_info/'
+ACCOUNT_LOGIN_REDIRECT_URL = '/farm/settings/contact_info/'
+
 
 ACCOUNT_AUTHENTICATION_METHOD = "email"      # User can login using either userid or email
 ACCOUNT_EMAIL_REQUIRED        = True         # User is required to hand over an e-mail address when signing up.
@@ -386,3 +394,12 @@ ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
 # Google Analytics Key --  This is a placeholder to avoid errors if not set.
 # Set the actual value in local.py
 GA_KEY = ""   
+
+## Setting for the notification emails. Actual values need to be set in local.py
+
+NOTIFICATION_SMTP = ""
+NOTIFICATION_HOST = ""
+NOTIFICATION_PORT = ""
+
+
+

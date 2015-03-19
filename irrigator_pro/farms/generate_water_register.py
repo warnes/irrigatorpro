@@ -1,7 +1,6 @@
 from django.utils import timezone
 
 import datetime
-#from datetime import timedelta, date
 
 import os, os.path
 import math
@@ -10,7 +9,7 @@ import time
 from decimal import Decimal
 from numpy import nanmean
 
-from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON
+from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON, WATER_REGISTER_DELTA
 from farms.models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -228,69 +227,57 @@ OPTIMIZE=True
 # on the modification dates for the WaterHistory, ProbeReadings,
 # and WaterRegister. Want to allow for a WaterHistory or ProbeReading
 # to be entered or modified long after the date of the event.
-def earliest_register_to_update(today_date,
+def earliest_register_to_update(report_date,
                                crop_season,
                                field):
 
-    earliest_to_update = today_date
-    wh_list = WaterHistory.objects.filter(crop_season=crop_season,
-                                          field_list=field).all().order_by('-mdate')
 
-    wr_query = WaterRegister.objects.filter(crop_season=crop_season,
-                                            field=field
-                                            ).all()
+    # First get the modification time of the latest water register
 
-    if len(wr_query) == 0:
+    latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
+                                                         field=field
+                                                     ).order_by('-date').first()
+    if latest_water_register is None:
+        print 'No water register yet'
         return crop_season.season_start_date
+    
+    print 'Date of latest wr: ', latest_water_register.date
 
+
+
+    # Get the earliest water history that has been modified after the latest
+    # water register has been modified
+
+    earliest_wh_update = WaterHistory.objects.filter(crop_season=crop_season,
+                                          field_list=field).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('date').first()
+
+    earliest_to_update = latest_water_register.date + timedelta(days=1)
+    if earliest_wh_update is None:
+        print 'No WH will cause update to water register'
+    else:
+        earliest_to_update = earliest_wh_update.date
+
+    # Get the earliest probe reading that has been modified after the latest
+    # water register has been modified
+        
     try:
         probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-        probe_reading_list = ProbeReading.objects.filter(radio_id=probe.radio_id).all().order_by('-mdate')
+        earliest_changed_probe = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('reading_datetime').first()
+
+        if earliest_changed_probe is None:
+            print 'No probe will cause update (nothing changed)'
+        else:
+            if earliest_changed_probe.reading_datetime.date() < earliest_to_update:
+                earliest_to_update = earliest_changed_probe.reading_datetime.date()
+                print 'Update caused by updated probe reading'
+            else:
+                print 'Probe will not cause update (wh even earlier)'
+
     except ObjectDoesNotExist:
-        probe = None
-        probe_reading_list = None
+        print 'No probe will cause update in water register (no probe)'
     
-    for wh in wh_list:
-        # Already know that we're updating this far back.
-        if wh.date > earliest_to_update: continue
+    return min(earliest_to_update, latest_water_register.date + timedelta(1))
 
-        try:
-            water_register = wr_query.get(date = wh.date)
-        except ObjectDoesNotExist:
-            continue
-
-        # Start earlier if the register does not exist, 
-        # or the modification date of the wather history
-        # predates the modification date on the register.
-
-        if (water_register is None or
-            water_register.mdate <= wh.mdate):
-            print "############## changing"
-            earliest_to_update = wh.date
-
-
-    # Also look at probe readings. The query
-    # may have bougt readings from pervious seasons,
-    # so interrupt the loop when we go before
-    # crop_season start_date
-
-    if  probe_reading_list is None:  return earliest_to_update
-
-    for pr in probe_reading_list:
-        if pr.reading_datetime.date() < crop_season.season_start_date: break
-        if pr.reading_datetime.date() > earliest_to_update: continue
-        
-        try:
-            water_register = wr_query.get(date = pr.reading_datetime.date())
-        except ObjectDoesNotExist:
-            continue
-
-        if (water_register is None or
-            water_register.mdate <= pr.mdate):
-            print "####### Probe changing"
-            earliest_to_update = pr.reading_datetime.date()
-
-    return earliest_to_update
         
 
 
@@ -301,7 +288,7 @@ def generate_water_register(crop_season,
                             field, 
                             user, 
                             start_date=None, 
-                            today_date=None):
+                            report_date=None):
 
     ####
     ## Determine planting date, and stop calculation if no planting has been done
@@ -309,7 +296,7 @@ def generate_water_register(crop_season,
                                                         field=field,
                                                         crop_event__name='Planting').order_by("-date").first()
 
-    delta_days = 5
+
     if not planting_event: return (None, None)
     ####
 
@@ -321,23 +308,17 @@ def generate_water_register(crop_season,
     if start_date is None:
         start_date = planting_event.date
 
-    if today_date is None:
-        today_date = datetime.date.today();
+    if report_date is None:
+        report_date = datetime.date.today();
 
-    print "Today date: ", today_date
     if COMPUTE_FULL_SEASON:
         end_date = crop_season.season_end_date + timedelta(1)
     else:
-        today_plus_delta = today_date + timedelta(days=delta_days)
-        end_date = min(today_plus_delta, crop_season.season_end_date)
+        today_plus_delta = report_date + timedelta(days=WATER_REGISTER_DELTA)
+        end_date = min(today_plus_delta, crop_season.season_end_date) + timedelta(1)
     
     ####
 
-
-    ## Find out what is the earliest water register to update, based on modification dates.
-
-    earliest = earliest_register_to_update(today_date, crop_season, field)
-    print 'Earliest to update: ', earliest
 
 
     ####
@@ -362,6 +343,10 @@ def generate_water_register(crop_season,
                                                               crop_season__field_list=field).distinct().all()
     ####
 
+    ## Find out what is the earliest water register to update, based on modification dates.
+
+    earliest = earliest_register_to_update(report_date, crop_season, field)
+
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
@@ -369,10 +354,6 @@ def generate_water_register(crop_season,
                                             date__lte=end_date).all()
 
     maxWater = float(field.soil_type.max_available_water)
-
-    last_wr = wr_query.order_by('-date').first()
-    if last_wr is not None:
-        print "last wr: ", last_wr.date
 
 
     ## Assume that each field starts with a full water profile
@@ -385,10 +366,16 @@ def generate_water_register(crop_season,
 
 
     first_process_date = earliest
+
+    ## Some optimization to do here: After the first pass we know the prev record is there.
+
+    print 'looping through water registers: '
+    print first_process_date
+    print end_date
+    print report_date
     for  date in daterange(first_process_date, end_date):
-        print "Computing for date: ", date
         ####
-        ## Get AWC for yesterday
+        ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
         ##
         yesterday = date - timedelta(days=1)
 
@@ -397,12 +384,25 @@ def generate_water_register(crop_season,
         ## maximum for the soil type
         if (wr_prev is None) or (wr_prev.date != yesterday): 
             try:
-                wr_prev = wr_query.filter(date=date)[0]
+                wr_prev = wr_query.filter(date=yesterday)[0]
                 AWC_prev = wr_prev.average_water_content
+                irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+                irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
             except ( ObjectDoesNotExist,  IndexError, ):
                 AWC_prev = AWC_initial
+                irrigate_to_max_seen_prev = False
+                irrigate_to_max_achieved_prev = False
+
         else:
             AWC_prev = wr_prev.average_water_content
+            irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+            irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
+
+            irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
+            irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
+
+
+
         ####
         
 
@@ -476,6 +476,7 @@ def generate_water_register(crop_season,
             wr.cuser_id = user.pk
         wr.muser_id = user.pk
 
+
         ## Write to the database
         wr.save()
         
@@ -513,8 +514,11 @@ def generate_water_register(crop_season,
 
         wr = wr_query.filter(date=date)[0]
 
-        if wr.irrigate_to_max: 
+        ## Will handle both the case where the first irrigate_to_flag set to 
+        ## true was in a register not updated for this report.
+        if wr.irrigate_to_max or wr.irrigate_to_max_seen: 
             irrigate_to_max_flag_seen = True
+            wr.irrigate_to_max_seen = True
 
         #####
         ## If the irrigate_to_max flag has been seen, irrigate & check
@@ -531,36 +535,44 @@ def generate_water_register(crop_season,
                 wr.irrigate_flag = False
             else:
                 # Too dry:
+                wr.days_to_irrigation = -1 # Just in case it had been changed previously
                 if wr.average_water_content < 0.00:
                     wr.irrigate_flag = True
+                    wr.days_to_irrigation = 0
             
                 # Too hot:
                 if wr.max_temp_2in is not None and \
                    wr.max_observed_temp_2in is not None and \
                    wr.max_observed_temp_2in > wr.max_temp_2in:
                     wr.irrigate_flag = True
+                    wr.days_to_irrigation = 0
                     wr.too_hot_flag  = True
 
                 ####
-                ## Check if we need to irrigate in the next five days
+                ## Check if we need to irrigate in the next few days, based on WATER_REGISTER_DELTA
                 ####
                 wr.check_sensors_flag = False
+                if wr.days_to_irrigation < 0:
+                    date_plus_delta = date + timedelta(days=(WATER_REGISTER_DELTA+1))
+                    for date_future in daterange(date + timedelta(days=1), date_plus_delta):
+                        try:
+                            wr_future = wr_query.get(date=date_future)
+                            #wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
+                            if wr_future.average_water_content < 0.00:
+                                wr.check_sensors_flag = True
+                                wr.days_to_irrigation = (date_future - date).days
+                                break
+                        except ObjectDoesNotExist:
+                            pass
 
-                date_plus5 = date + timedelta(days=5)
-                for date_future in daterange(date, date_plus5):
-                    try:
-                        wr_future = wr_query.get(date=date_future)
-                        wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
-                    except ObjectDoesNotExist:
-                        pass
-
-        else:
-            if irrigate_to_max_achieved or irrigate_to_max_days >= 3:
+        else:  # execute below if irrigate_to_max_flag_seen is true
+            if wr.irrigate_to_max_achieved or irrigate_to_max_achieved or irrigate_to_max_days >= 3:
                 wr.irrigate_flag = False
                 wr.dry_down_flag = True
             else:
                 irrigate_to_max_days += 1
                 if wr.average_water_content >= maxWater:
+                    wr.irrigate_to_max_achieved = True
                     irrigate_to_max_achieved = True
                     wr.irrigate_flag         = False
                     wr.check_sensors_flag    = False

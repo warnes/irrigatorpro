@@ -343,18 +343,18 @@ table.summary-report tr.header1 th, table.summary-report tr.header2 th {
 
 
 
-table.summary-report tr.header1 th:nth-child(2), table.summary-report tr.header1 th:nth-child(3),  table.summary-report tr.header1 th:nth-child(4)  {
+table.summary-report tr.header1 th:nth-child(6), table.summary-report tr.header1 th:nth-child(7)  {
     border-right-width: 3px;
     border-right-style: double;
 }
 
-table.summary-report tr.header2 th:nth-child(4), table.summary-report tr.header2 th:nth-child(6)  {
+table.summary-report tr.header2 th:nth-child(2)  {
     border-right-width: 3px;
     border-right-style: double;
 }
 
 
-table.summary-report tr td:nth-child(2), table.summary-report tr td:nth-child(6), table.summary-report tr td:nth-child(8)  {
+table.summary-report tr td:nth-child(6), table.summary-report tr td:nth-child(8)   {
     border-right-width: 3px;
     border-right-style: double;
 }
@@ -367,11 +367,6 @@ table.summary-report header1 th:nth-child(1) {
     -webkit-column-width:10em; /* Safari and Chrome */
 }
 
-table.summary-report tr.header1 th:nth-child(5) {
-    column-width:15em;
-    -moz-column-width:15em; /* Firefox */
-    -webkit-column-width:15em; /* Safari and Chrome */
-}
 
 table.summary-report tr.header2 th:nth-child(4) {
     column-width:12em;
@@ -441,3 +436,13 @@ table.notifications-new, table.notifications th, table.notifications tr {
 table.notifications-new td {
     border: 1px solid #006B00;
 }
+
+
+
+
+
+table.tablesorter  tr.header1 th:nth-child(1) {
+    background-position: center right;
+    padding-right: 20px;
+}
+
