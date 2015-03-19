@@ -15,8 +15,7 @@ import os
 from farms.models import CropSeason, Field, WaterRegister
 from farms.generate_water_register import generate_water_register
 
-import datetime
-from datetime import date
+from datetime import date, datetime
 
 class WaterRegisterListView(ListView):
     template_name = "farms/water_register_list.html"
@@ -37,23 +36,6 @@ class WaterRegisterListView(ListView):
              ]
 
 
-
-    ## User can specify a date for the report on the page.
-
-    # def get(self, request, *args, **kwargs):
-    #     print "into get: ", request.GET.get('date')
-    #     the_date = request.GET.get('date')
-    #     if the_date is not None:
-    #         print 'We have a date: ', the_date
-    #         self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
-    #     else:
-    #         self.report_date = self.crop_season.season_end_date
-
-    #     return render(request, self.template_name, self.get_context_data())
-
-
-
-
     def update_water_register(self, crop_season, field, today):
         generate_water_register(crop_season, field, self.request.user, None, today)
 
@@ -61,10 +43,6 @@ class WaterRegisterListView(ListView):
     def get_queryset(self):
         queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
                                                 field=self.field)
-
-        # self.report_date = datetime.date.today()
-        # if self.year is not None:
-        #     self.report_date = datetime.date(self.year, self.month, self.day)
 
         self.update_water_register(self.crop_season, self.field, self.report_date)
 
@@ -93,12 +71,14 @@ class WaterRegisterListView(ListView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        self.crop_season =  CropSeason.objects.get(pk=int(kwargs.get('season', None)))
+        self.crop_season = CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
+	try:
+            dateStr          = kwargs.get('date', None)
+            self.report_date = datetime.strptime(dateStr, "%Y-%m-%d").date()
+        except: 
+            self.report_date = min(self.crop_season.season_end_date, date.today())
 
-        self.report_date = min(self.crop_season.season_end_date, date.today())
-        print 'report date: ', self.report_date
-        
         return super(WaterRegisterListView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -108,8 +88,8 @@ class WaterRegisterListView(ListView):
         context['crop_season'] = self.crop_season
         context['field']       = self.field
         context['report_date'] = self.report_date
-        context['cwd'] = os.getcwd # Needed?
-        context['nb_records'] = self.nb_records # Needed?
+        context['cwd']         = os.getcwd # Needed?
+        context['nb_records']  = self.nb_records # Needed?
 
         return context
 

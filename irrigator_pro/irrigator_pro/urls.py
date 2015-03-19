@@ -82,20 +82,19 @@ urlpatterns = patterns('',
                        url(r'^water_register/$',                               HomeView.as_view(),              name='water_register'),
                        url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
-                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field_year_month_day'),
+                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$', WaterRegisterListView.as_view(), name='water_register_season_field_date'),
 
-                       url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_daily_use', name='daily_use'),
+                       url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)',      'farms.water_register_plots.plot_daily_use',      name='daily_use'),
                        url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
 
                        ## Reports 
-                       url(r'^report/$',                               HomeView.as_view(),              name='report'),
-                       url(r'^report/summary_report/$',                                           SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^report/summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^report/cumulative_report/$',                               CumulativeReportView.as_view(),              name='cumulative_report'),
+                       url(r'^report/$',                                        HomeView.as_view(),              name='report'),
+                       url(r'^report/summary_report/$',                         SummaryReportListView.as_view(), name='summary_report'),
+                       url(r'^report/cumulative_report/$',                      CumulativeReportView.as_view(),  name='cumulative_report'),
 
                        ## Notification pages
 
-                       url(r'^settings/notifications/$',                           NotificationsSetupView.as_view(), name="notifications"),
+                       url(r'^settings/notifications/$',                        NotificationsSetupView.as_view(), name="notifications"),
 
 
                        ## User pages
