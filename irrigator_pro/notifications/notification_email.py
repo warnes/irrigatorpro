@@ -31,7 +31,7 @@ class EmailMessage():
             return
         print "Will send email to ", len(self.email_list), " users"
 
-        msg = MIMEText(self.createEmailMessage())
+        msg = MIMEText(self.createEmailMessage(), 'html')
         msg['Subject'] = "Daily report for " + date.today().isoformat()
         msg['from'] = 'admin@irrigatorpro.org'
         msg['to'] = ','.join(self.email_list)
@@ -78,4 +78,4 @@ class EmailMessage():
 
 
 
-        return ret + "\n\n" + tabulate(table, headers = ['Field', 'Crop', 'Growth Stage', 'Status', 'Message'], tablefmt="grid" )
+        return ret + "\n\n" + tabulate(table, headers = ['Field', 'Crop', 'Growth Stage', 'Status', 'Message'], tablefmt="html" )

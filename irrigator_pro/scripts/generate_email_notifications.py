@@ -109,7 +109,7 @@ for notify in notifications_query:
 
     user = notify.cuser
     if user not in daily_reports:
-        daily_reports[user] = daily_report_by_field(today, user, "path.to.host");
+        daily_reports[user] = daily_report_by_field(today, user);
     reports = daily_reports[user];
 
 

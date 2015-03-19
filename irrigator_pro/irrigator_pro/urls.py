@@ -91,7 +91,7 @@ urlpatterns = patterns('',
                        url(r'^report/$',                               HomeView.as_view(),              name='report'),
                        url(r'^report/summary_report/$',                                           SummaryReportListView.as_view(),   name='summary_report'),
                        url(r'^report/summary_report/(?P<year>\d+)/(?P<month>\d+)/(?P<day>\d+)$',  SummaryReportListView.as_view(),   name='summary_report'),
-                       url(r'^report/cumulative_report$',                               HomeView.as_view(),              name='cumulative_report'),
+                       url(r'^report/cumulative_report/$',                               CumulativeReportView.as_view(),              name='cumulative_report'),
 
                        ## Notification pages
 

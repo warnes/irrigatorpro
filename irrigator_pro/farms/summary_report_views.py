@@ -14,10 +14,7 @@ from generate_daily_report import generate_daily_report
 class SummaryReportListView(TemplateView):
     template_name = "farms/summary_report.html"
 
-
-
     def get(self, request, *args, **kwargs):
-        print "into get: ", request.GET.get('date')
         the_date = request.GET.get('date')
         if the_date is not None:
             print 'We have a date: ', the_date
@@ -37,7 +34,7 @@ class SummaryReportListView(TemplateView):
     #####################################################
 
     def get_object_list(self):
-        ret_list = generate_daily_report(self.report_date, self.request.user, self.request.get_host())
+        ret_list = generate_daily_report(self.report_date, self.request.user)
         return ret_list
 
 

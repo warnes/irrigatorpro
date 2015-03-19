@@ -29,7 +29,7 @@ def cumulative_water(wr_list):
 
 
 
-def generate_daily_report(report_date, user, host):
+def generate_daily_report(report_date, user):
 
     ret_list = []
     farm_list = farms_filter(user)
@@ -37,10 +37,10 @@ def generate_daily_report(report_date, user, host):
                                                  season_end_date__gte = report_date).all()
 
     # Create a dictionary with ('field', 'crop_season')
-    all_fields = {}
+    crop_season_field = {}
     for x in crop_season_list:
         for field in x.field_list.all():
-            all_fields[field] = x
+            crop_season_field[field] = x
     
     for farm in farm_list:
 
@@ -50,9 +50,9 @@ def generate_daily_report(report_date, user, host):
             # Get all the crop_season objects that:
             #    - field_list contains the field
 
-            if field not in all_fields: continue
+            if field not in crop_season_field: continue
             else: 
-                daily_report = get_daily_report(farm, field, all_fields[field], user, report_date, host)
+                daily_report = get_daily_report(farm, field, crop_season_field[field], user, report_date)
                 if daily_report is not None:
                     ret_list.append(daily_report)
     
@@ -60,7 +60,7 @@ def generate_daily_report(report_date, user, host):
 
 
 
-def get_daily_report(farm, field, crop_season, user, report_date, host):
+def get_daily_report(farm, field, crop_season, user, report_date):
 
     generate_water_register(crop_season,
                             field,
@@ -167,8 +167,8 @@ def get_daily_report(farm, field, crop_season, user, report_date, host):
 ###
 
 
-def daily_report_by_field(report_date, user, host):
-    reports = generate_daily_report(report_date, user, host)
+def daily_report_by_field(report_date, user):
+    reports = generate_daily_report(report_date, user)
     ret = {};
     for report in reports:
         ret[report.field.pk] = report
@@ -183,7 +183,6 @@ class SummaryReportFields:
     field                       = 'Unknown field'
     crop                        = 'Unknown crop'
     growth_stage                = 'Undetermined stage'
-    link_to_water_reg           = ''
     last_data_entry_type        = 'No Entry'
     time_last_data_entry        = 'No Entry' #DateField(default=timezone.now())
     cumulative_rain             = 0.0
