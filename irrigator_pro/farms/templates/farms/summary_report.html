@@ -49,7 +49,9 @@
       {% for object in object_list %}
       <tr>
 		<td>{{ object.farm}} </td>
-		<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
+		<td>
+                   <a href = '{{ object.water_register_url }}/{{report_date |date:"Y-m-d" }}'>{{ object.field }}</a>
+                </td>
 		<td>{{ object.crop }}</td>
 		<td>{{ object.growth_stage }}</td>
 		<!-- Copy code from water_register for the status. -->
