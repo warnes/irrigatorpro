@@ -134,21 +134,21 @@ $(document).ready(function()
 			$(this).attr(data_sort_value, "100");
          	if (contents.indexOf("Dry") > 0) {
 				$(this).attr(data_sort_value, "50");
-				$(this).children().first().addClass("alertinline alertinfo");
+				$(this).children().first().addClass("alert-inline alert-info");
 			} else if (contents.indexOf("Today") > 0) {
 				$(this).attr(data_sort_value, "1");
-				$(this).children().first().addClass("alertinline alertdanger");
+				$(this).children().first().addClass("alert-inline alert-danger");
 			} else if (contents.indexOf("Tomorrow") > 0) {
 				$(this).attr(data_sort_value, "2");
-				$(this).children().first().addClass("alertinline alertwarning");
+				$(this).children().first().addClass("alert-inline alert-warning");
 			} else {
 				number = contents.replace(/\D/g, '');
 				if (number != "") {
 					$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
 					if (number < 4) {
-						$(this).children().first().addClass("alertinline alertwarning");
+						$(this).children().first().addClass("alert-inline alert-warning");
 					} else {
-						$(this).children().first().addClass("alertinline alertsuccess");
+						$(this).children().first().addClass("alert-inline alert-success");
 					}
 				}
 			}

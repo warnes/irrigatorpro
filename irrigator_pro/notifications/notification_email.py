@@ -61,6 +61,11 @@ class EmailMessage():
 
     def createEmailMessage(self):
 
+        tableHeader = "<table style='border:1px'><thead>";
+        headers = "";
+        for h in ['Field', 'Crop', 'Growth Stage', 'Status', 'Message']:
+            
+
         
         ret = "<style>table{border:1px;} </style>"
         ret += "This is and abbreviated daily report for " + date.today().isoformat()
