@@ -22,9 +22,22 @@ from pytz import common_timezones
 
 import re
 
+
+## Return all the farms for which the user is is either a farmer
+## or a user, and has at least one field assigned
+
 def farms_filter(user):
-    return Farm.objects.filter( Q(farmer=user) |
+    farms = Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
+
+    # Filter out the farms with no fields
+    ret = []
+    for field in Field.objects.all():
+        if field.farm in farms:
+            ret.append(field.farm)
+    return list(set(ret))
+
+        
 
 # Return an list of times in 15 minutes increments
 def get_available_times():
@@ -128,7 +141,8 @@ class NotificationsSetupView(TemplateView):
             users = []
             for user in farm.get_farmer_and_user_objects():
                 users.append(user)
-            farm_users[farm] = users
+            # Remove duplicates
+            farm_users[farm] = list(set(users))
 
         return farm_users
 
