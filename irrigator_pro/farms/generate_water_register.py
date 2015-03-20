@@ -410,6 +410,14 @@ def generate_water_register(crop_season,
         ## Get or Create a water register object (db record) for today
         try: 
             wr = wr_query.filter(date=date)[0]
+
+            computed_from_probes  = False
+            irrigate_flag         = False
+            too_hot_flag          = False
+            check_sensors_flag    = False
+            dry_down_flag         = False
+
+            
         except ( ObjectDoesNotExist,  IndexError, ):
             wr = WaterRegister(
                 crop_season = crop_season,
