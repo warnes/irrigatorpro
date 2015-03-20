@@ -14,13 +14,20 @@ from generate_daily_report import generate_daily_report
 class SummaryReportListView(TemplateView):
     template_name = "farms/summary_report.html"
 
+
+
+    # The date can be established in 3 different ways, and in this order:
+    # 1) through a GET parameter
+    # 2) Through the url, with a date string at the end
+    # 3) Today, if 1) and 2) do not apply
+    # 
     def get(self, request, *args, **kwargs):
         the_date = request.GET.get('date')
         if the_date is not None:
-            print 'We have a date: ', the_date
             self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
         else:
-            self.report_date = date.today()
+            if self.report_date is None:
+                self.report_date = date.today()
 
         return render(request, self.template_name, self.get_context_data())
 
@@ -47,4 +54,11 @@ class SummaryReportListView(TemplateView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
+        self.report_date = None
+        try:
+            dateStr          = kwargs.get('date', None)
+            self.report_date = datetime.strptime(dateStr, "%Y-%m-%d").date()
+        except: 
+            pass
+
         return super(SummaryReportListView, self).dispatch(*args, **kwargs)
