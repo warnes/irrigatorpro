@@ -6,6 +6,7 @@ import smtplib
 from tabulate import tabulate
 from datetime import date
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 class EmailListEmpty(Exception): pass
 
@@ -31,11 +32,23 @@ class EmailMessage():
             return
         print "Will send email to ", len(self.email_list), " users"
 
-        msg = MIMEText(self.createEmailMessage(), 'html')
+
+
+        #   msg = MIMEText(self.createEmailMessage(), 'html')
+        msg = MIMEMultipart('alternative')
         msg['Subject'] = "Daily report for " + date.today().isoformat()
         msg['from'] = 'admin@irrigatorpro.org'
         msg['to'] = ','.join(self.email_list)
 
+        htmlPart = self.createEmailMessage()
+        textPart = "Here is the daily report"
+
+        part1 = MIMEText(textPart, 'plain')
+        part2 = MIMEText(htmlPart, 'html')
+
+        msg.attach(part1)
+        msg.attach(part2
+)
         s = smtplib.SMTP(NOTIFICATION_SMTP, NOTIFICATION_PORT)
         print 'sending email'
         s.sendmail('admin@irrigatorpro.org', self.email_list, msg.as_string())
@@ -61,28 +74,32 @@ class EmailMessage():
 
     def createEmailMessage(self):
 
-        tableHeader = "<table style='border:1px'><thead>";
-        headers = "";
-        for h in ['Field', 'Crop', 'Growth Stage', 'Status', 'Message']:
-            
 
+        topText = "<html><body>This is and abbreviated daily report for " + date.today().isoformat() + "<br/>If you want a more detailed report you can follow this link: <a href= \"" + NOTIFICATION_HOST + "\">daily report </a><br/><br/>"
+
+        tableHeader = "<table style = 'border: 1px solid black; border-collapse: collapse;'>";
+        headers = "<thead><row style = 'border: 1px solid black;'>";
         
-        ret = "<style>table{border:1px;} </style>"
-        ret += "This is and abbreviated daily report for " + date.today().isoformat()
-        ret += "\n If you want a more detailed report you can follow this link: "
-        ret += NOTIFICATION_HOST
-        ret += "\n"
-
-        table = []
-
+        for h in ['Field', 'Crop', 'Growth Stage', 'Status', 'Message']:
+            headers += ("<th style = 'border: 1px solid black;' >" + h + "</th>")
+        headers += "</row></thead>"
+        
+        rows = "<tbody>"
+        
         for report in self.reportEntries:
-            table.append([
+            rows += "<tr style = 'border: 1px solid black;'>"
+            for cell in [
                 report.field,
                 report.crop,
                 report.growth_stage,
                 self.getStatus(report),
-                report.message])
+                report.message]:
+                rows += ("<td style = 'border: 1px solid black;'>" + str(cell) + "</td>")
+            rows += "</tr>"
 
+        tableEnd = "</tbody></table></body></html>"
 
+        print topText, "\n", tableHeader , "\n",  headers , "\n",  rows , "\n",  tableEnd
 
-        return ret + "\n\n" + tabulate(table, headers = ['Field', 'Crop', 'Growth Stage', 'Status', 'Message'], tablefmt="html" )
+        return topText + tableHeader + headers + rows + tableEnd
+

@@ -240,7 +240,7 @@
 
 <section id="field-assignments">
 
-	<table class = "notifications" id="notifications_table">
+	<table class = "tablesorter notifications" id="notifications_table">
 
 		<thead>
 			<tr class="header1">
@@ -440,7 +440,28 @@ $(document).ready(function()
 
     		}
     		
-    	})
+    	});
+    	$('table').tablesorter( {
+    		
+    	
+    		sortList: [[1,0]],
+    		
+			headers: {
+        		// set "sorter: false" (no quotes) to disable the column
+        		0: { sorter: false },
+        		1: { sorter: "text" },
+       		 	2: { sorter:  "text"},
+        		3: { sorter:  false},
+        		4: { sorter:  "text"},
+       		 	5: { sorter:  "text"},
+       		 	6: { sorter:  false},
+        		7: { sorter:  false},
+        		8: { sorter:  false},
+    		}
+      });
+    	
+    	
+    	
     	
     });	
 </script>
