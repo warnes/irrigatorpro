@@ -94,7 +94,7 @@ urlpatterns = patterns('',
                                                                                 SummaryReportListView.as_view(), name='summary_report_date'),
 
                        url(r'^report/cumulative_report/$',                      CumulativeReportView.as_view(),  name='cumulative_report'),
-                       url(r'^report/cumulative_report/(?P<date>\d{4}-\d{2}-\d{2})/(?P<date>\d{4}-\d{2}-\d{2})$',
+                       url(r'^report/cumulative_report/(?P<start_date>\d{4}-\d{2}-\d{2})/(?P<end_date>\d{4}-\d{2}-\d{2})$',
                                                                                 CumulativeReportView.as_view(),  name='cumulative_report'),
 
                        ## Notification pages
