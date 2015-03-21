@@ -113,7 +113,7 @@
 	      <td>
 		  {% if not object.date|is_future %}
 			{{ object.max_observed_temp_2in|floatformat:1 }}
-                        {% if object.max_temp_2in and object.max_observed_temp_2in > object.max_temp_2in  %}
+                        {% if object.max_temp_2in and object.max_observed_temp_2in > object.max_temp_2in %}
                               <img src="/static/img/svg/thermometer.svg" height="14px" style="vertical-align:text-bottom;"/>	
 			{% endif %}
 		  {% endif %}
@@ -133,7 +133,7 @@
 		    {% if object.average_water_content <= 0.0 %}
 		      AWC
 		    {% endif %}
-		    {% if object.max_temp_2in < object.max_observed_temp_2in %}
+		    {% if object.max_temp_2in and object.max_temp_2in  < object.max_observed_temp_2in %}
 		      Temp
 		    {% endif %}
 		  </div>
