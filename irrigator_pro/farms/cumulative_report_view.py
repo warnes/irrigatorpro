@@ -26,7 +26,6 @@ class CumulativeReportView(TemplateView):
             self.end_date = datetime.strptime(requested_end_date, "%Y-%m-%d").date()
 
         return render(request, self.template_name, self.get_context_data())
-            
 
 
     def get_object_list(self):

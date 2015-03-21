@@ -9,8 +9,6 @@ from datetime import date, datetime
 from farms.generate_water_register import generate_water_register
 
 
-
-
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
@@ -30,8 +28,6 @@ def cumulative_water(wr_list):
             days_of_irrigation += 1
         
     return (total_rain, total_irr, water_use, days_of_irrigation)
-
-
 
 
 def generate_cumulative_report(start_date, end_date, user):
@@ -75,7 +71,6 @@ def get_cumulative_report(farm, field, crop_season, user, start_date, end_date):
     crf.end_date = crop_season.season_end_date
 
     # Get the water registry for the crop season / field
-
     wr_list = WaterRegister.objects.filter(crop_season = crop_season, 
                                            field = field).order_by('-date').filter(Q(date__lte =  end_date,
                                                                                      date__gte = start_date))
@@ -83,7 +78,17 @@ def get_cumulative_report(farm, field, crop_season, user, start_date, end_date):
     if len(wr_list) == 0: return None
     wr = wr_list[0]
     if (wr is not None):
-        (crf.cumulative_rain, crf.cumulative_irrigation_vol, crf.cumulative_water_use, crf.days_of_irrigation) = cumulative_water(wr_list)
+        (crf.cumulative_rain, 
+         crf.cumulative_irrigation_vol, 
+         crf.cumulative_water_use,
+         crf.days_of_irrigation) = cumulative_water(wr_list)
+         
+        # Add link to water register
+        crf.water_register_url = reverse('water_register_season_field_date',
+                                          kwargs={'season':crop_season.pk,
+                                                  'field':field.pk,
+						  'date':end_date }
+                                          )
 
     return crf
 

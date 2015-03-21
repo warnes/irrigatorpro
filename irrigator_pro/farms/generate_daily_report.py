@@ -140,7 +140,7 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                     srf.water_register_url = reverse('water_register_season_field_date', 
                                                      kwargs={'season': crop_season.pk,
                                                              'field':  field.pk,
-                                                             'date':   self.report_date}
+                                                             'date':   report_date}
                                                     )
 
             # Add the water register object to get next irrigation date, or status.
