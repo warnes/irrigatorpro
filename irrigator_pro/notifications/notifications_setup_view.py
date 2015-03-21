@@ -28,7 +28,7 @@ import re
 
 def farms_filter(user):
     farms = Farm.objects.filter( Q(farmer=user) |
-                                Q(users=user) ).distinct()
+                                 Q(users=user) ).distinct()
 
     # Filter out the farms with no fields
     ret = []
@@ -118,8 +118,8 @@ class NotificationsSetupView(TemplateView):
     # ended. Will include crop seasons not yet started.
 
     def get_notifications_list(self):
-            
-        notifications_rule_list = NotificationsRule.objects.all() #.filter(Q(crop_season__season_end_date__gte = self.today_date)).all
+        farm_field_list = self.get_farm_fields
+        notifications_rule_list = NotificationsRule.objects.filter(Q(field_list__in=farm_field_list)).all
         return notifications_rule_list
 
 
@@ -134,7 +134,6 @@ class NotificationsSetupView(TemplateView):
         return farm_fields
 
 
-
     def get_farm_users(self):
         farm_users = {}
         for farm in farms_filter(self.request.user):
@@ -145,9 +144,6 @@ class NotificationsSetupView(TemplateView):
             farm_users[farm] = list(set(users))
 
         return farm_users
-
-
-
 
 
     @method_decorator(login_required)
