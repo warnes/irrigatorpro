@@ -544,7 +544,7 @@ def generate_water_register(crop_season,
             else:
                 # Too dry:
                 wr.days_to_irrigation = -1 # Just in case it had been changed previously
-                if wr.average_water_content < 0.00:
+                if wr.average_water_content <= 0.00:
                     wr.irrigate_flag = True
                     wr.days_to_irrigation = 0
             
@@ -565,8 +565,8 @@ def generate_water_register(crop_season,
                     for date_future in daterange(date + timedelta(days=1), date_plus_delta):
                         try:
                             wr_future = wr_query.get(date=date_future)
-                            #wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content < 0.00)
-                            if wr_future.average_water_content < 0.00 and wr.do_not_irrigate == False:
+                            #wr.check_sensors_flag = wr.check_sensors_flag or (wr_future.average_water_content <= 0.00)
+                            if ( wr_future.average_water_content <= 0.00 ) and ( wr_future.do_not_irrigate == False ):
                                 wr.check_sensors_flag = True
                                 wr.days_to_irrigation = (date_future - date).days
                                 break
