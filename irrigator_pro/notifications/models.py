@@ -1,7 +1,7 @@
 from django.db import models
 
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 
 from common.models import Audit, Comment
@@ -37,18 +37,22 @@ class NotificationsRule(Comment, Audit):
     time_zone           = models.CharField(max_length = 50)
 
 
-    @receiver(post_save, sender=Farm)
-    def update_recipients(sender, **kwargs):
+
+    def recipients_changed(sender, **kwargs):
         # Must be an easier way, but this will work for now
+        if kwargs.get('action') != "post_add": return
         farm = kwargs.get('instance', None)
         farm_users = farm.get_farmer_and_user_objects()
+
         for notify in NotificationsRule.objects.all():  # Here should filter by checking farm in first field. .filter(Q(field_list__[0].farm = sender)):
             aField = notify.field_list.all()[0]
             if aField.farm != farm: continue
             for recipient in notify.recipients.all():
                 if recipient not in farm_users:
                     notify.recipients.remove(recipient)
-            notify.save()
+                notify.save()
 
     
-            
+
+    # Set up for receiving signal when the users list has changed
+    m2m_changed.connect(recipients_changed, sender = Farm.users.through)
