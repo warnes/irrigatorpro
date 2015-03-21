@@ -8,9 +8,6 @@ from datetime import date, datetime
 
 from farms.generate_water_register import generate_water_register
 
-
-
-
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
                                 Q(users=user) ).distinct()
@@ -25,8 +22,6 @@ def cumulative_water(wr_list):
         total_irr += wr.irrigation
 
     return (total_rain, total_irr)
-
-
 
 
 def generate_daily_report(report_date, user):
@@ -59,7 +54,6 @@ def generate_daily_report(report_date, user):
     return ret_list
 
 
-
 def get_daily_report(farm, field, crop_season, user, report_date):
 
     generate_water_register(crop_season,
@@ -68,7 +62,6 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                             None,
                             report_date)
 
-                
     # Will add an entry for this field and farm
             
     srf = SummaryReportFields()
@@ -80,9 +73,7 @@ def get_daily_report(farm, field, crop_season, user, report_date):
 
     wr_list = WaterRegister.objects.filter(crop_season = crop_season, 
                                            field = field).order_by('-date').filter(Q(date__lte =  report_date))
-        
-                
-                
+
     if len(wr_list) == 0: return None
     wr = wr_list[0]
     if (wr is not None):
@@ -146,9 +137,10 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                     srf.time_last_data_entry = latest_probe_reading.reading_datetime
             
                     # Add link to water register
-                    srf.water_register_url = reverse('water_register_season_field', 
-                                                     kwargs={'season':crop_season.pk,
-                                                             'field':field.pk }
+                    srf.water_register_url = reverse('water_register_season_field_date', 
+                                                     kwargs={'season': crop_season.pk,
+                                                             'field':  field.pk,
+                                                             'date':   self.report_date}
                                                     )
 
             # Add the water register object to get next irrigation date, or status.
@@ -157,8 +149,6 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                 srf.water_register_object = wr
 
     return srf
-
-
 
 
 ###
@@ -173,7 +163,6 @@ def daily_report_by_field(report_date, user):
     for report in reports:
         ret[report.field.pk] = report
     return ret
-
 
 
 class SummaryReportFields:
