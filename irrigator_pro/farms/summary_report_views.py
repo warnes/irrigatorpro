@@ -24,10 +24,13 @@ class SummaryReportListView(TemplateView):
     def get(self, request, *args, **kwargs):
         the_date = request.GET.get('date')
         if the_date is not None:
-            self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
-        else:
-            if self.report_date is None:
-                self.report_date = date.today()
+	    try:
+                self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
+            except:
+                pass
+
+        if not hasattr(self, 'report_date') or self.report_date is None:
+            self.report_date = date.today()
 
         return render(request, self.template_name, self.get_context_data())
 
