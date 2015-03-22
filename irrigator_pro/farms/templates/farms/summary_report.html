@@ -15,7 +15,7 @@
     	style="width: 6em">
     </form>
   </h1>
-   <div id="date-error" style="color:red; visibility: hidden">
+   <div id="date-error" style="color:red; display: none">
   		Date must be entered in the format YYYY-MM-DD and be a valid day
   </div>
 
@@ -94,7 +94,7 @@
   </table>
 
   {% else %}
-      <b> Nothing to display yet. </b>
+      <h2 class="alert alert-warning">No information for this date.</h2>
   {% endif %}
 
 

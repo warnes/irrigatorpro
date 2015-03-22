@@ -3,183 +3,165 @@
 
 {% block content %}
 
-  <h1>
-   <i class="fa fa-pencil-square-o fa-fw"> </i>
-   Cumulative Report
-  </h1>
-
-  <section>
-    <form id = "change-date" onsubmit="return validateForm()"  method="get">
-    	<label for="start_datepicker">Start date:</label>
+  <form id = "change-date" onsubmit="return validateForm()"  method="get">
+     <h1>
+        <i class="fa fa-pencil-square-o fa-fw"> </i>
+        Cumulative Report 
+     </h1>
+     <h2> 
     	<input type="text" id="start_datepicker" 
     		name="start_date"
     		value='{{start_date |date:"Y-m-d" }}' 
+                size="10"
     		>
-    	<span id="start-date-error" style="color:red; display: none">
-  			Start date must be entered in the format YYYY-MM-DD and be no earlier than {{earliest_date |date:"Y-m-d" }}
-  		</span>
-    	<br>
-    	
-    	<label for="end_datepicker">End date:</label>
+        to
     	<input type="text" id="end_datepicker" 
     		name="end_date"
     		value='{{end_date |date:"Y-m-d" }}' 
+                size="10"
     		>
- 	   	<span id="end-date-error" style="color:red; display: none">
-  			End date must be entered in the format YYYY-MM-DD and be no later than {{today_date |date:"Y-m-d" }}
-		</span>
-		<br>
-		<div id="range-error" style="color:red; display: none">
-  			End date must be later than start date.
-  			<br>
-  		</div>
-
-		<label>&nbsp;</label>	
-		<input type="submit" value="Update"></input>
+        <input type="submit" value="Update" style="display:none"></input>
+     </h2>
+  </form>
  
-     </form>
-  </section>  
- 
+  <div id="start-date-error" class="alert alert-error" style="display: none">
+      Start date must be entered in the format YYYY-MM-DD and be no earlier than {{earliest_date |date:"Y-m-d" }}
+  </div>
+  <div id="end-date-error"   class="alert alert-error" style="display: none">
+      End date must be entered in the format YYYY-MM-DD and be no later than {{today_date |date:"Y-m-d" }}
+  </div>
+  <div id="range-error"       class="alert alert-error" style="display: none">
+      End date must be later than start date.
+   </div>
   
- {% if object_list %}
+  {% if object_list %}
  
- <table class="tablesorter formset cumulative-report" id="cumulativereport" >
-    <thead>
-      <tr class="header1">
-      	<th rowspan=2>Farm</th>
-      	<th rowspan=2>Field</th>
-      	<th rowspan=2>Crop</th>
-      	<th rowspan=2>Season Start Date</th>
-      	<th rowspan=2>Season End Date</th>
-      	<th colspan=3 class="sorter-false">Cumulative Water</th>
-      	<th rowspan=2>Days of irrigation</th>
-      </tr>
-      <tr class="header2">
-     	<th>Water Use</th>
-      	<th>Irrigation</th>
-      	<th>Rain</th>
-      	
-      </tr>
-    </thead>
-    
-    {% for object in object_list %}
-    <tr>
-		<td>{{ object.farm}} </td>
-		<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
-		<td>{{ object.crop }}</td>
-		<td>{{ object.start_date | date:"Y-m-d"}}</td>
-		<td>{{ object.end_date | date:"Y-m-d"}}</td>
-		<td>{{ object.cumulative_water_use}}</td>
-		<td>{{ object.cumulative_rain}}</td>
-		<td>{{ object.cumulative_irrigation_vol}}</td>
-		<td>{{ object.days_of_irrigation}}</td>
-	</tr>
-	{% endfor %}
- 
- {% else %}
-      <b> Nothing to display in this date range. </b>
+    <table class="tablesorter formset cumulative-report" id="cumulativereport" >
+      <thead>
+        <tr class="header1">
+        	<th rowspan=2>Farm</th>
+        	<th rowspan=2>Field</th>
+        	<th rowspan=2>Crop</th>
+        	<th rowspan=2>Season Start Date</th>
+        	<th rowspan=2>Season End Date</th>
+        	<th colspan=3 class="sorter-false">Cumulative Water</th>
+        	<th rowspan=2>Days of irrigation</th>
+        </tr>
+        <tr class="header2">
+       	<th>Water Use</th>
+        	<th>Irrigation</th>
+        	<th>Rain</th>
+        	
+        </tr>
+      </thead>
+      
+      {% for object in object_list %}
+      <tr>
+  		<td>{{ object.farm}} </td>
+  		<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
+  		<td>{{ object.crop }}</td>
+  		<td>{{ object.start_date | date:"Y-m-d"}}</td>
+  		<td>{{ object.end_date | date:"Y-m-d"}}</td>
+  		<td>{{ object.cumulative_water_use}}</td>
+  		<td>{{ object.cumulative_rain}}</td>
+  		<td>{{ object.cumulative_irrigation_vol}}</td>
+  		<td>{{ object.days_of_irrigation}}</td>
+  	</tr>
+  	{% endfor %}
+   
+  {% else %}
+      <h2 class="alert alert-warning"> No information in this date range. </h2>
   {% endif %}
-
  
- 
- {% endblock %}
-  
-  
-  
-  
-  
-  {% block scripts %}
+{% endblock %}
 
 
-<script>
-
-
-var earliestDate = new Date({{earliest_date.year}},
-							{{earliest_date.month}}-1,
-							{{earliest_date.day}});
-							
-var todayDate = new Date();
-
-function validateForm() {
-		
-		var startDate;
-		var endDate;
-		var errorFound = false;
-		
-		$("#start-date-error").css("display", "none");
-		$("#end-date-error").css("display", "none");
-		$("#range-error").css("display", "none");
-		
-		try {		
-			startDate = $.datepicker.parseDate('yy-mm-dd', $("#start_datepicker").val());
-		} catch (e) {
-			$("#start-date-error").css("display", "");
-			errorFound = true;
-		}
-		
-		try {
-			endDate = $.datepicker.parseDate('yy-mm-dd', $("#end_datepicker").val());
-		} catch(e) {
-			$("#end-date-error").css("display", "");
-			errorFound = true;
-		}
-			
-		if (startDate < earliestDate) {
-			$("#start-date-error").css("display", "");
-			errorFound = true;
-		}	
-			
-		if (endDate > todayDate) {
-			$("#end-date-error").css("display", "");
-			errorFound = true;
-		}	
-			
-		if (errorFound)
-			return false;
-
-		if (startDate >= endDate) {			
-			$("#range-error").css("display", "");
-			return false;
-		}
-		
-		
-		
-		window.onbeforeunload = null;
-		return true;
-}
-
-$(document).ready(function() 
-    {
-    	$('table').tablesorter( {
+{% block scripts %}
+  <script>
+    var earliestDate = new Date({{earliest_date.year}},
+    							{{earliest_date.month}}-1,
+    							{{earliest_date.day}});
+    							
+    var todayDate = new Date();
+    
+    function validateForm() {
     		
-    	
-    		sortList: [[0,0]],
+    		var startDate;
+    		var endDate;
+    		var errorFound = false;
     		
-			headers: {
-        		// set "sorter: false" (no quotes) to disable the column
-        		0: { sorter: "text" },
-        		1: { sorter: "text" },
-       		 	2: { sorter:  "text"},
-        		3: { sorter:  "date"},
-        		4: { sorter:  "date"},
-       		 	5: { sorter:  "digit"},
-       		 	6: { sorter:  "digit"},
-        		7: { sorter:  "digit"},
-        		8: { sorter:  "digit"},
+    		$("#start-date-error").css("display", "none");
+    		$("#end-date-error").css("display", "none");
+    		$("#range-error").css("display", "none");
+    		
+    		try {		
+    			startDate = $.datepicker.parseDate('yy-mm-dd', $("#start_datepicker").val());
+    		} catch (e) {
+    			$("#start-date-error").css("display", "");
+    			errorFound = true;
     		}
-      });
-	
-	$( "#start_datepicker, #end_datepicker " ).datepicker(
-		{
-			maxDate: new Date(),
-			minDate: new Date(2013, 03, 01)
-		}		
-	);
-	
-});
-
-
-</script>
+    		
+    		try {
+    			endDate = $.datepicker.parseDate('yy-mm-dd', $("#end_datepicker").val());
+    		} catch(e) {
+    			$("#end-date-error").css("display", "");
+    			errorFound = true;
+    		}
+    			
+    		if (startDate < earliestDate) {
+    			$("#start-date-error").css("display", "");
+    			errorFound = true;
+    		}	
+    			
+    		if (endDate > todayDate) {
+    			$("#end-date-error").css("display", "");
+    			errorFound = true;
+    		}	
+    			
+    		if (errorFound)
+    			return false;
+    
+    		if (startDate >= endDate) {			
+    			$("#range-error").css("display", "");
+    			return false;
+    		}
+    		
+    		
+    		
+    		window.onbeforeunload = null;
+    		return true;
+    }
+    
+    $(document).ready(function() 
+        {
+        	$('table').tablesorter( {
+        		
+        	
+        		sortList: [[0,0]],
+        		
+    			headers: {
+            		// set "sorter: false" (no quotes) to disable the column
+            		0: { sorter: "text" },
+            		1: { sorter: "text" },
+           		 	2: { sorter:  "text"},
+            		3: { sorter:  "date"},
+            		4: { sorter:  "date"},
+           		 	5: { sorter:  "digit"},
+           		 	6: { sorter:  "digit"},
+            		7: { sorter:  "digit"},
+            		8: { sorter:  "digit"},
+        		}
+          });
+    	
+    	$( "#start_datepicker, #end_datepicker " ).datepicker(
+    		{
+    			maxDate: new Date(),
+    			minDate: new Date(2013, 03, 01)
+    		}		
+    	);
+    	
+    });
+  </script>
 {% endblock %}
 
   
