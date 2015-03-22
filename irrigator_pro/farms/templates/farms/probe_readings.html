@@ -5,128 +5,136 @@
 
 
 {% block scripts %}
-<script type="text/javascript">
-    /* This function cleans up datetimepickers when a new formset row is added */
-    function renewDatetimePickers() {
-        /* Clear out old datetimepicker event handlers */
-        $("input[id$=datetime]").datepicker('destroy');
-
-        /* Remove buttons that got copied by formset.add */
-        $("input[id$=datetime]").siblings("button").remove();
-
-        /* 
-           Re-activate datetime pickers, restricting dates to the range 
-           specified by the crop season   
-        */
-        $("input[id$=datetime]").datetimepicker({ 
-            timeFormat: "hh:mm:ss",
-            minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
-            maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
-        });
-    }
-
-    $(function() {
-        /* Enable add row / delete row */
-        $('#formset tbody tr').formset({
-            addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
-            deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
-            added: renewDatetimePickers,
+    <script type="text/javascript">
+        /* This function cleans up datetimepickers when a new formset row is added */
+        function renewDatetimePickers() {
+            /* Clear out old datetimepicker event handlers */
+            $("input[id$=datetime]").datepicker('destroy');
+    
+            /* Remove buttons that got copied by formset.add */
+            $("input[id$=datetime]").siblings("button").remove();
+    
+            /* 
+               Re-activate datetime pickers, restricting dates to the range 
+               specified by the crop season   
+            */
+            $("input[id$=datetime]").datetimepicker({ 
+                timeFormat: "hh:mm:ss",
+                minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
+                maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
+            });
+        }
+    
+        $(function() {
+            /* Enable add row / delete row */
+            $('#formset tbody tr').formset({
+                addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
+                deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
+                added: renewDatetimePickers,
+            })
+    
+           /*
+              Instead of setting the minDate/maxDate separately, 
+              reuse renewDatePickers code 
+            */
+           renewDatetimePickers();
         })
-
-       /*
-          Instead of setting the minDate/maxDate separately, 
-          reuse renewDatePickers code 
-        */
-       renewDatetimePickers();
-    })
-</script>
+    </script>
 {% endblock %}
-
-
+    
+    
 {% block content %}
-
+    
   <h1>
     <i class="fa fa-rss fa-fw"></i>
     Probe Readings
   </h1>
+    
+  {% if radio_id %}
+    
+    <h2>
+       <em>{{season}}</em>
+         -
+       <em>{{field}}</em>
+         -
+       <em>{{radio_id}}</em>
+    </h2>
+    
+    
+    <h2>{{ object_name }}</h2>
+  
+    <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
+  
+      {% if formset.total_error_count %}
+        {% for dict in formset.non_form_errors %}
+          {% for error in dict.values %}
+  	  <div class="alert alert-danger">
+  	    {{ error }}
+  	  </div>
+            {% endfor %}
+  	{% endfor %}
+      {% endif %}
+  
+      <table class="formset" >
+        <thead>
+  	<tr>
+  	  <th>Date and Time</th>
+  	  <!-- <th>Radio Id</th>  -->
+  	  <th>Soil Potential 8"    <!-- " --> </th>
+  	  <th>Soil Potential 16"  <!-- " --> </th>
+  	  <th>Soil Potential 24"  <!-- " --> </th>
+  	  <th>Battery %</th>
+  	  <th>Thermocouple 1 Temp</th>
+  	  <th>Thermocouple 2 Temp</th>
+  	  <th>Delete</th>
+  	</tr>
+        </thead>
+  
+  
+        <tbody>
+  	{% for field in formset %}
+  	  <tr>
+  	    {% for input in field %}
+  	      {% if input.is_hidden %}
+  		{{ input }}
+  	      {% else %}
+  		<td>
+  		  {% if input.errors %}
+  		    <div class="inline-alert alert-danger">
+  		      {{ input.errors }}
+  	            </div>
+  		  {% endif %}
+  		  {{ input }}
+  		</td>
+  	      {% endif %}
+  	    {% endfor %}
+  	  </tr>
+  	{% endfor %}
+      </table>
+  
+  
+      <div class="submit-bar">
+        <button value="Submit" type="submit" class="btn btn-success">
+  	<i class="fa fa-floppy-o"></i> Save Changes
+        </button>
+  
+  
+        <a class="btn btn-warning" href="">
+  	<i class="fa fa-undo fa-fw"></i> Cancel Changes
+        </a>
+  
+      </div>
+  
+  
+      {{ formset.management_form }}
+  
+  
+    </form>
 
-  <h2>
-    <em>{{season}}</em>
-      -
-    <em>{{field}}</em>
-      -
-    <em>{{radio_id}}</em>
-  </h2>
+  {% else %}
 
+    <h2 class="alert alert-warning">No <em>Probes</em> defined.</h2>
 
-  <h2>{{ object_name }}</h2>
-
-  <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
-
-    {% if formset.total_error_count %}
-      {% for dict in formset.non_form_errors %}
-        {% for error in dict.values %}
-	  <div class="alert alert-danger">
-	    {{ error }}
-	  </div>
-          {% endfor %}
-	{% endfor %}
-    {% endif %}
-
-    <table class="formset" >
-      <thead>
-	<tr>
-	  <th>Date and Time</th>
-	  <!-- <th>Radio Id</th>  -->
-	  <th>Soil Potential 8"    <!-- " --> </th>
-	  <th>Soil Potential 16"  <!-- " --> </th>
-	  <th>Soil Potential 24"  <!-- " --> </th>
-	  <th>Battery %</th>
-	  <th>Thermocouple 1 Temp</th>
-	  <th>Thermocouple 2 Temp</th>
-	  <th>Delete</th>
-	</tr>
-      </thead>
-
-
-      <tbody>
-	{% for field in formset %}
-	  <tr>
-	    {% for input in field %}
-	      {% if input.is_hidden %}
-		{{ input }}
-	      {% else %}
-		<td>
-		  {% if input.errors %}
-		    <div class="inline-alert alert-danger">
-		      {{ input.errors }}
-	            </div>
-		  {% endif %}
-		  {{ input }}
-		</td>
-	      {% endif %}
-	    {% endfor %}
-	  </tr>
-	{% endfor %}
-    </table>
-
-
-    <div class="submit-bar">
-      <button value="Submit" type="submit" class="btn btn-success">
-	<i class="fa fa-floppy-o"></i> Save Changes
-      </button>
-
-
-      <a class="btn btn-warning" href="">
-	<i class="fa fa-undo fa-fw"></i> Cancel Changes
-      </a>
-
-    </div>
-
-
-    {{ formset.management_form }}
-
-
-  </form>
+  {% endif %}
 
 {% endblock %}

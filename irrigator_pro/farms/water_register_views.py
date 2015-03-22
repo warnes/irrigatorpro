@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
@@ -11,11 +12,14 @@ from django.utils import timezone
 import json
 import os
 
-
 from farms.models import CropSeason, Field, WaterRegister
 from farms.generate_water_register import generate_water_register
 
 from datetime import date, datetime
+
+
+class WaterRegisterEmptyView(TemplateView):
+    template_name = 'farms/water_register_empty.html'
 
 class WaterRegisterListView(ListView):
     template_name = "farms/water_register_list.html"

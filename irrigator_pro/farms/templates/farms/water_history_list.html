@@ -47,91 +47,98 @@
     <i class="fa fa-cloud fa-fw"></i>
     Rainfall and Irrigation
   </h1>
-
-  <h2>Season: <em>{{season}}</em>
-    {% if field %}
-      - Field: <em>{{ field }}</em>
-    {% endif %}
-  </h2>
-
-  <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
-
-
-    {% if formset.non_form_errors %}
-      {% for dict in formset.non_form_errors %}
-        {% for key,value in dict.items %}
-  	  <div class="alert alert-danger">
-  	    {{ value }}
-  	  </div>
+ 
+  {% if request.formset %}
+  
+    <h2>Season: <em>{{season}}</em>
+      {% if field %}
+        - Field: <em>{{ field }}</em>
+      {% endif %}
+    </h2>
+  
+    <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
+  
+  
+      {% if formset.non_form_errors %}
+        {% for dict in formset.non_form_errors %}
+          {% for key,value in dict.items %}
+    	  <div class="alert alert-danger">
+    	    {{ value }}
+    	  </div>
+          {% endfor %}
         {% endfor %}
-      {% endfor %}
-    {% endif %}
-
-
-    <table class="formset" >
-
-      <thead>
-	<tr>
-	  <th>Date</th>
-	  <th>Fields</th>
-	  <th>Rain</th>
-	  <th>Irrigation</th>
-	  <th>Comment</th>
-	  <th>Delete</th>
-	</tr>
-      </thead>
-
-
-      <tbody>
-	{% for field in formset %}
-	  <tr>
-	    {% for input in field %}
-	      {% if not input.is_hidden %}
-		<td>
-		  {% if input.errors %}
-		    <div class="inline-alert alert-danger">
-		      {{ input.errors }}
-	            </div>
-		  {% endif %}
-		  {{ input }}
-		</td>
-	      {% else %}
-		{{ input }}
-	      {% endif %}
-	    {% endfor %}
-	  </tr>
-	{% endfor %}
-	</table>
-
-
-    <div class="submit-bar">
-      <button value="Submit" type="submit" class="btn btn-success">
-	<i class="fa fa-floppy-o"></i> Save Changes
-      </button>
-
-
-      {% if object.pk %}
-	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
-	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
-	</a>
-      {% else %}
-	<a class="btn btn-warning" href="{% url 'farm_list' %}">
-	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
-	</a>
       {% endif %}
+  
+  
+      <table class="formset" >
+  
+        <thead>
+  	<tr>
+  	  <th>Date</th>
+  	  <th>Fields</th>
+  	  <th>Rain</th>
+  	  <th>Irrigation</th>
+  	  <th>Comment</th>
+  	  <th>Delete</th>
+  	</tr>
+        </thead>
+  
+  
+        <tbody>
+  	{% for field in formset %}
+  	  <tr>
+  	    {% for input in field %}
+  	      {% if not input.is_hidden %}
+  		<td>
+  		  {% if input.errors %}
+  		    <div class="inline-alert alert-danger">
+  		      {{ input.errors }}
+  	            </div>
+  		  {% endif %}
+  		  {{ input }}
+  		</td>
+  	      {% else %}
+  		{{ input }}
+  	      {% endif %}
+  	    {% endfor %}
+  	  </tr>
+  	{% endfor %}
+  	</table>
+  
+  
+      <div class="submit-bar">
+        <button value="Submit" type="submit" class="btn btn-success">
+  	<i class="fa fa-floppy-o"></i> Save Changes
+        </button>
+  
+  
+        {% if object.pk %}
+  	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
+  	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
+  	</a>
+        {% else %}
+  	<a class="btn btn-warning" href="{% url 'farm_list' %}">
+  	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
+  	</a>
+        {% endif %}
+  
+        {% if object.pk %}
+  	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
+  	  <i class="fa fa-times fa-fw"></i> Delete
+  	</a>
+        {% endif %}
+  
+      </div>
+  
+  
+      {{ formset.management_form }}
+  
+    </form>
 
-      {% if object.pk %}
-	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
-	  <i class="fa fa-times fa-fw"></i> Delete
-	</a>
-      {% endif %}
+   {% else %}
 
-    </div>
-
-
-    {{ formset.management_form }}
-
-
-  </form>
-
+     <h2 class="alert alert-warning">No <em>Fields</em> defined.</h2>
+    
+   {% endif %}
+  
 {% endblock %}

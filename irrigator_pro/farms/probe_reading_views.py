@@ -4,9 +4,13 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic.list import ListView
+from django.views.generic import TemplateView
 from django.forms.widgets import HiddenInput
 
 from farms.models import CropSeason, Field, Probe, ProbeReading
+
+class ProbeReadingEmptyView(TemplateView):
+    template_name = 'farms/probe_readings.html'
 
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading

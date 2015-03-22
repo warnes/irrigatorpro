@@ -68,24 +68,27 @@ urlpatterns = patterns('',
                        #############
 
                        ## Water History
-                       url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),   name='water_history'),
-                       url(r'^water_history/(?P<season>\d+)$',                WaterHistoryFormsetView.as_view(),   name='water_history_season'),
-                       url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),   name='water_history_season_field'),
+                       url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),  name='water_history'),
+                       url(r'^water_history/(?P<season>\d+)$',                WaterHistoryFormsetView.as_view(),  name='water_history_season'),
+                       url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),  name='water_history_season_field'),
                        
 
                        ## Probe Reading pages
-                       url(r'^probe_readings/$',                               ProbeReadingFormsetView.as_view(), name='probe_readings' ),
+                       url(r'^probe_readings/$',                               ProbeReadingEmptyView.as_view(),   name='probe_readings' ),
                        url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
 
                        ## Water Register
-                       url(r'^water_register/$',                               HomeView.as_view(),              name='water_register'),
-                       url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(), name='water_register_season'),
-                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(), name='water_register_season_field'),
-                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$', WaterRegisterListView.as_view(), name='water_register_season_field_date'),
+                       url(r'^water_register/$',                               WaterRegisterEmptyView.as_view(), name='water_register'),
+                       url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(),  name='water_register_season'),
+                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(),  name='water_register_season_field'),
+                       url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$',
+                                                                               WaterRegisterListView.as_view(),  name='water_register_season_field_date'),
 
-                       url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)',      'farms.water_register_plots.plot_daily_use',      name='daily_use'),
-                       url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)', 'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
+                       url(r'^water_register/plot/daily/(?P<crop_season>\d+)/(?P<field>\d+)',      
+                                                                               'farms.water_register_plots.plot_daily_use',      name='daily_use'),
+                       url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)',
+                                                                               'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
 
                        ## Reports 
                        url(r'^report/$',                                        HomeView.as_view(),              name='report'),
