@@ -330,7 +330,7 @@
                 opt.text = "{{user}}";    
                 new_list.push(opt);
             {% endfor %};
-            users["{{farm.pk}}"]=new_list;
+            users["{{farm.pk}}"]=new_list.sort(function(a,b){return a.text > b.text;});
             {% endfor %}
         }
         return users["" + farm_pk];
