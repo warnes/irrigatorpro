@@ -118,9 +118,20 @@ class NotificationsSetupView(TemplateView):
     # ended. Will include crop seasons not yet started.
 
     def get_notifications_list(self):
-        farm_field_list = self.get_farm_fields
-        notifications_rule_list = NotificationsRule.objects.filter(Q(field_list__in=farm_field_list)).all
+        farm_field_list = self.get_farm_fields()
+
+        # Might be easier way, this will work for now.
+        # But the commented filter does not work.
+        notifications_rule_list = [] #NotificationsRule.objects.filter(Q(field_list__in=farm_field_list)).all
+
+        for notify in NotificationsRule.objects.all():
+            aField = notify.field_list.all()[0]
+            if farm_field_list.get(aField.farm) is not None:
+                notifications_rule_list.append(notify)
         return notifications_rule_list
+
+
+
 
 
     def get_farm_fields(self):
