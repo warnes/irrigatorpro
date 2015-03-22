@@ -10,7 +10,7 @@ from django.forms.widgets import HiddenInput
 from farms.models import CropSeason, Field, Probe, ProbeReading
 
 class ProbeReadingEmptyView(TemplateView):
-    template_name = 'farms/probe_readings.html'
+    template_name = 'farms/probe_readings_empty.html'
 
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
