@@ -12,6 +12,10 @@ from farms.models import CropSeason, Field, Probe, ProbeReading
 class ProbeReadingEmptyView(TemplateView):
     template_name = 'farms/probe_readings_empty.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ProbeReadingEmptyView, self).dispatch(*args, **kwargs)
+
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
     template_name = 'farms/probe_readings.html'
