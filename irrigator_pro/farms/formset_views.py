@@ -71,7 +71,8 @@ class Farms_FormsetView(ModelFormSetView):
 
     def get_extra_form_kwargs(self):
         kwargs = super(Farms_FormsetView, self).get_extra_form_kwargs()
-        kwargs['initial'] = { 'crop_season': int(self.season) }
+	if hasattr(self, 'season') and self.season is not None:
+            kwargs['initial'] = { 'crop_season': int(self.season) }
         return kwargs
 
 
