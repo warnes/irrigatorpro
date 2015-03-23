@@ -72,7 +72,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     def get_users(self):
         user_list = self.users.all()
         if user_list:
-            return (', '.join([ obj.email for obj in user_list])).sort(key=User.name)
+            return ', '.join([ obj.email for obj in user_list])
         else:
             return ''
 
