@@ -1,14 +1,19 @@
 import decimal
 
+
+from common.models import Audit, Comment, Location, Location_Optional, NameDesc
+
+from datetime import timedelta
+from decimal import Decimal
+
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
-from common.models import Audit, Comment, Location, Location_Optional, NameDesc
-from django.contrib.auth.models import User
-from datetime import timedelta
 
 import sys
 
-
+                                    
 ############
 ## Display user email name instead of username when selecting users
 ############
@@ -102,13 +107,13 @@ class Field(NameDesc, Comment, Audit):
 
     farm          = models.ForeignKey(Farm)
     acres         = models.DecimalField(max_digits=5,
-                                        decimal_places=2) # ###.##
+                                        decimal_places=2,
+                                        validators=[MinValueValidator(Decimal('0.01'))]) # ###.##
     soil_type     = models.ForeignKey('SoilType')
     irr_capacity  = models.DecimalField(max_digits=3,
                                         verbose_name='Irrigation Capacity (per 24 hours)',
-                                        decimal_places=2) # #.##
-
-        
+                                        decimal_places=2,
+                                        validators=[MinValueValidator(Decimal('0.01'))]) # ###.##
 
     def __unicode__(self):
         return u"%s: %s" % (self.farm, self.name)

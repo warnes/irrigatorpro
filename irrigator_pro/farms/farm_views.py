@@ -10,6 +10,8 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 from farms.forms import FieldFormSet
 from farms.models import Farm
+from farms.forms import FarmForm
+
 
 farm_view_fields =  ('farmer',
                      'name',
@@ -39,10 +41,9 @@ class FarmMixin:
         """
         self.object = self.get_object()
 
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        field_form = FieldFormSet(prefix='field', instance=self.object)
+        form = self.get_form(FarmForm)
 
+        field_form = FieldFormSet(prefix='field', instance=self.object)
            
         field_form_headers = map(lambda field: field.label,
                                  field_form[0])

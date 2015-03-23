@@ -21,6 +21,11 @@ from datetime import date, datetime
 class WaterRegisterEmptyView(TemplateView):
     template_name = 'farms/water_register_empty.html'
 
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(WaterRegisterEmptyView, self).dispatch(*args, **kwargs)
+
+
 class WaterRegisterListView(ListView):
     template_name = "farms/water_register_list.html"
     model = WaterRegister

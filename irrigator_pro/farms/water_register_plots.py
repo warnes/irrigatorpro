@@ -1,6 +1,8 @@
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 import matplotlib.pyplot as plt
 
 import datetime, re
@@ -49,7 +51,7 @@ def get_water_register_list(report_date, crop_season, field):
     return wr_list
     
 
-# @method_decorator(login_required)
+@method_decorator(login_required)
 def plot_daily_use(request, crop_season, field):
 
     report_date = get_report_date(request.session['report_date'])
@@ -114,6 +116,7 @@ def plot_daily_use(request, crop_season, field):
     return response
 
 
+@method_decorator(login_required)
 def plot_cumulative_use(request, crop_season, field):
 
     report_date = get_report_date(request.session['report_date'])
