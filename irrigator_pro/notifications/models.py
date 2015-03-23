@@ -37,6 +37,19 @@ class NotificationsRule(Comment, Audit):
     time_zone           = models.CharField(max_length = 50)
 
 
+    # Next two are used in admin interface
+
+    def get_fields_list(self):
+        f = self.field_list.all()
+        return ', '.join([ obj.name for obj in f])
+
+    def get_recipients_list(self):
+        r = self.recipients.all()
+        return ', '.join([ obj.email for obj in r])
+
+
+
+
 
     def recipients_changed(sender, **kwargs):
         # Must be an easier way, but this will work for now
@@ -52,6 +65,9 @@ class NotificationsRule(Comment, Audit):
                     notify.recipients.remove(recipient)
                 notify.save()
 
+    def __init__(self, *args, **kwargs):
+        super(NotificationsRule, self).__init__(*args, **kwargs)
+        self.attached_fields = []
     
 
     # Set up for receiving signal when the users list has changed
