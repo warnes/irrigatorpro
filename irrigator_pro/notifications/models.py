@@ -47,10 +47,6 @@ class NotificationsRule(Comment, Audit):
         r = self.recipients.all()
         return ', '.join([ obj.email for obj in r])
 
-
-
-
-
     def recipients_changed(sender, **kwargs):
         # Must be an easier way, but this will work for now
         if kwargs.get('action') != "post_add": return
@@ -72,3 +68,6 @@ class NotificationsRule(Comment, Audit):
 
     # Set up for receiving signal when the users list has changed
     m2m_changed.connect(recipients_changed, sender = Farm.users.through)
+
+    class Meta:
+        verbose_name = "Notification Rule"
