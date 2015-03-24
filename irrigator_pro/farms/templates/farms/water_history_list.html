@@ -48,8 +48,6 @@
     Rainfall and Irrigation
   </h1>
  
-  {% if request.formset %}
-  
     <h2>Season: <em>{{season}}</em>
       {% if field %}
         - Field: <em>{{ field }}</em>
@@ -135,15 +133,4 @@
   
     </form>
 
-   {% else %}
-
-
-     <h2 class="alert alert-warning">
-       A <em>Crop Season</em> must be defined before
-       <em>Rainfall and Irrigation</em> can be viewed
-       or entered.
-     </h2>
-    
-   {% endif %}
-  
 {% endblock %}
