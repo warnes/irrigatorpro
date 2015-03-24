@@ -54,7 +54,6 @@
 
 /* This controls how the display changes when the screen is narrow than 1009px */
 @media (max-width: 1009px) {
-
     body {
         -webkit-text-size-adjust: none;
     }
@@ -62,14 +61,14 @@
 	color: LimeGreen;
 	font-size: 0.875em;
     }
-	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
-	    color: LimeGreen;
-	    color: #fffebb;
-	}
-	.navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
-	        color: DarkGreen;
-		background-color: #80B580;
-	}
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: LimeGreen;
+        color: #fffebb;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > .active > a, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: DarkGreen;
+	background-color: #80B580;
+    }
 }
 
 
@@ -148,12 +147,9 @@
     float:right;
 }
 
-
-
-
-
-
-
+.navbar-toggle {
+    float: left;
+}
 
 
 /**xxxxxxxxxx**/
