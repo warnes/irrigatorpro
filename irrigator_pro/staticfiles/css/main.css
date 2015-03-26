@@ -446,3 +446,13 @@ table.tablesorter  tr.header1 th:nth-child(1) {
     padding-right: 20px;
 }
 
+.hiddenfooter {
+    display: none;
+}
+
+
+@media (max-width: 1009px) {
+    footer {
+	display:none;
+    }
+}
