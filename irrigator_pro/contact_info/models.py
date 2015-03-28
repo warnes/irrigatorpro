@@ -2,6 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from common.models import Audit, Comment, Location, NameDesc
 
+
+
+class SMS_Info(Audit):
+    STATUS_CHOICES = ['New', 'Submitted', 'Validated']
+    number      = models.CharField(max_length=20, blank=True)
+    status      = models.CharField(max_length=20, blank=True, default = STATUS_CHOICES[0])
+
+    def  __unicode__(self):
+        return self.number
+
+
+
 class Contact_Info(Location, Audit):
     # from Location: address_1, address_2, city, state, zipcode, country
     # from Audit: cdate, cuser, mdate, muser
@@ -11,7 +23,8 @@ class Contact_Info(Location, Audit):
     
     # contact information
     phone     = models.CharField(max_length=20, blank=True)
-    mobile    = models.CharField(max_length=20, blank=True)
+    #mobile    = models.CharField(max_length=20, blank=True)
+    sms_info  = models.OneToOneField(SMS_Info, blank=True, null=True)
     fax       = models.CharField(max_length=20, blank=True)
     
     def user_first_name(self):
@@ -29,4 +42,5 @@ class Contact_Info(Location, Audit):
     class Meta: 
         verbose_name        = 'Contact Information' 
         verbose_name_plural = 'Contact Information'
+
 

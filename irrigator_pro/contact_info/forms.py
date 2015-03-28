@@ -7,7 +7,7 @@ class Contact_InfoForm(ModelForm):
     class Meta:
         model=Contact_Info
         fields = Location.fields \
-                 + [ 'phone', 'mobile', 'fax' ]
+                 + [ 'phone', 'fax' ]
                  
 
     

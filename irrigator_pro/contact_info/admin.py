@@ -50,7 +50,7 @@ class Contact_Info_Admin(AuditAdmin):
         'state',
         'zipcode',
         'phone',
-        'mobile',
+#        'mobile',
         'fax',
         'cdate',
         'mdate',
