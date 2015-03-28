@@ -32,11 +32,9 @@ class Contact_InfoUpdateView(UpdateView):
 
 
     def post (self, request, *args, **kwargs):
-        print "Into the contact info post:"
 
         form = Contact_InfoForm(request.POST, instance = self.get_object())
         if form.is_valid():
-            print 'The form is valid!!!'
             form.save()
             return redirect(self.get_success_url())
 
@@ -55,7 +53,6 @@ class Contact_InfoUpdateView(UpdateView):
                                                                          'muser': self.request.user,
                                                                        }
                                                            )
-        print 'From get onject: ', obj
         return obj
 
     @method_decorator(login_required)
