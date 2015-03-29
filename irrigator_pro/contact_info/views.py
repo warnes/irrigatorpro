@@ -41,6 +41,18 @@ class Contact_InfoUpdateView(UpdateView):
           )
 
 
+
+    def get(self, request, *args, **kwargs):
+
+        self.object = self.get_object()
+        form = self.get_form(Contact_InfoForm)
+
+
+        return render(request, self.template_name, {
+                      'form': form,
+                     'mobile': self.get_mobile()
+                })
+
     def post (self, request, *args, **kwargs):
 
         form = Contact_InfoForm(request.POST, instance = self.get_object())
