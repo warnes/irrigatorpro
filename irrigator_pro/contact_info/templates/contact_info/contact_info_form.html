@@ -96,8 +96,14 @@
       {% endfor %}
 	<tr>
 	  <td><label for="mobile">Mobile:</label></td>
-	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;"/></td>
-	  <td></td>
+	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile}}"/></td>
+	  <td>
+	    {% if sms_error %}
+	      <div class="inline-alert alert-danger">
+		{{ sms_error }}
+	      </div>
+	      {% endif %}
+	  </td>
 	  
 	</tr>
 

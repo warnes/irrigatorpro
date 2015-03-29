@@ -5,9 +5,19 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.core.urlresolvers import reverse, reverse_lazy
 
+from django.core.exceptions import ObjectDoesNotExist
+
 from farms.readonly import ReadonlyFormset
 from contact_info.forms import Contact_InfoForm
-from contact_info.models import Contact_Info
+from contact_info.models import Contact_Info, SMS_Info
+
+import re
+
+
+class SMSException(Exception):
+
+    def __init__(self, m):
+        self.msg = m
 
 class Contact_InfoCreateView(CreateView):
     model = Contact_Info
@@ -35,11 +45,32 @@ class Contact_InfoUpdateView(UpdateView):
 
         form = Contact_InfoForm(request.POST, instance = self.get_object())
         if form.is_valid():
-            form.save()
-            return redirect(self.get_success_url())
+            mobile_number = request.POST.get("mobile")
+            try:
+                smsInfoObject = self.get_sms_object(request, mobile_number)
+            except SMSException as e:
+                return render(request, self.template_name, {
+                    'form': form, 
+                    'sms_error': e.msg,
+                    'mobile': self.get_mobile()
+                })
 
+            form.save()
+
+            # The form won't same sms info
+            ob = self.get_object();
+            ob.sms_info = smsInfoObject
+            ob.save()
+            #return redirect(self.get_success_url())
+            form.clean()
+            return render(request, self.template_name, {
+                'form': form,
+                'mobile': self.get_mobile()
+            })
+            
         return render(request, self.template_name, {
-            'form': form
+            'form': form,
+            'mobile': self.get_mobile()
         })
 
 
@@ -55,9 +86,55 @@ class Contact_InfoUpdateView(UpdateView):
                                                            )
         return obj
 
+    def get_mobile(self):
+        o = self.get_object();
+        if o.sms_info is None:
+            return ''
+        return o.sms_info.number
+
+
+    def get_sms_object(self, request, mobile_number):
+
+        if mobile_number.strip() == '':
+            return None
+        
+
+        p = re.compile('^[\d-]+$')
+        if not p.match(mobile_number) :
+            raise SMSException("The number can only contain numbers and the - sign")
+
+        p2 = re.compile('[^\d]+')
+        m = p2.sub("", mobile_number)
+        print m
+        if len(m) != 10:
+            raise SMSException('Mobile number must contain 10 numbers, preferably in the format 555-555-5555')
+
+        try:
+            sms_object = SMS_Info.objects.get(number = m)
+
+            try:
+                ci = Contact_Info.objects.get(sms_info = sms_object)
+                if ci == self.get_object():
+                    return sms_object
+                else:
+                    raise SMSException('This number is already used by someone else.')    
+            except ObjectDoesNotExist:
+                return sms_object
+
+        except ObjectDoesNotExist:
+            print "This is a new number"
+            o = SMS_Info(number = m)
+            o.save()
+            return o
+
+
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(Contact_InfoUpdateView, self).dispatch(*args, **kwargs)
+
+
+
+
 
  
 class UserUpdateView(UpdateView):

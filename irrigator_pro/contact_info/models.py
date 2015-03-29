@@ -6,7 +6,7 @@ from common.models import Audit, Comment, Location, NameDesc
 
 class SMS_Info(Audit):
     STATUS_CHOICES = ['New', 'Submitted', 'Validated']
-    number      = models.CharField(max_length=20, blank=True)
+    number      = models.CharField(max_length=20, blank=True, unique = True)
     status      = models.CharField(max_length=20, blank=True, default = STATUS_CHOICES[0])
 
     def  __unicode__(self):
@@ -24,7 +24,7 @@ class Contact_Info(Location, Audit):
     # contact information
     phone     = models.CharField(max_length=20, blank=True)
     #mobile    = models.CharField(max_length=20, blank=True)
-    sms_info  = models.OneToOneField(SMS_Info, blank=True, null=True)
+    sms_info  = models.ForeignKey(SMS_Info, blank=True, null=True)
     fax       = models.CharField(max_length=20, blank=True)
     
     def user_first_name(self):
