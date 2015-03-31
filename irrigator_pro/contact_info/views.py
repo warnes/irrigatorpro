@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.core.urlresolvers import reverse, reverse_lazy
-
+from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 
 from farms.readonly import ReadonlyFormset
@@ -50,7 +50,8 @@ class Contact_InfoUpdateView(UpdateView):
 
         return render(request, self.template_name, {
                       'form': form,
-                     'mobile': self.get_mobile()
+                      'user': self.request.user,
+                      'mobile': self.get_mobile()
                 })
 
     def post (self, request, *args, **kwargs):
@@ -63,13 +64,13 @@ class Contact_InfoUpdateView(UpdateView):
             except SMSException as e:
                 return render(request, self.template_name, {
                     'form': form, 
+                    'user': self.request.user,
                     'sms_error': e.msg,
                     'mobile': self.get_mobile()
                 })
 
             form.save()
 
-            # The form won't same sms info
             ob = self.get_object();
             ob.sms_info = smsInfoObject
             ob.save()
@@ -77,11 +78,13 @@ class Contact_InfoUpdateView(UpdateView):
             form.clean()
             return render(request, self.template_name, {
                 'form': form,
+                'user': self.request.user,
                 'mobile': self.get_mobile()
             })
             
         return render(request, self.template_name, {
             'form': form,
+            'user': self.request.user,
             'mobile': self.get_mobile()
         })
 
@@ -100,9 +103,7 @@ class Contact_InfoUpdateView(UpdateView):
 
     def get_mobile(self):
         o = self.get_object();
-        if o.sms_info is None:
-            return ''
-        return o.sms_info.number
+        return o.sms_info
 
 
     def get_sms_object(self, request, mobile_number):
@@ -166,5 +167,19 @@ class UserUpdateView(UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(UserUpdateView, self).dispatch(*args, **kwargs)
+
+
+
+################################################
+##### Method to trigger sms validation
+###############################################
+
+def validate_sms(request, user_pk):
+    print 'Will validate sms'
+    return HttpResponse('Nothing')
+
+
+
+
 
 

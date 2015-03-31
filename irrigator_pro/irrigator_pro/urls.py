@@ -109,6 +109,7 @@ urlpatterns = patterns('',
                        #url(r'^user/edit$',  edit_user  ),
                        url(r'^settings/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
                        url(r'^settings/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
+                       url(r'^settings/validate_sms/(?P<user_pk>\d+)$', 'contact_info.views.validate_sms',  name='validate_sms')
 
 )
 

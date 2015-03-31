@@ -96,13 +96,28 @@
       {% endfor %}
 	<tr>
 	  <td><label for="mobile">Mobile:</label></td>
-	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile}}"/></td>
+	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile.number}}"/></td>
 	  <td>
 	    {% if sms_error %}
-	      <div class="inline-alert alert-danger">
-		{{ sms_error }}
-	      </div>
+	    <div class="inline-alert alert-danger">
+	      {{ sms_error }}
+	    </div>
+	    {% elif mobile.number %}
+	      {% if mobile.status = 'New' %}
+	      <button type="button" class="btn btn-primary btn-sm" onclick="validate_sms()">
+		 validate for SMS
+	       </button>
+	      {% elif mobile.status = 'Submitted' %}
+	      <div  class=" btn-primary btn-sm">
+		  Pending
+	       </div>
+	      {% elif mobil.status = 'Validated' %}
+	      <div  class=" btn-primary btn-sm">
+		 Activated
+	       </div>
 	      {% endif %}
+	    {% endif %}
+	      
 	  </td>
 	  
 	</tr>
@@ -121,4 +136,15 @@
   </form>
 
 
+{% endblock %}
+
+{% block scripts %}
+<script>
+function validate_sms() {
+  var theurl = "{%url 'validate_sms' user.pk %}";
+  $.ajax({
+    url: theurl
+  });  
+}
+</script>
 {% endblock %}
