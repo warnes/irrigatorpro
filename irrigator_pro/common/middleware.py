@@ -34,4 +34,5 @@ class AuditMiddleware(object):
             instance.cuser = user
         
         if hasattr(instance,'muser_id'):
-            instance.muser = user
+            if user is not None:
+                instance.muser = user

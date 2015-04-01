@@ -5,7 +5,7 @@ from common.models import Audit, Comment, Location, NameDesc
 
 
 class SMS_Info(Audit):
-    STATUS_CHOICES = ['New', 'Submitted', 'Validated']
+    STATUS_CHOICES = ['New', 'Submitted', 'Validated', 'Denied']
     number      = models.CharField(max_length=20, blank=True, unique = True)
     status      = models.CharField(max_length=20, blank=True, default = STATUS_CHOICES[0])
 

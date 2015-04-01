@@ -4,12 +4,16 @@ from django.utils.decorators import method_decorator
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
+
+from django.views.decorators.csrf import csrf_exempt
 
 from farms.readonly import ReadonlyFormset
 from contact_info.forms import Contact_InfoForm
 from contact_info.models import Contact_Info, SMS_Info
+
+from twilio.util import RequestValidator
 
 import re
 
@@ -180,6 +184,58 @@ def validate_sms(request, user_pk):
 
 
 
+## Validation, copied from
+## http://codehighway.postach.io/post/twilio-sms-receive-crazy-simple
 
 
+def validate_request(request):
+    """
+    Make sure the request is from Twilio and is valid.
+    Ref: https://www.twilio.com/docs/security#validating-requests
+    """
 
+    auth_token = '9ea8a4f0ac5fd659fef71719e480c3c0'
+    if 'HTTP_X_TWILIO_SIGNATURE' not in request.META:
+        return 'X_TWILIO_SIGNATURE header is missing ' \
+            'from request, not a valid Twilio request.'
+        
+        validator = RequestValidator(auth_token)
+        
+        if not validator.validate(
+                request.build_absolute_uri(), 
+                request.POST, 
+                request.META['HTTP_X_TWILIO_SIGNATURE']):
+            return 'Twilio request is not valid.'
+
+        
+@csrf_exempt
+def incoming_sms(request):
+
+    print 'Got incoming sms!!!'
+
+    bad_request_message = validate_request(request)
+    if bad_request_message:
+        print bad_request_message
+        return HttpResponseForbidden()
+
+    body = request.POST['Body']
+    # Right now only handle North American numbers. We receive them as
+    # +15555555555. Will just remove first 2 characters
+    sender_number = request.POST['From'][2:]
+
+    sms_rec = SMS_Info.objects.get(number = sender_number)
+    if sms_rec is None or sms_rec.status != "Submitted":
+        print sender_number, ' not in database, or not in submitted status.'
+        return HttpResponseForbidden()
+        
+    print sms_rec.muser
+    if body.upper().strip() != "OK":
+        print sender_number, " will be set to denied. Received a non OK response"
+        sms_rec.status = "Denied"
+    else:
+        print sender_number, " validated"
+        sms_rec.status = "Validated"
+    
+    print sms_rec.muser
+    sms_rec.save(force_update=True)
+    return HttpResponse('Nothing')
