@@ -14,9 +14,11 @@ from contact_info.forms import Contact_InfoForm
 from contact_info.models import Contact_Info, SMS_Info
 
 from twilio.util import RequestValidator
+from twilio.rest import TwilioRestClient
+
+from irrigator_pro.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
 
 import re
-
 
 class SMSException(Exception):
 
@@ -178,8 +180,33 @@ class UserUpdateView(UpdateView):
 ##### Method to trigger sms validation
 ###############################################
 
-def validate_sms(request, user_pk):
-    print 'Will validate sms'
+def send_sms(sms_info):
+
+    body = "Activation message for Irrigator Pro. If you did not initialize the process just ignore this message. Otherwise reply with OK as the message."
+    client = TwilioRestClient(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+    message = client.messages.create(body=body,
+                                     to="+1" + sms_info.number, # Replace with your phone number
+                                     from_= TWILIO_PHONE_NUMBER) # Replace with your Twilio number
+    print message.sid
+
+
+
+
+def validate_sms(request):
+    contact_info = Contact_Info.objects.get(user = request.user)
+    if contact_info is None:
+        print 'Validating for non-existing user???'
+        HttpResponseForbidden()
+
+    sms_info = contact_info.sms_info
+    if sms_info is None or sms_info.status != "New":
+        print 'Validating for non-existing sms, or non-new sms!!!'
+        HttpResponseForbidden()
+        
+    # Should probably check if the sms was correctly sent
+    send_sms(sms_info)
+    sms_info.status = "Submitted"
+    sms_info.save()
     return HttpResponse('Nothing')
 
 
@@ -194,6 +221,9 @@ def validate_request(request):
     Ref: https://www.twilio.com/docs/security#validating-requests
     """
 
+    # Forgot where this token if from. Different from above.
+    # From: https://www.twilio.com/user/account/developer-tools/test-credentials
+    # Should probably use TWILIO_AUTH_TOKEN once testing complete.
     auth_token = '9ea8a4f0ac5fd659fef71719e480c3c0'
     if 'HTTP_X_TWILIO_SIGNATURE' not in request.META:
         return 'X_TWILIO_SIGNATURE header is missing ' \
@@ -210,8 +240,6 @@ def validate_request(request):
         
 @csrf_exempt
 def incoming_sms(request):
-
-    print 'Got incoming sms!!!'
 
     bad_request_message = validate_request(request)
     if bad_request_message:

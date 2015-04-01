@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load phone_filters %}
+
 {% block title %}
   Account Information
 {% endblock %}
@@ -96,8 +98,8 @@
       {% endfor %}
 	<tr>
 	  <td><label for="mobile">Mobile:</label></td>
-	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile.number}}"/></td>
-	  <td>
+	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile.number|us_number}}"/></td>
+	  <td id="sms_status">
 	    {% if sms_error %}
 	    <div class="inline-alert alert-danger">
 	      {{ sms_error }}
@@ -111,7 +113,7 @@
 	      <div  class=" btn-primary btn-sm">
 		  Pending
 	       </div>
-	      {% elif mobil.status = 'Validated' %}
+	      {% elif mobile.status = 'Validated' %}
 	      <div  class=" btn-primary btn-sm">
 		 Activated
 	       </div>
@@ -141,7 +143,8 @@
 {% block scripts %}
 <script>
 function validate_sms() {
-  var theurl = "{%url 'validate_sms' user.pk %}";
+  var theurl = "{%url 'validate_sms' %}";
+  $("#sms_status").html("<div  class='btn-primary btn-sm'>Pending</div>");
   $.ajax({
     url: theurl
   });  

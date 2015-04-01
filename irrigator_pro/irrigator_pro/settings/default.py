@@ -401,5 +401,8 @@ NOTIFICATION_SMTP = ""
 NOTIFICATION_HOST = ""
 NOTIFICATION_PORT = ""
 
-
+## Setting for the sms notification emails. Actual values need to be set in local.py
+TWILIO_ACCOUNT_SID = ""
+TWILIO_AUTH_TOKEN = ""
+TWILIO_PHONE_NUMBER = ""
 
