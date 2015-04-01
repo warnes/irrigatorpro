@@ -11,16 +11,18 @@
      <h2> 
     	<input type="text" id="start_datepicker" 
     		name="start_date"
+	       onchange = "showButton()"
     		value='{{start_date |date:"Y-m-d" }}' 
                 size="10"
     		>
         to
     	<input type="text" id="end_datepicker" 
+	       onchange = "showButton()"
     		name="end_date"
     		value='{{end_date |date:"Y-m-d" }}' 
                 size="10"
     		>
-        <input type="submit" value="Update" style="display:none"></input>
+        <input id="submit-dates" type="submit" value="Update" style="display:none"></input>
      </h2>
   </form>
  
@@ -85,6 +87,10 @@
     							
     var todayDate = new Date();
     
+    function showButton() {
+       $("#submit-dates").css("display", "");
+    }
+
     function validateForm() {
     		
     		var startDate;

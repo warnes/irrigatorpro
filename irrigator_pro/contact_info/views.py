@@ -118,9 +118,9 @@ class Contact_InfoUpdateView(UpdateView):
             return None
         
 
-        p = re.compile('^[\d-]+$')
+        p = re.compile('^[\d\s()-]+$')
         if not p.match(mobile_number) :
-            raise SMSException("The number can only contain numbers and the - sign")
+            raise SMSException("The number can only contain numbers, the - sign, and ()")
 
         p2 = re.compile('[^\d]+')
         m = p2.sub("", mobile_number)
