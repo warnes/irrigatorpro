@@ -46,3 +46,4 @@ phonenumbers==7.0.2
 # For printing a nice table
 tabulate==0.7.4
 
+twilio==3.7.3
