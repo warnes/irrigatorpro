@@ -88,8 +88,16 @@ class FarmMixin:
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
+
+
+        field_form_headers = map(lambda field: field.label,
+                                 field_form[0])
+        field_form_headers = map(lambda label: '' if label in ( 'Delete', 'Id', 'Farm' ) else label,
+                                    field_form_headers)
+
         context = self.get_context_data(form=form,
-                                        field_form=field_form)
+                                        field_form=field_form,
+                                        field_form_headers=field_form_headers)
         return self.render_to_response(context)
 
 
