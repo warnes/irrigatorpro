@@ -19,7 +19,7 @@
     <table class="formset">
       <tr>
 	<td>
-	  <label>First Name</label>
+	  <label>First Name:</label>
 	</td>
 	<td>
 	  {{request.user.first_name}}
@@ -30,7 +30,7 @@
       </tr>
       <tr>
 	<td>
-	  <label>Last Name</label>
+	  <label>Last Name:</label>
 	</td>
 	<td>
 	  {{request.user.last_name}}
@@ -43,7 +43,7 @@
 
       <tr>
 	<td>
-	  <label>Email</label>
+	  <label>Email:</label>
 	</td>
 	<td>
 	  {{request.user.email}}
@@ -60,7 +60,7 @@
 
       <tr>
 	<td>
-	  <label>Password</label>
+	  <label>Password:</label>
 	</td>
 	<td>
 	  ########
@@ -80,7 +80,13 @@
       {% for field in form %}
 	<tr>
 	  <td>{{ field.label_tag }}</td> 
+	  {% if field.label == "Fax" or  field.label == "Phone" %}
+	  <td>
+	    <input id="id_{{field.label|lower}}" maxlength="20" name="{{field.label|lower}}" type="text" value="{{field.value|us_number}}" />
+	  </td>
+	  {% else %}
 	  <td>{{ field }}</td>
+	  {% endif %}
 	  <td>
 	    {% if field.errors %}
 	      <div class="inline-alert alert-danger">
@@ -98,7 +104,11 @@
       {% endfor %}
 	<tr>
 	  <td><label for="mobile">Mobile:</label></td>
-	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" value="{{mobile.number|us_number}}"/></td>
+	  <td><input type="text" id="mobile" name="mobile" style="text-align:left;" 
+		     value="{{mobile|us_number}}"
+		     onkeypress="disableSMSValidation()"
+		     />
+	  </td>
 	  <td id="sms_status">
 	    {% if sms_error %}
 	    <div class="inline-alert alert-danger">
@@ -106,7 +116,7 @@
 	    </div>
 	    {% elif mobile.number %}
 	      {% if mobile.status = 'New' %}
-	      <button type="button" class="btn btn-primary btn-sm" onclick="validate_sms()">
+	      <button type="button" class="btn btn-primary btn-sm" onclick="validate_sms()" id="sms-button">
 		 validate for SMS
 	       </button>
 	      {% elif mobile.status = 'Submitted' %}
@@ -148,6 +158,10 @@ function validate_sms() {
   $.ajax({
     url: theurl
   });  
+}
+
+function disableSMSValidation() {
+  $("#sms-button").prop("disabled", true)
 }
 </script>
 {% endblock %}

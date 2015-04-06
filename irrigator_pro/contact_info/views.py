@@ -7,6 +7,8 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponse, HttpResponseForbidden
 from django.core.exceptions import ObjectDoesNotExist
 
+from django.forms.models import BaseModelForm
+
 from django.views.decorators.csrf import csrf_exempt
 
 from farms.readonly import ReadonlyFormset
@@ -19,6 +21,8 @@ from twilio.rest import TwilioRestClient
 from irrigator_pro.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
 
 import re
+from phone_number import PhoneNumber
+
 
 class SMSException(Exception):
 
@@ -57,42 +61,71 @@ class Contact_InfoUpdateView(UpdateView):
         return render(request, self.template_name, {
                       'form': form,
                       'user': self.request.user,
-                      'mobile': self.get_mobile()
+                      'mobile': self.get_mobile_number()
                 })
+
+
+    # TODO Clead form manually,insted of theourh is_valid, so we don't have to 
+    # duplicate code
 
     def post (self, request, *args, **kwargs):
 
         form = Contact_InfoForm(request.POST, instance = self.get_object())
+        mobile_number = request.POST.get("mobile")
         if form.is_valid():
-            mobile_number = request.POST.get("mobile")
             try:
                 smsInfoObject = self.get_sms_object(request, mobile_number)
+                form.save()
+                # We have validated that the phone numbers are valid. We need
+                # manually save the mobile number (not in the form) as well as 
+                # phone and fax to be in the format we desire.
+
+
+                ob = self.get_object();
+                self.object = ob
+                print 'original', ob.phone
+
+                phone = PhoneNumber(ob.phone)
+                fax = PhoneNumber(ob.fax)
+                ob.sms_info = smsInfoObject
+                ob.phone = phone.unformatted
+                ob.fax = fax.unformatted
+
+                ob.save()
+                print 'after change', self.object.phone
+
+                form = Contact_InfoForm(instance = ob)
+                return render(request, self.template_name, {
+                    'form': form,
+                    'user': self.request.user,
+                    'mobile': self.get_mobile_number()
+                })
+            
+
+
             except SMSException as e:
                 return render(request, self.template_name, {
                     'form': form, 
                     'user': self.request.user,
                     'sms_error': e.msg,
-                    'mobile': self.get_mobile()
+                    'mobile': request.POST.get("mobile")
                 })
 
-            form.save()
-
-            ob = self.get_object();
-            ob.sms_info = smsInfoObject
-            ob.save()
-            #return redirect(self.get_success_url())
-            form.clean()
+        else:
+            # Form is not valid. May still want to give a message if 
+            # the format is not valid, or number already exists
+            sms_err = ""
+            try:
+                smsInfoObject = self.get_sms_object(request, mobile_number)
+            except SMSException as e:
+                sms_err = e.msg
+                
             return render(request, self.template_name, {
                 'form': form,
+                'sms_error': sms_err,
                 'user': self.request.user,
-                'mobile': self.get_mobile()
+                'mobile': request.POST.get("mobile")
             })
-            
-        return render(request, self.template_name, {
-            'form': form,
-            'user': self.request.user,
-            'mobile': self.get_mobile()
-        })
 
 
 
@@ -107,29 +140,21 @@ class Contact_InfoUpdateView(UpdateView):
                                                            )
         return obj
 
-    def get_mobile(self):
+    def get_mobile_number(self):
         o = self.get_object();
-        return o.sms_info
+        if o.sms_info is not None:
+            return o.sms_info.number
+        return ""
 
 
     def get_sms_object(self, request, mobile_number):
 
-        if mobile_number.strip() == '':
-            return None
-        
-
-        p = re.compile('^[\d\s()-]+$')
-        if not p.match(mobile_number) :
-            raise SMSException("The number can only contain numbers, the - sign, and ()")
-
-        p2 = re.compile('[^\d]+')
-        m = p2.sub("", mobile_number)
-        print m
-        if len(m) != 10:
-            raise SMSException('Mobile number must contain 10 numbers, preferably in the format 555-555-5555')
+        sms = PhoneNumber(mobile_number)
+        if not sms.valid:
+            raise SMSException(sms.error_msg)
 
         try:
-            sms_object = SMS_Info.objects.get(number = m)
+            sms_object = SMS_Info.objects.get(number = sms.unformatted)
 
             try:
                 ci = Contact_Info.objects.get(sms_info = sms_object)
@@ -141,8 +166,7 @@ class Contact_InfoUpdateView(UpdateView):
                 return sms_object
 
         except ObjectDoesNotExist:
-            print "This is a new number"
-            o = SMS_Info(number = m)
+            o = SMS_Info(number = sms.unformatted)
             o.save()
             return o
 
@@ -150,9 +174,6 @@ class Contact_InfoUpdateView(UpdateView):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(Contact_InfoUpdateView, self).dispatch(*args, **kwargs)
-
-
-
 
 
  
@@ -204,7 +225,7 @@ def validate_sms(request):
         HttpResponseForbidden()
         
     # Should probably check if the sms was correctly sent
-    send_sms(sms_info)
+#    send_sms(sms_info)
     sms_info.status = "Submitted"
     sms_info.save()
     return HttpResponse('Nothing')
@@ -256,7 +277,6 @@ def incoming_sms(request):
         print sender_number, ' not in database, or not in submitted status.'
         return HttpResponseForbidden()
         
-    print sms_rec.muser
     if body.upper().strip() != "OK":
         print sender_number, " will be set to denied. Received a non OK response"
         sms_rec.status = "Denied"
@@ -264,6 +284,5 @@ def incoming_sms(request):
         print sender_number, " validated"
         sms_rec.status = "Validated"
     
-    print sms_rec.muser
     sms_rec.save(force_update=True)
     return HttpResponse('Nothing')
