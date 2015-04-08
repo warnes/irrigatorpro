@@ -43,9 +43,9 @@ SECRET_KEY = unquote(config.get('Django','SECRET_KEY'))
 SITE_ID = 1
 
 ADMINS = (
-    ('Gregory R. Warnes', 'greg@warnes.net'),
-    ('Bill Edwards', 'edwardsb2001@yahoo.com'),
-    ('Alain Leblanc', 'aalebl@gmail.com')
+    ('Gregory R. Warnes', 'greg@warnes.net'       ),
+    ('Bill Edwards',      'edwardsb2001@yahoo.com'),
+    ('Alain Leblanc',     'aalebl@gmail.com'      )
 )
 
 MANAGERS = ADMINS
@@ -325,7 +325,9 @@ LOGGING = {
 ###
 
 EMAIL_HOST           = 'localhost'
+EMAIL_BACKEND        = 'django.core.mail.backends.smtp.EmailBackend'
 DEFAULT_FROM_EMAIL   = 'webmaster@irrigatorpro.org'
+SERVER_EMAIL         = 'webmaster@irrigatorpro.org'
 # EMAIL_PORT           = ''
 # EMAIL_HOST_USER      = ''
 # EMAIL_HOST_PASSWORD  = ''
@@ -379,7 +381,7 @@ ACCOUNT_USER_DISPLAY          = lambda user: user.email
 # SESSION_SECURITY_PASSIVE_URLS=[]
 
 # EXPIRE_AT_BROWSER_CLOSE
-#    Required for this module to operate properl
+#    Required for this module to operate properly
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
 
