@@ -1,5 +1,4 @@
-Django==1.6.5
-South==0.8.4
+Django==1.7.7
 django-admin-tools==0.5.1
 django-debug-toolbar==1.2.1
 django-extensions==1.3.7
@@ -8,7 +7,9 @@ feedparser==5.1.3
 django-extra-views==0.6.4
 django-session-security==2.2.0
 
+#
 # for django-allauth
+#
 python-openid
 requests
 requests-oauthlib
@@ -22,10 +23,12 @@ pytz==2014.3
 # For numerics
 #
 numpy==1.8.1
+
 #
 # For interacting with NESPAL probe database
 #
 psycopg2==2.5.3
+
 #
 # For Trac
 #
@@ -34,16 +37,27 @@ TracPermRedirect==3.0
 trac-github==2.0.0
 NavAdd==0.1.1
 
+#
 # For plotting
+#
 matplotlib==1.4.2
 
+#
 # For email validation
+#
 validate_email==1.2
 
+#
 # For phone number validation
+#
 phonenumbers==7.0.2
 
+#
 # For printing a nice table
+#
 tabulate==0.7.4
 
+#
+# For SMS messaging via Twilio
+#
 twilio==3.7.3

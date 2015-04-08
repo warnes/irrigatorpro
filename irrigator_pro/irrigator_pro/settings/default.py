@@ -226,7 +226,6 @@ EXTERNAL_APPS = (
     'model_blocks',
     'django_extensions',
     'session_security',
-    'south',
     'extra_views',
     
 )
