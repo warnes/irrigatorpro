@@ -19,10 +19,23 @@ def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
         yield start_date + timedelta(days=n)
 
-def calculateAWC_ProbeReading(crop_season, field, date, 
-                              probe=None, 
-                              probe_reading_query=None, 
-                              soil_type_parameter_query=None):
+
+
+########################################################################
+## Calculate the AWC based on probe reading for a given crop_season,
+## date and field.
+##
+## There can be more than one probe for a given field/date. As of
+## now it looks like multiple probes will have different soil depth,
+## but we will play it safe and have code to average in case multiple
+## probes are used for the same depth. If the initial assumption
+## holds true (only one probe / depth) then averaging will give the
+## correct results.
+########################################################################
+
+def calculateAWC_ProbeReading(crop_season,
+                              field,
+                              date):
     """
     Calculate the Available Water Content for the specified field and date
     from Probe Reading data (if available).  If no probe reading
@@ -32,14 +45,19 @@ def calculateAWC_ProbeReading(crop_season, field, date,
     of (AWC, temp)
     """
 
-    ## Find the probe/radio_id for this field (if any)
-    if probe is None:
-        try:
-            probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-        except ObjectDoesNotExist:
-            return ( None, None )
+    probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+    radio_ids = []
+    if probes.len() == 0:
+        return ( None, None )
+    else:
+        for probe in probes:
+            radio_ids.append(probe.radio_id)
 
-    radio_id = probe.radio_id
+    # Make sure radio ids are unique
+    radio_ids = list(set(radio_ids))
+
+
+
 
     ## Get the maximum root depth
     if crop_season:
@@ -48,21 +66,25 @@ def calculateAWC_ProbeReading(crop_season, field, date,
     else:
         return ( None, None )
 
-    if probe_reading_query is None:
-        probe_reading_query = ProbeReading.objects.filter(radio_id=radio_id).all()
 
-        
-    ## Find any probe readings for date with this radio_id
-    probe_reading = probe_reading_query.filter(reading_datetime__startswith=date)
+    ## Collect all the probe readings: for each radio ID keep one only one probe reading 
+    ## from the date sent as parameter. If there is more than one keep the latest.
 
-    ## Filter down to the the most recent one for this date
-    probe_reading = probe_reading.order_by('reading_datetime').last()
-    if not probe_reading:
+
+    probe_readings = []
+    for r_id in radio_ids:
+        probe_reading = ProbeReading.objects.filter(radio_id=radio_id,
+                                                          reading_datetime__startswith=date).order_by('reading_datetime').last()
+
+        if  probe_reading:
+            probe_readings.append(probe_reading)
+
+            
+    if len(probe_readings == 0):
         return ( None, None )
 
     ## Extract soil parameters
-    if soil_type_parameter_query is None:
-        soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
+    soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
 
     try:
         soil_type_8in  = soil_type_parameter_query.get(depth=8 )
@@ -113,9 +135,48 @@ def calculateAWC_ProbeReading(crop_season, field, date,
 
     ln40 = math.log(40.0)
 
-    AWC_8  = soil_type_8in.slope  * ( safelog(probe_reading.soil_potential_8)  - ln40 ) * 24
-    AWC_16 = soil_type_16in.slope * ( safelog(probe_reading.soil_potential_16) - ln40 ) * 24
-    AWC_24 = soil_type_24in.slope * ( safelog(probe_reading.soil_potential_24) - ln40 ) * 24
+
+    ## Loop through probe readings. Only keep values when reading >0
+
+    ### Loop here through loop readings for all the probes given day.
+
+    nb_at_8 = 0
+    nb_at_16 = 0
+    nb_at_24 = 0
+
+    AWC_8 = 0
+    AWC_16 = 0
+    AWC_24 = 0
+
+    ### Have to be a icer way to write this... lambda calculus?
+    for probe_reading in probe_readings:
+
+        current_at_8  = soil_type_8in.slope  * ( safelog(probe_reading.soil_potential_8)  - ln40 ) * 24
+        current_at_16 = soil_type_16in.slope * ( safelog(probe_reading.soil_potential_16) - ln40 ) * 24
+        current_at_24 = soil_type_24in.slope * ( safelog(probe_reading.soil_potential_24) - ln40 ) * 24
+
+        if current_at_8 > 0:
+            nb_at_8 += 1
+            AWC_8 += current_at_8
+
+        if current_at_16 > 0:
+            nb_at_16 += 1
+            AWC_16 += current_at_16
+
+        if current_at_24 > 0:
+            nb_at_24 += 1
+            AWC_24 += current_at_24
+
+
+    if nb_at_8 > 0:
+        AWC_8 /= nb_at_8
+
+    if nb_at_16 > 0:
+        AWC_16 /= nb_at_16
+
+    if nb_at_24 > 0:
+        AWC_24 /= nb_at_24
+
 
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
@@ -261,8 +322,19 @@ def earliest_register_to_update(report_date,
     # water register has been modified
         
     try:
-        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-        earliest_changed_probe = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('reading_datetime').first()
+        probe_list = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+
+        earliest_changed_probe = None
+        for probe in probe_list:
+            earliest_changed = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('reading_datetime').first()
+
+            if earliest_changed_probe is None:
+                earliest_changed_probe = earliest_changed
+            else:
+                if earliest_changed is not None and earliest_changed.reading_datetime < earliest_changed_probe.reading_datetime:
+
+                
+                    earliest_changed_probe = earliest_changed
 
         if earliest_changed_probe is None:
             print 'No probe will cause update (nothing changed)'
@@ -325,18 +397,14 @@ def generate_water_register(crop_season,
     ## Cache values / queries for later use
 
 
-    try:
-        probe = Probe.objects.get(crop_season=crop_season, field_list=field)
-        radio_id = probe.radio_id
-        probe_reading_query       = ProbeReading.objects.filter(radio_id=radio_id).all()
-    except ObjectDoesNotExist:
-        probe = None
-        radio_id = None
-        probe_reading_query = None
+    # try:
+    #     probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+    #     radio_id = probe.radio_id
+    # except ObjectDoesNotExist:
+    #     probe = None
+    #     radio_id = None
 
 
-
-    soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
                                                             field_list=field).all()
     crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
@@ -369,10 +437,6 @@ def generate_water_register(crop_season,
 
     ## Some optimization to do here: After the first pass we know the prev record is there.
 
-    print 'looping through water registers: '
-    print first_process_date
-    print end_date
-    print report_date
     for  date in daterange(first_process_date, end_date):
         ####
         ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
@@ -446,13 +510,16 @@ def generate_water_register(crop_season,
         ####
         ## Get (automatic) probe reading information and calculate AWC
 
-        AWC_probe = None
-        temp = None
-        if probe is not None:
-            AWC_probe, temp = calculateAWC_ProbeReading(crop_season, field, date, 
-                                                        probe=probe, 
-                                                        probe_reading_query=probe_reading_query, 
-                                                        soil_type_parameter_query=soil_type_parameter_query)
+        #AWC_probe = None
+        #temp = None
+
+        # Could return (None, None) if there are no probes.
+        # Moved this validation to calculateAWC_ProbeReading,
+        # since there is already code to validate.
+        AWC_probe, temp = calculateAWC_ProbeReading(crop_season,
+                                                    field,
+                                                    date) 
+
         ##
         ####
 
