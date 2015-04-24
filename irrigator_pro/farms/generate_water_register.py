@@ -52,7 +52,7 @@ def calculateAWC_ProbeReading(crop_season,
     else:
         for probe in probes:
             radio_ids.append(probe.radio_id)
-
+    
     # Make sure radio ids are unique
     radio_ids = list(set(radio_ids))
 
@@ -149,32 +149,13 @@ def calculateAWC_ProbeReading(crop_season,
     ### Have to be a icer way to write this... lambda calculus?
     for probe_reading in probe_readings:
 
-        current_at_8  = soil_type_8in.slope  * ( safelog(probe_reading.soil_potential_8)  - ln40 ) * 24
-        current_at_16 = soil_type_16in.slope * ( safelog(probe_reading.soil_potential_16) - ln40 ) * 24
-        current_at_24 = soil_type_24in.slope * ( safelog(probe_reading.soil_potential_24) - ln40 ) * 24
+        current_at_8  = soil_type_8in.slope  * ( safelog( abs(probe_reading.soil_potential_8) )  - ln40 ) * 24
+        current_at_16 = soil_type_16in.slope * ( safelog( abs(probe_reading.soil_potential_16) ) - ln40 ) * 24
+        current_at_24 = soil_type_24in.slope * ( safelog( abs(probe_reading.soil_potential_24) ) - ln40 ) * 24
 
-        if current_at_8 > 0:
-            nb_at_8 += 1
-            AWC_8 += current_at_8
-
-        if current_at_16 > 0:
-            nb_at_16 += 1
-            AWC_16 += current_at_16
-
-        if current_at_24 > 0:
-            nb_at_24 += 1
-            AWC_24 += current_at_24
-
-
-    if nb_at_8 > 0:
-        AWC_8 /= nb_at_8
-
-    if nb_at_16 > 0:
-        AWC_16 /= nb_at_16
-
-    if nb_at_24 > 0:
-        AWC_24 /= nb_at_24
-
+        AWC_8  = min(AWC_8,  current_at_8 )
+        AWC_16 = min(AWC_16, current_at_16)
+        AWC_24 = min(AWC_24, current_at_24)
 
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
