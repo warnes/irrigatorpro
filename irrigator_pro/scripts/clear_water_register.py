@@ -42,7 +42,7 @@ from farms.models import WaterRegister
 
 print
 print
-print "Deleting all water regeister objects...",
+print "Deleting all water register objects...",
 WaterRegister.objects.all().delete()
 print "Done."
 
