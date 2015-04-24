@@ -105,11 +105,13 @@ def plot_daily_use(request, crop_season, field):
     ir_plot_after.plot_date(x_post, ir_post, 'b:')
     aw_plot_after.plot_date(x_post, aw_post, 'r:')
 
-    wu_plot_before.legend(loc = 'top right')
+    wu_plot_before.legend(loc = 'best')
     wu_plot_before.set_ylabel("Inches", fontsize=16)
 
     wu_plot_before.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
     wu_plot_after.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+
+    wu_plot_before.grid()
 
     fig.autofmt_xdate()
     fig.suptitle("Daily Water Use", fontsize = 20)
@@ -183,10 +185,12 @@ def plot_cumulative_use(request, crop_season, field):
     ir_after_plot.plot_date(x_after, ir_after, 'b:')
     tw_after_plot.plot_date(x_after, tw_after, 'm:')
 
-    wu_before_plot.legend(loc = 'upper left')
+    wu_before_plot.legend(loc = 'best')
 
     wu_before_plot.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
     wu_before_plot.set_ylabel("Inches", fontsize=16)
+
+    wu_before_plot.grid()
 
     fig.autofmt_xdate()
     canvas=FigureCanvas(fig)
