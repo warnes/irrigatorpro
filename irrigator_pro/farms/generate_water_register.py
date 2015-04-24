@@ -259,8 +259,6 @@ def quantize( f ):
 
     return retval
 
-OPTIMIZE=True
-
 
 ##
 # Determine the earliest water register to update. This is based
