@@ -96,8 +96,8 @@ def plot_daily_use(request, crop_season, field):
 
 
     wu_plot_before.plot_date(x_pre, wu_pre, 'g-', label = "Water Usage")
-    rf_plot_before.plot_date(x_pre, rf_pre, 'c-', label = "Rain")
-    ir_plot_before.plot_date(x_pre, ir_pre, 'b-', label = "Irrigation")
+    rf_plot_before.plot_date(x_pre, rf_pre, 'c-', label = "Rain",                  drawstyle='steps-mid')
+    ir_plot_before.plot_date(x_pre, ir_pre, 'b-', label = "Irrigation",            drawstyle='steps-mid')
     aw_plot_before.plot_date(x_pre, aw_pre, 'r-', label = "Average Water Content")
 
     wu_plot_after.plot_date(x_post, wu_post, 'g:')
