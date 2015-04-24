@@ -47,7 +47,7 @@ def calculateAWC_ProbeReading(crop_season,
 
     probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
     radio_ids = []
-    if probes.len() == 0:
+    if len(probes) == 0:
         return ( None, None )
     else:
         for probe in probes:
@@ -55,8 +55,6 @@ def calculateAWC_ProbeReading(crop_season,
 
     # Make sure radio ids are unique
     radio_ids = list(set(radio_ids))
-
-
 
 
     ## Get the maximum root depth
@@ -73,14 +71,14 @@ def calculateAWC_ProbeReading(crop_season,
 
     probe_readings = []
     for r_id in radio_ids:
-        probe_reading = ProbeReading.objects.filter(radio_id=radio_id,
-                                                          reading_datetime__startswith=date).order_by('reading_datetime').last()
+        probe_reading = ProbeReading.objects.filter(radio_id=r_id,
+                                                    reading_datetime__startswith=date).order_by('reading_datetime').last()
 
         if  probe_reading:
             probe_readings.append(probe_reading)
 
             
-    if len(probe_readings == 0):
+    if len(probe_readings) == 0:
         return ( None, None )
 
     ## Extract soil parameters
