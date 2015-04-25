@@ -2,6 +2,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.dates import DateFormatter
 import matplotlib.pyplot as plt
+from decimal import Decimal
 
 import datetime, re
 from dateutil import parser
@@ -177,16 +178,20 @@ def plot_cumulative_use(request, crop_season, field):
         if (wr.date <= report_date):
             x_before.append(wr.date)
             wu_before.append(wu_total)
+
+            #NB: offset these slightly so they are all visible even when rf and/or ir are zero 
             rf_before.append(rf_total)
-            ir_before.append(ir_total)
-            tw_before.append(tw_total)
+            ir_before.append(ir_total + Decimal(0.1) )               
+            tw_before.append(tw_total + Decimal(0.2) )
 
         if (wr.date >= report_date):
             x_after.append(wr.date)
             wu_after.append(wu_total)
+
+            #NB: offset these slightly so they are all visible even when rf and/or ir are zero 
             rf_after.append(rf_total)
-            ir_after.append(ir_total)
-            tw_after.append(tw_total)
+            ir_after.append(ir_total + Decimal(0.1) )
+            tw_after.append(tw_total + Decimal(0.2) )
 
     wu_before_plot.plot_date(x_before, wu_before, 'g-', label = "Water Usage")
     rf_before_plot.plot_date(x_before, rf_before, 'c-', label = "Rain")
