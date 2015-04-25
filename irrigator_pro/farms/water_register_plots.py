@@ -67,43 +67,54 @@ def plot_daily_use(request, crop_season, field):
     aw_plot_after=fig.add_subplot(111)
     
     x=[]
-    x_pre = []
-    x_post= []
+    x_before = []
+    x_after= []
 
-    wu_pre=[]
-    rf_pre=[]
-    ir_pre=[]
-    aw_pre=[]
+    wu_before=[]
+    rf_before=[]
+    ir_before=[]
+    aw_before=[]
 
-    wu_post=[]
-    rf_post=[]
-    ir_post=[]
-    aw_post=[]
+    wu_after=[]
+    rf_after=[]
+    ir_after=[]
+    aw_after=[]
     for wr in wr_list:
         x.append(wr.date)
+
+        # NB: entries on report_date need to be in both groups to make
+        # line continuous
         if (wr.date <= report_date):
-            wu_pre.append(wr.daily_water_use)
-            rf_pre.append(wr.rain)
-            ir_pre.append(wr.irrigation)
-            aw_pre.append(wr.average_water_content)
-            x_pre.append(wr.date)
+            wu_before.append(wr.daily_water_use)
+            rf_before.append(wr.rain)
+            ir_before.append(wr.irrigation)
+            aw_before.append(wr.average_water_content)
+            x_before.append(wr.date)
+
         if (wr.date >= report_date):
-            wu_post.append(wr.daily_water_use)
-            rf_post.append(wr.rain)
-            ir_post.append(wr.irrigation)
-            aw_post.append(wr.average_water_content)
-            x_post.append(wr.date)
+            wu_after.append(wr.daily_water_use)
+            rf_after.append(wr.rain)
+            ir_after.append(wr.irrigation)
+            aw_after.append(wr.average_water_content)
+            x_after.append(wr.date)
+
+    wu_plot_before.plot_date(x_before, wu_before, 'g-', label = "Water Usage")
+    rf_plot_before.plot_date(x_before, rf_before, 'c-', label = "Rain",                  drawstyle='steps-pre')
+    ir_plot_before.plot_date(x_before, ir_before, 'b-', label = "Irrigation",            drawstyle='steps-pre')
+    aw_plot_before.plot_date(x_before, aw_before, 'r-', label = "Average Water Content")
+
+    #rf_plot_before.vlines(x=x_before, ymin=0, ymax=rf_before, colors='c', linestyles='solid', label = "Rain")
+    #ir_plot_before.vlines(x=x_before, ymin=0, ymax=ir_before, colors='b', linestyles='solid', label = "Irrigation")
 
 
-    wu_plot_before.plot_date(x_pre, wu_pre, 'g-', label = "Water Usage")
-    rf_plot_before.plot_date(x_pre, rf_pre, 'c-', label = "Rain",                  drawstyle='steps-mid')
-    ir_plot_before.plot_date(x_pre, ir_pre, 'b-', label = "Irrigation",            drawstyle='steps-mid')
-    aw_plot_before.plot_date(x_pre, aw_pre, 'r-', label = "Average Water Content")
+    wu_plot_after.plot_date(x_after, wu_after, 'g:')
+    #rf_plot_after.plot_date(x_after, rf_after, 'c:', drawstyle='steps-pre')
+    #ir_plot_after.plot_date(x_after, ir_after, 'b:', drawstyle='steps-pre')
+    aw_plot_after.plot_date(x_after, aw_after, 'r:')
 
-    wu_plot_after.plot_date(x_post, wu_post, 'g:')
-    rf_plot_after.plot_date(x_post, rf_post, 'c:')
-    ir_plot_after.plot_date(x_post, ir_post, 'b:')
-    aw_plot_after.plot_date(x_post, aw_post, 'r:')
+    #rf_plot_after.vlines(x=x_after, ymin=0, ymax=rf_after, colors='c', linestyles='dotted')
+    #ir_plot_after.vlines(x=x_after, ymin=0, ymax=ir_after, colors='b', linestyles='dotted')
+
 
     wu_plot_before.legend(loc = 'best')
     wu_plot_before.set_ylabel("Inches", fontsize=16)
@@ -161,19 +172,21 @@ def plot_cumulative_use(request, crop_season, field):
         ir_total += wr.irrigation
 	tw_total += wr.rain + wr.irrigation
 
+        # NB: entries on report_date need to be in both groups to make
+        # line continuous
         if (wr.date <= report_date):
             x_before.append(wr.date)
             wu_before.append(wu_total)
             rf_before.append(rf_total)
             ir_before.append(ir_total)
             tw_before.append(tw_total)
-        else:
+
+        if (wr.date >= report_date):
             x_after.append(wr.date)
             wu_after.append(wu_total)
             rf_after.append(rf_total)
             ir_after.append(ir_total)
             tw_after.append(tw_total)
-
 
     wu_before_plot.plot_date(x_before, wu_before, 'g-', label = "Water Usage")
     rf_before_plot.plot_date(x_before, rf_before, 'c-', label = "Rain")
