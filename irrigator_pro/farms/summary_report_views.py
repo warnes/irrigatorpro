@@ -14,8 +14,6 @@ from generate_daily_report import generate_daily_report
 class SummaryReportListView(TemplateView):
     template_name = "farms/summary_report.html"
 
-
-
     # The date can be established in 3 different ways, and in this order:
     # 1) through a GET parameter
     # 2) Through the url, with a date string at the end
@@ -33,7 +31,6 @@ class SummaryReportListView(TemplateView):
             self.report_date = date.today()
 
         return render(request, self.template_name, self.get_context_data())
-
 
 
     #####################################################
