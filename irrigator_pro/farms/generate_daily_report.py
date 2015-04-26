@@ -115,7 +115,7 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                 # crop season
                 probe_readings = probe_readings.filter(reading_datetime__gte = crop_season.season_start_date,
                                                        reading_datetime__lte = crop_season.season_end_date)
-                if (probe_readings is not None):
+                if (probe_readings is not None and len(probe_readings) > 0):
                     latest_probe_reading = probe_readings.latest('reading_datetime')
                     
                         
