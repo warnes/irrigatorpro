@@ -400,20 +400,25 @@ def generate_water_register(crop_season,
 
     maxWater = float(field.soil_type.max_available_water)
 
-
-    ## Assume that each field starts with a full water profile
-    AWC_initial = maxWater
-
+    if earliest <= crop_season.season_start_date:
+        ## Assume that each field starts with a full water profile
+        AWC_initial = maxWater
+    else:
+        try:
+            wr_yesterday = WaterRegister.objects.get(crop_season=crop_season,
+                                                     field=field,
+                                                     date=earliest - timedelta(days=1)
+                                                     )
+            AWC_initial = wr_yesterday.average_water_content
+        except:
+            raise RuntimeException("No previous water_register record on " + earliest );
 
     ## First pass, calculate water profile (AWC)
     temps_since_last_water_date = []
     wr_prev = None
 
-
-    first_process_date = earliest
-
     ## Some optimization to do here: After the first pass we know the prev record is there.
-
+    first_process_date = earliest
     for  date in daterange(first_process_date, end_date):
         ####
         ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
