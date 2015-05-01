@@ -13,7 +13,9 @@ import sys
 
 ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
 
+###
 # Number of days in future where we generate a water register.
+###
 WATER_REGISTER_DELTA = 7
 
 
@@ -45,7 +47,8 @@ SITE_ID = 1
 ADMINS = (
     ('Gregory R. Warnes', 'greg@warnes.net'       ),
     ('Bill Edwards',      'edwardsb2001@yahoo.com'),
-    ('Alain Leblanc',     'aalebl@gmail.com'      )
+    ('Alain Leblanc',     'aalebl@gmail.com'      ),
+    ('Tony Winter',       'tony@warnes.net'       ),
 )
 
 MANAGERS = ADMINS
@@ -396,14 +399,22 @@ ADMIN_TOOLS_THEMING_CSS = 'css/theming.css'
 # Set the actual value in local.py
 GA_KEY = ""   
 
+###
 ## Setting for the notification emails. Actual values need to be set in local.py
+###
 
 NOTIFICATION_SMTP = ""
 NOTIFICATION_HOST = ""
 NOTIFICATION_PORT = ""
 
+###
 ## Setting for the sms notification emails. Actual values need to be set in local.py
+###
 TWILIO_ACCOUNT_SID = ""
 TWILIO_AUTH_TOKEN = ""
 TWILIO_PHONE_NUMBER = ""
 
+###
+# This avoids warnings messages bout old test runner
+###
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
