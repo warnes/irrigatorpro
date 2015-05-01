@@ -82,3 +82,16 @@ function setNavigation() {
     });
 }
 
+
+
+
+/**
+ * Function to create a valid id based on the data. Replaces everything that
+ * is not an alpha-numeric with an underscore.
+ */
+
+function createValidID(oldString) {
+    newString = oldString.replace(/\W/g, "_");
+    console.log("Replacing " + oldString + " with " + newString);
+    return newString;        
+}

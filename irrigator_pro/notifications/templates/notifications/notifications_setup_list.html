@@ -191,15 +191,6 @@
     var notificationTime_col = 6;
     var timezone_col = 7;
     
-    /**
-     * Functionality duplicated in notifications_setup_view.py. Would
-     * be nice to find a way around.
-     */
-    function createValidID(oldString) {
-        newString = oldString.replace(/\W/g, "_");
-        console.log("Replacing " + oldString + " with " + newString);
-        return newString;        
-    }
     
     function editRow(notifications_pk) {
                 

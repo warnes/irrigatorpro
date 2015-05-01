@@ -554,3 +554,13 @@ class WaterRegister(Audit):
     def __unicode__(self):
         return u"%s - %s - %s" % ("crop_season", "field", "date")
 
+
+
+
+
+class InvitedUser(NameDesc, Audit):
+    email       = models.EmailField()
+    farms        = models.ManyToManyField(Farm)
+
+    def __unicode__(self):
+        return self.email

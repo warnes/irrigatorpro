@@ -1,17 +1,6 @@
 {% extends "base.html" %}
 
-
-{% block scripts %}
-  <script type="text/javascript">
-    $(function() {
-      $('#formset tbody tr').formset({
-        addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
-        deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>' //'Delete Row',
-      })});
-  </script>
-{% endblock %}
-
-
+{% load auth_id %}
 {% block content %}
 
   <h1>Farm
@@ -19,7 +8,7 @@
     <em>{{form.name.value}}</em>
   </h1>
 
-  <form action="{{ request.path }}" method="post">{% csrf_token %}
+  <form id="main-form" action="{{ request.path }}" method="post">{% csrf_token %}
 
     {% if form.non_field_errors %}
       <div class="alert alert-danger">
@@ -30,6 +19,54 @@
     <table class="default-form">
       <tbody>
 	{% for input in form %}
+	{% if input.label == 'Authorized Users' %}
+	<!-- Have a special case for Authorized Users -->
+	<tr>
+	  <td>{{ input.label_tag }}</td> 
+	  <td>
+	    <table id="auth-users" class="auth-users">
+	      <thead>
+		<tr>
+		  <th>User</th>
+		  <th>Action</th>
+		</tr>
+	      </thead>
+	      <tbody id="auth-users-body">
+		{% for a in auth_users %}
+		<tr id="{{a|auth_id}}">
+		  <td>{{a}}</td>
+		  <td><button type="button" onclick="delete_auth_row('{{a}}')">Delete</button></td>
+		</tr>
+		{% endfor %}
+		
+	      </tbody>
+	    </table>
+
+	    <table>
+	      <thead>
+		<tr><th>Add User</th></tr>
+	      </thead>
+	      <tbody>
+		<tr>
+		  <td>
+		    <div class="ui-widget">
+		      <label for="new_auth_user">User: </label>
+		      <input id="new_auth_user">
+		    </div>
+		  </td>
+		  <td>
+		    <button type="button" onclick="add_auth_row()">Add</button></td>
+		  </td>
+		</tr>
+	      </tbody>
+	    </table>
+
+	  </td>
+	  <td>&nbsp;</td>
+	  
+	</tr>
+	{% else %}
+
 	  <tr>
 	    <td>{{ input.label_tag }}</td> 
 	    <td>{{ input }}</td>
@@ -43,6 +80,7 @@
 	      {% endif %}	
 	    </td>
 	  </tr>
+	  {% endif %}
 	{% endfor %}
       </tbody>
     </table>
@@ -116,6 +154,22 @@
     {{ field_form.management_form }}
 
   </form>
+
+  
+{% endblock %}
+
+  {% block scripts %}
+  <script src="{{ STATIC_URL }}js/farm_and_fields.js?t=<?= time(); ?"></script>
+
+
+<script>
+$(function() {
+    $("#new_auth_user").autocomplete({
+        source: "{%url 'filter_auth_users' farm.pk %}",
+        minLength: 2,
+    });
+});
+</script>
 
   
 {% endblock %}

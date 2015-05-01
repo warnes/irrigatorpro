@@ -1,17 +1,22 @@
-from django.shortcuts import get_object_or_404, redirect, render
+
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.http import HttpResponse, HttpResponseForbidden
+from django.contrib.auth.models import User
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.forms.models import BaseModelForm
+from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.decorators import method_decorator
 
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView, UpdateView
 
 from farms.readonly import ReadonlyFormset
+from farms.models import Farm
+
 from contact_info.forms import Contact_InfoForm
 from contact_info.models import Contact_Info, SMS_Info
 
@@ -20,6 +25,7 @@ from twilio.rest import TwilioRestClient
 
 from irrigator_pro.settings import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER
 
+import json
 import re
 from phone_number import PhoneNumber
 
@@ -29,8 +35,10 @@ class SMSException(Exception):
     def __init__(self, m):
         self.msg = m
 
-class Contact_InfoCreateView(CreateView):
-    model = Contact_Info
+
+# Comment to see if it is used.
+#class Contact_InfoCreateView(CreateView):
+#    model = Contact_Info
 
 class Contact_InfoUpdateView(UpdateView):
     template_name = "contact_info/contact_info_form.html"
@@ -65,7 +73,7 @@ class Contact_InfoUpdateView(UpdateView):
                 })
 
 
-    # TODO Clead form manually,insted of theourh is_valid, so we don't have to 
+    # TODO Clean form manually,insted of using is_valid(), so we don't have to 
     # duplicate code
 
     def post (self, request, *args, **kwargs):
@@ -213,6 +221,8 @@ def send_sms(sms_info):
 
 
 
+## This method normally invoke through ajax
+
 def validate_sms(request):
     contact_info = Contact_Info.objects.get(user = request.user)
     if contact_info is None:
@@ -230,6 +240,54 @@ def validate_sms(request):
     sms_info.save()
     return HttpResponse('Nothing')
 
+
+## This method normally invoke through ajax
+## Will list all the existing users that are not already listed as authorized users, 
+## plus those that are pending an invitation.
+# example from http://flaviusim.com/blog/AJAX-Autocomplete-Search-with-Django-and-jQuery/
+# def get_drugs(request):
+#     if request.is_ajax():
+#         q = request.GET.get('term', '')
+#         drugs = Drug.objects.filter(short_name__icontains = q )[:20]
+#         results = []
+#         for drug in drugs:
+#             drug_json = {}
+#             drug_json['id'] = drug.rxcui
+#             drug_json['label'] = drug.short_name
+#             drug_json['value'] = drug.short_name
+#             results.append(drug_json)
+#         data = json.dumps(results)
+#     else:
+#         data = 'fail'
+#     mimetype = 'application/json'
+#     return HttpResponse(data, mimetype)
+
+def get_available_users(request, **kwargs):
+    if request.is_ajax():
+        q = request.GET.get('term', '')
+
+        all_users = []
+        for u in User.objects.filter(email__icontains = q)[:20]:
+            all_users.append(u)
+#        invited = InvitedUser.objects.filter(email__icontains = q)[:20]
+        
+        farm = Farm.objects.get(pk=kwargs['farm_pk'])
+
+        candidates = set(all_users) - set(farm.users.all())
+        results = []
+        for c in candidates:
+            c_json = {}
+            c_json['id'] = c.email
+            c_json['label'] = c.email
+            c_json['value'] = c.email
+            results.append(c_json)
+        data = json.dumps(results)
+        
+    else:
+        data = 'fail'
+
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 ## Validation, copied from

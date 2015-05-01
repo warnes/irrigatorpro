@@ -52,8 +52,9 @@ class FarmMixin:
 
         context = self.get_context_data(form=form,
                                         field_form=field_form,
-                                        field_form_headers=field_form_headers,
+                                        field_form_headers=field_form_headers
                                     )
+        context['auth_users'] = self.object.users.all()
         return self.render_to_response(context)
 
 
@@ -68,6 +69,13 @@ class FarmMixin:
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         field_form = FieldFormSet(self.request.POST, prefix='field', instance=self.object)
+
+        # Find the deleted users, which are not part of the form object
+
+        deleted_users = request.POST.getlist('deleted_user')
+        print 'Deleted users: ', deleted_users
+
+
         if (form.is_valid() and field_form.is_valid() ):
             return self.form_valid(form, field_form)
         else:

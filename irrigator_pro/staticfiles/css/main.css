@@ -456,3 +456,13 @@ table.tablesorter  tr.header1 th:nth-child(1) {
 	display:none;
     }
 }
+
+
+
+table.auth_users {
+    border: 1px solid #006B00;
+
+}
+
+
+

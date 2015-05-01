@@ -523,7 +523,7 @@ def generate_water_register(crop_season,
         if wr.average_water_content > maxWater: 
             wr.average_water_content = maxWater
 
-        ## Store user into accounting info..
+        ## Store userwa into accounting info..
         if wr.cuser_id is None:
             wr.cuser_id = user.pk
         wr.muser_id = user.pk

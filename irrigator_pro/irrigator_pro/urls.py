@@ -110,8 +110,11 @@ urlpatterns = patterns('',
                        url(r'^settings/user_name/$',    UserUpdateView.as_view(),         name='user_name'  ),
                        url(r'^settings/contact_info/$', Contact_InfoUpdateView.as_view(), name='contact_info'  ),
                        url(r'^settings/validate_sms/$', 'contact_info.views.validate_sms',  name='validate_sms'),
-                       url(r'^sms-incoming',    'contact_info.views.incoming_sms', name='sms-incoming')
+                       url(r'^sms-incoming',    'contact_info.views.incoming_sms', name='sms-incoming'),
 
+
+                       ## Ajax pages
+                       url(r'^farm/filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users')
 )
 
 if settings.DEBUG:
