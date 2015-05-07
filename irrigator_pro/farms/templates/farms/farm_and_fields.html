@@ -19,10 +19,24 @@
     <table class="default-form">
       <tbody>
 	{% for input in form %}
-	{% if input.label == 'Authorized Users' %}
-	<!-- Have a special case for Authorized Users -->
+	  <tr>
+	    <td>{{ input.label_tag }}</td> 
+	    <td>{{ input }}</td>
+	    <td>
+	      {% if input.errors %}
+		<div class="inline-alert alert-danger">
+		  {{ input.errors }}
+	        </div>
+	      {% else %}
+		{% if input.field.required %}(Required){% endif %}
+	      {% endif %}	
+	    </td>
+	  </tr>
+
+	{% if input.label == 'Description' %}
+	<!-- Authorized Users not handled by form. Insert them before description. -->
 	<tr>
-	  <td>{{ input.label_tag }}</td> 
+	  <td>Authorized Users:</td> 
 	  <td>
 	    <table id="auth-users" class="auth-users">
 	      <thead>
@@ -33,12 +47,29 @@
 	      </thead>
 	      <tbody id="auth-users-body">
 		{% for a in auth_users %}
+		{% comment %}
+		Row id is used to decide what to strike.
+		{% endcomment %}
 		<tr id="{{a|auth_id}}">
 		  <td>{{a}}</td>
-		  <td><button type="button" onclick="delete_auth_row('{{a}}')">Delete</button></td>
+		  <td><button type="button" onclick="delete_auth_row('{{a}}', '{{a.pk}}', 'auth')">Delete</button></td>
+		</tr>
+		{% endfor %}
+
+		{% for a in invited_users %}
+		{% comment %}
+		There should be no conflicts in the ids between the auth_users and invited users, since
+		emails are unique.
+		{% endcomment %}
+
+		<tr id="{{a|auth_id}}">
+		  <td>{{a}}(*)</td>
+		  <td><button type="button" onclick="delete_auth_row('{{a}}', '{{a.pk}}', 'invited')">Delete</button></td>
 		</tr>
 		{% endfor %}
 		
+
+
 	      </tbody>
 	    </table>
 
@@ -65,22 +96,11 @@
 	  <td>&nbsp;</td>
 	  
 	</tr>
-	{% else %}
+	{% endif %}
 
-	  <tr>
-	    <td>{{ input.label_tag }}</td> 
-	    <td>{{ input }}</td>
-	    <td>
-	      {% if input.errors %}
-		<div class="inline-alert alert-danger">
-		  {{ input.errors }}
-	        </div>
-	      {% else %}
-		{% if input.field.required %}(Required){% endif %}
-	      {% endif %}	
-	    </td>
-	  </tr>
-	  {% endif %}
+
+
+
 	{% endfor %}
       </tbody>
     </table>

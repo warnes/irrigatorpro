@@ -1,0 +1,5 @@
+curl -X POST https://api.twilio.com/2010-04-01/Accounts/AC642f7826a30e9666db2716553adf4461/SMS/Messages.json \
+    -u AC642f7826a30e9666db2716553adf4461:38e7c453fee0d95d852af80483025ae2 \
+    --data-urlencode "From=+15856729419" \
+    --data-urlencode "To=+1XXXXXXX" \
+    --data-urlencode 'Body=Hello Alain, welcome to Twilio!'

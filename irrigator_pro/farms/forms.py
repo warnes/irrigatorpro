@@ -12,7 +12,7 @@ class FarmForm(ModelForm):
         fields = ['farmer',
                   'name',
                   'description',
-                  'users',
+#                  'users',
                   'address_1',
                   'address_2',
                   'city',
@@ -28,7 +28,7 @@ class FarmForm(ModelForm):
         # Doesn't look like it's used at all
     def __init__(self, *args, **kwargs):
         super(FarmForm, self).__init__(*args, **kwargs)   
-        self.fields['users'].queryset = User.objects.all().order_by('last_name')
+#        self.fields['users'].queryset = User.objects.all().order_by('last_name')
         
 
 FieldFormSet = inlineformset_factory(Farm, 
