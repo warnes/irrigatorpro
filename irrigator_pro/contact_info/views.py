@@ -15,7 +15,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView
 
 from farms.readonly import ReadonlyFormset
-from farms.models import Farm
+from farms.models import Farm, InvitedUser
 
 from contact_info.forms import Contact_InfoForm
 from contact_info.models import Contact_Info, SMS_Info
@@ -265,22 +265,20 @@ def validate_sms(request):
 def get_available_users(request, **kwargs):
     if request.is_ajax():
         q = request.GET.get('term', '')
-
-        all_users = []
-        for u in User.objects.filter(email__icontains = q)[:20]:
-            all_users.append(u)
-#        invited = InvitedUser.objects.filter(email__icontains = q)[:20]
+        all_users = User.objects.filter(email__icontains = q)
+        invited_users = InvitedUser.objects.filter(email__icontains = q)
         
         farm = Farm.objects.get(pk=kwargs['farm_pk'])
 
-        candidates = set(all_users) - set(farm.users.all())
+        emails =  map(lambda x: x.email, set(all_users)     - set(farm.users.all()) )
+        emails += map(lambda x: x.email, set(invited_users) - set(farm.users.all()) )
         results = []
-        for c in candidates:
-            c_json = {}
-            c_json['id'] = c.email
-            c_json['label'] = c.email
-            c_json['value'] = c.email
-            results.append(c_json)
+        for e in emails:
+            e_json = {}
+            e_json['id'] = e
+            e_json['label'] = e
+            e_json['value'] = e
+            results.append(e_json)
         data = json.dumps(results)
         
     else:
