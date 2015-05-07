@@ -26,7 +26,11 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/navbar.css">
 
     <link rel="stylesheet" href="{{ STATIC_URL }}css/django-model-blocks.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css?t=<?= time(); ?>">
+    {% if debug %}
+      <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css?t={% now "c" %}">
+    {% else %}
+      <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+    {% endif %}
 
       <!-- links to tablesorter css -->
       <!-- May want to grab directly from web site -->
@@ -100,7 +104,11 @@
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
       <script src="{{ STATIC_URL }}js/plugins.js"></script>
-      <script src="{{ STATIC_URL }}js/main.js?t=<?= time(); ?"></script>
+      {% if debug %}
+        <script src="{{ STATIC_URL }}js/main.js?t={% now "c" %}"></script>
+      {% else %}
+        <script src="{{ STATIC_URL }}js/main.js"></script>
+      {% endif %}
       <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
 
       <!-- SB Admin -->

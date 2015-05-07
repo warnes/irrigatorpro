@@ -179,8 +179,11 @@
 {% endblock %}
 
   {% block scripts %}
-  <script src="{{ STATIC_URL }}js/farm_and_fields.js?t=<?= time(); ?"></script>
-
+  {% if debug %}
+    <script src="{{ STATIC_URL }}js/farm_and_fields.js?t={% now "c" %}"></script>
+  {% else %}
+    <script src="{{ STATIC_URL }}js/farm_and_fields.js"></script>
+  {% endif %}
 
 <script>
 $(function() {
