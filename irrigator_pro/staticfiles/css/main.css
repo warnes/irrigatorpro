@@ -420,7 +420,6 @@ table.notifications, table.notifications td, table.notifications th, table.notif
     border: 1px solid #006B00;
     text-align: center;
     padding: 5px;
-    border: 1px solid #006B00;
 
 }
 
@@ -428,7 +427,6 @@ table.notifications-new, table.notifications th, table.notifications tr {
     border: 1px solid #006B00;
     text-align: center;
     padding: 5px;
-    border: 1px solid #006B00;
 
 }
 
@@ -459,9 +457,15 @@ table.tablesorter  tr.header1 th:nth-child(1) {
 
 
 
-table.auth_users {
+
+table.auth-users {
     border: 1px solid #006B00;
 
+}
+
+
+table.auth-users th {
+    text-align: center;
 }
 
 

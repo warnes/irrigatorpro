@@ -4,6 +4,11 @@ $(function() {
         deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>' //'Delete Row',
     })});
 
+$("#new_auth_user").keyup(function(event){
+    if (event.keyCode == 13) {
+	$("#add_user_button").click();
+    }
+});
 
 
 /**
@@ -80,12 +85,21 @@ function undo_auth_delete(row_id, hidden_id, pk, user_type) {
 /**
  * Add an authorized row. In this case only an email is displayed.
  *
- * TODO Validate that we are not adding an existing row.
+ * Will first check that this is a valid email. Then will check that the email
+ * is not already in the current or new users.
  */
 
 function add_auth_row() {
 
-    var newEmail = $("#new_auth_user").val();
+    var newEmail = $("#new_auth_user").val().trim();
+
+    if (!validateEmail(newEmail)) {
+	alert("The email provided is not in a valid format");
+	return;
+    }
+    
+
+
     $("#new_auth_user").val("");
     var newID = "new_" + createValidID(newEmail);
     var myRow = "<tr id='" + newID +"'><td>" + newEmail 
@@ -117,3 +131,4 @@ function delete_new_auth_row(id) {
 function create_hidden_id(id_or_email) {
     return "hidden_" + createValidID(id_or_email);
 }
+
