@@ -73,7 +73,7 @@ class Contact_InfoUpdateView(UpdateView):
                 })
 
 
-    # TODO Clean form manually,insted of using is_valid(), so we don't have to 
+    # TODO Clean form manually, instead of using is_valid(), so we don't have to 
     # duplicate code
 
     def post (self, request, *args, **kwargs):
