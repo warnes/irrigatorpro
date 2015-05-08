@@ -92,7 +92,6 @@ function setNavigation() {
 
 function createValidID(oldString) {
     newString = oldString.replace(/\W/g, "_");
-    console.log("Replacing " + oldString + " with " + newString);
     return newString;        
 }
 
@@ -108,4 +107,13 @@ function createValidID(oldString) {
 function validateEmail(email) {
     var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
     return re.test(email);
+}
+
+function extractEmail(queryString) {
+    var re = /[\w-]+(?:\.[\w-]+)*@(?:[\w-]+\.)*\w[\w-]{0,66}\.[a-z]{2,6}(?:\.[a-z]{2})?/i;
+    var pattern = new RegExp(re);
+    var m = pattern.exec(queryString);
+    if (m == null)
+	return "";
+    return m[0];
 }

@@ -98,7 +98,10 @@ function add_auth_row() {
 	return;
     }
     
-
+    if (checkForDuplicates(newEmail)) {
+	alert("This email is already listed as an authorized user.");
+	return;
+    }
 
     $("#new_auth_user").val("");
     var newID = "new_" + createValidID(newEmail);
@@ -108,7 +111,6 @@ function add_auth_row() {
 	+ "\")'>Delete</button></td></tr>";
 
     
-    console.log("new row: " + myRow);
     $("#auth-users-body").append(myRow);
 
 
@@ -122,7 +124,6 @@ function add_auth_row() {
 
 
 function delete_new_auth_row(id) {
-    console.log("will remove row: " + id);
     $("#" + id).remove();
 
 }
@@ -132,3 +133,24 @@ function create_hidden_id(id_or_email) {
     return "hidden_" + createValidID(id_or_email);
 }
 
+
+/**
+ * Check if this email is already listed in the current authorized users or
+ * new users. 
+ *
+ * @param newEmail the email to test.
+ *
+ * @return true if this is a duplicate, false otherwise.
+ */
+
+function checkForDuplicates(newEmail) {
+    var matched = false;
+    $("#auth-users tr").each(function() {
+	var userInfo = $(this)[0].cells[0].innerHTML;
+	emailFromTable = extractEmail(userInfo);
+	if (emailFromTable == newEmail) {
+	    matched = true;
+	}
+    });
+    return matched;
+}
