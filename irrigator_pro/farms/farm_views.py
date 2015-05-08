@@ -15,7 +15,7 @@ from django.views.generic.list import ListView
 from farms.forms import FarmForm
 from farms.forms import FieldFormSet
 from farms.models import Farm, InvitedUser
-
+from farms.invited_user_email import send_invitation_email
 
 farm_view_fields =  ('farmer',
                      'name',
@@ -183,8 +183,9 @@ class FarmMixin:
                 # User does not exist
                 try:
                     invited_user = InvitedUser.objects.get(email = u)
-
                 except:
+                    # New user. Must send email
+                    send_invitation_email(u, request.user)
                     invited_user = InvitedUser(email = u)
                     invited_user.save()
                 print "farm object ", farm_object

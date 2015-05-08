@@ -3,7 +3,7 @@
 from irrigator_pro.settings import NOTIFICATION_SMTP, NOTIFICATION_HOST, NOTIFICATION_PORT
 import smtplib
 
-from tabulate import tabulate
+from tabulate import tabulate  # Still needed?
 from datetime import date
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -47,8 +47,7 @@ class EmailMessage():
         part2 = MIMEText(htmlPart, 'html')
 
         msg.attach(part1)
-        msg.attach(part2
-)
+        msg.attach(part2)
         s = smtplib.SMTP(NOTIFICATION_SMTP, NOTIFICATION_PORT)
         print 'sending email'
         s.sendmail('admin@irrigatorpro.org', self.email_list, msg.as_string())
