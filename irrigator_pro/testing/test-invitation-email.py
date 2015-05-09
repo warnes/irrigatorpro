@@ -35,11 +35,12 @@ import django
 django.setup()
 
 from farms.invited_user_email import send_invitation_email
-
+from farms.models import Farm
 
 user = User.objects.get(email='aalebl@gmail.com')
+farm = Farm.objects.get(name="HHERC")
 
-send_invitation_email("aalebl@gmail.com", user)
-send_invitation_email("alainxyzleblanc@aol.com", user)
-send_invitation_email("alainleblanc@yahoo.com", user)
-send_invitation_email("greg@warnes.net", user)
+send_invitation_email("aalebl@gmail.com", user, farm)
+send_invitation_email("alainxyzleblanc@aol.com", user, farm)
+send_invitation_email("alainleblanc@yahoo.com", user, farm)
+send_invitation_email("greg@warnes.net", user, farm)

@@ -3,9 +3,11 @@
 from irrigator_pro.settings import NOTIFICATION_SMTP, NOTIFICATION_HOST, NOTIFICATION_PORT
 import smtplib
 
+import re
+
 from email.mime.text import MIMEText
 
-def send_invitation_email(invited_user, invited_by):
+def send_invitation_email(invited_user, invited_by, farm):
 
     """ Send an invitation email specifying who is generating the invitation
 
@@ -18,7 +20,7 @@ def send_invitation_email(invited_user, invited_by):
 
     """
 
-    msg = MIMEText(create_message(invited_by))
+    msg = MIMEText(create_message(invited_by, farm))
     msg['Subject'] = "Invitation to join Irrigator Pro"
     msg['from'] = 'admin@irrigatorpro.org'
     msg['to'] = invited_user
@@ -35,17 +37,32 @@ def send_invitation_email(invited_user, invited_by):
 
 
 
-def create_message(invited_by):
+def create_message(invited_by, farm):
 
-    message1 = "You are receiving this email because a Irrigator Pro user has added your " \
-    "email to the list of authorized users for one of his farms. The user information " \
-    "from the website is:\n\n    {0}\n\n" \
-    "If you do not recognize this user information, or believe that you have " \
-    "received this email in error, you can simply delete it. If you receive more " \
-    "than one such email, or have any question, you can email us at\n\n" \
-    "    admin@irrigatorpro.org\n\n" \
-    "If you wish to create an account with Irrigator Pro, you can do so at\n\n" \
-    "    http://irrigatorpro.org/farm/accounts/signup/\n\n" \
-    "Sincerely\nThe Irrigator Pro team.".format(invited_by.__unicode__())
+    """Create the email to be sent.
+    :param invited_by user sending the invitation
+    :type invited_by django.contrib.auth.User
+
+    :param farm The farm for which the new user is invited
+    :type farm farms.models.Farm
+
+    """
+
+
+    # Extract user name from the unicode string 
+
+    
+    message1 =  "Hello\n\n{0}  has invited you to join IrrigatorPro - a web site "\
+                "that provides growers with a simple tool to determine when to "\
+                "irrigate for optimal crop health - as an authorized user for the "\
+                "farm '{1}'.\n\n"\
+                "To register for IrrigatorPro, visit\n\n"\
+                "    http://irrigatorpro.org/farm/accounts/signup/"\
+                "\n\nIf you do not know '{2}', or believe that you have received "\
+                "this email in error, simply delete it.\n\n"\
+                "If you receive more than one such email, or have "\
+                "any question, email us at\n\n" \
+                "    webmaster@irrigatorpro.org\n\n"\
+                "Sincerely,\n\nThe Irrigator Pro team\n".format(invited_by.__unicode__(), farm.name, invited_by.first_name + " "  + invited_by.last_name)
 
     return message1;

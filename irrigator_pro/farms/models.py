@@ -126,6 +126,7 @@ class Field(NameDesc, Comment, Audit):
 ### Soil Type ###
 #################
 
+
 class SoilType(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
