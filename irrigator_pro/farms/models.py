@@ -57,7 +57,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
     farmer        = models.ForeignKey(User, related_name="farmers")
     users         = models.ManyToManyField(User, blank=True, verbose_name="Authorized Users")
     gps_latitude  = models.FloatField("GPS Latitude",  blank=True, null=True)
-    gps_longitude = models.FloatField("GPS Longitude", blank=True, null=True)	
+    gps_longitude = models.FloatField("GPS Longitude", blank=True, null=True)
     
     def get_farmer_and_user_list(self):
         retval = [self.farmer.pk] + map(lambda x: x.pk, self.users.all())
@@ -560,7 +560,7 @@ class WaterRegister(Audit):
 
 
 class InvitedUser(NameDesc, Audit):
-    email       = models.EmailField()
+    email       = models.EmailField(unique = True)
     farms        = models.ManyToManyField(Farm)
 
     def __unicode__(self):

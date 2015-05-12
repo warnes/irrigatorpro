@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from common.models import Audit, Comment, Location, NameDesc
+from django.core.exceptions import ObjectDoesNotExist
 
+from farms.models import Farm, InvitedUser
 
 
 class SMS_Info(Audit):
@@ -38,6 +40,33 @@ class Contact_Info(Location, Audit):
 
     def __unicode__(self):
         return self.user.email + ": " + self.get_address()
+
+
+    ###
+    ## Override the save method to process the fact that this user can be an invited user
+    ## assigned to some farms. In that case remove the relevant invited_user record, add this
+    ## new user to all the farms.
+    ##
+    ## This creates a bidirectional relationship between the contact_info and farm projects.
+    ## Do we want to break it?
+
+    def save(self, *args, **kwargs):
+        self.check_invited_user()
+        super(Contact_Info, self).save(*args, **kwargs) # Call the "real" save() method.
+
+
+    def check_invited_user(self):
+        try:
+            invited = InvitedUser.objects.get(email = self.user.email)
+            for f in invited.farms.all():
+                f.users.add(self.user)
+                f.save()
+            invited.delete()
+
+        except ObjectDoesNotExist:
+            # Was not an invited user. Nothing to do
+            pass
+
     
     class Meta: 
         verbose_name        = 'Contact Information' 
