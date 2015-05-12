@@ -443,9 +443,15 @@ class ProbeReading(Audit):
     soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
-    circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
-    thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
-    thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
+    circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+                                              blank=True, null=True,
+                                              verbose_name='Circuit Board Temperature in Degrees Celcius') 
+    thermocouple_1_temp = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+                                              blank=True, null=True,
+                                              verbose_name='Thermocouple 1 Temperature in Degrees Celcius') 
+    thermocouple_2_temp = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+                                              blank=True, null=True,
+                                              verbose_name='Thermocouple 2 Temperature in Degrees Celcius') 
     minutes_awake       = models.PositiveSmallIntegerField(blank=True, null=True)
 
     SOURCE_CHOICES = ( ('UGADB', 'UGA Database'),
