@@ -20,6 +20,8 @@ print "HOSTNAME=%s" % host
 if host=='irrigatorpro':
     if "test" in PROJECT_ROOT:
         VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
+    elif "devel" in PROJECT_ROOT:
+        VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/devel/'
     else:
         VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
 else:
