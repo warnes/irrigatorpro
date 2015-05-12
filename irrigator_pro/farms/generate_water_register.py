@@ -138,24 +138,20 @@ def calculateAWC_ProbeReading(crop_season,
 
     ### Loop here through loop readings for all the probes given day.
 
-    nb_at_8 = 0
-    nb_at_16 = 0
-    nb_at_24 = 0
-
-    AWC_8 = 0
-    AWC_16 = 0
-    AWC_24 = 0
+    AWC_8_l  = []
+    AWC_16_l = []
+    AWC_24_l = []
 
     ### Have to be a icer way to write this... lambda calculus?
     for probe_reading in probe_readings:
 
-        current_at_8  = soil_type_8in.slope  * ( safelog( abs(probe_reading.soil_potential_8) )  - ln40 ) * 24
-        current_at_16 = soil_type_16in.slope * ( safelog( abs(probe_reading.soil_potential_16) ) - ln40 ) * 24
-        current_at_24 = soil_type_24in.slope * ( safelog( abs(probe_reading.soil_potential_24) ) - ln40 ) * 24
+        AWC_8_l.append ( soil_type_8in.slope  * ( safelog( abs(probe_reading.soil_potential_8) )  - ln40 ) * 24 )
+        AWC_16_l.append( soil_type_16in.slope * ( safelog( abs(probe_reading.soil_potential_16) ) - ln40 ) * 24 )
+        AWC_24_l.append( soil_type_24in.slope * ( safelog( abs(probe_reading.soil_potential_24) ) - ln40 ) * 24 )
 
-        AWC_8  = min(AWC_8,  current_at_8 )
-        AWC_16 = min(AWC_16, current_at_16)
-        AWC_24 = min(AWC_24, current_at_24)
+    AWC_8  = min(AWC_8_l)
+    AWC_16 = min(AWC_16_l)
+    AWC_24 = min(AWC_24_l)
 
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)

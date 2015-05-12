@@ -33,6 +33,8 @@ if __name__ == "__main__":
     if host=='irrigatorpro':
         if "test" in PROJECT_ROOT:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
+        elif "devel" PROJECT_ROOT:
+            VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/devel/'
         else:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
     else:
