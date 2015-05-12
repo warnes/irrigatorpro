@@ -126,7 +126,7 @@ def plot_daily_use(request, crop_season, field):
     wu_plot_before.grid()
 
     fig.autofmt_xdate()
-    fig.suptitle("Daily Water Use", fontsize = 20)
+    fig.suptitle("Daily Water", fontsize = 20)
     canvas=FigureCanvas(fig)
     response=django.http.HttpResponse(content_type='image/png')
     fig.savefig(response, transparent=True, format='png')
@@ -212,7 +212,7 @@ def plot_cumulative_use(request, crop_season, field):
 
     fig.autofmt_xdate()
     canvas=FigureCanvas(fig)
-    fig.suptitle("Cumulative Water Use", fontsize = 20)
+    fig.suptitle("Cumulative Water", fontsize = 20)
     response=django.http.HttpResponse(content_type='image/png')
     fig.savefig(response, transparent=True, format='png')
 
