@@ -238,18 +238,23 @@ class CropEvent(NameDesc, Comment, Audit):
 ### CropSeason (Crop + Season + Fields) ##
 ########################################
 
+def get_default_cropseason_start():
+    return timezone.now()
+
+def get_default_cropseason_end():
+    return timezone.now() + timedelta(days=154)
 
 class CropSeason(NameDesc, Comment, Audit):
     # from NameDesc:  name, description
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    season_start_date = models.DateField(default=timezone.now(),
+    season_start_date = models.DateField(default=get_default_cropseason_start,
                                          verbose_name="Season Start Date",
                                          )
-    season_end_date = models.DateField(default=timezone.now() + timedelta(days=154),
+    season_end_date = models.DateField(default=get_default_cropseason_end,
                                        verbose_name="Approximate Season End Date",
-                                      ) ## UI needs to increment
-                                        ## this off of user-provied
+                                      ) ## UI needs to set this relative
+                                        ## to the user-provied
                                         ## season_start_date
 
     crop              = models.ForeignKey(Crop)
@@ -330,6 +335,8 @@ class CropSeason(NameDesc, Comment, Audit):
         ordering = [ 'season_start_date', 'crop' ]
         verbose_name = 'Crop Season'
 
+def get_default_cropseasonevent_date():
+    return timezone.now()
 
 class CropSeasonEvent(Comment, Audit):
     # from Comment: comment
@@ -337,7 +344,7 @@ class CropSeasonEvent(Comment, Audit):
     crop_season = models.ForeignKey(CropSeason)
     field       = models.ForeignKey(Field)
     crop_event  = models.ForeignKey(CropEvent)
-    date        = models.DateField(default=timezone.now())
+    date        = models.DateField(default=get_default_cropseasonevent_date)
 
     def get_event_duration(self):
         return self.crop_event.duration
