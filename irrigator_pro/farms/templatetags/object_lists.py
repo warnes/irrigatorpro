@@ -42,7 +42,7 @@ def farm_list(parser, token):
         context['farm_list'] = farm_list
 
         for farm in farm_list:
-            farm.field_list = farm.field_set.get_query_set()
+            farm.field_list = farm.field_set.get_queryset()
 
         return ''
 
