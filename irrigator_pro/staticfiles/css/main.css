@@ -48,7 +48,7 @@ body {
 }
 
 footer {
-    margin-left: 200px;
+    margin-left: 0px;
     position:fixed;
     bottom:0;
     height:1.5em;   /* Height of the footer */
