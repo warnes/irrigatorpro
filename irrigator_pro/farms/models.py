@@ -114,6 +114,11 @@ class Field(NameDesc, Comment, Audit):
                                         verbose_name='Irrigation Capacity (per 24 hours)',
                                         decimal_places=2,
                                         validators=[MinValueValidator(Decimal('0.01'))]) # ###.##
+    dependency_mdate = models.DateField(blank=True,
+                                        null=True,
+                                        verbose_name="Earliest modification date of WaterRegister dependencies"
+                                        )
+
 
     def __unicode__(self):
         return u"%s: %s" % (self.farm, self.name)

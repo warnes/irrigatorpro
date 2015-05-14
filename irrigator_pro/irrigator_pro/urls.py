@@ -26,6 +26,9 @@ urlpatterns = patterns('',
                        # admin documentation:
                        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
+                       ## Enable 'smuggler' to provide admin dump/load data support
+                       url(r'^admin/', include('smuggler.urls')),
+
                        ## Uncomment these to enable the admin interface:
                        url(r'^admin_tools/', include('admin_tools.urls')),
                        url(r'^admin/',       include(admin.site.urls)),

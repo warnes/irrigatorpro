@@ -54,12 +54,13 @@ class NotificationsRule(Comment, Audit):
         farm_users = farm.get_farmer_and_user_objects()
 
         for notify in NotificationsRule.objects.all():  # Here should filter by checking farm in first field. .filter(Q(field_list__[0].farm = sender)):
-            aField = notify.field_list.all()[0]
-            if aField.farm != farm: continue
-            for recipient in notify.recipients.all():
-                if recipient not in farm_users:
-                    notify.recipients.remove(recipient)
-                notify.save()
+            if len( notify.field_list.all() ) > 0:
+                aField = notify.field_list.all()[0]
+                if aField.farm != farm: continue
+                for recipient in notify.recipients.all():
+                    if recipient not in farm_users:
+                        notify.recipients.remove(recipient)
+                    notify.save()
 
     def __init__(self, *args, **kwargs):
         super(NotificationsRule, self).__init__(*args, **kwargs)
