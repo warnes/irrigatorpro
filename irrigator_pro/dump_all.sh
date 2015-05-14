@@ -12,5 +12,6 @@ python manage.py dumpdata \
     auth.User \
     auth.Group \
     sites \
+    $* \
     | bzip2 > $FILENAME
 echo "Done."
