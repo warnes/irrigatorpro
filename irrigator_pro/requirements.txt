@@ -61,3 +61,8 @@ tabulate==0.7.4
 # For SMS messaging via Twilio
 #
 twilio==3.7.3
+
+#
+# for admin dump/load support
+#
+django-smuggler==0.6.0

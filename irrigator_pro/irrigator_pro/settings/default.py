@@ -211,6 +211,7 @@ ADMIN_TOOL_APPS = (
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',
+    'smuggler'
 )
 
 # django
@@ -404,9 +405,14 @@ GA_KEY = ""
 ## Setting for the notification emails. Actual values need to be set in local.py
 ###
 
-NOTIFICATION_SMTP = ""
-NOTIFICATION_HOST = ""
-NOTIFICATION_PORT = ""
+# SMTP server hostname
+NOTIFICATION_SMTP = "localhost" 
+
+# URL for Notification link back to server
+NOTIFICATION_HOST = "http://irrigatorpro.org/farm/report/summary_report/"     
+
+# SMTP server port
+NOTIFICATION_PORT = "25"
 
 ###
 ## Setting for the sms notification emails. Actual values need to be set in local.py
@@ -419,3 +425,20 @@ TWILIO_PHONE_NUMBER = ""
 # This avoids warnings messages bout old test runner
 ###
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+###
+# Settings for django-smugger
+###
+#
+# List of models to be excluded from dump. Use the form 'app_label.ModelName'. Default: [].
+# SMUGGLER_EXCLUDE_LIST = []
+#
+# Uploaded fixtures are stored in this directory (if requested). Default: None.
+SMUGGLER_FIXTURE_DIR = ABSOLUTE_PROJECT_ROOT + "/fixtures"
+#
+# Format for dumped files. Any of the serialization formats supported by Django, json, xml and in some cases yaml. Default: 'json'.
+# SMUGGLER_FORMAT = "json"
+#
+# Indentation for dumped files. Default: 2.
+# SMUGGLER_INDENT = 2
+
