@@ -185,7 +185,7 @@ class FarmMixin:
                     invited_user = InvitedUser.objects.get(email = u)
                 except:
                     # New user. Must send email
-                    send_invitation_email(u, request.user, farm)
+                    send_invitation_email(u, request.user, farm_object)
                     invited_user = InvitedUser(email = u)
                     invited_user.save()
                 print "farm object ", farm_object

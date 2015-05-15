@@ -66,3 +66,9 @@ twilio==3.7.3
 # for admin dump/load support
 #
 django-smuggler==0.6.0
+
+#
+# Django Admin Steroids
+#
+django-admin-steroids==0.3.8
+
