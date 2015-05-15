@@ -12,7 +12,8 @@ import sys
 ###
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner' 
-ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..'))
+ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), 
+                                                     '..', '..'))
 
 ###
 # Number of days in future where we generate a water register.
@@ -211,7 +212,8 @@ ADMIN_TOOL_APPS = (
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',
-    'smuggler'
+    'smuggler',
+    'admin_steroids',
 )
 
 # django
