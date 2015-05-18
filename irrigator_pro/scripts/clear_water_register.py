@@ -7,9 +7,7 @@ import warnings
 import ConfigParser
 
 """
-This script queries the UGA SSA data stored in the NESPAL database and
-upload the last probe reading before 9am per day for each probe into
-the IrrigatorPro database.
+This script removes all of the water_register records to force recalculation.
 """
 
 if __name__ == "__main__":
@@ -39,12 +37,18 @@ if __name__ == "__main__":
     # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
+import django
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import WaterRegister
+
+# Start up django
+django.setup()
 
 print
 print
 print "Deleting all water register objects...",
 WaterRegister.objects.all().delete()
 print "Done."
+print
+print
 

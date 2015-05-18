@@ -33,7 +33,7 @@ if __name__ == "__main__":
     if host=='irrigatorpro':
         if "test" in PROJECT_ROOT:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
-        elif "devel" PROJECT_ROOT:
+        elif "devel" in PROJECT_ROOT:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/devel/'
         else:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
@@ -48,10 +48,8 @@ if __name__ == "__main__":
     # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
-
-
+import django
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
-
 from datetime import date, datetime, time
 from django.utils import timezone
 
@@ -62,6 +60,8 @@ from notifications.models import NotificationsRule
 from notifications.notification_email import EmailMessage
 from farms.generate_daily_report import daily_report_by_field
 
+## Startup django
+django.setup()
 
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
