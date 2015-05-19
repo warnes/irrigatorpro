@@ -32,7 +32,7 @@ psycopg2==2.5.3
 #
 # For Trac
 #
-trac==1.0.1
+trac==1.0.5
 TracPermRedirect==3.0
 trac-github==2.0.0
 NavAdd==0.1.1
