@@ -81,15 +81,12 @@ class FarmMixin:
 
         if (form.is_valid() and field_form.is_valid() ):
 
-            self.delete_users(request, self.object)
-            self.delete_invited_users(request, self.object)
-            self.add_users(request, self.object)
 
-            return self.form_valid(form, field_form)
+            return self.form_valid(request, form, field_form)
         else:
             return self.form_invalid(form, field_form)
 
-    def form_valid(self, form, field_form):
+    def form_valid(self, request, form, field_form):
         """
         Called if all forms are valid. Creates a Farm instance along with
         associated Fields and then redirects to a success page.
@@ -97,6 +94,11 @@ class FarmMixin:
         self.object = form.save()
         field_form.instance = self.object
         field_form.save()
+
+        self.delete_users(request, self.object)
+        self.delete_invited_users(request, self.object)
+        self.add_users(request, self.object)
+
         return redirect(self.get_success_url())
 
     def form_invalid(self, form, field_form):
@@ -198,11 +200,10 @@ class FarmMixin:
         context = self.get_context_data(form=form,
                                         field_form=field_form,
                                         field_form_headers=field_form_headers)
-        context['auth_users'] = self.object.users.all()
-        context['invited_users'] = InvitedUser.objects.filter(farms = self.object).order_by("email")
 
-        print 'Invited users: ', InvitedUser.objects.filter(farms = self.object).order_by("email")
-
+        if self.object is not None:
+                context['auth_users'] = self.object.users.all()
+                context['invited_users'] = InvitedUser.objects.filter(farms = self.object).order_by("email")
         return context
  
                 

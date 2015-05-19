@@ -116,7 +116,9 @@ urlpatterns = patterns('',
 
 
                        ## Ajax pages
-                       url(r'^farm/filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users')
+                       url(r'^farm/filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users'),
+                       ### Need one for a new farm
+                       url(r'^farm/filter_auth/(?P<farm_pk>.*)/',   'contact_info.views.get_available_users', {'farm_pk': None}, name='filter_auth_users'),
 )
 
 if settings.DEBUG:

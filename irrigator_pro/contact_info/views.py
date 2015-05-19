@@ -267,11 +267,16 @@ def get_available_users(request, **kwargs):
         q = request.GET.get('term', '')
         all_users = User.objects.filter(email__icontains = q)
         invited_users = InvitedUser.objects.filter(email__icontains = q)
-        
-        farm = Farm.objects.get(pk=kwargs['farm_pk'])
 
-        emails =  map(lambda x: x.email, set(all_users)     - set(farm.users.all()) )
-        emails += map(lambda x: x.email, set(invited_users) - set(farm.users.all()) )
+        pk = kwargs['farm_pk']
+        if pk is None:
+            current_users = set()
+        else:
+            farm = Farm.objects.get(pk=pk)
+            current_users = set(farm.users.all())
+
+        emails =  map(lambda x: x.email, set(all_users)     - current_users )
+        emails += map(lambda x: x.email, set(invited_users) - current_users )
         results = []
         for e in emails:
             e_json = {}

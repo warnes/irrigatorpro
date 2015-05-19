@@ -28,7 +28,7 @@ def send_invitation_email(invited_user, invited_by, farm):
 
     s = smtplib.SMTP(NOTIFICATION_SMTP, NOTIFICATION_PORT)
     print 'sending email'
-    s.sendmail('admin@irrigatorpro.org', [invited_user], msg.as_string())
+#    s.sendmail('admin@irrigatorpro.org', [invited_user], msg.as_string())
     print 'done'
     s.quit()
 
