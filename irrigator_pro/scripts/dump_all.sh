@@ -3,6 +3,9 @@
 FILENAME=dumpdata_`date --rfc-3339=seconds | sed -e 's/ /_/g'`.json.bz2
 
 echo "Dumping database contents to ${FILENAME}..."
+mkdir -p ../dumps
+(
+cd ..
 python manage.py dumpdata \
     --indent=4 \
     --natural-foreign  \
@@ -16,5 +19,6 @@ python manage.py dumpdata \
     auth.Group \
     sites \
     $* \
-    | bzip2 > $FILENAME
+    | bzip2 > dumps/$FILENAME
+)
 echo "Done."
