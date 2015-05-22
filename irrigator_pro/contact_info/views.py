@@ -2,7 +2,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.forms.models import BaseModelForm
@@ -232,7 +232,7 @@ def validate_sms(request):
     sms_info = contact_info.sms_info
     if sms_info is None or sms_info.status != "New":
         print 'Validating for non-existing sms, or non-new sms!!!'
-        HttpResponseForbidden()
+        return HttpResponseForbidden()
         
     # Should probably check if the sms was correctly sent
 #    send_sms(sms_info)
@@ -262,27 +262,31 @@ def validate_sms(request):
 #     mimetype = 'application/json'
 #     return HttpResponse(data, mimetype)
 
-def get_available_users(request, **kwargs):
-    if request.is_ajax():
-        q = request.GET.get('term', '')
-        all_users = User.objects.filter(email__icontains = q)
-        invited_users = InvitedUser.objects.filter(email__icontains = q)
-        
-        farm = Farm.objects.get(pk=kwargs['farm_pk'])
+def get_available_users(request, farm_pk=None, **kwargs):
 
-        emails =  map(lambda x: x.email, set(all_users)     - set(farm.users.all()) )
-        emails += map(lambda x: x.email, set(invited_users) - set(farm.users.all()) )
-        results = []
-        for e in emails:
-            e_json = {}
-            e_json['id'] = e
-            e_json['label'] = e
-            e_json['value'] = e
-            results.append(e_json)
-        data = json.dumps(results)
-        
+    if not request.is_ajax():       
+        raise PermissionDenied()
+
+    q = request.GET.get('term', '')
+    all_users = User.objects.filter(email__icontains = q)
+    invited_users = InvitedUser.objects.filter(email__icontains = q)
+
+    if farm_pk is None:
+        current_users = set()
     else:
-        data = 'fail'
+        farm = Farm.objects.get(pk=farm_pk)
+        current_users = set(farm.users.all())
+
+    emails =  map(lambda x: x.email, set(all_users)     - current_users )
+    emails += map(lambda x: x.email, set(invited_users) - current_users )
+    results = []
+    for e in emails:
+        e_json = {}
+        e_json['id'] = e
+        e_json['label'] = e
+        e_json['value'] = e
+        results.append(e_json)
+    data = json.dumps(results)
 
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)

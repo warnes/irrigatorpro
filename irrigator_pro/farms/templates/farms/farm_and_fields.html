@@ -178,7 +178,11 @@
 <script>
 $(function() {
     $("#new_auth_user").autocomplete({
-        source: "{%url 'filter_auth_users' farm.pk %}",
+        {% if farm.pk %}
+          source: "{%url 'filter_auth_users_farm' farm.pk %}",
+        {% else %}
+          source: "{%url 'filter_auth_users' %}",
+        {% endif %}
         minLength: 2,
     });
 });

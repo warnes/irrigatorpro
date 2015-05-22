@@ -9,6 +9,9 @@ https://docs.djangoproject.com/en/1.6/howto/deployment/wsgi/
 
 import os, os.path, site, sys, socket
 
+# Do this import here, so that it won't cause an import error 
+import _strptime
+
 # Add django root dir to python path 
 PROJECT_ROOT      = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',))
 print "PROJECT_ROOT=", PROJECT_ROOT

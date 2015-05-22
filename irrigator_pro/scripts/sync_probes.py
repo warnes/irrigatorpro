@@ -5,7 +5,6 @@ import argparse, socket
 import psycopg2
 import warnings
 import ConfigParser
-
 """
 This script queries the UGA SSA data stored in the NESPAL database and
 upload the last probe reading before 9am per day for each probe into
@@ -25,7 +24,7 @@ if __name__ == "__main__":
     if host=='irrigatorpro':
         if "test" in PROJECT_ROOT:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/test/'
-        elif "devel" PROJECT_ROOT:
+        elif "devel" in PROJECT_ROOT:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/devel/'
         else:
             VIRTUAL_ENV_ROOT = '/www/VirtualEnvs/irrigator_pro/'
@@ -39,6 +38,7 @@ if __name__ == "__main__":
     # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
+import django
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import ProbeSync, ProbeReading
 from django.contrib.auth.models import User
@@ -49,6 +49,8 @@ import pytz
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
 
+## Startup Django
+django.setup()
 
 ###
 # Use ConfigParser to pull private values from irrigator_pro.conf

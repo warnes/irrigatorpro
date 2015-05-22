@@ -407,7 +407,7 @@ def generate_water_register(crop_season,
                                                      )
             AWC_initial = wr_yesterday.average_water_content
         except:
-            raise RuntimeException("No previous water_register record on " + earliest );
+            raise RuntimeError("No previous water_register record on " + earliest );
 
     ## First pass, calculate water profile (AWC)
     temps_since_last_water_date = []

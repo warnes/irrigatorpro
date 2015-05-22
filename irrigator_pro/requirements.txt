@@ -32,7 +32,7 @@ psycopg2==2.5.3
 #
 # For Trac
 #
-trac==1.0.1
+trac==1.0.5
 TracPermRedirect==3.0
 trac-github==2.0.0
 NavAdd==0.1.1
@@ -61,3 +61,13 @@ tabulate==0.7.4
 # For SMS messaging via Twilio
 #
 twilio==3.7.3
+
+#
+# for admin dump/load support
+#
+django-smuggler==0.6.0
+
+#
+# Django Admin Steroids
+#
+django-admin-steroids==0.3.8

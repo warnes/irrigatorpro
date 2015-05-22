@@ -22,9 +22,11 @@ urlpatterns = patterns('',
                        ## Static
                        url(r'^%s(?P<path>.*)$' % settings.STATIC_URL.lstrip('/'), serve, {'show_indexes': True, 'insecure': False}),
 
-                       # Uncomment the admin/doc line below to enable
-                       # admin documentation:
+                       # Enable admin documentation:
                        url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+
+                       # Enable 'smuggler' to provide admin dump/load data support
+                       url(r'^admin/', include('smuggler.urls')),
 
                        ## Uncomment these to enable the admin interface:
                        url(r'^admin_tools/', include('admin_tools.urls')),
@@ -114,7 +116,8 @@ urlpatterns = patterns('',
 
 
                        ## Ajax pages
-                       url(r'^farm/filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users')
+                       url(r'^filter_auth/$',                    'contact_info.views.get_available_users', name='filter_auth_users'),
+                       url(r'^filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users_farm'),
 )
 
 if settings.DEBUG:
