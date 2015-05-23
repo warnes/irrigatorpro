@@ -366,7 +366,11 @@ def generate_water_register(crop_season,
         end_date = crop_season.season_end_date + timedelta(1)
     else:
         today_plus_delta = report_date + timedelta(days=WATER_REGISTER_DELTA)
-        end_date = min(today_plus_delta, crop_season.season_end_date) + timedelta(1)
+        latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
+                                                             field=field
+                                                             ).order_by('-date').first()
+
+        end_date = min( max(today_plus_delta, latest_water_register.date), crop_season.season_end_date) + timedelta(1)
     
     ####
 
