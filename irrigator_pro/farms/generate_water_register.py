@@ -266,7 +266,11 @@ def earliest_register_to_update(report_date,
                                 field):
 
     # Start by getting the dependency modification date stored in the field object
+<<<<<<< .merge_file_47Gefu
     dependency_mdate = field.earliest_changed_dependency_date
+=======
+    dependency_mdate = field.dependenct_mdate
+>>>>>>> .merge_file_IkOOnv
 
     # Get the modification time of the latest water register
     latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
@@ -323,7 +327,11 @@ def earliest_register_to_update(report_date,
         print 'No probe will cause update in water register (no probe)'
 
     print "Caclulated dependency dates:"
+<<<<<<< .merge_file_47Gefu
     print "field.earliest_changed_dependency_date:", dependency_mdate
+=======
+    print "field.dependency_mdate:", dependency_mdate
+>>>>>>> .merge_file_IkOOnv
     print "earliest changed probe:", earliest_to_update
     print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
 

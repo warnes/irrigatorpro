@@ -113,9 +113,15 @@ class Field(NameDesc, Comment, Audit):
                                         verbose_name='Irrigation Capacity (per 24 hours)',
                                         decimal_places=2,
                                         validators=[MinValueValidator(Decimal('0.01'))]) # ###.##
+<<<<<<< .merge_file_YEIKsA
     earliest_changed_dependency_date = models.DateField(blank=True,
                                         null=True,
                                         verbose_name="Earliest date in modified WaterRegister dependencies"
+=======
+    dependency_mdate = models.DateField(blank=True,
+                                        null=True,
+                                        verbose_name="Earliest modification date of WaterRegister dependencies"
+>>>>>>> .merge_file_QMNyTz
                                         )
 
 
