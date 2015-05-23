@@ -69,6 +69,10 @@
         color: DarkGreen;
 	background-color: #80B580;
     }
+    .navbar-toggle {
+	display: block;
+	margin-right: 10px;
+    }    
 }
 
 
