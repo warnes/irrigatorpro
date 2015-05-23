@@ -262,12 +262,13 @@ def quantize( f ):
 # and WaterRegister. Want to allow for a WaterHistory or ProbeReading
 # to be entered or modified long after the date of the event.
 def earliest_register_to_update(report_date,
-                               crop_season,
-                               field):
+                                crop_season,
+                                field):
 
+    # Start by getting the dependency modification date stored in the field object
+    dependency_mdate = field.earliest_changed_dependency_date
 
-    # First get the modification time of the latest water register
-
+    # Get the modification time of the latest water register
     latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
                                                          field=field
                                                      ).order_by('-date').first()
@@ -320,8 +321,13 @@ def earliest_register_to_update(report_date,
 
     except ObjectDoesNotExist:
         print 'No probe will cause update in water register (no probe)'
-    
-    return min(earliest_to_update, latest_water_register.date + timedelta(1))
+
+    print "Caclulated dependency dates:"
+    print "field.earliest_changed_dependency_date:", dependency_mdate
+    print "earliest changed probe:", earliest_to_update
+    print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
+
+    return min(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
 
         
 

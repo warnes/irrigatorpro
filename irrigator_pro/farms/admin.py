@@ -32,7 +32,7 @@ admin.site.register(Farm, FarmAdmin)
 class FieldAdmin(AuditAdmin):
     fields = [ 'farm', ] \
              + NameDesc.fields \
-             + [ 'acres', 'soil_type', 'irr_capacity', ] \
+             + [ 'acres', 'soil_type', 'irr_capacity', 'earliest_changed_dependency_date' ] \
              + Comment.fields \
              + Audit.fields
 

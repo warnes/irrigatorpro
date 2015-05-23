@@ -1,6 +1,5 @@
 import decimal
 
-
 from common.models import Audit, Comment, Location, Location_Optional, NameDesc
 
 from datetime import timedelta
@@ -114,6 +113,11 @@ class Field(NameDesc, Comment, Audit):
                                         verbose_name='Irrigation Capacity (per 24 hours)',
                                         decimal_places=2,
                                         validators=[MinValueValidator(Decimal('0.01'))]) # ###.##
+    earliest_changed_dependency_date = models.DateField(blank=True,
+                                        null=True,
+                                        verbose_name="Earliest date in modified WaterRegister dependencies"
+                                        )
+
 
     def __unicode__(self):
         return u"%s: %s" % (self.farm, self.name)
@@ -399,7 +403,7 @@ class WaterHistory(Comment, Audit):
         verbose_name_plural = "Water Histories"
 
     def __unicode__(self):
-        return u"Water History Entry for [%s] on %s" % (self.get_field_list(), self.date)
+        return u"Water History Entry [%s] on %s" % ( self.id , self.date ) 
 
 
 #############################
