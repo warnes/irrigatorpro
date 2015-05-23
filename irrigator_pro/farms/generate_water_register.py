@@ -20,6 +20,10 @@ def daterange(start_date, end_date):
         yield start_date + timedelta(days=n)
 
 
+def minNone( *args ):
+    args = filter( lambda x: x is not None, args)
+    return min(args)
+
 
 ########################################################################
 ## Calculate the AWC based on probe reading for a given crop_season,
@@ -327,10 +331,7 @@ def earliest_register_to_update(report_date,
     print "earliest changed probe:", earliest_to_update
     print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
 
-    return min(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
-
-        
-
+    return minNone(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
 
 
 # In order to test we change the definition of "Today". It is passed
@@ -370,7 +371,12 @@ def generate_water_register(crop_season,
                                                              field=field
                                                              ).order_by('-date').first()
 
-        end_date = min( max(today_plus_delta, latest_water_register.date), crop_season.season_end_date) + timedelta(1)
+        if latest_water_register:
+            last_register_date = max(today_plus_delta, latest_water_register.date)
+        else:
+            last_register_date = today_plus_delta
+
+        end_date = min(last_register_date, crop_season.season_end_date) + timedelta(1)
     
     ####
 
