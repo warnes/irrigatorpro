@@ -27,3 +27,4 @@ easy_install http://trac-hacks.org/svn/announcerplugin/trunk
 tar xvzf thirdparty.tgz
 ( cd thirdparty/TracDjangoAuth; python setup.py install )
 ( cd thirdparty/TracAnnouncer; python setup.py install )
+( cd thirdparty/django-hijack; python setup.py install )

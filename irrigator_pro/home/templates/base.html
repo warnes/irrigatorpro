@@ -1,3 +1,5 @@
+{% load hijack_tags %}
+{% load staticfiles %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -34,6 +36,8 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.blue.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.default.css">
 
+    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />.
+
     <script src="{{ STATIC_URL }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>
 
    {% block extrahead %}{% endblock %}
@@ -41,6 +45,7 @@
   </head>
 
   <body>
+    {{ request|hijackNotification }}
     {% include 'navbar-top.html' %} 
     <div id="wrapper">
       <div class="container">

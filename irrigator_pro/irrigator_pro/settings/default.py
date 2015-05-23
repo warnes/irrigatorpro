@@ -214,6 +214,7 @@ ADMIN_TOOL_APPS = (
     'admin_tools.dashboard',
     'smuggler',
     'admin_steroids',
+    'hijack',
 )
 
 # django
@@ -444,3 +445,9 @@ SMUGGLER_FIXTURE_DIR = ABSOLUTE_PROJECT_ROOT + "/fixtures"
 # Indentation for dumped files. Default: 2.
 # SMUGGLER_INDENT = 2
 
+###
+# Settings for django-hijack
+###
+HIJACK_NOTIFY_ADMIN = True
+HIJACK_LOGIN_REDIRECT_URL = "/farm/report/summary_report/" 
+REVERSE_HIJACK_LOGIN_REDIRECT_URL = '/farm/admin/auth/user/'
