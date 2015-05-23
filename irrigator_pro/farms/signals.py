@@ -3,19 +3,15 @@ from django.db.models.signals import *
 from farms.models import *
 from irrigator_pro.settings import DEBUG
 
+
+def minNone( *args ):
+    args = filter( lambda x: x is not None, args)
+    return min(args)
+
+
 ## These signal handlers records the (earliest) relevant date of any
 ## created/changed/deleted object upon which calculation of
 ## WaterRegister entries depend.
-
-
-def minNone( x, y ):
-    if x is None:
-        return y
-    elif y is None:
-        return x
-    else:
-        return min(x, y)
-    
 
 @receiver(pre_save, sender=WaterHistory)
 @receiver(pre_delete, sender=WaterHistory)
