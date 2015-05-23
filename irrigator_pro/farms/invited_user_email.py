@@ -24,12 +24,11 @@ def send_invitation_email(invited_user, invited_by, farm):
     msg['Subject'] = "Invitation to join Irrigator Pro"
     msg['from'] = 'admin@irrigatorpro.org'
     msg['to'] = invited_user
+    msg['cc'] = invited_by.email
 
 
     s = smtplib.SMTP(NOTIFICATION_SMTP, NOTIFICATION_PORT)
-    print 'sending email'
-#    s.sendmail('admin@irrigatorpro.org', [invited_user], msg.as_string())
-    print 'done'
+    s.sendmail('admin@irrigatorpro.org', [invited_user, invited_by.email], msg.as_string())
     s.quit()
 
 
