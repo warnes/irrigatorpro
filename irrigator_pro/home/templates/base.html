@@ -7,50 +7,50 @@
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>{{ site_name }}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- http://jqueryui.com/themeroller/ -->
     <!-- http://stackoverflow.com/questions/1348559/are-there-hosted-jquery-ui-themes-anywhere -->
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/jquery-ui/jquery-ui-base.css">
+    <link rel="stylesheet" href="{% static 'css/jquery-ui/jquery-ui-base.css' %}">
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-    <link href="{{ STATIC_URL }}/css/font-awesome.css" rel="stylesheet">
+    <link href="{% static '/css/font-awesome.css' %}" rel="stylesheet">
 
-    <!--[if lt IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}css/font-awesome-ie7.min.css"><![endif]-->
+    <!--[if lt IE 8]><link rel="stylesheet" href="{% static 'css/font-awesome-ie7.min.css' %}"><![endif]-->
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/sb-admin.css">
+    <link rel="stylesheet" href="{% static 'css/sb-admin.css' %}">
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/timepicker.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/navbar.css">
+    <link rel="stylesheet" href="{% static 'css/timepicker.css' %}">
+    <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/django-model-blocks.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+    <link rel="stylesheet" href="{% static 'css/django-model-blocks.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
       <!-- links to tablesorter css -->
       <!-- May want to grab directly from web site -->
 
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.blue.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}css/tablesorter/theme.default.css">
+    <link rel="stylesheet" href="{% static 'css/tablesorter/theme.blue.css' %}">
+    <link rel="stylesheet" href="{% static 'css/tablesorter/theme.default.css' %}">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />.
+    <link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack-styles.css' %}" />
 
-    <script src="{{ STATIC_URL }}js/lib/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    <script src="{% static 'js/lib/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
 
    {% block extrahead %}{% endblock %}
 
   </head>
 
   <body>
-    {{ request|hijackNotification }}
     {% include 'navbar-top.html' %} 
     <div id="wrapper">
       <div class="container">
 
 	{% if user.is_authenticated %}
+	  {{ request|hijackNotification }}
 	  <div class="row row-offcanvas row-offcanvas-left ">
             {% include 'navbar-side.html' %} 
 	{% endif %}
@@ -82,7 +82,7 @@
   <!-- Start of scripts -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script>
-    window.jQuery || document.write('<script src="{{STATIC_URL }}js/lib/jquery-1.9.1.min.js"><\/script>')
+    window.jQuery || document.write('<script src="{% static 'js/lib/jquery-1.9.1.min.js' %}"><\/script>')
   </script>
 
   <!-- jQuery -->
@@ -90,25 +90,25 @@
   <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
   <!-- /jQuery -->
 
-  <script src="{{ STATIC_URL }}js/tablesorter/jquery.tablesorter.js"></script>
+  <script src="{% static 'js/tablesorter/jquery.tablesorter.js' %}"></script>
       
   <!-- Bootstrap -->
   <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
 
-  <script src="{{ STATIC_URL }}js/plugins.js"></script>
-  <script src="{{ STATIC_URL }}js/main.js"></script>
-  <script src="{{ STATIC_URL }}js/plugins/metisMenu/jquery.metisMenu.js"></script>
+  <script src="{% static 'js/plugins.js' %}"></script>
+  <script src="{% static 'js/main.js'    %}"></script>
+  <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
 
   <!-- SB Admin -->
-  <script src="{{ STATIC_URL }}js/sb-admin.js"></script>
+  <script src="{% static 'js/sb-admin.js' %}"></script>
   <!-- /SB Admin -->
       
   <!-- django-jquery-formset - support formsets -->
-  <script src="{{ STATIC_URL }}js/jquery.formset.min.js"></script>
+  <script src="{% static 'js/jquery.formset.min.js' %}"></script>
   <!-- /django-jquery-formset -->
 
   <!-- dJango-ui-timepicker-addon - add a datetime pickser -->
-  <script src="{{ STATIC_URL }}js/jquery-ui-timepicker-addon.min.js"></script>
+  <script src="{% static 'js/jquery-ui-timepicker-addon.min.js' %}"></script>
   <!-- /dJango-ui-timepicker-addon -->
 
 

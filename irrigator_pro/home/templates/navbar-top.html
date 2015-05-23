@@ -13,7 +13,9 @@
           <span class="icon-bar"></span>
         </button>
       {% endif %}
-      <a class="navbar-brand" href="{% url 'home' %}"><i class="fa fa-pagelines fa-fw"></i>{{ site_name }}</a>
+      <a class="navbar-brand" href="{% url 'home' %}">
+	<i class="fa fa-pagelines fa-fw"></i>{{ site_name }}
+      </a>
     </div>
 
     <div class="navbar-collapse collapse">
@@ -52,6 +54,7 @@
       <input autofocus="autofocus" id="id_login" name="login" placeholder="E-mail address" type="text" class="form-control"/>
       <input id="id_password" name="password" placeholder="Password" type="password" class="form-control">
       <button type="submit" class="btn btn-success">Sign In</button>
+    </div>
   </form>
 
 {% endif %}
