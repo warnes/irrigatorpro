@@ -1,3 +1,4 @@
+Fixed.
 from django.dispatch import receiver
 from django.db.models.signals import *
 from farms.models import *
@@ -66,14 +67,24 @@ def handler_ProbeReading(sender, instance, **kwargs):
         new_instance = instance
         old_instance = ProbeReading.objects.get(pk=instance.id)
         old_radio_id = old_instance.radio_id
-        old_probe = Probe.objects.get(radio_id=old_radio_id)
+        old_reading_datetime = old_instance.reading_datetime
+
+        old_probe = Probe.objects.get(radio_id=old_radio_id,
+                                      crop_season__season_start_date__lte=old_reading_datetime.date(),
+                                      crop_season__season_end_date__gte=old_reading_datetime.date())
+
         for field in old_probe.field_list.all():
             field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
                                                              old_instance.reading_datetime.date() )
             field.save()
 
-    radio_id = instance.radio_id
-    probe = Probe.objects.get(radio_id=radio_id)
+    this_radio_id = instance.radio_id
+    this_reading_datetime = instance.reading_datetime
+
+    new_probe = Probe.objects.get(radio_id=this_radio_id,
+                                  crop_season__season_start_date__lte=this_reading_datetime.date(),
+                                  crop_season__season_end_date__gte=this_reading_datetime.date())
+
     for field in probe.field_list.all():
         field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date,
                                                          instance.reading_datetime.date() )
@@ -159,30 +170,41 @@ def handler_Probe(sender, instance, **kwargs):
 
         old_radio_id = old_instance.radio_id
         old_season_start_date = old_instance.crop_season.season_start_date
-        old_season_end_date   = old_instance.crop_season.season_start_end
-        old_earliest_probereading_date = ProbeReadings.objects.filter(radio_id=old_radio_id, 
-                                                                      datetime__range=(old_season_start_date,
-                                                                                       old_season_end_date)
-                                                                      ).earliest('datetime').date()
+        old_season_end_date   = old_instance.crop_season.season_end_date
+        old_probereadings     = ProbeReading.objects.filter(radio_id=old_radio_id, 
+                                                             reading_datetime__range=(old_season_start_date,
+                                                                                      old_season_end_date)
+                                                             )
+        if old_probereadings:
+            old_earliest_probereading_date = old_probereadings.earliest('reading_datetime').reading_datetime;
+        else: 
+            old_earliest_probereading_date = None;
 
         new_radio_id = new_instance.radio_id
         new_season_start_date = new_instance.crop_season.season_start_date
-        new_season_end_date   = new_instance.crop_season.season_start_end
-        new_earliest_probereading_date = ProbeReadings.objects.filter(radio_id=new_radio_id, 
-                                                                      datetime__range=(new_season_start_date,
-                                                                                       new_season_end_date)
-                                                                      ).earliest('datetime').date()
+        new_season_end_date   = new_instance.crop_season.season_end_date
+        new_probereadings     = ProbeReading.objects.filter(radio_id=new_radio_id, 
+                                                             reading_datetime__range=(new_season_start_date,
+                                                                                      new_season_end_date)
+                                                             )
+        if new_probereadings:
+            new_earliest_probereading_date = new_probereadings.earliest('reading_datetime').reading_datetime;
+        else: 
+            new_earliest_probereading_date = None;
+
     
         if old_radio_id != new_radio_id:  # changed radioid
-            for field in old_instance.field_list.all():
-                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                 old_earliest_probereading_date)
-                field.save()
+            if old_instance.id and old_instance.field_list:
+                for field in old_instance.field_list.all():
+                    field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                     old_earliest_probereading_date)
+                    field.save()
 
-            for field in new_instance.field_list.all():
-                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                 new_earliest_probereading_date)
-                field.save()
+            if new_instance.id and new_instance.field_list:
+                for field in new_instance.field_list.all():
+                    field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                     new_earliest_probereading_date)
+                    field.save()
 
         removed_fields = set( old_instance.field_list.all() ) - \
                          set( new_instance.field_list.all() ) 
@@ -203,12 +225,17 @@ def handler_Probe(sender, instance, **kwargs):
         radio_id = instance.radio_id
         season_start_date = instance.crop_season.season_start_date
         season_end_date   = instance.crop_season.season_end_date
-        earliest_probereading_date = ProbeReading.objects.filter(radio_id=radio_id, 
-                                                                 reading_datetime__range=(season_start_date, 
-                                                                                          season_end_date)
-                                                                 ).earliest('datetime').date()
-    
-        for field in instance.field_list.all():
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                             earliest_probereading_date)
-            field.save()
+        probereadings     = ProbeReading.objects.filter(radio_id=radio_id, 
+                                                             reading_datetime__range=(season_start_date,
+                                                                                      season_end_date)
+                                                             )
+        if probereadings:
+            earliest_probereading_date = probereadings.earliest('reading_datetime').reading_datetime;
+        else: 
+            earliest_probereading_date = None;
+
+        if instance.id and instance.field_list:
+            for field in instance.field_list.all():
+                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                 earliest_probereading_date)
+                field.save()
