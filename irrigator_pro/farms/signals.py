@@ -1,4 +1,3 @@
-Fixed.
 from django.dispatch import receiver
 from django.db.models.signals import *
 from farms.models import *
@@ -7,7 +6,10 @@ from irrigator_pro.settings import DEBUG
 
 def minNone( *args ):
     args = filter( lambda x: x is not None, args)
-    return min(args)
+    if args: 
+        return min(args)
+    else:
+        return None
 
 
 ## These signal handlers records the (earliest) relevant date of any
@@ -85,7 +87,7 @@ def handler_ProbeReading(sender, instance, **kwargs):
                                   crop_season__season_start_date__lte=this_reading_datetime.date(),
                                   crop_season__season_end_date__gte=this_reading_datetime.date())
 
-    for field in probe.field_list.all():
+    for field in new_probe.field_list.all():
         field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date,
                                                          instance.reading_datetime.date() )
         field.save()
