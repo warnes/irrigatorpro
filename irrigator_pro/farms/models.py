@@ -415,8 +415,8 @@ class Probe(NameDesc, Comment, Audit):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
 
-    crop_season = models.ForeignKey(CropSeason)  # Probe assignments change with crop season
-    radio_id    = models.CharField(max_length=10)
+    crop_season = models.ForeignKey(CropSeason,   blank=False)  # Probe assignments change with crop season
+    radio_id    = models.CharField(max_length=10, blank=False)  # don't allow blanks!
     field_list  = models.ManyToManyField(Field)
 
     def get_field_list(self):
