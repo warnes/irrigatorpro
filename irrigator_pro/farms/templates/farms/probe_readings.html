@@ -63,7 +63,7 @@
     
     <h2>{{ object_name }}</h2>
   
-    <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
+    <form id="formset" action="{{ request.path }}" method="post" onsubmit="disableForm('formset')">{% csrf_token %}
   
       {% if formset.total_error_count %}
         {% for dict in formset.non_form_errors %}
