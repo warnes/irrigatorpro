@@ -4,7 +4,7 @@
 {% block scripts %}
 <script type="text/javascript">
     $(function() {
-        $('#formset tbody tr').formset({
+        $('#formset tbody tr.datarow').formset({
             addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
             deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
             added: function(row) {
@@ -36,7 +36,7 @@
         {% endfor %}
       {% endif %}
   
-  
+    
       <table class="formset" >
   
         <thead>
@@ -52,14 +52,25 @@
         </thead>
   
         <tbody>
-  	{% for field in formset %}
-  	  <tr>
-  	    {% for input in field %}
+  	{% for form in formset %}
+          {% if form.errors %}
+            <tr>
+              <td colspan=6>
+		{% for error in form.errors.values %}
+  		  <div class="inline-alert alert-danger">
+                    {{ error }}
+		  </div>
+		{% endfor %}
+              </td>
+            </tr>
+          {% endif %}
+  	  <tr class="datarow">
+  	    {% for input in form %}
   	      {% if not input.is_hidden %}
   		<td>
   		  {% if input.errors %}
   		    <div class="inline-alert alert-danger">
-  		      {{ input.errors }}
+  		      {{ input }}
   	            </div>
   		  {% endif %}
   		  {{ input }}
