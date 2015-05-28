@@ -1,4 +1,3 @@
-Fixed.
 from django.dispatch import receiver
 from django.db.models.signals import *
 from farms.models import *
