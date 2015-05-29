@@ -528,10 +528,10 @@ def generate_water_register(crop_season,
         ####
         ## Prefer AWC from probe reading over AWC from water registry
         if AWC_probe is not None: 
-            wr.average_water_content = float(AWC_probe)
+            wr.average_water_content = quantize(AWC_probe)
             wr.computed_from_probes  = True
         else:
-            wr.average_water_content = float(AWC_register)
+            wr.average_water_content = quantize(AWC_register)
             wr.computed_from_probes  = False
         ##
         ####

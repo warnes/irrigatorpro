@@ -540,8 +540,8 @@ class WaterRegister(Audit):
     irrigate_to_max       = models.BooleanField(default=False)
     
     # Fields copied from WaterRecord records
-    rain                  = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
-    irrigation            = models.DecimalField(max_digits=3, decimal_places=2, blank=True) # #.##
+    rain                  = models.DecimalField(max_digits=4, decimal_places=2, blank=True) # #.##
+    irrigation            = models.DecimalField(max_digits=4, decimal_places=2, blank=True) # #.##
 
     # Calculated fields - Numeric
     average_water_content = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
