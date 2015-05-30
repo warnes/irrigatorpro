@@ -12,14 +12,32 @@ def minNone( *args ):
         return None
 
 
+## From
+## http://stackoverflow.com/questions/15624817/have-loaddata-ignore-or-disable-post-save-signals
+
+from functools import wraps
+def disable_for_loaddata(signal_handler):
+    """
+    Decorator that turns off signal handlers when loading fixture data.
+    """
+
+    @wraps(signal_handler)
+    def wrapper(*args, **kwargs):
+        if kwargs['raw']:
+            return
+        signal_handler(*args, **kwargs)
+    return wrapper
+
+
+
 ## These signal handlers records the (earliest) relevant date of any
 ## created/changed/deleted object upon which calculation of
 ## WaterRegister entries depend.
 
 @receiver(pre_save, sender=WaterHistory)
 @receiver(pre_delete, sender=WaterHistory)
+@disable_for_loaddata
 def handler_WaterHistory(sender, instance, **kwargs):
-    print "Entering handler_WaterHistory"
     if instance.id: # save changes to existing object
         new_instance = instance
         old_instance = WaterHistory.objects.get(pk=instance.id)
@@ -59,11 +77,11 @@ def handler_WaterHistory(sender, instance, **kwargs):
                 field.save()
         except ValueError:
             pass
-    print "Exiting handler_WaterHistory"
 
 
 @receiver(pre_save, sender=ProbeReading)
 @receiver(pre_delete, sender=ProbeReading)
+@disable_for_loaddata
 def handler_ProbeReading(sender, instance, **kwargs):
     if instance.id: # save changes to existing object
         new_instance = instance
@@ -95,6 +113,7 @@ def handler_ProbeReading(sender, instance, **kwargs):
 
 @receiver(pre_save,   sender=CropSeasonEvent)
 @receiver(pre_delete, sender=CropSeasonEvent)
+@disable_for_loaddata
 def handler_CropSeasonEvent(sender, instance, **kwargs):
     if instance.id: # save changes to existing object
         new_instance = instance
@@ -107,6 +126,7 @@ def handler_CropSeasonEvent(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=CropSeason)
 @receiver(pre_delete, sender=CropSeason)
+@disable_for_loaddata
 def handler_CropSeason(sender, instance, **kwargs):
     if instance.id: # save changes to existing object
         new_instance = instance
@@ -165,6 +185,7 @@ def handler_CropSeason(sender, instance, **kwargs):
 
 @receiver(pre_save,   sender=Probe)
 @receiver(pre_delete, sender=Probe)
+@disable_for_loaddata
 def handler_Probe(sender, instance, **kwargs):
     if instance.id:  # save changes to existing object
         new_instance = instance
