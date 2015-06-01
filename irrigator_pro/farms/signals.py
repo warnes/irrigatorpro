@@ -177,6 +177,13 @@ def handler_CropSeason(sender, instance, **kwargs):
             field.save()
 
     else:
+        pass
+
+
+@receiver(post_save, sender=CropSeason)
+@disable_for_loaddata
+def handler_CropSeason_postsave(sender, instance, created, **kwargs):
+    if created == True:
         for field in instance.field_list.all():
             field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
                                                              instance.season_start_date)
@@ -186,7 +193,7 @@ def handler_CropSeason(sender, instance, **kwargs):
 @receiver(pre_save,   sender=Probe)
 @receiver(pre_delete, sender=Probe)
 @disable_for_loaddata
-def handler_Probe(sender, instance, **kwargs):
+def handler_Probe(sender, instance,  **kwargs):
     if instance.id:  # save changes to existing object
         new_instance = instance
         old_instance = Probe.objects.get(pk=instance.id)
