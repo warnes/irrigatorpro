@@ -7,7 +7,7 @@ def get_probe_readings(crop_season, field, start_date = None, end_date = None):
  
     probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
     radio_ids = []
-    if len(probes) == 0:
+    if probes is None or len(probes) == 0:
         return None
     else:
         for probe in probes:
@@ -31,7 +31,7 @@ def get_probe_readings(crop_season, field, start_date = None, end_date = None):
     for r_id in radio_ids:
         probe_reading = ProbeReading.objects.filter(radio_id=r_id,
                                                     reading_datetime__startswith=start_date,
-                                                    reading_datetime__endwith = end_date).order_by('reading_datetime').all()
+                                                    reading_datetime__endswith = end_date).order_by('reading_datetime').all()
 
         if  probe_reading:
             probe_readings.append(probe_reading)
