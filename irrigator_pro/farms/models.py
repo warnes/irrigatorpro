@@ -238,9 +238,9 @@ class CropEvent(NameDesc, Comment, Audit):
            Add code to ensure that event_order is unique and sequential.
            """
 
-########################################
+##########################################
 ### CropSeason (Crop + Season + Fields) ##
-########################################
+##########################################
 
 def get_default_cropseason_start():
     return timezone.now()
@@ -374,37 +374,6 @@ class CropSeasonEvent(Comment, Audit):
         verbose_name = "Crop Season Event"
 
 
-#############
-### Water ###
-#############
-
-class WaterHistory(Comment, Audit):
-    # from Comment: comment
-    # from Audit: cdate, cuser, mdate, muser
-    crop_season             = models.ForeignKey(CropSeason)
-    field_list              = models.ManyToManyField(Field)
-    date                    = models.DateField()
-    rain                    = models.DecimalField("rainfall in inches",
-                                                  max_digits=4, decimal_places=2, default=0.0) # ##.##
-    irrigation              = models.DecimalField("irrigation in inches",
-                                                  max_digits=4, decimal_places=2, default=0.0) # ##.##
-    available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
-                                                  blank=True, null=True)   # Null --> Not yet calculated
-
-    def get_field_list(self):
-        field_list = self.field_list.all()
-        if field_list:
-            return ', '.join([ obj.name for obj in field_list])
-        else:
-            return ''
-
-    class Meta:
-        verbose_name        = "Water History"
-        verbose_name_plural = "Water Histories"
-
-    def __unicode__(self):
-        return u"Water History Entry [%s] on %s" % ( self.id , self.date ) 
-
 
 #############################
 ### Probe & Measurements ###
@@ -434,7 +403,54 @@ class Probe(NameDesc, Comment, Audit):
 
 
 
-class ProbeReading(Audit):
+#####################################################
+### Abstract base probe reading, which for now is the
+### base for ProbeReading and WaterHistory.
+#####################################################
+
+class FieldDataReading(Audit, Comment):
+
+
+    # TEMPERATURE_UNIT_CHOICES = ['F', 'C']
+    # WATER_AMOUNT_UNIT_CHOICES = ['in', 'cm']
+    # PRESSURE_UNIT_CHOICES = ['kPa']
+
+    min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+                                              blank=True, null=True,
+                                              verbose_name='Minimum temperature in last 24 hours') 
+    
+    max_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+                                              blank=True, null=True,
+                                              verbose_name='Maximum temperature in last 24 hours') 
+
+
+    ignore              = models.BooleanField(default=False)
+
+
+    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True) # ###.##
+    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True) # ###.##
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True) # ###.##
+
+
+
+    # temperature_units   = CharField(max_length = 10, default=TEMPERATURE_UNIT_CHOICES[0])
+    # water_amount_units  = CharField(max_length = 10, default=WATER_AMOUNT_UNIT_CHOICES[0])
+    # pressure_units      = CharField(max_length = 10, default=PRESSURE_UNIT_CHOICES[0])
+
+    rain                = models.DecimalField("rainfall in inches",
+                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
+    irrigation          = models.DecimalField("irrigation in inches",
+                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
+    pressure            = models.DecimalField("irrigation in inches",
+                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
+
+
+    class Meta:
+        abstract = True
+
+
+
+class ProbeReading(FieldDataReading):
     """
     Model for CSV data read from probe files
     """
@@ -451,9 +467,6 @@ class ProbeReading(Audit):
     radio_id            = models.CharField(max_length=10)
     battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True) #   #.##
     battery_percent     = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True) # ###.##
-    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
-    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
-    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2) # ###.##
     circuit_board_temp  = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
                                               verbose_name='Circuit Board Temperature in Degrees Celcius') 
@@ -472,7 +485,8 @@ class ProbeReading(Audit):
                                           choices=SOURCE_CHOICES,
                                           default="User")
 
-    
+
+    source_type      = 'UGA Database'
 
     class Meta:
         verbose_name = "Probe Reading"
@@ -488,6 +502,40 @@ class ProbeReading(Audit):
             return thermocouple_1_temp
         else:
             return thermocouple_2_temp
+
+
+
+
+#############
+### Water ###
+#############
+
+class WaterHistory(FieldDataReading):
+    # from Comment: comment
+    # from Audit: cdate, cuser, mdate, muser
+    crop_season             = models.ForeignKey(CropSeason)
+    field_list              = models.ManyToManyField(Field)
+    date                    = models.DateField()
+    available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
+                                                  blank=True, null=True)   # Null --> Not yet calculated
+
+    source_type                  = 'Manual'
+    def get_field_list(self):
+        field_list = self.field_list.all()
+        if field_list:
+            return ', '.join([ obj.name for obj in field_list])
+        else:
+            return ''
+
+    class Meta:
+        verbose_name        = "Water History"
+        verbose_name_plural = "Water Histories"
+
+    def __unicode__(self):
+        return u"Water History Entry [%s] on %s" % ( self.id , self.date ) 
+
+
+
 
 
 class ProbeSync(Audit):

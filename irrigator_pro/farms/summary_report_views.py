@@ -22,7 +22,7 @@ class SummaryReportListView(TemplateView):
     def get(self, request, *args, **kwargs):
         the_date = request.GET.get('date')
         if the_date is not None:
-	    try:
+            try:
                 self.report_date = datetime.strptime(the_date, "%Y-%m-%d").date()
             except:
                 pass

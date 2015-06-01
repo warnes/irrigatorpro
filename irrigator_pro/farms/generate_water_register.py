@@ -15,10 +15,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
-def daterange(start_date, end_date):
-    for n in range(int ((end_date - start_date).days)):
-        yield start_date + timedelta(days=n)
-
+from commom.utils import daterange
 
 def minNone( *args ):
     args = filter( lambda x: x is not None, args)

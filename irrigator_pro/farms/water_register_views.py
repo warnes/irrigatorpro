@@ -28,21 +28,21 @@ class WaterRegisterEmptyView(TemplateView):
 
 class WaterRegisterListView(ListView):
     template_name = "farms/water_register_list.html"
-    model = WaterRegister
-    fields = [ 'crop_season',
-               'field',
-               'date',
-               'crop_stage',
-               'daily_water_use',
-               'rain',
-               'irrigation',
-               'average_water_content',
-               'computed_from_probes',
-               'irrigate_flag',
-               'check_sensors_flag',
-               'dry_down_flag',
-               'message'
-             ]
+    # model = WaterRegister
+    # fields = [ 'crop_season',
+    #            'field',
+    #            'date',
+    #            'crop_stage',
+    #            'daily_water_use',
+    #            'rain',
+    #            'irrigation',
+    #            'average_water_content',
+    #            'computed_from_probes',
+    #            'irrigate_flag',
+    #            'check_sensors_flag',
+    #            'dry_down_flag',
+    #            'message'
+    #          ]
 
 
     def update_water_register(self, crop_season, field, today):
