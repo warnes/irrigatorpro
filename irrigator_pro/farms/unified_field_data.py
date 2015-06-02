@@ -20,8 +20,8 @@ def generate_objects(crop_season, field, user,  report_date):
                                                         field = field).order_by('-date').filter(Q(date__lte =  report_date))
     
     ### probe_readings will contain all the readings in increasing order of time.
-    probe_readings = get_probe_readings(crop_season, field, None, report_date).reverse()
-    
+    probe_readings = get_probe_readings(crop_season, field, None, report_date)
+    probe_readings.reverse()
     
     water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
                                                           field_list=field).all()
@@ -48,10 +48,13 @@ def generate_objects(crop_season, field, user,  report_date):
             day_record = UnifiedReport(day, water_register)
             for wh in water_history_query.filter(date=day):
                 day_record.manual_records.append(wh)
+                
             while current_probe_reading is not None and current_probe_reading.reading_datetime.date() == day:
                 day_record.manual_records.append(current_probe_reading)
-                current_probe_reading = probe_readings.pop()
-            
+                if len(probe_readings) > 0:
+                    current_probe_reading = probe_readings.pop()
+                else:
+                    current_probe_reading = None
             ret.append(day_record)
             
         except BaseException as x:

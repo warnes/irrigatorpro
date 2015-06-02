@@ -38,10 +38,11 @@ class UnifiedFieldDataListView(ListView):
 
 
     def get_queryset(self):
+        self.update_water_register(self.crop_season, self.field, self.report_date)
+
         queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
                                                 field=self.field)
 
-        self.update_water_register(self.crop_season, self.field, self.report_date)
 
         if not queryset.count():
             print "No Water_Register records"
