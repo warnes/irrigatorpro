@@ -117,9 +117,3 @@ function extractEmail(queryString) {
 	return "";
     return m[0];
 }
-
-
-function disableForm(form_id) {
-    $("#"+form_id).find('input, textarea, button, select').attr('disabled','disabled');
-}
-
