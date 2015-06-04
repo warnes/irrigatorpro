@@ -111,13 +111,31 @@ class ProbeFormsetView(Farms_FormsetView):
     ####    return HttpResponseRedirect(self.get_success_url())
     def formset_valid(self, formset):
         print "Have valid formset"
-        print formset
+        radio_ids_in_form = []
+
+        for form in formset.forms:
+            if len(form.cleaned_data)>0:
+                rid = form.cleaned_data['radio_id']
+                print "Look at rid: ", rid
+                if rid in radio_ids_in_form:
+                    form.add_error('radio_id',"Can not used this radio id again in form")
+                    print "Form: ", form
+                    return formset_invalid(formset)
+                else:
+                    pass
+        
+
+
+
         return super(ProbeFormsetView, self).formset_valid(formset)
 
 
     def formset_invalid(self, formset):
         print "Have invalid formset"
-        print formset.forms[0].errors
+        print formset.errors
+        print formset.non_form_errors()
+#        print formset
+#
         print "\n++++++++++++++++++++++++++++++++++++++++\n"
 ##        print formset.forms[0]._errors['radio_id']
 
