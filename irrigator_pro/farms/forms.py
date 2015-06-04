@@ -31,6 +31,7 @@ class FarmForm(ModelForm):
 #        self.fields['users'].queryset = User.objects.all().order_by('last_name')
         
 
+
 FieldFormSet = inlineformset_factory(Farm, 
                                      Field, 
                                      fields=[
@@ -47,18 +48,36 @@ FieldFormSet = inlineformset_factory(Farm,
                                     )
 
 
-ProbeFormSet = modelformset_factory(Probe,
-                                    fields = [ 'field_list', ] \
-                                             + NameDesc.fields \
-                                             + [ 'radio_id'] \
-                                             + Comment.fields,
-                                    widgets = {
-                                        'description': Textarea(attrs={'rows':2, 
-                                                                       'cols':20}),
-                                    }
-                                )
+
+### Define a form for the probe in order to redefine the 
+### validation method.
+class ProbeForm(ModelForm):
+    class Meta:
+        model = Probe
+        fields = [ 'field_list', ] \
+                 + NameDesc.fields \
+                 + [ 'radio_id'] \
+                 + Comment.fields
+        widgets = {
+            'description': Textarea(attrs={'rows':2, 
+                                           'cols':20}),
+        }
 
 
+    ###
+    ### Redefine is_valid to issue an error if the id is used in a different field with
+    ### an overlapping crop season.
+
+    def is_valid(self):
+        valid = super(ProbeForm, self).is_valid()
+        return valid
+
+        
+
+
+
+
+ProbeFormSet = modelformset_factory(Probe)
 
 CropSeasonEventFormSet = inlineformset_factory(CropSeason, 
                                              CropSeasonEvent, 
