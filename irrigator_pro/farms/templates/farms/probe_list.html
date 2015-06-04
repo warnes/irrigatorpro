@@ -52,28 +52,31 @@
         </thead>
   
         <tbody>
-  	{% for form in formset %}
-          {% if form.errors %}
-            <tr>
-              <td colspan=6>
-		{% for error in form.errors.values %}
-  		  <div class="inline-alert alert-danger">
-                    {{ error }}
-		  </div>
-		{% endfor %}
-              </td>
-            </tr>
-          {% endif %}
+  	    {% for form in formset %}
+		{% if form.non_field_errors %}
+		    <tr>
+			<td colspan ="6">
+			<div class="inline-alert alert-danger">
+			    {{form.non_field_errors}}
+			</div>
+			</td>
+		    </tr>
+
+		{% endif %}
+
+
   	  <tr class="datarow">
   	    {% for input in form %}
   	      {% if not input.is_hidden %}
   		<td>
   		  {% if input.errors %}
   		    <div class="inline-alert alert-danger">
+	            {{ input.errors }}
   		      {{ input }}
   	            </div>
-  		  {% endif %}
-  		  {{ input }}
+  		  {% else %}
+  		    {{ input }}
+		  {% endif %}
   		</td>
   	      {% else %}
   		{{ input }}
