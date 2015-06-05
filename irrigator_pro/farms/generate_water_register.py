@@ -614,9 +614,11 @@ def generate_water_register(crop_season,
 
         ## Enforce min and maximum soil water content based on soil type
         if wr.average_water_content > maxWater: 
+            if DEBUG: print "  Enforce max soil AWC: ", maxWater
             wr.average_water_content = maxWater
 
         if wr.average_water_content < minWater: 
+            if DEBUG: print "  Enforce min soil AWC: ", minWater
             wr.average_water_content = minWater
 
         ## Store user into accounting info..
