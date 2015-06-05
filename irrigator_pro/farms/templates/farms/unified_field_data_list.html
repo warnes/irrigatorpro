@@ -48,17 +48,40 @@
                     <th rowspan="2">Comment</th>
                 </tr>
                 <tr class="header2">
-                    <th>DWU</th>
+                    <th>8in</th>
+                    <th>16in</th>
+                    <th>24in</th>
+                    <th>Min</th>
+                    <th>Max/th>
                     <th>Rain</th>
                     <th>Irrigation</th>
-                    <th>AWC</th>
-                    <th>Permitted</th>
-                    <th>Observed</th>
+                    <th>Stage</th>
+		    <th>DWU</th>
                 </tr>
             </thead>
 
             <tbody>
 
+	      {% for object in object_list %}
+	      <tr 
+		 {% if object.date|is_today  %}class="row-today" {% endif %}
+		 {% if object.date|is_past   %}class="row-past"  {% endif %}
+		 {% if object.date|is_future %}class="row-future"{% endif %}
+ 		 >
+
+		<td rowspan=>{{ object.date|date:"Y-m-d"}}</td>
+
+		<td></td>
+
+		
+	      
+
+
+	      {% endfor %}
+
+
+	    </tbody>
+	</table>
 
     {% else %}
     
