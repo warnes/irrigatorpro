@@ -25,6 +25,14 @@ def minNone( *args ):
     args = filter( lambda x: x is not None, args)
     return min(args)
 
+def safelog( val ):
+    if val <= 0:
+        return float("-inf")
+    else:
+        return math.log( float(val) )
+
+LN40 = math.log(40.0)
+
 
 ########################################################################
 ## Calculate the AWC based on probe reading for a given crop_season,
@@ -130,14 +138,6 @@ def calculateAWC_ProbeReading(crop_season,
     ##
     ##
 
-    def safelog( val ):
-        if val <= 0:
-            return float("-inf")
-        else:
-            return math.log( float(val) )
-
-    ln40 = math.log(40.0)
-
 
     ## Loop through probe readings. Only keep values when reading >0
 
@@ -148,7 +148,7 @@ def calculateAWC_ProbeReading(crop_season,
     AWC_24_l = []
 
     def AWC(slope, potential):
-        return slope * 24 * ( safelog( abs(potential) )  - ln40 ) 
+        return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
 
     for probe_reading in probe_readings:
         AWC_8_l.append ( AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 ) )
@@ -190,6 +190,64 @@ def calculateAWC_ProbeReading(crop_season,
     temp = tempRangeCheck(temp1)
 
     return (AWC, temp)
+
+
+
+def calculateAWC_min(crop_season,
+                     field):
+    """
+    Calculate the minumum Available Water Content for the specified field.
+    """
+
+    probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+
+    ## Get the maximum root depth
+    if crop_season:
+        crop = crop_season.crop
+        max_root_depth = crop_season.crop.max_root_depth
+    else:
+        return ( None, None )
+
+    ## Extract soil parameters
+    soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
+
+    try:
+        soil_type_8in  = soil_type_parameter_query.get(depth=8 )
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 8) )
+
+    try:
+        soil_type_16in = soil_type_parameter_query.get(depth=16)
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 16) )
+
+    try:
+        soil_type_24in = soil_type_parameter_query.get(depth=24)
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 24) )
+
+
+    def AWC(slope, potential):
+        return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
+
+    AWC_8_min  = AWC( soil_type_8in.slope,  200 ) 
+    AWC_16_min = AWC( soil_type_16in.slope, 200 )
+    AWC_24_min = AWC( soil_type_24in.slope, 200 )
+
+    #####
+    ## Calculate average AWC_min at the depths accessible to the crop
+    ## roots.
+    #####
+    ## NB: This would probably be better done via a linear
+    ##     interpolation, rather than discrete steps.
+    if max_root_depth <= 8:
+        AWC_min = AWC_8_min
+    elif max_root_depth <= 16:
+        AWC_min = (AWC_8_min + AWC_16_min) / 2
+    else: # max_root_depth > 16
+        AWC_min = (AWC_8_min + AWC_16_min + AWC_24_min) / 3
+
+    return (AWC_min)
 
 
 def celciusToFarenheit(celcius):
@@ -413,6 +471,7 @@ def generate_water_register(crop_season,
                                             date__lte=end_date).all()
 
     maxWater = float(field.soil_type.max_available_water)
+    minWater = calculateAWC_min( crop_season, field )
 
     if first_process_date <= crop_season.season_start_date:
         ## Assume that each field starts with a full water profile
@@ -553,11 +612,14 @@ def generate_water_register(crop_season,
         ##
         ####
 
-        ## Enforce maximum soil water content based on soil type
+        ## Enforce min and maximum soil water content based on soil type
         if wr.average_water_content > maxWater: 
             wr.average_water_content = maxWater
 
-        ## Store userwa into accounting info..
+        if wr.average_water_content < minWater: 
+            wr.average_water_content = minWater
+
+        ## Store user into accounting info..
         if wr.cuser_id is None:
             wr.cuser_id = user.pk
         wr.muser_id = user.pk
