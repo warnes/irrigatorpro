@@ -87,11 +87,11 @@ def handler_ProbeReading(sender, instance, **kwargs):
         new_instance = instance
         old_instance = ProbeReading.objects.get(pk=instance.id)
         old_radio_id = old_instance.radio_id
-        old_reading_datetime = old_instance.reading_datetime
+        old_reading_date = old_instance.reading_datetime.date()
 
         old_probe = Probe.objects.get(radio_id=old_radio_id,
-                                      crop_season__season_start_date__lte=old_reading_datetime.date(),
-                                      crop_season__season_end_date__gte=old_reading_datetime.date())
+                                      crop_season__season_start_date__lte=old_reading_date,
+                                      crop_season__season_end_date__gte=old_reading_date)
 
         for field in old_probe.field_list.all():
             field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
@@ -99,11 +99,11 @@ def handler_ProbeReading(sender, instance, **kwargs):
             field.save()
 
     this_radio_id = instance.radio_id
-    this_reading_datetime = instance.reading_datetime
+    this_reading_date = instance.reading_datetime.date()
 
     new_probe = Probe.objects.get(radio_id=this_radio_id,
-                                  crop_season__season_start_date__lte=this_reading_datetime.date(),
-                                  crop_season__season_end_date__gte=this_reading_datetime.date())
+                                  crop_season__season_start_date__lte=this_reading_date,
+                                  crop_season__season_end_date__gte=this_reading_date)
 
     for field in new_probe.field_list.all():
         field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date,
@@ -257,7 +257,7 @@ def handler_Probe(sender, instance,  **kwargs):
         season_end_date   = instance.crop_season.season_end_date
         probereadings     = ProbeReading.objects.filter(radio_id=radio_id, 
                                                              reading_datetime__range=(season_start_date,
-                                                                                      season_end_date)
+                                                                                            season_end_date)
                                                              )
         if probereadings:
             earliest_probereading_date = probereadings.earliest('reading_datetime').reading_datetime.date();
