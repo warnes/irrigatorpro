@@ -143,12 +143,13 @@ def calculateAWC_ProbeReading(crop_season,
     AWC_16_l = []
     AWC_24_l = []
 
-    ### Have to be a icer way to write this... lambda calculus?
-    for probe_reading in probe_readings:
+    def AWC(slope, potential):
+        return slope * 24 * ( safelog( abs(potential) )  - ln40 ) 
 
-        AWC_8_l.append ( soil_type_8in.slope  * ( safelog( abs(probe_reading.soil_potential_8) )  - ln40 ) * 24 )
-        AWC_16_l.append( soil_type_16in.slope * ( safelog( abs(probe_reading.soil_potential_16) ) - ln40 ) * 24 )
-        AWC_24_l.append( soil_type_24in.slope * ( safelog( abs(probe_reading.soil_potential_24) ) - ln40 ) * 24 )
+    for probe_reading in probe_readings:
+        AWC_8_l.append ( AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 ) )
+        AWC_16_l.append( AWC( soil_type_16in.slope, probe_reading.soil_potential_16) )
+        AWC_24_l.append( AWC( soil_type_24in.slope, probe_reading.soil_potential_24) )
 
     AWC_8  = min(AWC_8_l)
     AWC_16 = min(AWC_16_l)
@@ -169,7 +170,7 @@ def calculateAWC_ProbeReading(crop_season,
     elif max_root_depth <= 16:
         AWC = (AWC_8 + AWC_16) / 2
     else: # max_root_depth > 16
-        AWC = (AWC_8 + AWC_16 + AWC_24)/3
+        AWC = (AWC_8 + AWC_16 + AWC_24) / 3
 
 
     ####

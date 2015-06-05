@@ -106,6 +106,32 @@ class ProbeFormsetView(Farms_FormsetView):
         'crop_season': HiddenInput(),
     }
     extra = 2
+        
+    ### formset_valid() is called when the formset is valid. In base class executed:
+    ####    return HttpResponseRedirect(self.get_success_url())
+    def formset_valid(self, formset):
+
+        ### For each radio_id check that it does not conflict with another entry in the 
+        ### database. The validation of the same radio_id in two different lines
+
+        crop_season = CropSeason.objects.get(pk=self.season)
+        ### on the same page is made by Django.
+        for form in formset.forms:
+            if len(form.cleaned_data)>0:
+                rid = form.cleaned_data['radio_id']
+                query = Probe.objects.filter(radio_id=rid).exclude(crop_season = crop_season).filter(Q(crop_season__season_end_date__gt = crop_season.season_start_date) &
+                                                                                                     Q(crop_season__season_start_date__lt = crop_season.season_end_date))
+                if len(query) > 0:
+                    form.add_error('radio_id',"This radio is used for another overlapping crop season")
+                    return self.formset_invalid(formset)
+                
+        return super(ProbeFormsetView, self).formset_valid(formset)
+
+
+###    Just to document that it exists.
+###    def formset_invalid(self, formset):
+###        return super(ProbeFormsetView, self).formset_invalid(formset)
+
 
 
 

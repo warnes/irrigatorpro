@@ -206,7 +206,7 @@ def handler_Probe(sender, instance,  **kwargs):
                                                                                       old_season_end_date)
                                                              )
         if old_probereadings:
-            old_earliest_probereading_date = old_probereadings.earliest('reading_datetime').reading_datetime;
+            old_earliest_probereading_date = old_probereadings.earliest('reading_datetime').reading_datetime.date();
         else: 
             old_earliest_probereading_date = None;
 
@@ -218,7 +218,7 @@ def handler_Probe(sender, instance,  **kwargs):
                                                                                       new_season_end_date)
                                                              )
         if new_probereadings:
-            new_earliest_probereading_date = new_probereadings.earliest('reading_datetime').reading_datetime;
+            new_earliest_probereading_date = new_probereadings.earliest('reading_datetime').reading_datetime.date();
         else: 
             new_earliest_probereading_date = None;
 
@@ -260,7 +260,7 @@ def handler_Probe(sender, instance,  **kwargs):
                                                                                       season_end_date)
                                                              )
         if probereadings:
-            earliest_probereading_date = probereadings.earliest('reading_datetime').reading_datetime;
+            earliest_probereading_date = probereadings.earliest('reading_datetime').reading_datetime.date();
         else: 
             earliest_probereading_date = None;
 
