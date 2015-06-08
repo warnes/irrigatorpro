@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django.forms.models import BaseModelFormSet
 from django.forms.models import inlineformset_factory, modelformset_factory
 from django.forms import Textarea
-from farms.models import Farm, Field, CropSeason, CropSeasonEvent, Probe
+from farms.models import Farm, Field, CropSeason, CropSeasonEvent, Probe, WaterHistory
 from common.models import Audit, Comment, Location, NameDesc
 from django.contrib.auth.models import User
 
@@ -33,6 +33,11 @@ class FarmForm(ModelForm):
         
 
 
+#class WaterHistoryForm(ModelForm):
+#    class Meta:
+#        model = WaterHistory
+
+
 FieldFormSet = inlineformset_factory(Farm, 
                                      Field, 
                                      fields=[
@@ -50,39 +55,6 @@ FieldFormSet = inlineformset_factory(Farm,
 
 
 
-### Define a form for the probe in order to redefine the 
-### validation method.
-# class ProbeForm(ModelForm):
-#     class Meta:
-#         model = Probe
-#         fields = [ 'field_list', ] \
-#                  + NameDesc.fields \
-#                  + [ 'radio_id'] \
-#                  + Comment.fields
-#         widgets = {
-#             'description': Textarea(attrs={'rows':2, 
-#                                            'cols':20}),
-#         }
-
-
-#     ###
-#     ### Redefine is_valid to issue an error if the id is used in a different field with
-#     ### an overlapping crop season.
-
-#     def is_valid(self):
-#         valid = super(ProbeForm, self).is_valid()
-#         print 'instance: ', self.instance
-#         return False
-#         if valid is False:
-#             return False
-
-
-#         probes_query = Probe.objects.filter(radio_id = self.cleaned_data['radio_id'])
-#         if len(probes_query) == 0: return True
-
-
-# #        for other_probe in probes_query:
-#            if other_
 
 class BaseProbeFormSet(BaseModelFormSet):
     def clean(self):

@@ -95,6 +95,17 @@ urlpatterns = patterns('',
                        url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)',
                                                                                'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
 
+                       ## Unified data entry and register. Will eventually replace water register and water history
+                       ## but keep everything while testing
+
+                       ## Unified water
+                       url(r'^unified_water/$',                               UnifiedFieldDataEmptyView.as_view(), name='unified_water'),
+                       url(r'^unified_water/(?P<season>\d+)$',                UnifiedFieldDataListView.as_view(),  name='unified_water_season'),
+                       url(r'^unified_water/(?P<season>\d+)/(?P<field>\d+)$', UnifiedFieldDataListView.as_view(),  name='unified_water_season_field'),
+                       url(r'^unified_water/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$',
+                           UnifiedFieldDataListView.as_view(),  name='unified_water_season_field_date'),
+
+
                        ## Reports 
                        url(r'^report/$',                                        HomeView.as_view(),              name='report'),
                        url(r'^report/summary_report/$',                         SummaryReportListView.as_view(), name='summary_report'),
