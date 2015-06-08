@@ -14,6 +14,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from django.http import HttpResponseRedirect
+from django.forms.widgets import HiddenInput as HiddenInput
 
 import os
 
@@ -42,6 +43,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
     template_name = "farms/unified_field_data_list.html"
     model = WaterHistory
     fields = [
+        'crop_season',
         'date',
         'soil_potential_8',
         'soil_potential_16',
@@ -52,46 +54,64 @@ class UnifiedFieldDataListView(ModelFormSetView):
         'rain',
         'irrigation'
     ]
-
-
-    #    def update_water_register(self, crop_season, field, today):
-    #        generate_water_register(crop_season, field, self.request.user, None, today)
-
-
-    
-
-
+    widgets  = {
+        'crop_season': HiddenInput(),
+        'date': HiddenInput()
+    }
+    extra = 0
 
     def get(self, request, *args, **kwargs):
         print "Into get"
-        (self.wh_formset, self.object_list) = generate_objects(self.crop_season, 
-                                                               self.field, 
-                                                               self.request.user,
-                                                               self.report_date)
 
+
+        self.wh_formset = super(UnifiedFieldDataListView, self).construct_formset()
+        self.object_list = generate_objects(self.wh_formset,
+                                            self.crop_season, 
+                                            self.field, 
+                                            self.request.user,
+                                            self.report_date)
+
+        print "# objects: ", len(self.object_list)
+        print "# forms: ", len(self.wh_formset.forms)
         return render(request, self.template_name, self.get_context_data())
 
 
 
+    def get_factory_kwargs(self):
+        print "Into get_factory_kwargs"
+        kwargs = super(UnifiedFieldDataListView, self).get_factory_kwargs()
+        if hasattr(self, 'widgets'):
+            kwargs[ 'widgets' ] = self.widgets
+        return kwargs
 
-    # def post(self, request, *args, **kwargs):
-
-    #     print "Into unified_field_data_view.py"
-
-
-
-    #     return HttpResponseRedirect(reverse("unified_water_season_field",
-    #                                         kwargs={'season': self.crop_season.pk,
-    #                                                 'field': self.field.pk}))
+    def get_queryset(self):
+        query = super(UnifiedFieldDataListView, self).get_queryset().filter(crop_season=self.crop_season,
+                                                                            field_list=self.field).all().order_by("date")
+        return query
 
 
 
     def formset_valid(self, formset):
         print "Into formset_valid"
+        formset.save()
+        return HttpResponseRedirect(reverse("unified_water_season_field",
+                                            kwargs={'season': self.crop_season.pk,
+                                                    'field': self.field.pk}))
+
+
 
     def formset_invalid(self, formset):
         print "Into formset_invalid"
         print formset.errors
+
+        self.wh_formset = formset
+        self.object_list = generate_objects(formset,
+                                            self.crop_season, 
+                                            self.field, 
+                                            self.request.user,
+                                            self.report_date)
+        
+        return self.render_to_response(get_context_data())
 
 
 
@@ -143,10 +163,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
             self.report_date = min(self.crop_season.season_end_date, date.today())
 
 
-        try:
-            return super(UnifiedFieldDataListView, self).dispatch(*args, **kwargs)
-        except MultiValueDictKeyError as e:
-            print "Error returned: ", e
+        return super(UnifiedFieldDataListView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
 

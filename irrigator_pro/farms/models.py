@@ -427,9 +427,9 @@ class FieldDataReading(Audit, Comment):
     ignore              = models.BooleanField(default=False)
 
 
-    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=0.0) # ###.##
-    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=0.0) # ###.##
-    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, default=0.0) # ###.##
+    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
+    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
 
 
 

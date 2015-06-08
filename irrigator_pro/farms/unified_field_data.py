@@ -9,31 +9,7 @@ from django.db.models import Q
 
 
 
-
-
-def get_wh_formset(crop_season, field):
-    print "Getting wh formset"
-    water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
-                                                          field_list=field).all().order_by("date")
-    WaterHistoryFormSet = modelformset_factory(WaterHistory, fields = [
-        'date',
-        'soil_potential_8',
-        'soil_potential_16',
-        'soil_potential_24',
-        'min_temp_24_hours',
-        'max_temp_24_hours',
-        'ignore',
-        'rain',
-        'irrigation'
-    ])
-
-    formset = WaterHistoryFormSet(queryset = water_history_query)
-    return formset
-
-
-
-
-def generate_objects(crop_season, field, user,  report_date):
+def generate_objects(wh_formset, crop_season, field, user,  report_date):
     
     if crop_season.season_start_date > report_date:
         print "Report date earlier than start of season"
@@ -54,7 +30,7 @@ def generate_objects(crop_season, field, user,  report_date):
     probe_readings.reverse()
 
     print "Getting formset"
-    wh_formset = get_wh_formset(crop_season, field)
+#    wh_formset = get_wh_formset(crop_season, field)
     
     
     ##
@@ -73,11 +49,22 @@ def generate_objects(crop_season, field, user,  report_date):
     print "Initalizinng"
     form_index = 0
     current_form = None
+    print wh_formset.is_valid()
     all_forms = wh_formset.forms
     if all_forms is not None and len(all_forms) > 0:
         current_form = all_forms[form_index]
         form_index = form_index + 1
+        print "STARTING LOOP 1"
+        print current_form
+        print current_form['date'].value()
+        try:
+            print "Trying cleaned data"
+            print current_form.cleaned_data['date']
+        except:
+            print "Didn't work..."
+
         while current_form is not None and current_form['date'].value() < crop_season.season_start_date:
+            print " ---- At date ", current_form['date'].value()
             if form_index == len(forms):
                 current_form = None
             else:
@@ -117,7 +104,7 @@ def generate_objects(crop_season, field, user,  report_date):
             return None
         
     print "Returning"
-    return (wh_formset, ret)
+    return  ret
 
     
     
