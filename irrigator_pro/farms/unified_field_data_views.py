@@ -56,29 +56,26 @@ class UnifiedFieldDataListView(ModelFormSetView):
     ]
     widgets  = {
         'crop_season': HiddenInput(),
-        'date': HiddenInput()
+        'date': HiddenInput(),
+        'field_list': HiddenInput()
     }
     extra = 0
 
     def get(self, request, *args, **kwargs):
-        print "Into get"
 
-
-        self.wh_formset = super(UnifiedFieldDataListView, self).construct_formset()
+        self.wh_formset = self.construct_formset() #super(UnifiedFieldDataListView, self).construct_formset()
         self.object_list = generate_objects(self.wh_formset,
                                             self.crop_season, 
                                             self.field, 
                                             self.request.user,
                                             self.report_date)
 
-        print "# objects: ", len(self.object_list)
-        print "# forms: ", len(self.wh_formset.forms)
         return render(request, self.template_name, self.get_context_data())
 
 
 
     def get_factory_kwargs(self):
-        print "Into get_factory_kwargs"
+
         kwargs = super(UnifiedFieldDataListView, self).get_factory_kwargs()
         if hasattr(self, 'widgets'):
             kwargs[ 'widgets' ] = self.widgets
@@ -91,9 +88,21 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
 
+    ### Does nothing now. Remove if stays this way.
+    def construct_formset(self):
+        formset = super(UnifiedFieldDataListView, self).construct_formset()
+        return formset
+
+
     def formset_valid(self, formset):
-        print "Into formset_valid"
+
         formset.save()
+        ### The field list is not part of the form. Add to new objects
+        for wh in formset.new_objects:
+            wh.field_list.add(self.field)
+            wh.save()
+        ### TODO Add processing for deleted objects.
+
         return HttpResponseRedirect(reverse("unified_water_season_field",
                                             kwargs={'season': self.crop_season.pk,
                                                     'field': self.field.pk}))
@@ -101,8 +110,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
     def formset_invalid(self, formset):
-        print "Into formset_invalid"
-        print formset.errors
 
         self.wh_formset = formset
         self.object_list = generate_objects(formset,
@@ -111,49 +118,13 @@ class UnifiedFieldDataListView(ModelFormSetView):
                                             self.request.user,
                                             self.report_date)
         
-        return self.render_to_response(get_context_data())
+        return self.render_to_response(self.get_context_data())
 
-
-
-
-    # def get_queryset(self):
-    #     self.update_water_register(self.crop_season, self.field, self.report_date)
-
-    #     queryset = WaterRegister.objects.filter(crop_season=self.crop_season,
-    #                                             field=self.field)
-
-
-    #     if not queryset.count():
-    #         print "No Water_Register records"
-    #         self.nb_records = 0
-    #         return queryset
-
-    #     field = self.field
-    #     farm = field.farm
-
-    #     farmer = farm.farmer
-    #     users  = farm.users.all()
-    #     user_list = [ x for x in  users ]
-    #     user_list.append(farmer)
-
-    #     if not self.request.user in user_list:
-    #         redirect( reverse('home') )
-
-    #     # Add report_date to request so it can be used for the plots
-    #     self.request.session['report_date'] = self.report_date.isoformat()
-    #     self.nb_records = len(queryset.distinct())
-    #     print 'nb_records: ', self.nb_records
-    #     return queryset.distinct()
-
-
-    # def get_object_list(self):
-    #     ret_list = generate_objects(self.crop_season, self.field, self.request.user, self.report_date)
-    #     return ret_list
 
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        print "Into dispatch"
+
         self.crop_season = CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
         try:
@@ -173,8 +144,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
         context['crop_season']  = self.crop_season
         context['field']        = self.field
         context['report_date']  = self.report_date
-        context['cwd']          = os.getcwd # Needed?
-#        context['nb_records']  = self.nb_records # Needed?
 
         return context
 

@@ -7,35 +7,33 @@ from django.forms.models import modelformset_factory
 
 from django.db.models import Q
 
+from datetime import datetime, date
 
+###
+### Sometimes the is a string, sometime a string.
+### always convert to date
+
+def getDateObject(thisDate):
+    if isinstance(thisDate, date):
+        return thisDate
+    return datetime.strptime(thisDate, "%Y-%m-%d").date()
 
 def generate_objects(wh_formset, crop_season, field, user,  report_date):
-    
+
     if crop_season.season_start_date > report_date:
-        print "Report date earlier than start of season"
         return None
     
     if crop_season.season_end_date < report_date:
-        print "bringing report date back to end of season date"
         report_date = crop_season.season_end_date
 
-    print "Generating water register"
     generate_water_register(crop_season, field, user, report_date)
     water_register_query = WaterRegister.objects.filter(crop_season = crop_season,
                                                         field = field).order_by('-date').filter(Q(date__lte =  report_date))
     
     ### probe_readings will contain all the readings in increasing order of time.
-    print "Getting probe readings"
     probe_readings = get_probe_readings(crop_season, field, None, report_date)
     probe_readings.reverse()
 
-    print "Getting formset"
-#    wh_formset = get_wh_formset(crop_season, field)
-    
-    
-    ##
-    
-    print "Creating return objects."
     ret = []
     current_probe_reading = None
     if probe_readings is not None and len(probe_readings) > 0:
@@ -46,25 +44,14 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             else:
                 current_probe_reading = probe_readings.pop()
 
-    print "Initalizinng"
     form_index = 0
     current_form = None
-    print wh_formset.is_valid()
     all_forms = wh_formset.forms
     if all_forms is not None and len(all_forms) > 0:
         current_form = all_forms[form_index]
         form_index = form_index + 1
-        print "STARTING LOOP 1"
-        print current_form
-        print current_form['date'].value()
-        try:
-            print "Trying cleaned data"
-            print current_form.cleaned_data['date']
-        except:
-            print "Didn't work..."
 
-        while current_form is not None and current_form['date'].value() < crop_season.season_start_date:
-            print " ---- At date ", current_form['date'].value()
+        while current_form is not None and getDateObject(current_form['date'].value()) < crop_season.season_start_date:
             if form_index == len(forms):
                 current_form = None
             else:
@@ -72,8 +59,6 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                 form_index = form_index + 1
                 
 
-    print "Actually creating"
-        
     for day in daterange(crop_season.season_start_date, report_date):
         try:
             water_register = water_register_query.get(date = day)
@@ -99,16 +84,11 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             ret.append(day_record)
             
         except BaseException as x:
-            print 'BaseException caught, but should not be an error here!!!'
-            print "Exception message: ", x
             return None
         
-    print "Returning"
     return  ret
 
-    
-    
-    
+
     
 class UnifiedReport:
     

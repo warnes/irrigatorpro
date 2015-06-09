@@ -424,7 +424,7 @@ class FieldDataReading(Audit, Comment):
                                               verbose_name='Maximum temperature in last 24 hours') 
 
 
-    ignore              = models.BooleanField(default=False)
+    ignore              = models.BooleanField(default=False, blank=True)
 
 
     soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
@@ -437,11 +437,11 @@ class FieldDataReading(Audit, Comment):
     # water_amount_units  = CharField(max_length = 10, default=WATER_AMOUNT_UNIT_CHOICES[0])
     # pressure_units      = CharField(max_length = 10, default=PRESSURE_UNIT_CHOICES[0])
 
-    rain                = models.DecimalField("rainfall in inches",
+    rain                = models.DecimalField("rainfall in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
-    irrigation          = models.DecimalField("irrigation in inches",
+    irrigation          = models.DecimalField("irrigation in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
-    pressure            = models.DecimalField("irrigation in inches",
+    pressure            = models.DecimalField("irrigation in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
 
 

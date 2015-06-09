@@ -80,7 +80,8 @@
 
                                 <td>
                                     {{ object.date|date:"Y-m-d"}}<br>
-                                    <button type="button" onclick="addRow('row-{{ forloop.counter0 }}')">
+                                    <button type="button" 
+                                            onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }}, {{ field.pk }})">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </button>
                                 </td>

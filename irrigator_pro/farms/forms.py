@@ -29,13 +29,7 @@ class FarmForm(ModelForm):
         # Doesn't look like it's used at all
     def __init__(self, *args, **kwargs):
         super(FarmForm, self).__init__(*args, **kwargs)   
-#        self.fields['users'].queryset = User.objects.all().order_by('last_name')
-        
 
-
-#class WaterHistoryForm(ModelForm):
-#    class Meta:
-#        model = WaterHistory
 
 
 FieldFormSet = inlineformset_factory(Farm, 
@@ -53,21 +47,6 @@ FieldFormSet = inlineformset_factory(Farm,
                                      }
                                     )
 
-
-
-
-class BaseProbeFormSet(BaseModelFormSet):
-    def clean(self):
-        if any(self.errors):
-            print "Found errors in basic form. Don't bother more"
-            return
-
-        print 'No error found'
-        for form in self.forms:
-            print "Looking at form: ", form
-
-
-#ProbeFormFormSet = modelformset_factory(Probe, formset=BaseProbeFormSet)
 
 CropSeasonEventFormSet = inlineformset_factory(CropSeason, 
                                              CropSeasonEvent, 

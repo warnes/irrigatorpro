@@ -129,7 +129,6 @@ class FarmMixin:
 
     def delete_users(self, request, farm_object):
         deleted_users = request.POST.getlist('deleted_user_auth')
-        print "deleted users: ", deleted_users
         if deleted_users is None or len(deleted_users)==0: return
         for u in deleted_users:
 
@@ -173,7 +172,6 @@ class FarmMixin:
     def add_users(self, request, farm_object):
 
         added_users = request.POST.getlist('added_user')
-        print 'Added users: ', added_users
 
         for u in added_users:
             u = u.strip()
@@ -190,7 +188,6 @@ class FarmMixin:
                     send_invitation_email(u, request.user, farm_object)
                     invited_user = InvitedUser(email = u)
                     invited_user.save()
-                print "farm object ", farm_object
                 invited_user.farms.add(farm_object)
                 invited_user.save()
                 
@@ -239,7 +236,6 @@ class FarmUpdateView(FarmMixin, UpdateView):
             return super(FarmUpdateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        print "Getting successurl 1:"
         path = reverse('farm_id', args=[self.object.pk])
         return path
 
@@ -255,7 +251,6 @@ class FarmCreateView(FarmMixin, CreateView):
         return super(FarmCreateView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        print "Geting successurl 2:"
         path = self.request.path.replace('new', "%s" % self.object.pk)
         return path
 
