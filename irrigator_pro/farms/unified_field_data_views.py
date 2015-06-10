@@ -61,6 +61,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
         'field_list': HiddenInput()
     }
     extra = 0
+    can_delete=True
 
     def get(self, request, *args, **kwargs):
 
