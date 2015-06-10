@@ -69,4 +69,38 @@ $(document).ready(function()
             // to be an issue here.
             $(this).datepicker('destroy');
         }
-    )});
+       );
+        
+        $(".dti").each(function() {
+    		
+    	    var contents = $(this).text();
+    		
+    		
+    	    if (contents.indexOf("Dry-") > 0) {
+    			
+    		$(this).children().first().addClass("alert-inline alert-info");
+    	    } else if (contents.indexOf("Today") > 0) {
+    			
+    		$(this).children().first().addClass("alert-inline alert-danger");
+    	    } else if (contents.indexOf("Tomorrow") > 0) {
+    			
+    		$(this).children().first().addClass("alert-inline alert-warning");
+    	    } else {
+    		number = contents.replace(/\D/g, '');
+    		if (number != "") {
+    				
+    		    if (number < 4) {
+    			$(this).children().first().addClass("alert-inline alert-warning");
+    		    } else {
+    			$(this).children().first().addClass("alert-inline alert-success");
+    		    }
+    				
+    		}
+    	    }
+    		
+    		
+    	});
+
+
+
+});

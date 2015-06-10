@@ -44,7 +44,7 @@
                         <th colspan="2">Added Water</th>
                         <th rowspan="2">Action</th>
                         <th colspan="2">Crop</th>
-                        <th rowspan="2">Soil Water Content(AWC)</th>
+                        <th rowspan="2">Average Water Content(AWC)</th>
                         <th rowspan="2">Recommendation</th>
                         <th rowspan="2">Message</th>
                         <th rowspan="2">Comment</th>
@@ -99,9 +99,43 @@
 
                                 <td>{{ object.water_register.crop_stage }}</td>
                                 <td>{{ object.water_register.daily_water_use }}</td>
-                                <td>{{ object.water_register.average_water_content }}</td>
+                                <td>
+	                            {% if object.water_register.computed_from_probes %}
+		                        <i class="fa fa-rss"></i>
+	                            {% endif %}
+	                            {{ object.water_register.average_water_content|floatformat:2 }}
+	                            {% if object.water_register.average_water_content <= 0.0 %}
+		                        <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
+	                            {% endif %}
+                                </td>
+                                <td class ="dti" rowspan="{{ rowspan }}">
+	                            {% if object.water_register.irrigate_flag %}
+		                        <div>
+		                            <b>Irrigate Today</b>
+		                            {% if object.water_register.average_water_content <= 0.0 %}
+		                                AWC
+		                            {% endif %}
+		                            {% if object.water_register.max_temp_2in and object.water_register.max_temp_2in  < object.water_register.max_observed_temp_2in %}
+		                                Temp
+		                            {% endif %}
+                                            
+		                        </div>
+		                    {% elif object.water_register.check_sensors_flag %}
+		                        <div >
+		                            {%if object.water_register.days_to_irrigation == 1 %}
+		                                Irrigate Tomorrow
+		                            {% else %}
+		                                Irrigate in {{object.water_register.days_to_irrigation}} days
+		                            {% endif %}
+		                        </div>
+		                    {% endif %}
+		                    {% if object.water_register.dry_down_flag %}
+		                        <div >
+		                            Dry-Down
+		                        </div>
+		                    {% endif %}
+                                </td>
                                 
-                                <td>PUT IN RECOMMENDATION</td>
                                 <td>{{ object.water_register.message }}</td>
                                 
                                 <td></td>
@@ -154,11 +188,44 @@
                                             
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.average_water_content }}</td>
+                                            <td rowspan="{{ rowspan }}">
+	                                        {% if object.water_register.computed_from_probes %}
+		                                    <i class="fa fa-rss"></i>
+	                                        {% endif %}
+	                                        {{ object.water_register.average_water_content|floatformat:2 }}
+	                                        {% if object.water_register.average_water_content <= 0.0 %}
+		                                    <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
+	                                        {% endif %}
+                                            </td>
 
-                                            <td rowspan="{{ rowspan }}">PUT IN RECOMMENDATION</td>
+                                            <td class ="dti" rowspan="{{ rowspan }}">
+	                                        {% if object.water_register.irrigate_flag %}
+		                                    <div>
+		                                        <b>Irrigate Today</b>
+		                                        {% if object.water_register.average_water_content <= 0.0 %}
+		                                            AWC
+		                                        {% endif %}
+		                                        {% if object.water_register.max_temp_2in and object.water_register.max_temp_2in  < object.water_register.max_observed_temp_2in %}
+		                                            Temp
+		                                        {% endif %}
+                                                        
+		                                    </div>
+		                                {% elif object.water_register.check_sensors_flag %}
+		                                    <div >
+		                                        {%if object.water_register.days_to_irrigation == 1 %}
+		                                            Irrigate Tomorrow
+		                                        {% else %}
+		                                            Irrigate in {{object.water_register.days_to_irrigation}} days
+		                                        {% endif %}
+		                                    </div>
+		                                {% endif %}
+		                                {% if object.water_register.dry_down_flag %}
+		                                    <div >
+		                                        Dry-Down
+		                                    </div>
+		                                {% endif %}
+                                            </td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.message }}</td>
-                                            
                                             <td>{{ record.comment }}</td>
                                             <td></td>
                                             
@@ -240,10 +307,44 @@
                                         {% if forloop.first and object.uga_records|length == 0 %}
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.average_water_content }}</td>
-
-                                            <td rowspan="{{ rowspan }}">PUT IN RECOMMENDATION</td>
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.message }}</td>
+                                            <td rowspan="{{ rowspan }}">
+                                                {% if object.water_register.computed_from_probes %}
+		                                    <i class="fa fa-rss"></i>
+	                                        {% endif %}
+	                                        {{ object.water_register.average_water_content|floatformat:2 }}
+	                                        {% if object.water_register.average_water_content <= 0.0 %}
+		                                    <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
+	                                        {% endif %}
+                                            </td>
+                                            <td class ="dti" rowspan="{{ rowspan }}">
+	                                        {% if object.water_register.irrigate_flag %}
+		                                    <div>
+		                                        <b>Irrigate Today</b>
+		                                        {% if object.water_register.average_water_content <= 0.0 %}
+		                                            AWC
+		                                        {% endif %}
+		                                        {% if object.water_register.max_temp_2in and object.water_register.max_temp_2in  < object.water_register.max_observed_temp_2in %}
+		                                            Temp
+		                                        {% endif %}
+                                                        
+		                                    </div>
+		                                {% elif object.water_register.check_sensors_flag %}
+		                                    <div >
+		                                        {%if object.water_register.days_to_irrigation == 1 %}
+		                                            Irrigate Tomorrow
+		                                        {% else %}
+		                                            Irrigate in {{object.water_register.days_to_irrigation}} days
+		                                        {% endif %}
+		                                    </div>
+		                                {% endif %}
+		                                {% if object.water_register.dry_down_flag %}
+		                                    <div >
+		                                        Dry-Down
+		                                    </div>
+		                                {% endif %}
+                                            </td>
+                                            
+                                            <td rowspan="{{ rowspan }}">{{ object.water_register.water_register.message }}</td>
 
                                         {% endif %}
                                         <td>{{ form.comment }}</td>
