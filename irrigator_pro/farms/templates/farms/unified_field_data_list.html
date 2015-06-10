@@ -3,7 +3,7 @@
 {% load today_filters %}
 {% load day_records %}
 {% load static %}
-
+{% load mathfilters %}
 {% block content %}
 
     <h1>
@@ -81,7 +81,7 @@
                                 <td>
                                     {{ object.date|date:"Y-m-d"}}<br>
                                     <button type="button" 
-                                            onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }}, {{ field.pk }})">
+                                            onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
                                         <i class="fa fa-pencil-square-o"></i>
                                     </button>
                                 </td>
@@ -122,7 +122,17 @@
                                         
 
                                         {% with rowspan=object|day_records %}
-                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}</td>
+                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
+                                                <button type="button" 
+                                                        {% if object.forms %}
+                                                        onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
+                                                        {% else %}
+                                                    onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
+                                                        {% endif %}
+
+                                                        <i class="fa fa-pencil-square-o"></i>
+                                                    </button>                                                
+                                            </td>
                                             
                                             <td>{{record.source_type}}</td>
                                             <td>{{ record.soil_potential_8 }}</td>
@@ -176,27 +186,67 @@
                             {% endcomment %}
                             {% for form in object.forms  %}
 
-  	                        {% for input in form %}
-  	                            {% if input.is_hidden %}
-  		                        {{ input }}
-                                    {% endif %}
-                                {% endfor %}
+                                {% comment %}
 
+                                List the water history records. If this is the
+                                first for this date one AND there is no probe
+                                readings then this is the first row for this
+                                date in the table.
+
+                                {% endcomment %}
                                 <tr id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
-                                    <td>Manual Entry</td>
-                                    <td>{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
-                                    <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
-                                    <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
+                                    {% with rowspan=object|day_records %}
+                                        {% if forloop.first and object.uga_records|length == 0 %}
+                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
+                                                <button type="button" 
+                                                        onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
+                                                    <i class="fa fa-pencil-square-o"></i>
+
+                                            </td>
+
+                                        {% endif %}
+
+
+
+  	                                {% for input in form %}
+  	                                    {% if input.is_hidden %}
+  		                                {{ input }}
+                                            {% endif %}
+                                        {% endfor %}
+
+
+                                        <td>Manual Entry</td>
+                                        <td>{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
+                                        <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
+                                        <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
+                                        
+                                        <td>{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
+                                        <td>{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
                                     
-                                    <td>{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
-                                    <td>{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
-                                    <td>{{ form.ignore }}</td>
-                                    
-                                    <td>{{ form.rain.error }}{{ form.rain }}</td>
-                                    <td>{{ form.irrigation.error }}{{ form.irrigation }}</td>
-                                    
-                                    <td>Action</td>
-                                </tr>
+                                        <td>{{ form.rain.error }}{{ form.rain }}</td>
+                                        <td>{{ form.irrigation.error }}{{ form.irrigation }}</td>
+                                        <td>{{ form.ignore }}</td>
+
+                                        
+                                        <td>Action</td>
+
+                                        {% comment %}
+                                        The exact same code is copied above. 
+                                        {% endcomment %}
+                                        
+                                        {% if forloop.first and object.uga_records|length == 0 %}
+                                            <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
+                                            <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
+                                            <td rowspan="{{ rowspan }}">{{ object.water_register.average_water_content }}</td>
+
+                                            <td rowspan="{{ rowspan }}">PUT IN RECOMMENDATION</td>
+                                            <td rowspan="{{ rowspan }}">{{ object.water_register.message }}</td>
+
+                                        {% endif %}
+                                        <td>{{ form.comment }}</td>
+
+                                    </tr>
+                                {% endwith %}
                             {% endfor %}
 
 
