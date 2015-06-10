@@ -17,12 +17,13 @@ from django.http import HttpResponseRedirect
 from django.forms.widgets import HiddenInput as HiddenInput
 
 import os
+import types
 
-from farms.models import CropSeason, Field, WaterRegister, WaterHistory
+from farms.models import CropSeason, Field, WaterRegister, WaterHistory, ProbeReading
 from farms.generate_water_register import generate_water_register
 from farms.unified_field_data import generate_objects
 #from farms.forms import WaterHistoryForm
-
+from farms.utils import get_probe_readings
 
 from datetime import date, datetime
 
@@ -102,6 +103,24 @@ class UnifiedFieldDataListView(ModelFormSetView):
             wh.field_list.add(self.field)
             wh.save()
         ### TODO Add processing for deleted objects.
+
+
+        # ignore name for uga probes in form is uga-ID
+        # Here we only receive the ids for the probes that are set to ignore,
+        # it doesn't mean there's a change and we want to be sure we don't
+        # change anything unnecessarily otherwise we trigger computation
+        # of water registers
+
+        ignored = [int(k[4:]) for k in self.request.POST.keys() if 'uga' in k]
+        all_probe_readings = get_probe_readings(self.crop_season, self.field)
+
+        for pr in all_probe_readings:
+            if pr.ignore and pr.pk not in ignored:
+                pr.ignore = False
+                pr.save()
+            elif not pr.ignore and pr.pk in ignored:
+                pr.ignore = True
+                pr.save()
 
         return HttpResponseRedirect(reverse("unified_water_season_field",
                                             kwargs={'season': self.crop_season.pk,

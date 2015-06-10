@@ -94,7 +94,7 @@
                                 <td></td>
                                 <td></td>
 
-                                <td>Action?? Can't delete this row</td>
+                                <td></td>
 
                                 <td>{{ object.water_register.crop_stage }}</td>
                                 <td>{{ object.water_register.daily_water_use }}</td>
@@ -145,7 +145,12 @@
                                             <td>{{ record.rain }}</td>
                                             <td>{{ record.irrigation }}</td>
 
-                                            <td>Action</td>
+                                            <td>Ignore 
+                                                <input name="uga-{{ record.pk }}" 
+                                                       type="checkbox"
+                                                       value="{{ object.ignore }}"
+                                                       {% if record.ignore %}checked{% endif %}>
+                                            </td>
                                             
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
