@@ -20,35 +20,12 @@ function addRow(afterRowID, date, crop_season_pk) {
         "<td><input id='id_form-{0}-soil_potential_8' name='form-{0}-soil_potential_8' step='0.01' type='number' /></td>"+
         "<td><input id='id_form-{0}-soil_potential_16' name='form-{0}-soil_potential_16' step='0.01' type='number' /></td>" +
         "<td><input id='id_form-{0}-soil_potential_24' name='form-{0}-soil_potential_24' step='0.01' type='number' /></td>" +
-        "<td></td>" +
-        "<td></td>" +
+        "<td><input id='id_form-{0}-min_temp_24_hours' name='form-3-min_temp_24_hours' step='0.01' type='number' /></td>" +
+        "<td><input id='id_form-{0}-max_temp_24_hours' name='form-3-max_temp_24_hours' step='0.01' type='number' /></td>" +
         "<td><input id='id_form-{0}-rain' name='form-{0}-rain' step='0.01' type='number'  value='0'/></td>" +
         "<td><input id='id_form-{0}-irrigation' name='form-{0}-irrigation' step='0.01' type='number' value='0'  /></td>" +
-        "<td>Action</td>" +
+        "<td><input id='id_form-{0}-ignore' name='form-{0}-ignore' type='checkbox'/></td>" +
         "</tr>";
-
-    // Form has no id. Will fix if deal with multiple forms.
-
-    // var date_id = "id_form-" + nb_current_forms +"-date";
-
-    // $('<input>').attr({
-    //     type: 'hidden',
-    //     id: date_id,
-    //     name: "id_form-" + nb_current_forms +"-date"
-    // }).val(date).appendTo('form');
-
-
-    //$("input[name="+date_id+"]").val(date)
-
-
-    // $('<input>').attr({
-    //     type: 'hidden',
-    //     id: "id_form-" + nb_current_forms +"-crop_season",
-    //     name: "id_form-" + nb_current_forms +"-crop_season",
-    //     value: crop_season,
-    // }).appendTo('form');
-    
-
 
     // From bob.js package
     var newRow = bob.string.formatString(newRowFormat, nb_current_forms);
