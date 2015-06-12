@@ -83,30 +83,32 @@ def handler_ProbeReading(sender, instance, **kwargs):
         old_radio_id = old_instance.radio_id
         old_reading_date = old_instance.reading_datetime.date()
 
-        old_probe = Probe.objects.get(radio_id=old_radio_id,
-                                      crop_season__season_start_date__lte=old_reading_date,
-                                      crop_season__season_end_date__gte=old_reading_date)
+        old_probes = Probe.objects.filter(radio_id=old_radio_id,
+                                          crop_season__season_start_date__lte=old_reading_date,
+                                          crop_season__season_end_date__gte=old_reading_date)
 
-        for field in old_probe.field_list.all():
-            new_date = minNone(field.earliest_changed_dependency_date, 
-                               old_instance.reading_datetime.date() )
-            field.earliest_changed_dependency_date = new_date
-            if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
-            field.save()
+        for old_probe in old_probes:
+            for field in old_probe.field_list.all():
+                new_date = minNone(field.earliest_changed_dependency_date, 
+                                   old_instance.reading_datetime.date() )
+                field.earliest_changed_dependency_date = new_date
+                if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+                field.save()
 
     this_radio_id = instance.radio_id
     this_reading_date = instance.reading_datetime.date()
 
-    new_probe = Probe.objects.get(radio_id=this_radio_id,
-                                  crop_season__season_start_date__lte=this_reading_date,
-                                  crop_season__season_end_date__gte=this_reading_date)
+    new_probes = Probe.objects.filter(radio_id=this_radio_id,
+                                      crop_season__season_start_date__lte=this_reading_date,
+                                      crop_season__season_end_date__gte=this_reading_date)
 
-    for field in new_probe.field_list.all():
-        new_date = minNone(field.earliest_changed_dependency_date, 
-                           instance.reading_datetime.date() )
-        field.earliest_changed_dependency_date = new_date
-        if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
-        field.save()
+    for new_probe in new_probes:
+        for field in new_probe.field_list.all():
+            new_date = minNone(field.earliest_changed_dependency_date, 
+                               instance.reading_datetime.date() )
+            field.earliest_changed_dependency_date = new_date
+            if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+            field.save()
 
 
 @receiver(pre_save,   sender=CropSeasonEvent)
