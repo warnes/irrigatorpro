@@ -9,7 +9,7 @@ import time
 from decimal import Decimal
 from numpy import nanmean
 
-from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON, WATER_REGISTER_DELTA
+from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON, WATER_REGISTER_DELTA, DEBUG
 from farms.models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -20,6 +20,14 @@ from common.utils import daterange
 def minNone( *args ):
     args = filter( lambda x: x is not None, args)
     return min(args)
+
+def safelog( val ):
+    if val <= 0:
+        return float("-inf")
+    else:
+        return math.log( float(val) )
+
+LN40 = math.log(40.0)
 
 
 ########################################################################
@@ -126,14 +134,6 @@ def calculateAWC_ProbeReading(crop_season,
     ##
     ##
 
-    def safelog( val ):
-        if val <= 0:
-            return float("-inf")
-        else:
-            return math.log( float(val) )
-
-    ln40 = math.log(40.0)
-
 
     ## Loop through probe readings. Only keep values when reading >0
 
@@ -144,7 +144,7 @@ def calculateAWC_ProbeReading(crop_season,
     AWC_24_l = []
 
     def AWC(slope, potential):
-        return slope * 24 * ( safelog( abs(potential) )  - ln40 ) 
+        return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
 
     for probe_reading in probe_readings:
         AWC_8_l.append ( AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 ) )
@@ -186,6 +186,64 @@ def calculateAWC_ProbeReading(crop_season,
     temp = tempRangeCheck(temp1)
 
     return (AWC, temp)
+
+
+
+def calculateAWC_min(crop_season,
+                     field):
+    """
+    Calculate the minumum Available Water Content for the specified field.
+    """
+
+    probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+
+    ## Get the maximum root depth
+    if crop_season:
+        crop = crop_season.crop
+        max_root_depth = crop_season.crop.max_root_depth
+    else:
+        return ( None, None )
+
+    ## Extract soil parameters
+    soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
+
+    try:
+        soil_type_8in  = soil_type_parameter_query.get(depth=8 )
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 8) )
+
+    try:
+        soil_type_16in = soil_type_parameter_query.get(depth=16)
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 16) )
+
+    try:
+        soil_type_24in = soil_type_parameter_query.get(depth=24)
+    except ObjectDoesNotExist:
+        raise RuntimeError("Missing parameters for soiltype '%s': %d inch depth missing" % ( field.soil_type, 24) )
+
+
+    def AWC(slope, potential):
+        return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
+
+    AWC_8_min  = AWC( soil_type_8in.slope,  200 ) 
+    AWC_16_min = AWC( soil_type_16in.slope, 200 )
+    AWC_24_min = AWC( soil_type_24in.slope, 200 )
+
+    #####
+    ## Calculate average AWC_min at the depths accessible to the crop
+    ## roots.
+    #####
+    ## NB: This would probably be better done via a linear
+    ##     interpolation, rather than discrete steps.
+    if max_root_depth <= 8:
+        AWC_min = AWC_8_min
+    elif max_root_depth <= 16:
+        AWC_min = (AWC_8_min + AWC_16_min) / 2
+    else: # max_root_depth > 16
+        AWC_min = (AWC_8_min + AWC_16_min + AWC_24_min) / 3
+
+    return (AWC_min)
 
 
 def celciusToFarenheit(celcius):
@@ -270,15 +328,17 @@ def earliest_register_to_update(report_date,
     # Start by getting the dependency modification date stored in the field object
     dependency_mdate = field.earliest_changed_dependency_date
 
+    if DEBUG: print "Earliest changed date:", dependency_mdate
+
     # Get the modification time of the latest water register
     latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
                                                          field=field
                                                      ).order_by('-date').first()
     if latest_water_register is None:
-        print 'No water register yet'
+        if DEBUG: print 'No water register yet'
         return crop_season.season_start_date
     
-    print 'Date of latest wr: ', latest_water_register.date
+    if DEBUG: print 'Date of latest wr: ', latest_water_register.date
 
 
 
@@ -290,7 +350,7 @@ def earliest_register_to_update(report_date,
 
     earliest_to_update = latest_water_register.date + timedelta(days=1)
     if earliest_wh_update is None:
-        print 'No WH will cause update to water register'
+        if DEBUG: print 'No WH will cause update to water register'
     else:
         earliest_to_update = earliest_wh_update.date
 
@@ -313,21 +373,21 @@ def earliest_register_to_update(report_date,
                     earliest_changed_probe = earliest_changed
 
         if earliest_changed_probe is None:
-            print 'No probe will cause update (nothing changed)'
+            if DEBUG: print 'No probe will cause update (nothing changed)'
         else:
             if earliest_changed_probe.reading_datetime.date() < earliest_to_update:
                 earliest_to_update = earliest_changed_probe.reading_datetime.date()
-                print 'Update caused by updated probe reading'
+                if DEBUG: print 'Update caused by updated probe reading'
             else:
-                print 'Probe will not cause update (wh even earlier)'
+                if DEBUG: print 'Probe will not cause update (wh even earlier)'
 
     except ObjectDoesNotExist:
-        print 'No probe will cause update in water register (no probe)'
+        if DEBUG: print 'No probe will cause update in water register (no probe)'
 
-    print "Caclulated dependency dates:"
-    print "field.earliest_changed_dependency_date:", dependency_mdate
-    print "earliest changed probe:", earliest_to_update
-    print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
+    if DEBUG: print "Caclulated dependency dates:"
+    if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
+    if DEBUG: print "earliest changed probe:", earliest_to_update
+    if DEBUG: print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
 
     return minNone(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
 
@@ -343,15 +403,13 @@ def generate_water_register(crop_season,
     ####
     ## Determine planting date, and stop calculation if no planting has been done
     planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
-                                                        field=field,
-                                                        crop_event__name='Planting').order_by("-date").first()
+                                                    field=field,
+                                                    crop_event__name='Planting').order_by("-date").first()
 
 
     if not planting_event: return (None, None)
+    ##
     ####
-
-
-
 
     ####
     ## Determine the first and last first event date to show
@@ -375,7 +433,7 @@ def generate_water_register(crop_season,
             last_register_date = today_plus_delta
 
         end_date = min(last_register_date, crop_season.season_end_date) + timedelta(1)
-    
+    ##
     ####
 
 
@@ -400,36 +458,39 @@ def generate_water_register(crop_season,
 
     ## Find out what is the earliest water register to update, based on modification dates.
 
-    earliest = earliest_register_to_update(report_date, crop_season, field)
+    first_process_date = earliest_register_to_update(report_date, crop_season, field)
 
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
-                                            date__gte=earliest,
+                                            date__gte=first_process_date,
                                             date__lte=end_date).all()
 
     maxWater = float(field.soil_type.max_available_water)
+    minWater = calculateAWC_min( crop_season, field )
 
-    if earliest <= crop_season.season_start_date:
+    if first_process_date <= crop_season.season_start_date:
         ## Assume that each field starts with a full water profile
         AWC_initial = maxWater
     else:
         try:
             wr_yesterday = WaterRegister.objects.get(crop_season=crop_season,
                                                      field=field,
-                                                     date=earliest - timedelta(days=1)
+                                                     date=first_process_date - timedelta(days=1)
                                                      )
             AWC_initial = wr_yesterday.average_water_content
         except:
-            raise RuntimeError("No previous water_register record on " + earliest );
+            raise RuntimeError("No previous water_register record on " + first_process_date );
 
     ## First pass, calculate water profile (AWC)
+    if DEBUG: print "First pass, calculate water profile (AWC)"
     temps_since_last_water_date = []
     wr_prev = None
 
+    if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
-    first_process_date = earliest
     for  date in daterange(first_process_date, end_date):
+        if DEBUG: print "  Working on ", date
         ####
         ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
         ##
@@ -464,6 +525,14 @@ def generate_water_register(crop_season,
 
         ####
         ## Get or Create a water register object (db record) for today
+        
+        ## Delete previous water register entries
+        # wr_query.filter(date=date).delete()
+        # wr = WaterRegister(crop_season = crop_season,
+        #                    field = field,
+        #                    date = date
+        #                    )
+
         try: 
             wr = wr_query.filter(date=date)[0]
 
@@ -473,6 +542,11 @@ def generate_water_register(crop_season,
             check_sensors_flag    = False
             dry_down_flag         = False
 
+            # clear out existing flags
+            wr.irrigate_flag = False
+            wr.too_hot_flag  = False
+            wr.days_to_irrigation = -1
+            wr.check_sensors_flag = False
             
         except ( ObjectDoesNotExist,  IndexError, ):
             wr = WaterRegister(
@@ -480,10 +554,7 @@ def generate_water_register(crop_season,
                 field = field,
                 date = date
             )
-        ##
-        ####
-
-
+        
         ####
         ## Copy information from crop event record 
         cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('-date').first()
@@ -511,7 +582,7 @@ def generate_water_register(crop_season,
         AWC_probe, temp = calculateAWC_ProbeReading(crop_season,
                                                     field,
                                                     date) 
-
+        if DEBUG: print "  AWC_probe=", AWC_probe
         ##
         ####
 
@@ -520,6 +591,7 @@ def generate_water_register(crop_season,
         wr.rain, wr.irrigation  = calculateAWC_RainIrrigation(crop_season, field, date, 
                                                               water_history_query=water_history_query)
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
+        if DEBUG: print "  AWC_register=", AWC_register
         ##
         ####
 
@@ -531,22 +603,26 @@ def generate_water_register(crop_season,
         else:
             wr.average_water_content = quantize(AWC_register)
             wr.computed_from_probes  = False
+        if DEBUG: print "  wr.average_water_content=", wr.average_water_content
+        if DEBUG: print "  wr.computed_from_probes=", wr.computed_from_probes
         ##
         ####
 
-        ## Enforce maximum soil water content based on soil type
+        ## Enforce min and maximum soil water content based on soil type
         if wr.average_water_content > maxWater: 
+            if DEBUG: print "  Enforce max soil AWC: ", maxWater
             wr.average_water_content = maxWater
 
-        ## Store userwa into accounting info..
+        if wr.average_water_content < minWater: 
+            if DEBUG: print "  Enforce min soil AWC: ", minWater
+            wr.average_water_content = minWater
+
+        ## Store user into accounting info..
         if wr.cuser_id is None:
             wr.cuser_id = user.pk
         wr.muser_id = user.pk
 
 
-        ## Write to the database
-        wr.save()
-        
         ## Calculate and store max temperature since last appreciable rainfall or irrigation
         if wr.average_water_content >= float(AWC_prev) + 0.1:
             # Max temp is only today's value 
@@ -564,20 +640,24 @@ def generate_water_register(crop_season,
         ## Cache this entry for tomorrow
         wr_prev = wr
 
+        ## Write to the database
+        if DEBUG: print "  saving..."
         wr.save()
 
     ## Refresh query
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
-                                            date__gte=earliest,
+                                            date__gte=first_process_date,
                                             date__lte=end_date).all()
         
     ## Second pass, calculate flags 
+    if DEBUG: print "Second pass, calculate flags"
     irrigate_to_max_flag_seen = False
     irrigate_to_max_achieved  = False
     drydown_flag              = False
     irrigate_to_max_days      = 0
     for date in daterange(first_process_date, end_date):
+        if DEBUG: print "  Working on ", date
 
         wr = wr_query.filter(date=date)[0]
 
@@ -595,14 +675,19 @@ def generate_water_register(crop_season,
         #####
         if not irrigate_to_max_flag_seen:
             ####
-            ## Check if wee need to irrigate *today*
+            ## Check if we need to irrigate *today*
+
+            # clear out existing flags
+            wr.irrigate_flag = False
+            wr.too_hot_flag  = False
+            wr.days_to_irrigation = -1
+            wr.check_sensors_flag = False
 
             # never irrigate if flag is set
             if wr.do_not_irrigate:
                 wr.irrigate_flag = False
             else:
                 # Too dry:
-                wr.days_to_irrigation = -1 # Just in case it had been changed previously
                 if wr.average_water_content <= 0.00:
                     wr.irrigate_flag = True
                     wr.days_to_irrigation = 0
@@ -648,6 +733,13 @@ def generate_water_register(crop_season,
                     wr.irrigate_flag      = True
                     wr.check_sensors_flag = True
 
+        ## Write to the database
+        if DEBUG: print "saving..."
         wr.save()
+
+
+    # reset the dependency date
+    field.earliest_changed_dependency_date = None
+    field.save()
 
     return
