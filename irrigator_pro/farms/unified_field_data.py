@@ -7,7 +7,9 @@ from django.forms.models import modelformset_factory
 
 from django.db.models import Q
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
+
+from irrigator_pro.settings import WATER_REGISTER_DELTA
 
 ###
 ### Sometimes the is a string, sometime a string.
@@ -28,7 +30,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
     generate_water_register(crop_season, field, user, report_date)
     water_register_query = WaterRegister.objects.filter(crop_season = crop_season,
-                                                        field = field).order_by('-date').filter(Q(date__lte =  report_date))
+                                                        field = field).order_by('-date').filter(Q(date__lte =  report_date+timedelta(WATER_REGISTER_DELTA)))
     
     ### probe_readings will contain all the readings in increasing order of time.
     probe_readings = get_probe_readings(crop_season, field, None, report_date)
@@ -59,7 +61,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                 form_index = form_index + 1
                 
 
-    for day in daterange(crop_season.season_start_date, report_date):
+    for day in daterange(crop_season.season_start_date, report_date + timedelta(days=1)):
         try:
             water_register = water_register_query.get(date = day)
             day_record = UnifiedReport(day, water_register)
@@ -85,11 +87,24 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             
         except BaseException as x:
             return None
+
+
+    # Add records for days in the future
+    
+    ### Might want days=WATER_REGISTER_DELTA+1 below, but we don't do it
+    ### in generate_water_register
+
+    ### Also this loop could be merges with above. But this is easier to see
+    ### what happens
+    report_plus_delta = min(report_date + timedelta(days=WATER_REGISTER_DELTA), crop_season.season_end_date)
+    
+    for day in daterange(report_date + timedelta(days=1), report_plus_delta):
+        water_register = water_register_query.get(date = day)
+        day_record = UnifiedReport(day, water_register)
+        ret.append(day_record)
         
     return  ret
 
-
-    
 class UnifiedReport:
     
     def __init__(self, date, water_register):

@@ -80,11 +80,18 @@
 
 
                                 <td>
-                                    {{ object.date|date:"Y-m-d"}}<br>
-                                    <button type="button" 
-                                            onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
-                                        <i class="fa fa-pencil-square-o"></i>
-                                    </button>
+                                    {{ object.date|date:"Y-m-d"}}
+                                    {% comment %}
+                                    If date is later than report date (usually today) then we don't
+                                    allow adding manual entry forms.
+                                    {% endcomment %}
+                                    {% if not object.date|is_future %}
+                                        <br>
+                                        <button type="button" 
+                                                onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
+                                            <i class="fa fa-pencil-square-o"></i>
+                                        </button>
+                                    {% endif %}
                                 </td>
                                 <td>None</td>
                                 <td></td>
