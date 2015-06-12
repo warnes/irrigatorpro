@@ -71,3 +71,8 @@ django-smuggler==0.6.0
 # Django Admin Steroids
 #
 django-admin-steroids==0.3.8
+
+#
+# For doing math in templates
+#
+django-mathfilters==0.3.0

@@ -1,5 +1,5 @@
 from farms.models import *
-import datetime
+from datetime import datetime, date
 
 def get_probe_readings(crop_season, field, start_date = None, end_date = None):
  

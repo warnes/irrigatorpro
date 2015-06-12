@@ -200,6 +200,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'allauth.account.context_processors.account',
     'allauth.socialaccount.context_processors.socialaccount',    
     'home.context_processors.global_settings',
+
     
 )
 
@@ -235,6 +236,8 @@ EXTERNAL_APPS = (
     'django_extensions',
     'session_security',
     'extra_views',
+    'mathfilters',
+    
     
 )
 
