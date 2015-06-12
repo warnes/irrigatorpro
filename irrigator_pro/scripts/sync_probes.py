@@ -155,25 +155,23 @@ def processProbeReading(record, store_probes=True):
 
     rpr.muser               = user
 
-    ## If the time is before 9am, store most probe information
-    if (reading_datetime.hour > rpr.reading_datetime.hour and reading_datetime.hour < 9) or new_record:
-        # For most things, store the *last* entry before 9:00am
-        rpr.reading_datetime    = reading_datetime
-        rpr.radio_id            = radio_id
-        #rpr.file_date           = file_date
-        rpr.battery_voltage     = battery_voltage
-        rpr.battery_percent     = battery_percent
-        rpr.soil_potential_8    = soil_potential_8
-        rpr.soil_potential_16   = soil_potential_16
-        rpr.soil_potential_24   = soil_potential_24
-        rpr.circuit_board_temp  = circuit_board_temp
+    # Store most recent entry information for everything *except* temperature
+    rpr.reading_datetime    = reading_datetime
+    rpr.radio_id            = radio_id
+    #rpr.file_date           = file_date
+    rpr.battery_voltage     = battery_voltage
+    rpr.battery_percent     = battery_percent
+    rpr.soil_potential_8    = soil_potential_8
+    rpr.soil_potential_16   = soil_potential_16
+    rpr.soil_potential_24   = soil_potential_24
+    rpr.circuit_board_temp  = circuit_board_temp
 
-        rpr.minutes_awake       = minutes_awake
-        rpr.muser               = user
-        rpr.mdate               = now
-        rpr.source              = u'UGADB'
+    rpr.minutes_awake       = minutes_awake
+    rpr.muser               = user
+    rpr.mdate               = now
+    rpr.source              = u'UGADB'
 
-    ## Always store the *highest* temp observed over 24 hours
+    ## Always store the *highest* temp observed 
     rpr.thermocouple_1_temp = max( rpr.thermocouple_1_temp, thermocouple_1_temp)
     rpr.thermocouple_2_temp = max( rpr.thermocouple_2_temp, thermocouple_2_temp)
 
@@ -181,7 +179,6 @@ def processProbeReading(record, store_probes=True):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             rpr.save()
-
 
 ###########################
 ## Start of main script ###
