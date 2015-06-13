@@ -40,13 +40,63 @@ function addRow(afterRowID, date, crop_season_pk) {
 $(document).ready(function() 
     {
         console.log("Will disable picker");
+
+
+        /**
+         * Disable datepicker since it is only used as a hidden input in a
+         * form.
+         */
+
     	$('form input').each(function() {
             // Could be more refined and only destroy
             // on date fields, but there doesn't seem
             // to be an issue here.
             $(this).datepicker('destroy');
-        }
-       );
+        });
+
+
+        /**
+         * Create a hidden input with the form id when a input is
+         * clicked. This is required to prevent all forms from being saved
+         * each time the units are being converted.
+         */
+
+        $('form input').click( function() {
+
+            console.log("Will create hidden id for form: ", $(this).attr("id"));
+            // Only use if if id has the form: id_form-\d+.*, in which case we only
+            // name of the form is id_form_\d+-id.
+
+            // Could make this one static...
+            var pattern = new RegExp("id_form-\\d+");
+            var res = pattern.exec($(this).attr("id"));
+            console.log("Result: ", res[0]);
+
+            if (res == null)
+                return;
+
+            form_id = res[0] + "-id";
+
+            // Add the form id to hidden input
+
+            console.log("currently changed: ");
+            $('.changed_form').each(function(){
+                console.log($(this).val());
+            });
+            $('<input>').attr({
+                class: 'changed_form',
+                type: 'hidden',
+                name: "changed_forms[]",
+                value: form_id}).appendTo($(this).closest('form'));
+
+
+            
+            // Will add this id to a hidden form with name changed_forms if it
+            // doesn't exist already.
+
+        });
+
+
         
         $(".dti").each(function() {
     		
