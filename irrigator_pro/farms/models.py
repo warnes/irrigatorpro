@@ -415,11 +415,11 @@ class FieldDataReading(Audit, Comment):
     # WATER_AMOUNT_UNIT_CHOICES = ['in', 'cm']
     # PRESSURE_UNIT_CHOICES = ['kPa']
 
-    min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+    min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=3, # ###.##
                                               blank=True, null=True,
                                               verbose_name='Minimum temperature in last 24 hours') 
     
-    max_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
+    max_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=3, # ###.##
                                               blank=True, null=True,
                                               verbose_name='Maximum temperature in last 24 hours') 
 

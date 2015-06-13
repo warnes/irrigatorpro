@@ -34,6 +34,30 @@
     {% if object_list %}
         {{ wh_formset.id }}
         <form  id="unified_form" action="{{ request.path }}" method="post">{% csrf_token %}
+            <table>
+                <tr>
+                    <td>Unit preference:</td>
+                    <td>Temperature:</td>
+                    <td>
+                        <select id="temp_units" onchange="convert_temps()">
+                            <option value="F"  selected>Farenheits</option>
+                            <option value="C">Celsius</option>
+                        </select>
+                    </td>
+                    <td>Depth:</td>
+                    <td>
+                        <select>
+                            <option value="in" selected>Inches</option>
+                            <option value="cm">Centimeters</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+
+
+
+
             <table class="formset" >
                 <thead>
                     <tr class="header1">
@@ -182,11 +206,11 @@
                                             <td>{{ record.soil_potential_16 }}</td>
                                             <td>{{ record.soil_potential_24 }}</td>
 
-                                            <td>{{ record.min_temp_24_hours }}</td>
-                                            <td>{{ record.max_temp_24_hours }}</td>
+                                            <td class="units_temp">{{ record.min_temp_24_hours }}</td>
+                                            <td class="units_temp">{{ record.max_temp_24_hours }}</td>
                                             
-                                            <td>{{ record.rain }}</td>
-                                            <td>{{ record.irrigation }}</td>
+                                            <td class="units_depth">{{ record.rain }}</td>
+                                            <td class="units_depth">{{ record.irrigation }}</td>
 
                                             <td><input name="uga-{{ record.pk }}" 
                                                        type="checkbox"
@@ -249,11 +273,11 @@
                                         <td>{{ record.soil_potential_16 }}</td>
                                         <td>{{ record.soil_potential_24 }}</td>
 
-                                        <td>{{ record.min_temp_24_hours }}</td>
-                                        <td>{{ record.max_temp_24_hours }}</td>
+                                        <td class="units_temp">{{ record.min_temp_24_hours }}</td>
+                                        <td class="units_temp">{{ record.max_temp_24_hours }}</td>
                                         
-                                        <td>{{ record.rain }}</td>
-                                        <td>{{ record.irrigation }}</td>
+                                        <td class="units_depth">{{ record.rain }}</td>
+                                        <td class="units_depth">{{ record.irrigation }}</td>
 
                                         <td>{{ record.ignore }}</td>
                                         
@@ -300,12 +324,12 @@
                                         <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
                                         <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
                                         
-                                        <td>{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
-                                        <td>{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
+                                        <td class="units_temp">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
+                                        <td class="units_temp">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
                                     
-                                        <td>{{ form.rain.error }}{{ form.rain }}</td>
-                                        <td>{{ form.irrigation.error }}{{ form.irrigation }}</td>
-                                        <td>{{ form.ignore }}</td>
+                                        <td class="units_depth">{{ form.rain.error }}{{ form.rain }}</td>
+                                        <td class="units_depth">{{ form.irrigation.error }}{{ form.irrigation }}</td>
+                                        <td class="units_depth">{{ form.ignore }}</td>
 
                                         {% comment %}
                                         The exact same code is copied above. 

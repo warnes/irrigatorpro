@@ -37,6 +37,43 @@ function addRow(afterRowID, date, crop_season_pk) {
 }
 
 
+/**
+ * Convert all elements related to temperature based on the new value. Have to
+ * make sure that the elements are in the old units.
+ */
+
+
+// Would be nicer with anonymous function. Just making sure it works for now.
+
+function toCelsius(f) {
+    console.log("Converting: ", f);
+    return (f-32.0) * 5.0 / 9.0;
+}
+
+function toFarenheit(c) {
+    return 9.0 * c/5.0 + 32.0;
+}
+
+function convert_temps() {
+
+    if ($("#temp_units").val() == "C") {
+        F = toCelsius;
+    } else {
+        F = toFarenheit;
+    }
+
+    $(".units_temp input").each(function() {
+        var tmp = parseInt($(this).val().trim());
+        if (isNaN(tmp)) {
+            return;
+        }
+        $(this).val(Math.round((F(tmp) + 0.00001) * 100) / 100  );
+    });
+}
+
+
+
+
 $(document).ready(function() 
     {
         console.log("Will disable picker");
@@ -63,7 +100,6 @@ $(document).ready(function()
 
         $('form input').click( function() {
 
-            console.log("Will create hidden id for form: ", $(this).attr("id"));
             // Only use if if id has the form: id_form-\d+.*, in which case we only
             // name of the form is id_form_\d+-id.
 
@@ -74,26 +110,29 @@ $(document).ready(function()
 
             if (res == null)
                 return;
-
             form_id = res[0] + "-id";
 
             // Add the form id to hidden input
 
-            console.log("currently changed: ");
-            $('.changed_form').each(function(){
-                console.log($(this).val());
+            var add_to_form = true;
+            $('.changed_forms').each(function(){
+                console.log("Testing with: ", $(this).val());
+                if ($(this).val() == form_id) {
+                    console.log("Won't add 1");
+                    add_to_form = false;
+                }
             });
-            $('<input>').attr({
-                class: 'changed_form',
-                type: 'hidden',
-                name: "changed_forms[]",
-                value: form_id}).appendTo($(this).closest('form'));
 
-
-            
-            // Will add this id to a hidden form with name changed_forms if it
-            // doesn't exist already.
-
+            if (add_to_form) {
+                console.log("Will append to form.");
+                $('<input>').attr({
+                    class: 'changed_forms',
+                    type: 'hidden',
+                    name: "changed_forms[]",
+                    value: form_id}).appendTo($(this).closest('form'));
+            } else {
+                console.log("Already in form, won't add");
+            }
         });
 
 

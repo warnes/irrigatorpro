@@ -96,7 +96,23 @@ class UnifiedFieldDataListView(ModelFormSetView):
         return formset
 
 
+
+    ##########################################################################
+    ###
+    ### Save the formset.
+    ###
+    ### Because user can convert the temperature and depth values in the form
+    ### could look like they changed iven if they have not.  To avoid saving
+    ### objects that have not changed, causing unnecessary recomputation to
+    ### the water register, there is a hidden field that is added when a user
+    ### clicks in at least one field from a form.
+
     def formset_valid(self, formset):
+
+        changed_form_ids = self.request.POST.getlist('changed_forms[]')
+
+        print "Changed forms: ", changed_form_ids
+
 
         formset.save()
         ### The field list is not part of the form. Add to new objects
