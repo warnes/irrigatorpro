@@ -6,6 +6,12 @@
 {% load mathfilters %}
 {% block content %}
 
+{% comment %}
+TODO:   Conversion for temps only in the forms. Must add it to UGA, 
+        Conversion for in <-> cm not done yet.
+{% endcomment %}
+
+
     <h1>
         
         <i class="fa fa-pencil-square-o fa-fw"> </i>
@@ -39,14 +45,14 @@
                     <td>Unit preference:</td>
                     <td>Temperature:</td>
                     <td>
-                        <select id="temp_units" onchange="convert_temps()">
+                        <select id="temp_units" name="temp_units" onchange="convert_temps()">
                             <option value="F"  selected>Farenheits</option>
                             <option value="C">Celsius</option>
                         </select>
                     </td>
                     <td>Depth:</td>
                     <td>
-                        <select>
+                        <select id="depth_units" name="depth_units" onchange="convert_depths()">
                             <option value="in" selected>Inches</option>
                             <option value="cm">Centimeters</option>
                         </select>
@@ -324,12 +330,12 @@
                                         <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
                                         <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
                                         
-                                        <td class="units_temp">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
-                                        <td class="units_temp">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
+                                        <td class="units_temp_form">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
+                                        <td class="units_temp_form">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
                                     
-                                        <td class="units_depth">{{ form.rain.error }}{{ form.rain }}</td>
-                                        <td class="units_depth">{{ form.irrigation.error }}{{ form.irrigation }}</td>
-                                        <td class="units_depth">{{ form.ignore }}</td>
+                                        <td class="units_depth_form">{{ form.rain.error }}{{ form.rain }}</td>
+                                        <td class="units_depth_form">{{ form.irrigation.error }}{{ form.irrigation }}</td>
+                                        <td class="units_depth_form">{{ form.ignore }}</td>
 
                                         {% comment %}
                                         The exact same code is copied above. 

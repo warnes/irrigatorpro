@@ -46,12 +46,16 @@ function addRow(afterRowID, date, crop_season_pk) {
 // Would be nicer with anonymous function. Just making sure it works for now.
 
 function toCelsius(f) {
-    console.log("Converting: ", f);
     return (f-32.0) * 5.0 / 9.0;
 }
 
 function toFarenheit(c) {
     return 9.0 * c/5.0 + 32.0;
+}
+
+
+function round_2(v) {
+    return Math.round((v + 0.00001) * 100) / 100;
 }
 
 function convert_temps() {
@@ -62,12 +66,52 @@ function convert_temps() {
         F = toFarenheit;
     }
 
-    $(".units_temp input").each(function() {
-        var tmp = parseInt($(this).val().trim());
+    $(".units_temp_form input").each(function() {
+        var tmp = parseFloat($(this).val().trim());
         if (isNaN(tmp)) {
             return;
         }
-        $(this).val(Math.round((F(tmp) + 0.00001) * 100) / 100  );
+        $(this).val(round_2(F(tmp)));
+    });
+
+
+    $(".units_temp").each(function() {
+        var tmp = parseFloat($(this).text().trim());
+        if (isNaN(tmp)) {
+            return;
+        }
+        $(this).val(round_2(F(tmp)));
+    });
+
+
+}
+
+
+/**
+ * Convert between inches and back
+ */
+
+function convert_depths() {
+
+    var mult = 0.3937008;
+    if ($("#depth_units").val() == "cm") {
+        mult = 2.54;
+    }
+
+    $(".units_depth_form input").each(function() {
+        var tmp = parseFloat($(this).val().trim());
+        if (isNaN(tmp)) {
+            return;
+        }
+        $(this).val(round_2(tmp * mult));
+    });
+
+    $(".units_depth ").each(function() {
+        var tmp = parseFloat($(this).text().trim());
+        if (isNaN(tmp)) {
+            return;
+        }
+        $(this).val(round_2(tmp * mult));
     });
 }
 
@@ -76,8 +120,6 @@ function convert_temps() {
 
 $(document).ready(function() 
     {
-        console.log("Will disable picker");
-
 
         /**
          * Disable datepicker since it is only used as a hidden input in a
@@ -106,7 +148,6 @@ $(document).ready(function()
             // Could make this one static...
             var pattern = new RegExp("id_form-\\d+");
             var res = pattern.exec($(this).attr("id"));
-            console.log("Result: ", res[0]);
 
             if (res == null)
                 return;
@@ -116,22 +157,18 @@ $(document).ready(function()
 
             var add_to_form = true;
             $('.changed_forms').each(function(){
-                console.log("Testing with: ", $(this).val());
                 if ($(this).val() == form_id) {
-                    console.log("Won't add 1");
                     add_to_form = false;
                 }
             });
 
             if (add_to_form) {
-                console.log("Will append to form.");
                 $('<input>').attr({
                     class: 'changed_forms',
                     type: 'hidden',
                     name: "changed_forms[]",
                     value: form_id}).appendTo($(this).closest('form'));
             } else {
-                console.log("Already in form, won't add");
             }
         });
 
