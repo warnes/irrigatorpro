@@ -143,94 +143,94 @@ function colorPastTodayFuture() {
 }
 
 
-$(document).ready(function() 
-    {
+$(document).ready(function() {
 
-        /**
-         * Disable datepicker since it is only used as a hidden input in a
-         * form.
-         */
+    /**
+     * Disable datepicker since it is only used as a hidden input in a
+     * form.
+     */
+    
+    $('form input:hidden').each(function() {
+        // Could be more refined and only destroy
+        // on date fields, but there doesn't seem
+        // to be an issue here.
+        $(this).datepicker('destroy');
+    });
 
-    	$('form input:hidden').each(function() {
-            // Could be more refined and only destroy
-            // on date fields, but there doesn't seem
-            // to be an issue here.
-            $(this).datepicker('destroy');
-        });
 
+    /**
+     * Create a hidden input with the form id when a input is
+     * clicked. This is required to prevent all forms from being saved
+     * each time the units are being converted.
+     */
+    
+    $('form input').click( function() {
 
-        /**
-         * Create a hidden input with the form id when a input is
-         * clicked. This is required to prevent all forms from being saved
-         * each time the units are being converted.
-         */
+        // Only use if if id has the form: id_form-\d+.*, in which case we only
+        // name of the form is id_form_\d+-id.
+        
+        // Could make this one static...
+        var pattern = new RegExp("id_form-\\d+");
+        var res = pattern.exec($(this).attr("id"));
+        
+        if (res == null)
+            return;
+        form_id = res[0] + "-id";
+        
+        // Add the form id to hidden input
 
-        $('form input').click( function() {
-
-            // Only use if if id has the form: id_form-\d+.*, in which case we only
-            // name of the form is id_form_\d+-id.
-
-            // Could make this one static...
-            var pattern = new RegExp("id_form-\\d+");
-            var res = pattern.exec($(this).attr("id"));
-
-            if (res == null)
-                return;
-            form_id = res[0] + "-id";
-
-            // Add the form id to hidden input
-
-            var add_to_form = true;
-            $('.changed_forms').each(function(){
-                if ($(this).val() == form_id) {
-                    add_to_form = false;
-                }
-            });
-
-            if (add_to_form) {
-                $('<input>').attr({
-                    class: 'changed_forms',
-                    type: 'hidden',
-                    name: "changed_forms[]",
-                    value: form_id}).appendTo($(this).closest('form'));
-            } else {
+        var add_to_form = true;
+        $('.changed_forms').each(function(){
+            if ($(this).val() == form_id) {
+                add_to_form = false;
             }
         });
 
+        if (add_to_form) {
+            $('<input>').attr({
+                class: 'changed_forms',
+                type: 'hidden',
+                name: "changed_forms[]",
+                value: form_id}).appendTo($(this).closest('form'));
+        } else {
+        }
+    });
 
-        
-        $(".dti").each(function() {
+
+    
+    $(".dti").each(function() {
+    	
+    	var contents = $(this).text();
+    	
+    	
+    	if (contents.indexOf("Dry-") > 0) {
+    	    
+    	    $(this).children().first().addClass("alert-inline alert-info");
+    	} else if (contents.indexOf("Today") > 0) {
+    	    
+    	    $(this).children().first().addClass("alert-inline alert-danger");
+    	} else if (contents.indexOf("Tomorrow") > 0) {
+    	    
+    	    $(this).children().first().addClass("alert-inline alert-warning");
+    	} else {
+    	    number = contents.replace(/\D/g, '');
+    	    if (number != "") {
     		
-    	    var contents = $(this).text();
-    		
-    		
-    	    if (contents.indexOf("Dry-") > 0) {
-    			
-    		$(this).children().first().addClass("alert-inline alert-info");
-    	    } else if (contents.indexOf("Today") > 0) {
-    			
-    		$(this).children().first().addClass("alert-inline alert-danger");
-    	    } else if (contents.indexOf("Tomorrow") > 0) {
-    			
-    		$(this).children().first().addClass("alert-inline alert-warning");
-    	    } else {
-    		number = contents.replace(/\D/g, '');
-    		if (number != "") {
-    				
-    		    if (number < 4) {
-    			$(this).children().first().addClass("alert-inline alert-warning");
-    		    } else {
-    			$(this).children().first().addClass("alert-inline alert-success");
-    		    }
-    				
+    		if (number < 4) {
+    		    $(this).children().first().addClass("alert-inline alert-warning");
+    		} else {
+    		    $(this).children().first().addClass("alert-inline alert-success");
     		}
+    		
     	    }
-    		
-    		
-    	});
+    	}
+    	
+    	
+    });
 
-        colorPastTodayFuture();
+    colorPastTodayFuture();
 
-
-
+    $("#unified-table").floatThead({
+        scrollingTop:50
+    });
 });

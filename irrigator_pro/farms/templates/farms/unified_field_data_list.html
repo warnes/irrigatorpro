@@ -5,7 +5,7 @@
 {% load static %}
 {% load mathfilters %}
 {% block content %}
-
+    <div class="irpro-block">
     <h1 class="global-data" data-report-date="{{report_date |date:"Y-m-d" }}">
         
         <i class="fa fa-pencil-square-o fa-fw"> </i>
@@ -58,7 +58,7 @@
 
 
 
-            <table class="formset" >
+            <table id="unified-table" class="formset" >
                 <thead>
                     <tr class="header1">
                         <th rowspan=2>Date</th>
@@ -422,7 +422,7 @@
             </div>
         {% endif %}
     {% endif %}
-
+    </div>
 {% endblock %}
 
 

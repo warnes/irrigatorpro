@@ -28,7 +28,19 @@
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/django-model-blocks.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+
+
+  {% if debug %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css?t={% now 'c' %}">
+  {% else %}
+      <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% endif %}
+
+
+
+
+
 
       <!-- links to tablesorter css -->
       <!-- May want to grab directly from web site -->
@@ -49,34 +61,33 @@
     <div id="wrapper">
       <div class="container">
 
-	{% if user.is_authenticated %}
-	  {{ request|hijackNotification }}
-	  <div class="row row-offcanvas row-offcanvas-left ">
-            {% include 'navbar-side.html' %} 
-	{% endif %}
-            <div class="col-xs-12 col-sm-9 col-md-9 background-default contents">
+	  {% if user.is_authenticated %}
+	      {{ request|hijackNotification }}
+	      <div class="row row-offcanvas row-offcanvas-left ">
+                  {% include 'navbar-side.html' %} 
+	  {% endif %}
+          <div class="col-xs-12 col-sm-9 col-md-9 background-default contents">
  
 	      <!-- Common for both authenticated un non-authenticated users -->
-      
+              
 	      <h1 class="title">
-		{% block title %}{% endblock %}
+		  {% block title %}{% endblock %}
 	      </h1>
 
 	      {% block content %}{% endblock %}   
 
-	    </div> <!-- col-xs-12 -->
+	  </div> <!-- col-xs-12 -->
 
-	{% if user.is_authenticated %}
-           </div> <!-- row -->
-        {% endif %}
+	  {% if user.is_authenticated %}
+              </div> <!-- row -->
+          {% endif %}
 
       </div> <!-- container -->
     </div> <!-- page wrapper -->
 
     <footer id = "base-footer">
-      <p>Developed by GRW Consulting for the USDA ARS National Peanut Reserch Laboratory</p>
+        <p>Developed by GRW Consulting for the USDA ARS National Peanut Reserch Laboratory</p>
     </footer> 
-
   </body>
   
   <!-- Start of scripts -->
@@ -119,6 +130,10 @@
 
   <script src="{% static 'js/bob.js' %}"></script>
   <!--  <script src="{% static 'js/jquery.formset.min.js' %}"></script>-->
+
+  <script src="{% static 'js/jquery.floatThead.min.js' %}"></script>
+  
+
 
   <!-- uncomment and adjust for google analytics -->
 
