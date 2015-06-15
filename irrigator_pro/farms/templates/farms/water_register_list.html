@@ -68,11 +68,7 @@
 
       <tbody>
 	{% for object in object_list %}
-	  <tr 
-	     {% if object.date|is_today  %}class="row-today" {% endif %}
-	     {% if object.date|is_past   %}class="row-past"  {% endif %}
-	     {% if object.date|is_future %}class="row-future"{% endif %}
- 	     >
+	  <tr>
 	     <td>
 	       {{ object.date|date:"Y-m-d" }}
 	     </td>
@@ -196,7 +192,6 @@
     							
     var showCompleteText = "Show Entire Season";	
     var showLast15Text   = "Show &plusmn;7 Days"	
-    var report_date_index;			
     
     var startDate = new Date({{crop_season.season_start_date.year}},
                             {{crop_season.season_start_date.month}}-1,

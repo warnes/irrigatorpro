@@ -117,6 +117,31 @@ function convert_depths() {
 
 
 
+/**
+ * Color the rows based on today's date.
+ */
+
+
+
+function colorPastTodayFuture() {
+
+    var reportDateVal = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val() );
+
+    $(".data_row").each( function() {
+        thisDate= $.datepicker.parseDate('yy-mm-dd', $(this).attr("data-for-date"));
+
+        if (daysBetween(reportDateVal, thisDate) < 0) {
+            $(this).addClass("row-past");
+        }
+        else if (daysBetween(reportDateVal, thisDate) == 0) {
+            $(this).addClass("row-today");
+        }
+        else if (daysBetween(reportDateVal, thisDate) > 0) {
+            $(this).addClass("row-future");
+        }
+    });
+}
+
 
 $(document).ready(function() 
     {
@@ -126,7 +151,7 @@ $(document).ready(function()
          * form.
          */
 
-    	$('form input').each(function() {
+    	$('form input:hidden').each(function() {
             // Could be more refined and only destroy
             // on date fields, but there doesn't seem
             // to be an issue here.
@@ -203,6 +228,8 @@ $(document).ready(function()
     		
     		
     	});
+
+        colorPastTodayFuture();
 
 
 

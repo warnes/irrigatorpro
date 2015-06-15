@@ -6,13 +6,7 @@
 {% load mathfilters %}
 {% block content %}
 
-{% comment %}
-TODO:   Conversion for temps only in the forms. Must add it to UGA, 
-        Conversion for in <-> cm not done yet.
-{% endcomment %}
-
-
-    <h1>
+    <h1 class="global-data" data-report-date="{{report_date |date:"Y-m-d" }}">
         
         <i class="fa fa-pencil-square-o fa-fw"> </i>
         
@@ -102,11 +96,13 @@ TODO:   Conversion for temps only in the forms. Must add it to UGA,
                         {% endcomment %}
 
                         {% if object|day_records == 0 %}
-                            <tr id="row-{{ object.date|date:"Y-m-d" }}"
+                            <tr class ="data_row"
+                                data-for-date='{{ object.date|date:"Y-m-d" }}'
+                                id="row-{{ object.date|date:"Y-m-d" }}"
                                 {% if object.date|is_today  %}class="row-today" {% endif %}
                                 {% if object.date|is_past   %}class="row-past"  {% endif %}
                                 {% if object.date|is_future %}class="row-future"{% endif %}
-                                                                                                                        >
+                                >
 
 
                                 <td>
@@ -180,7 +176,9 @@ TODO:   Conversion for temps only in the forms. Must add it to UGA,
                             </tr>
                         {% else %}
                             {% for record in object.uga_records  %}
-                                <tr id="row-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}"
+                                <tr data-for-date='{{ object.date|date:"Y-m-d" }}'
+                                    class="data_row"
+                                    id="row-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}"
                                     {% if object.date|is_today  %}class="row-today" {% endif %}
                                     {% if object.date|is_past   %}class="row-past"  {% endif %}
                                     {% if object.date|is_future %}class="row-future"{% endif %}
@@ -304,7 +302,11 @@ TODO:   Conversion for temps only in the forms. Must add it to UGA,
                                 date in the table.
 
                                 {% endcomment %}
-                                <tr id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
+
+
+                                <tr data-for-date='{{ object.date|date:"Y-m-d" }}'
+                                    class="data_row"
+                                    id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
                                     {% with rowspan=object|day_records %}
                                         {% if forloop.first and object.uga_records|length == 0 %}
                                             <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
@@ -427,9 +429,25 @@ TODO:   Conversion for temps only in the forms. Must add it to UGA,
 {% block scripts %}
 
     {% if debug %}
-        <script src="{{ STATIC_URL }}js/unified_field_data_list.js?t={% now "c" %}"></script>
+        <script src="{{ STATIC_URL }}js/unified_field_data_list.js?t={% now 'c' %}"></script>
     {% else %}
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js"></script>
     {% endif %}
+
+    <script>
+        $(function() {
+            $( "#datepicker" ).datepicker(
+    	        {
+    	            minDate: new Date({{crop_season.season_start_date.year}},
+    	                              {{crop_season.season_start_date.month}}-1,
+    	                              {{crop_season.season_start_date.day}}),
+    	            maxDate: new Date({{crop_season.season_end_date.year}},
+    	                              {{crop_season.season_end_date.month}}-1,
+    	                              {{crop_season.season_end_date.day}})
+    	        }		
+    	    );
+        });
+    </script>
+
 {% endblock %}
 
