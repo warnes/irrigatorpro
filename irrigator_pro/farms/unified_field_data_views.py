@@ -1,6 +1,8 @@
 from extra_views import ModelFormSetView
-
+from pprint import pprint
 from django.utils.datastructures import MultiValueDictKeyError
+
+from irrigator_pro.settings import DEBUG
 
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.core.urlresolvers import reverse
@@ -22,8 +24,7 @@ import types
 from farms.models import CropSeason, Field, WaterRegister, WaterHistory, ProbeReading
 from farms.generate_water_register import generate_water_register
 from farms.unified_field_data import generate_objects
-#from farms.forms import WaterHistoryForm
-from farms.utils import get_probe_readings
+from farms.utils import get_probe_readings, to_faren, to_inches
 
 from datetime import date, datetime
 
@@ -96,14 +97,72 @@ class UnifiedFieldDataListView(ModelFormSetView):
         return formset
 
 
+
+    ##########################################################################
+    ###
+    ### Save the formset.
+    ###
+    ### Because user can convert the temperature and depth values in the form
+    ### could look like they changed iven if they have not.  To avoid saving
+    ### objects that have not changed, causing unnecessary recomputation to
+    ### the water register, there is a hidden field that is added when a user
+    ### clicks in at least one field from a form.
+
     def formset_valid(self, formset):
 
-        formset.save()
+        changed_form_ids = self.request.POST.getlist('changed_forms[]')
+        formset.save(commit=False)
+
+        ### Any form not in changed_form_ids does not need saving.
+        ### For all the other convert if necessary.
+
+
+        for obj in formset.deleted_objects:
+            print "Will delete: obj"
+            obj.delete()
+
+        for form in formset.forms:
+            if form.cleaned_data['DELETE']:
+                if DEBUG: print 'Should have been deleted'
+
+            else:
+                if DEBUG: print 'Will not delete, may save'
+
+                if "id_"+form.prefix+"-id"  in changed_form_ids:
+                    if DEBUG: print "Will save form with id: ", form.prefix
+                    ### Convert values if necessary
+                    obj = form.save(commit=False)
+                    if self.request.POST['temp_units']=='C':
+                        if DEBUG: print "Converting temps from C to F"
+                        obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                        obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+                        
+                    if self.request.POST['depth_units']=='cm':
+                        if DEBUG: print "Converting temps from cm to in"
+                        obj.rain = to_inches(obj.rain)
+                        obj.irrigation = to_inches(obj.irrigation)
+
+
+                    obj.save()
+
+
         ### The field list is not part of the form. Add to new objects
-        for wh in formset.new_objects:
-            wh.field_list.add(self.field)
-            wh.save()
-        ### TODO Add processing for deleted objects.
+        ## Need this in order to create new_objects list
+        for obj in formset.new_objects:
+            obj.save(force_update=False)
+            obj.field_list.add(self.field)
+            #            obj = object.save(commit=False)
+            ### Copied from above. Need to factor out
+            if self.request.POST['temp_units']=='C':
+                if DEBUG: print "Converting temps from C to F"
+                obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+
+            if self.request.POST['depth_units']=='cm':
+                if DEBUG: print "Converting temps from cm to in"
+                obj.rain = to_inches(obj.rain)
+                obj.irrigation = to_inches(obj.irrigation)
+            obj.save()
 
 
         # ignore name for uga probes in form is uga-ID

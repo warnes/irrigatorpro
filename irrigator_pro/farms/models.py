@@ -410,11 +410,6 @@ class Probe(NameDesc, Comment, Audit):
 
 class FieldDataReading(Audit, Comment):
 
-
-    # TEMPERATURE_UNIT_CHOICES = ['F', 'C']
-    # WATER_AMOUNT_UNIT_CHOICES = ['in', 'cm']
-    # PRESSURE_UNIT_CHOICES = ['kPa']
-
     min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
                                               verbose_name='Minimum temperature in last 24 hours') 
@@ -441,9 +436,6 @@ class FieldDataReading(Audit, Comment):
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
     irrigation          = models.DecimalField("irrigation in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
-    pressure            = models.DecimalField("irrigation in inches", blank = True,
-                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
-
 
     class Meta:
         abstract = True

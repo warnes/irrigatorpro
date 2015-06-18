@@ -36,3 +36,13 @@ def get_probe_readings(crop_season, field, start_date = None, end_date = None):
             probe_readings.extend(probe_reading.all())
 
     return probe_readings
+
+
+
+def to_faren(temp_c):
+    return 9.0 * temp_c /5.0 + 32.0
+
+def to_inches(length_in_cm):
+    return length_in_cm * 0.3937008
+
+
