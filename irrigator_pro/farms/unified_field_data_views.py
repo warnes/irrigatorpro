@@ -137,13 +137,13 @@ class UnifiedFieldDataListView(ModelFormSetView):
                         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
                         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
-                        if self.request.POST['depth_units']=='cm':
-                            if DEBUG: print "Converting temps from cm to in"
-                            obj.rain = to_inches(obj.rain)
-                            obj.irrigation = to_inches(obj.irrigation)
+                    if self.request.POST['depth_units']=='cm':
+                        if DEBUG: print "Converting temps from cm to in"
+                        obj.rain = to_inches(obj.rain)
+                        obj.irrigation = to_inches(obj.irrigation)
 
 
-                        obj.save()
+                    obj.save()
 
 
         ### The field list is not part of the form. Add to new objects

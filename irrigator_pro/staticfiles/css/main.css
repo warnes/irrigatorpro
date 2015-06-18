@@ -86,7 +86,11 @@ td {
 /******************/
 
 .submit-bar {
-    text-align: center;
+    background-color: #FFF;
+    width: 100%;
+    position: fixed;
+    bottom:20px;
+    text-align: left;
     padding: 10px;
 }
 
@@ -472,4 +476,9 @@ table.floatThead-table {
     border-top: none;
     border-bottom: none;
     background-color: #FFF;
+}
+
+
+table.unified-table {
+
 }

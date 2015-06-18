@@ -1,3 +1,13 @@
+// Some global variables. Will be assigned in $(document).ready()
+
+var start_date;
+var end_date;
+
+
+var showCompleteText = "Show Entire Season";	
+var showLast15Text   = "Show &plusmn;7 Days"	
+
+
 function addRow(afterRowID, date, crop_season_pk) {
 
     // Get number of current forms. Will have to update this count,
@@ -145,6 +155,11 @@ function colorPastTodayFuture() {
 
 $(document).ready(function() {
 
+
+    start_date = getStartDate();
+    end_date = getEndDate();
+
+
     /**
      * Disable datepicker since it is only used as a hidden input in a
      * form.
@@ -156,6 +171,29 @@ $(document).ready(function() {
         // to be an issue here.
         $(this).datepicker('destroy');
     });
+
+
+
+
+    // Initial settings for the number of rows to show
+    $("#rows_option").html(showCompleteText);
+    show15();
+       	
+    // Apply toggle to table
+    $("#rows_option").click(
+       	function() {
+       	    if ($(this).html() == showCompleteText) {
+       		$("#rows_option").html(showLast15Text);
+       		showAll();
+       	    } else {
+        	$("#rows_option").html(showCompleteText);
+       		show15();
+       	    }
+       	}
+    );
+
+
+
 
 
     /**
@@ -197,11 +235,23 @@ $(document).ready(function() {
     });
 
 
+
+    /**
+     * Remove the type=number from the rain and irrigation, and put them back
+     * just before form is submitted.
+     *
+     * Would work, have not tested setting back to number on submit.
+     */
+
+
+    // $(".units_temp_form input").each(function() {
+    //     $(this).removeAttr("type");
+
+    // });
     
     $(".dti").each(function() {
     	
     	var contents = $(this).text();
-    	
     	
     	if (contents.indexOf("Dry-") > 0) {
     	    
@@ -228,9 +278,104 @@ $(document).ready(function() {
     	
     });
 
-    colorPastTodayFuture();
+
+    /**
+     * Create an event for the text inputs containing a temperature
+     * changes. If it ends with [fF] or [cC] will convert depending on what
+     * the form says.
+     *
+     * Will only chage if matches reg
+     *  (valid_float)\s*[fFcF]
+     *
+     * and will convert if necessary, remove last character
+     */
+
+    // This till not work as long as the type in the input in 'number'
+
+    // $(".units_temp_form input").focusout(function() {
+
+
+    //     $(this).removeAttr("type");
+            
+
+    //     var regex = /(\d+)\s*([cCfF])$/g;
+    //     var text = $(this).val().trim();
+
+    //     console.log("Executing on: ", text);
+
+    //     result = regex.exec(text);
+
+    //     console.log(result);
+
+    //     $(this).attr("type", "number");
+
+    //     // var tmp = parseFloat($(this).val().trim());
+    //     // if (isNaN(tmp)) {
+    //     //     return;
+    //     // }
+    //     // $(this).val(round_2(F(tmp)));
+    // });
+
 
     $("#unified-table").floatThead({
         scrollingTop:50
     });
 });
+
+
+function showAll() {
+    $(".data_row").css("display", "");
+    colorPastTodayFuture();
+}
+
+
+function dateChangedManually() {
+    	
+    var newDate;
+    try {
+    	newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+    	$("#date-error").css("display", "none");
+    } catch (e) {
+    	$("#date-error").css("display", "inline");
+    	return;
+    }
+    
+    if( newDate < startDate || newDate > endDate )
+    {
+        $("#date-error").css("display", "inline");
+        return; 
+    }
+    
+    show15();
+    
+}
+
+
+
+
+function show15() {
+    var reportDateVal = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val() );
+
+    $(".data_row").each(function() {
+        thisDate= $.datepicker.parseDate('yy-mm-dd', $(this).attr("data-for-date"));
+    	if ( Math.abs(daysBetween(reportDateVal, thisDate)) <= 7) {
+    	    $(this).css("display","");
+        } 
+        else {
+    	    $(this).css("display","none");
+        } 
+    });
+
+    	
+    // // Starts at 2 otherwise hide table headers as well
+    // for (var i = 2; i < tableRows.length; i++) {
+    //     thisDate= $.datepicker.parseDate('yy-mm-dd', $.trim(tableRows[i].cells[0].innerHTML) ); 
+    // 	if ( Math.abs(daysBetween(reportDateVal, thisDate)) <= 7) {
+    // 	    tableRows[i].style.display = "";
+    //     } 
+    //     else {
+    // 	    tableRows[i].style.display = "none";
+    //     } 
+    // }
+    colorPastTodayFuture();
+}

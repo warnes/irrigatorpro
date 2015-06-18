@@ -5,7 +5,6 @@
 {% load static %}
 {% load mathfilters %}
 {% block content %}
-    <div class="irpro-block">
     <h1 class="global-data" data-report-date="{{report_date |date:"Y-m-d" }}">
         
         <i class="fa fa-pencil-square-o fa-fw"> </i>
@@ -16,6 +15,14 @@
                                                  value='{{report_date |date:"Y-m-d" }}' 
                                                  style="width: 6em">
     </h1>
+
+  <div id="date-error" style="color:red; display: none">
+    Date must be a valid date in the format YYYY-MM-DD between
+    {{crop_season.season_start_date|date:"Y-m-d"}} and
+    {{crop_season.season_end_date|date:"Y-m-d"}}.
+  </div>
+
+
     
     <h2>
         <em>{{crop_season}}</em>
@@ -33,32 +40,33 @@
 
     {% if object_list %}
         {{ wh_formset.id }}
-        <form  id="unified_form" action="{{ request.path }}" method="post">{% csrf_token %}
-            <table>
-                <tr>
-                    <td>Unit preference:</td>
-                    <td>Temperature:</td>
-                    <td>
-                        <select id="temp_units" name="temp_units" onchange="convert_temps()">
-                            <option value="F"  selected>Farenheits</option>
-                            <option value="C">Celsius</option>
-                        </select>
-                    </td>
-                    <td>Depth:</td>
-                    <td>
-                        <select id="depth_units" name="depth_units" onchange="convert_depths()">
-                            <option value="in" selected>Inches</option>
-                            <option value="cm">Centimeters</option>
-                        </select>
-                    </td>
-                </tr>
-            </table>
+        <form  id="unified_form" action="{{ request.path }}" method="post" novalidate>{% csrf_token %}
+            <div>
+                <table>
+                    <tr>
+                        <td>Unit preference:</td>
+                        <td>Temperature:</td>
+                        <td>
+                            <select id="temp_units" name="temp_units" onchange="convert_temps()">
+                                <option value="F"  selected>Farenheits</option>
+                                <option value="C">Celsius</option>
+                            </select>
+                        </td>
+                        <td>Depth:</td>
+                        <td>
+                            <select id="depth_units" name="depth_units" onchange="convert_depths()">
+                                <option value="in" selected>Inches</option>
+                                <option value="cm">Centimeters</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
 
 
-
-
-            <table id="unified-table" class="formset" >
+            <div>
+            <table id="unified-table" class="formset unified-table" >
                 <thead>
                     <tr class="header1">
                         <th rowspan=2>Date</th>
@@ -398,6 +406,8 @@
                     {% endfor %}
                 </tbody>
             </table>
+
+            </div>
             <div class="submit-bar">
                 <button value="Submit" type="submit" class="btn btn-success">
   	            <i class="fa fa-floppy-o"></i> Save Changes
@@ -422,7 +432,6 @@
             </div>
         {% endif %}
     {% endif %}
-    </div>
 {% endblock %}
 
 
@@ -447,6 +456,20 @@
     	        }		
     	    );
         });
+
+     function getStartDate() {
+         return new Date({{crop_season.season_start_date.year}},
+                         {{crop_season.season_start_date.month}}-1,
+                         {{crop_season.season_start_date.day}});
+     }
+
+     function getEndDate() {
+         return new Date({{crop_season.season_end_date.year}},
+                         {{crop_season.season_end_date.month}}-1,
+                         {{crop_season.season_end_date.day}});
+
+     }
+
     </script>
 
 {% endblock %}
