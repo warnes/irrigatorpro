@@ -117,3 +117,15 @@ function extractEmail(queryString) {
 	return "";
     return m[0];
 }
+
+
+
+
+
+/**
+ * Code adpated from stackoverflow and google.
+ */
+function daysBetween(firstDate, secondDate) {
+    var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+    return   Math.round((secondDate.getTime() - firstDate.getTime())/(oneDay));
+}
