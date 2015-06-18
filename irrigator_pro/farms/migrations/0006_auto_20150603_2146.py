@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='probe',
             name='field',
-            field=models.ForeignKey(related_name='the_field', default=None, to='farms.Field'),
+            field=models.ForeignKey(related_name='the_field', default=None, to='farms.Field', blank=True, null=True),
             preserve_default=False,
         ),
         migrations.AlterField(
