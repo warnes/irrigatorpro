@@ -48,7 +48,7 @@
                         <td>Temperature:</td>
                         <td>
                             <select id="temp_units" name="temp_units" onchange="convert_temps()">
-                                <option value="F"  selected>Farenheits</option>
+                                <option value="F" selected>Farenheit</option>
                                 <option value="C">Celsius</option>
                             </select>
                         </td>
@@ -74,13 +74,12 @@
                         <th colspan=3>Soil Potential</th>
                         <th colspan=2>Soil Temperature</th>
                         <th colspan="2">Added Water</th>
-                        <th rowspan="2">Delete</th>
+                        <th rowspan="2">Ignore / Delete</th>
                         <th colspan="2">Crop</th>
                         <th rowspan="2">Average Water Content(AWC)</th>
                         <th rowspan="2">Recommendation</th>
                         <th rowspan="2">Message</th>
                         <th rowspan="2">Comment</th>
-                        <th rowspan="2">Delete</th>
                     </tr>
                     <tr class="header2">
                         <th>8in</th>
@@ -270,7 +269,6 @@
                                             </td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.message }}</td>
                                             <td>{{ record.comment }}</td>
-                                            <td></td>
                                             
                                         {% endwith %}
                                         
@@ -345,7 +343,7 @@
                                     
                                         <td class="units_depth_form">{{ form.rain.error }}{{ form.rain }}</td>
                                         <td class="units_depth_form">{{ form.irrigation.error }}{{ form.irrigation }}</td>
-                                        <td class="units_depth_form">{{ form.ignore }}</td>
+                                        <td>{{ form.DELETE }}</td>
 
                                         {% comment %}
                                         The exact same code is copied above. 
@@ -395,7 +393,6 @@
 
                                         {% endif %}
                                         <td>{{ form.comment }}</td>
-                                        <td>{{ form.DELETE }}</td>
 
                                     </tr>
                                 {% endwith %}
