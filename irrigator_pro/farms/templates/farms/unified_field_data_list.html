@@ -41,7 +41,7 @@
     {% if object_list %}
         {{ wh_formset.id }}
         <form  id="unified_form" action="{{ request.path }}" method="post" novalidate>{% csrf_token %}
-            <div>
+            <div class ="unit-choices">
                 <table>
                     <tr>
                         <td>Unit preference:</td>
@@ -65,7 +65,7 @@
 
 
 
-            <div>
+            <div style="padding-bottom:30px;">
             <table id="unified-table" class="formset unified-table" >
                 <thead>
                     <tr class="header1">
