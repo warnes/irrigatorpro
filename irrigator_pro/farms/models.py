@@ -508,6 +508,7 @@ class WaterHistory(FieldDataReading):
     crop_season             = models.ForeignKey(CropSeason)
     field_list              = models.ManyToManyField(Field)
     date                    = models.DateField()
+    reading_time            = models.TimeField()
     available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
                                                   blank=True, null=True)   # Null --> Not yet calculated
 

@@ -17,6 +17,8 @@ from django.utils import timezone
 
 from django.http import HttpResponseRedirect
 from django.forms.widgets import HiddenInput as HiddenInput
+from django.forms.widgets import TextInput as TextInput
+from django.forms.widgets import TimeInput as TimeInput
 
 import os
 import types
@@ -47,6 +49,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
     fields = [
         'crop_season',
         'date',
+        'reading_time',
         'soil_potential_8',
         'soil_potential_16',
         'soil_potential_24',
@@ -59,7 +62,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
     widgets  = {
         'crop_season': HiddenInput(),
         'date': HiddenInput(),
-        'field_list': HiddenInput()
+        'field_list': HiddenInput(),
+        'reading_time': TextInput(attrs={'size':'8'})
     }
     extra = 0
     can_delete=True
