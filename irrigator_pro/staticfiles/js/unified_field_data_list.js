@@ -156,6 +156,12 @@ function colorPastTodayFuture() {
 $(document).ready(function() {
 
 
+    $("input[id$=reading_time]").timepicker({
+        timeFormat: 'HH:mm'
+    });
+
+
+
     start_date = getStartDate();
     end_date = getEndDate();
 
