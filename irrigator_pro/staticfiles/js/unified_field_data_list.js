@@ -323,7 +323,7 @@ $(document).ready(function() {
     // });
 
 
-    $("#unified-table").floatThead({
+    $("table.unified-table").floatThead({
         scrollingTop:50
     });
 });
@@ -331,7 +331,11 @@ $(document).ready(function() {
 
 function showAll() {
     $(".data_row").css("display", "");
+
     colorPastTodayFuture();
+
+    // Recalculate column widths for floating header
+    $("table.unified-table").floatThead('reflow');
 }
 
 
@@ -371,17 +375,9 @@ function show15() {
     	    $(this).css("display","none");
         } 
     });
-
-    	
-    // // Starts at 2 otherwise hide table headers as well
-    // for (var i = 2; i < tableRows.length; i++) {
-    //     thisDate= $.datepicker.parseDate('yy-mm-dd', $.trim(tableRows[i].cells[0].innerHTML) ); 
-    // 	if ( Math.abs(daysBetween(reportDateVal, thisDate)) <= 7) {
-    // 	    tableRows[i].style.display = "";
-    //     } 
-    //     else {
-    // 	    tableRows[i].style.display = "none";
-    //     } 
-    // }
+ 
     colorPastTodayFuture();
+
+    // Recalculate column widths for floating header   	
+    $("table.unified-table").floatThead('reflow');
 }

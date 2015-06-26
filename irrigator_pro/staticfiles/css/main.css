@@ -480,7 +480,8 @@ table.floatThead-table {
 
 
 table.unified-table {
-
+    table-alignment: fixed;
+    background-color: #eefcff;
 }
 
 
