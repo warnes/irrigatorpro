@@ -95,7 +95,7 @@ def processProbeReading(record, store_probes=True):
 
 
     ( id,
-      reading_datetime,
+      datetime,
       farm_code,
       probe_code,
       radio_id,
@@ -111,21 +111,21 @@ def processProbeReading(record, store_probes=True):
     ) = record;
 
     if DEBUG:
-        print reading_datetime
+        print datetime
         sys.stdout.flush()
 
     user = User.objects.get(email=OWNER)
     now  = timezone.now()
 
     ## Add local timzone to reading datetime object
-    reading_datetime = reading_datetime.replace(tzinfo=timezone.get_current_timezone())
-    reading_date = reading_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+    datetime = datetime.replace(tzinfo=timezone.get_current_timezone())
+    reading_date = datetime.replace(hour=0, minute=0, second=0, microsecond=0)
     one_day = timedelta(days=1)
 
     # if _one_ reading for this date already exists, update it
     try:
-        rpr = ProbeReading.objects.get(reading_datetime__gte=reading_date,
-                                       reading_datetime__lt =reading_date + one_day,
+        rpr = ProbeReading.objects.get(datetime__gte=reading_date,
+                                       datetime__lt =reading_date + one_day,
                                        radio_id=radio_id
                                        )
         new_record = False
@@ -133,7 +133,7 @@ def processProbeReading(record, store_probes=True):
 
     # if _no_ reading exists, create a new one
     except ProbeReading.DoesNotExist:
-        rpr = ProbeReading(reading_datetime = reading_datetime,
+        rpr = ProbeReading(datetime = datetime,
                            radio_id=radio_id
                            )
         nRecords += 1
@@ -144,19 +144,19 @@ def processProbeReading(record, store_probes=True):
     # if _more_than_one_ reading exists there is a problem, 
     # so print the offending records. 
     except ProbeReading.MultipleObjectsReturned, e:
-        rprs = ProbeReading.objects.filter(reading_datetime__gte=reading_date,
-                                           reading_datetime__lt=reading_date + one_day,
+        rprs = ProbeReading.objects.filter(datetime__gte=reading_date,
+                                           datetime__lt=reading_date + one_day,
                                            radio_id=radio_id)
         print "farm_codes=", map(lambda pr: pr.farm_code, rprs)
         print "probe_codes=", map(lambda pr: pr.farm_code, rprs)
         print "radio_ids=", map(lambda pr: pr.radio_id, rprs)
-        print "reading_datetime=", map(lambda pr: pr.reading_datetime, rprs)
+        print "datetime=", map(lambda pr: pr.datetime, rprs)
         raise e
 
     rpr.muser               = user
 
     # Store most recent entry information for everything *except* temperature
-    rpr.reading_datetime    = reading_datetime
+    rpr.datetime    = datetime
     rpr.radio_id            = radio_id
     #rpr.file_date           = file_date
     rpr.battery_voltage     = battery_voltage
@@ -190,7 +190,7 @@ today = date.today()
 
 ## Default start date is the last one in the datebase
 try:
-    date_start_default = ProbeReading.objects.filter(source=u'UGADB').latest('reading_datetime').reading_datetime.date()
+    date_start_default = ProbeReading.objects.filter(source=u'UGADB').latest('datetime').datetime.date()
 except:
     date_start_default = "%s-01-01" % today.year
 
@@ -268,13 +268,13 @@ sys.stderr.write("Date range: %s to %s \n" % ( date_start, date_end ) )
 sys.stderr.write("\n")
 
 if store_clean:
-    pr_query = ProbeReading.objects.filter(reading_datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
-                                           reading_datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
+    pr_query = ProbeReading.objects.filter(datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+                                           datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
                                            )
     nrecords_before = len(pr_query)
     pr_query.delete()
-    pr_query = ProbeReading.objects.filter(reading_datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
-                                           reading_datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
+    pr_query = ProbeReading.objects.filter(datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+                                           datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
                                            )
     nrecords_after = len(pr_query)
     print "Deleted %d records." % (nrecords_before - nrecords_after)

@@ -386,14 +386,7 @@ class Probe(NameDesc, Comment, Audit):
 
     crop_season = models.ForeignKey(CropSeason,   blank=False)  # Probe assignments change with crop season
     radio_id    = models.CharField(max_length=10, blank=False)  # don't allow blanks!
-    field_list  = models.ManyToManyField(Field)
-
-    def get_field_list(self):
-        field_list = self.field_list.all()
-        if field_list:
-            return ', '.join([ str(obj) for obj in field_list])
-        else:
-            return ''
+    field       = models.ForeignKey(Field)
 
     def __unicode__(self):
         return u"Probe %s" % self.radio_id.strip()
@@ -409,6 +402,9 @@ class Probe(NameDesc, Comment, Audit):
 #####################################################
 
 class FieldDataReading(Audit, Comment):
+
+    datetime            = models.DateTimeField(default=timezone.now)
+
 
     min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
@@ -448,13 +444,16 @@ class ProbeReading(FieldDataReading):
     """
 
     # from Audit: cdate, cuser, mdate, muser
+    # from FieldDataReading: datetime, min_temp_24_hours,
+    #                        max_temp_24_hours, ignore, 
+    #                        soil_potential_8, soil_potential_16,
+    #                        soil_potential_24, rain, irrigation
 
     ## From filename
     farm_code           = models.CharField(max_length=10, blank=True)
     file_date           = models.DateField(blank=True, null=True)
 
     ## From file contents
-    reading_datetime    = models.DateTimeField()
     probe_code          = models.CharField(max_length=10, blank=True)
     radio_id            = models.CharField(max_length=10)
     battery_voltage     = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True) #   #.##
@@ -482,12 +481,12 @@ class ProbeReading(FieldDataReading):
 
     class Meta:
         verbose_name = "Probe Reading"
-        unique_together = ( ("radio_id", "reading_datetime", ) , )
-        #ordering = [ "reading_datetime", "radio_id", ]
+        unique_together = ( ("radio_id", "datetime", ) , )
+        #ordering = [ "datetime", "radio_id", ]
 
     def __unicode__(self):
         return u"ProbeReading %s on %s" % ( self.radio_id.strip(),
-                                            self.reading_datetime,
+                                            self.datetime,
                                           )
     def temperature(self):
         if (0 < self.thermocouple_1_temp < 130):
@@ -505,27 +504,24 @@ class ProbeReading(FieldDataReading):
 class WaterHistory(FieldDataReading):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
+    # from FieldDataReading: datetime, min_temp_24_hours,
+    #                        max_temp_24_hours, ignore, 
+    #                        soil_potential_8, soil_potential_16,
+    #                        soil_potential_24, rain, irrigation
+
     crop_season             = models.ForeignKey(CropSeason)
-    field_list              = models.ManyToManyField(Field)
-    date                    = models.DateField()
-    reading_time            = models.TimeField()
+    field                   = models.ForeignKey(Field)
     available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
                                                   blank=True, null=True)   # Null --> Not yet calculated
 
     source_type                  = 'Manual'
-    def get_field_list(self):
-        field_list = self.field_list.all()
-        if field_list:
-            return ', '.join([ obj.name for obj in field_list])
-        else:
-            return ''
 
     class Meta:
         verbose_name        = "Water History"
         verbose_name_plural = "Water Histories"
 
     def __unicode__(self):
-        return u"Water History Entry [%s] on %s" % ( self.id , self.date ) 
+        return u"Water History Entry [%s] for %s" % ( self.id , self.datetime ) 
 
 
 

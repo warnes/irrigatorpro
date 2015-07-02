@@ -54,7 +54,7 @@ def calculateAWC_ProbeReading(crop_season,
     of (AWC, temp)
     """
 
-    probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+    probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
     radio_ids = []
     if len(probes) == 0:
         return ( None, None )
@@ -81,7 +81,7 @@ def calculateAWC_ProbeReading(crop_season,
     probe_readings = []
     for r_id in radio_ids:
         probe_reading = ProbeReading.objects.filter(radio_id=r_id,
-                                                    reading_datetime__startswith=date).order_by('reading_datetime').last()
+                                                    datetime__startswith=date).order_by('datetime').last()
 
         if  probe_reading:
             probe_readings.append(probe_reading)
@@ -195,7 +195,7 @@ def calculateAWC_min(crop_season,
     Calculate the minumum Available Water Content for the specified field.
     """
 
-    probes = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+    probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
 
     ## Get the maximum root depth
     if crop_season:
@@ -294,7 +294,7 @@ def calculateAWC_RainIrrigation(crop_season,
 
     if water_history_query is None:
         water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
-                                                          field_list=field).all()
+                                                          field=field).all()
 
     wh_list = water_history_query.filter(date=date).all()
 
@@ -338,7 +338,7 @@ def earliest_register_to_update(report_date,
         if DEBUG: print 'No water register yet'
         return crop_season.season_start_date
     
-    if DEBUG: print 'Date of latest wr: ', latest_water_register.date
+    if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
 
 
 
@@ -346,37 +346,36 @@ def earliest_register_to_update(report_date,
     # water register has been modified
 
     earliest_wh_update = WaterHistory.objects.filter(crop_season=crop_season,
-                                          field_list=field).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('date').first()
+                                                     field=field).filter(
+                               Q(mdate__gte = latest_water_register.mdate)).order_by('datetime').first()
 
-    earliest_to_update = latest_water_register.date + timedelta(days=1)
+    earliest_to_update = latest_water_register.datetime.date() + timedelta(days=1)
     if earliest_wh_update is None:
         if DEBUG: print 'No WH will cause update to water register'
     else:
-        earliest_to_update = earliest_wh_update.date
+        earliest_to_update = earliest_wh_update.datetime.date()
 
     # Get the earliest probe reading that has been modified after the latest
     # water register has been modified
         
     try:
-        probe_list = Probe.objects.filter(crop_season=crop_season, field_list=field).all()
+        probe_list = Probe.objects.filter(crop_season=crop_season, field=field).all()
 
         earliest_changed_probe = None
         for probe in probe_list:
-            earliest_changed = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('reading_datetime').first()
+            earliest_changed = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('datetime').first()
 
             if earliest_changed_probe is None:
                 earliest_changed_probe = earliest_changed
             else:
-                if earliest_changed is not None and earliest_changed.reading_datetime < earliest_changed_probe.reading_datetime:
-
-                
+                if earliest_changed is not None and earliest_changed.datetime < earliest_changed_probe.datetime:
                     earliest_changed_probe = earliest_changed
 
         if earliest_changed_probe is None:
             if DEBUG: print 'No probe will cause update (nothing changed)'
         else:
-            if earliest_changed_probe.reading_datetime.date() < earliest_to_update:
-                earliest_to_update = earliest_changed_probe.reading_datetime.date()
+            if earliest_changed_probe.datetime.date() < earliest_to_update:
+                earliest_to_update = earliest_changed_probe.datetime.date()
                 if DEBUG: print 'Update caused by updated probe reading'
             else:
                 if DEBUG: print 'Probe will not cause update (wh even earlier)'
@@ -387,9 +386,9 @@ def earliest_register_to_update(report_date,
     if DEBUG: print "Caclulated dependency dates:"
     if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
     if DEBUG: print "earliest changed probe:", earliest_to_update
-    if DEBUG: print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
+    if DEBUG: print "latest_water_register.datetime.date() + 1:", latest_water_register.datetime.date() + timedelta(1)
 
-    return minNone(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
+    return minNone(dependency_mdate, earliest_to_update, latest_water_register.datetime.date() + timedelta(1))
 
 
 # In order to test we change the definition of "Today". It is passed
@@ -428,7 +427,7 @@ def generate_water_register(crop_season,
                                                              ).order_by('-date').first()
 
         if latest_water_register:
-            last_register_date = max(today_plus_delta, latest_water_register.date)
+            last_register_date = max(today_plus_delta, latest_water_register.datetime.date())
         else:
             last_register_date = today_plus_delta
 
@@ -443,7 +442,7 @@ def generate_water_register(crop_season,
 
 
     # try:
-    #     probe = Probe.objects.get(crop_season=crop_season, field_list=field)
+    #     probe = Probe.objects.get(crop_season=crop_season, field=field)
     #     radio_id = probe.radio_id
     # except ObjectDoesNotExist:
     #     probe = None
@@ -451,7 +450,7 @@ def generate_water_register(crop_season,
 
 
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
-                                                            field_list=field).all()
+                                                            field=field).all()
     crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
                                                               crop_season__field_list=field).distinct().all()
     ####
@@ -499,7 +498,7 @@ def generate_water_register(crop_season,
         ## Check if we have (cached) the water register object for
         ## yesterday, if so grab the AWC, otherwise use the default
         ## maximum for the soil type
-        if (wr_prev is None) or (wr_prev.date != yesterday): 
+        if (wr_prev is None) or (wr_prev.datetime.date() != yesterday): 
             try:
                 wr_prev = wr_query.filter(date=yesterday)[0]
                 AWC_prev = wr_prev.average_water_content

@@ -20,7 +20,7 @@ class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
     template_name = 'farms/probe_readings.html'
     fields = [
-        'reading_datetime',
+        'datetime',
         'radio_id',
         'soil_potential_8', 'soil_potential_16', 'soil_potential_24',
         'battery_percent',
@@ -38,8 +38,8 @@ class ProbeReadingFormsetView(ModelFormSetView):
         return super(ProbeReadingFormsetView, self).dispatch(*args, **kwargs)
 
     def getProbes(self, user, season, field):
-        probes = Probe.objects.filter( Q(field_list__farm__farmer=user) |
-                                     Q(field_list__farm__users=user)
+        probes = Probe.objects.filter( Q(field__farm__farmer=user) |
+                                     Q(field__farm__users=user)
                                    )
         if season:
             probes = probes.filter( crop_season = season )
@@ -64,12 +64,12 @@ class ProbeReadingFormsetView(ModelFormSetView):
             for radio_id in radioIds:
                 query = query | Q( radio_id=radio_id )
 
-        queryset = queryset.filter(query).distinct().order_by('radio_id','reading_datetime')
+        queryset = queryset.filter(query).distinct().order_by('radio_id','datetime')
 
         if self.season:
             crop_season = CropSeason.objects.get(pk=self.season.pk)
-            queryset = queryset.filter( reading_datetime__gte=crop_season.season_start_date,
-                                        reading_datetime__lte=crop_season.season_end_date )
+            queryset = queryset.filter( datetime__gte=crop_season.season_start_date,
+                                        datetime__lte=crop_season.season_end_date )
 
 
         return queryset.distinct()

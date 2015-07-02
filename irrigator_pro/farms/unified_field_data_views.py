@@ -39,7 +39,7 @@ class UnifiedFieldDataEmptyView(TemplateView):
 
 ######################################################################
 ### Views class for the unified view of fields data: rain, irrigation,
-### temps, etc as well as computer values from the water register.
+### temps, etc as well as computed values from the water register.
 ### 
 
 
@@ -49,7 +49,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
     fields = [
         'crop_season',
         'date',
-        'reading_time',
+        'time',
         'soil_potential_8',
         'soil_potential_16',
         'soil_potential_24',
@@ -62,8 +62,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
     widgets  = {
         'crop_season': HiddenInput(),
         'date': HiddenInput(),
-        'field_list': HiddenInput(),
-        'reading_time': TextInput(attrs={'size':'8'})
+        'time': TextInput(attrs={'size':'8'})
     }
     extra = 0
     can_delete=True
@@ -90,7 +89,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     def get_queryset(self):
         query = super(UnifiedFieldDataListView, self).get_queryset().filter(crop_season=self.crop_season,
-                                                                            field_list=self.field).all().order_by("date")
+                                                                            field=self.field).all().order_by("date")
         return query
 
 
@@ -107,7 +106,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
     ### Save the formset.
     ###
     ### Because user can convert the temperature and depth values in the form
-    ### could look like they changed iven if they have not.  To avoid saving
+    ### could look like they changed even if they have not.  To avoid saving
     ### objects that have not changed, causing unnecessary recomputation to
     ### the water register, there is a hidden field that is added when a user
     ### clicks in at least one field from a form.
@@ -153,9 +152,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
         ### The field list is not part of the form. Add to new objects
         ## Need this in order to create new_objects list
         for obj in formset.new_objects:
+            obj.field=self.field
             obj.save(force_update=False)
-            obj.field_list.add(self.field)
-            #            obj = object.save(commit=False)
             ### Copied from above. Need to factor out
             if self.request.POST['temp_units']=='C':
                 if DEBUG: print "Converting temps from C to F"
