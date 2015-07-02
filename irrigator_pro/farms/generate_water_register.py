@@ -296,7 +296,7 @@ def calculateAWC_RainIrrigation(crop_season,
         water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
                                                           field=field).all()
 
-    wh_list = water_history_query.filter(date=date).all()
+    wh_list = water_history_query.filter(datetime__contains=date).all()
 
     if wh_list:
         rainfall   = sum( map( lambda wh: wh.rain, wh_list ) )
@@ -338,7 +338,7 @@ def earliest_register_to_update(report_date,
         if DEBUG: print 'No water register yet'
         return crop_season.season_start_date
     
-    if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
+    if DEBUG: print 'Date of latest wr: ', latest_water_register.date
 
 
 
@@ -349,7 +349,7 @@ def earliest_register_to_update(report_date,
                                                      field=field).filter(
                                Q(mdate__gte = latest_water_register.mdate)).order_by('datetime').first()
 
-    earliest_to_update = latest_water_register.datetime.date() + timedelta(days=1)
+    earliest_to_update = latest_water_register.date + timedelta(days=1)
     if earliest_wh_update is None:
         if DEBUG: print 'No WH will cause update to water register'
     else:
@@ -386,9 +386,9 @@ def earliest_register_to_update(report_date,
     if DEBUG: print "Caclulated dependency dates:"
     if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
     if DEBUG: print "earliest changed probe:", earliest_to_update
-    if DEBUG: print "latest_water_register.datetime.date() + 1:", latest_water_register.datetime.date() + timedelta(1)
+    if DEBUG: print "latest_water_register.date + 1:", latest_water_register.date + timedelta(1)
 
-    return minNone(dependency_mdate, earliest_to_update, latest_water_register.datetime.date() + timedelta(1))
+    return minNone(dependency_mdate, earliest_to_update, latest_water_register.date + timedelta(1))
 
 
 # In order to test we change the definition of "Today". It is passed
@@ -427,7 +427,7 @@ def generate_water_register(crop_season,
                                                              ).order_by('-date').first()
 
         if latest_water_register:
-            last_register_date = max(today_plus_delta, latest_water_register.datetime.date())
+            last_register_date = max(today_plus_delta, latest_water_register.date)
         else:
             last_register_date = today_plus_delta
 
@@ -498,7 +498,7 @@ def generate_water_register(crop_season,
         ## Check if we have (cached) the water register object for
         ## yesterday, if so grab the AWC, otherwise use the default
         ## maximum for the soil type
-        if (wr_prev is None) or (wr_prev.datetime.date() != yesterday): 
+        if (wr_prev is None) or (wr_prev.date != yesterday): 
             try:
                 wr_prev = wr_query.filter(date=yesterday)[0]
                 AWC_prev = wr_prev.average_water_content

@@ -48,8 +48,9 @@ class UnifiedFieldDataListView(ModelFormSetView):
     model = WaterHistory
     fields = [
         'crop_season',
-        'date',
-        'time',
+        'datetime',
+        #'date',
+        #'time',
         'soil_potential_8',
         'soil_potential_16',
         'soil_potential_24',
@@ -62,7 +63,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
     widgets  = {
         'crop_season': HiddenInput(),
         'date': HiddenInput(),
-        'time': TextInput(attrs={'size':'8'})
+        'time': TextInput(attrs={'size':'8'}),
+        'datetime': TextInput(attrs={'size':'8'})
     }
     extra = 0
     can_delete=True
@@ -89,7 +91,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     def get_queryset(self):
         query = super(UnifiedFieldDataListView, self).get_queryset().filter(crop_season=self.crop_season,
-                                                                            field=self.field).all().order_by("date")
+                                                                            field=self.field).all().order_by("datetime")
         return query
 
 
@@ -225,6 +227,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
         context['crop_season']  = self.crop_season
         context['field']        = self.field
         context['report_date']  = self.report_date
+        #context['datetime']     = self.datetime
 
         return context
 

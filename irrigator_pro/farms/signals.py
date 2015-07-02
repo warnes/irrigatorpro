@@ -238,7 +238,7 @@ def handler_Probe(sender, instance,  **kwargs):
             old_field.save()
 
         if new_field:
-            new_field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+            new_field.earliest_changed_dependency_date = minNone(new_field.earliest_changed_dependency_date, 
                                                                  new_earliest_probereading_date)
             new_field.save()
 

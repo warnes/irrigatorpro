@@ -403,8 +403,13 @@ class Probe(NameDesc, Comment, Audit):
 
 class FieldDataReading(Audit, Comment):
 
-    datetime            = models.DateTimeField(default=timezone.now)
+    datetime            = models.DateTimeField(blank=False, null=False)
 
+    def date(self):
+        return self.datetime.date()
+
+    def time(self):
+        return self.datetime.time()
 
     min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,

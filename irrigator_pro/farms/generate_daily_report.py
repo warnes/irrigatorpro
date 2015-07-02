@@ -33,9 +33,9 @@ def generate_daily_report(report_date, user):
 
     # Create a dictionary with ('field', 'crop_season')
     crop_season_field = {}
-    for x in crop_season_list:
-        for field in x.field_list.all():
-            crop_season_field[field] = x
+    for cs in crop_season_list:
+        for field in cs.field_list.all():
+            crop_season_field[field] = cs
     
     for farm in farm_list:
         field_list = Field.objects.filter(farm = farm)

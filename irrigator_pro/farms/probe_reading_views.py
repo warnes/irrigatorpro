@@ -44,7 +44,7 @@ class ProbeReadingFormsetView(ModelFormSetView):
         if season:
             probes = probes.filter( crop_season = season )
         if field:
-            probes = probes.filter( field_list = field )
+            probes = probes.filter( field = field )
         return probes.distinct()
 
     def getRadioIds(self, user, season, field):
