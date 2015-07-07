@@ -64,8 +64,6 @@
             </div>
 
 
-
-            <div style="padding-bottom:30px;">
             <table class="formset unified-table" >
                 <thead>
                     <tr class="header1">
@@ -78,7 +76,7 @@
                         <th rowspan="2">Ignore / Delete</th>
                         <th colspan="2">Crop</th>
                         <th rowspan="2">Available Water Content (AWC)</th>
-                        <th rowspan="2">Recommen&shy;dation</th>
+                        <th rowspan="2">Recom&shy;men&shy;dation</th>
                         <th rowspan="2">Message</th>
                         <th rowspan="2">Comment</th>
                     </tr>
@@ -293,7 +291,7 @@
                                         <td class="units_depth">{{ record.irrigation }}</td>
 
                                         <td>{{ record.ignore }}</td>
-                                        
+                                        <td></td>
                                         
                                     {% endif %}
                                 </tr>
@@ -407,7 +405,6 @@
                 </tbody>
             </table>
 
-            </div>
             <div class="submit-bar">
                 <button value="Submit" type="submit" class="btn btn-success">
   	            <i class="fa fa-floppy-o"></i> Save Changes
@@ -416,6 +413,7 @@
   	            <i class="fa fa-undo fa-fw"></i> Cancel Changes
   	        </a>
             </div>
+
         
             {{ wh_formset.management_form }}
         </form>
