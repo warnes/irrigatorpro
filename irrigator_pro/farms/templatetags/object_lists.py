@@ -65,8 +65,7 @@ def crop_season_list(parser, token):
             crop_season.probe_list_all = crop_season.probe_set.all()
             probe_field_list = []
             for probe in crop_season.probe_set.all():
-                for field in probe.field_list.all():
-                    probe_field_list.append( (field, probe) )
+              probe_field_list.append( (probe.field, probe) )
 
 
             probe_field_list.sort(key=lambda i:str(i[0]) )

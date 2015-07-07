@@ -42,33 +42,26 @@ def handler_WaterHistory(sender, instance, **kwargs):
         new_instance = instance
         old_instance = WaterHistory.objects.get(pk=instance.id)
 
-        for field in old_instance.field_list.all():
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+        old_field=old_instance.field
+        new_field=new_instance.field
+        old_field.earliest_changed_dependency_date = minNone(old_field.earliest_changed_dependency_date, 
                                                              old_instance.date)
-            field.save()
+        new_field.earliest_changed_dependency_date = minNone(new_field.earliest_changed_dependency_date, 
+                                                             new_instance.date)
 
-        # field list changed
-        removed_fields = set( old_instance.field_list.all() ) - \
-                         set( new_instance.field_list.all() ) 
-
-        added_fields   = set( new_instance.field_list.all() ) - \
-                         set( old_instance.field_list.all() ) 
-                         
-        for field in removed_fields:
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+        old_field.earliest_changed_dependency_date = minNone(old_field.earliest_changed_dependency_date, 
                                                              old_earliest_probereading_date)
-            field.save()
+        old_field.save()
 
-        for field in added_fields:
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+        new_field.earliest_changed_dependency_date = minNone(new_field.earliest_changed_dependency_date, 
                                                              new_earliest_probereading_date)
-            field.save()
-    else:                                                         
+        new_field.save()
+    else:   
         try:
-            for field in instance.field_list.all():
-                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                 instance.date)
-                field.save()
+            field = instance.field
+            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                             instance.date)
+            field.save()
         except ValueError:
             pass
 
@@ -81,34 +74,34 @@ def handler_ProbeReading(sender, instance, **kwargs):
         new_instance = instance
         old_instance = ProbeReading.objects.get(pk=instance.id)
         old_radio_id = old_instance.radio_id
-        old_reading_date = old_instance.reading_datetime.date()
+        old_reading_date = old_instance.datetime.date()
 
         old_probes = Probe.objects.filter(radio_id=old_radio_id,
                                           crop_season__season_start_date__lte=old_reading_date,
                                           crop_season__season_end_date__gte=old_reading_date)
 
         for old_probe in old_probes:
-            for field in old_probe.field_list.all():
-                new_date = minNone(field.earliest_changed_dependency_date, 
-                                   old_instance.reading_datetime.date() )
-                field.earliest_changed_dependency_date = new_date
-                if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
-                field.save()
+            field=old_probe.field
+            new_date = minNone(field.earliest_changed_dependency_date, 
+                               old_instance.datetime.date() )
+            field.earliest_changed_dependency_date = new_date
+            if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+            field.save()
 
     this_radio_id = instance.radio_id
-    this_reading_date = instance.reading_datetime.date()
+    this_reading_date = instance.datetime.date()
 
     new_probes = Probe.objects.filter(radio_id=this_radio_id,
                                       crop_season__season_start_date__lte=this_reading_date,
                                       crop_season__season_end_date__gte=this_reading_date)
 
     for new_probe in new_probes:
-        for field in new_probe.field_list.all():
-            new_date = minNone(field.earliest_changed_dependency_date, 
-                               instance.reading_datetime.date() )
-            field.earliest_changed_dependency_date = new_date
-            if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
-            field.save()
+        field=new_probe.field
+        new_date = minNone(field.earliest_changed_dependency_date, 
+                           instance.datetime.date() )
+        field.earliest_changed_dependency_date = new_date
+        if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+        field.save()
 
 
 @receiver(pre_save,   sender=CropSeasonEvent)
@@ -202,11 +195,11 @@ def handler_Probe(sender, instance,  **kwargs):
         old_season_start_date = old_instance.crop_season.season_start_date
         old_season_end_date   = old_instance.crop_season.season_end_date
         old_probereadings     = ProbeReading.objects.filter(radio_id=old_radio_id, 
-                                                             reading_datetime__range=(old_season_start_date,
+                                                             datetime__range=(old_season_start_date,
                                                                                       old_season_end_date)
                                                              )
         if old_probereadings:
-            old_earliest_probereading_date = old_probereadings.earliest('reading_datetime').reading_datetime.date();
+            old_earliest_probereading_date = old_probereadings.earliest('datetime').datetime.date();
         else: 
             old_earliest_probereading_date = None;
 
@@ -214,58 +207,57 @@ def handler_Probe(sender, instance,  **kwargs):
         new_season_start_date = new_instance.crop_season.season_start_date
         new_season_end_date   = new_instance.crop_season.season_end_date
         new_probereadings     = ProbeReading.objects.filter(radio_id=new_radio_id, 
-                                                             reading_datetime__range=(new_season_start_date,
+                                                             datetime__range=(new_season_start_date,
                                                                                       new_season_end_date)
                                                              )
         if new_probereadings:
-            new_earliest_probereading_date = new_probereadings.earliest('reading_datetime').reading_datetime.date();
+            new_earliest_probereading_date = new_probereadings.earliest('datetime').datetime.date();
         else: 
             new_earliest_probereading_date = None;
 
     
         if old_radio_id != new_radio_id:  # changed radioid
-            if old_instance.id and old_instance.field_list:
-                for field in old_instance.field_list.all():
-                    field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                     old_earliest_probereading_date)
-                    field.save()
+            if old_instance.id and old_instance.field:
+                field=old_instance.field
+                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                 old_earliest_probereading_date)
+                field.save()
 
-            if new_instance.id and new_instance.field_list:
-                for field in new_instance.field_list.all():
-                    field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                     new_earliest_probereading_date)
-                    field.save()
+            if new_instance.id and new_instance.field:
+                field=new_instance.field
+                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                 new_earliest_probereading_date)
+                field.save()
 
-        removed_fields = set( old_instance.field_list.all() ) - \
-                         set( new_instance.field_list.all() ) 
+        old_field = old_instance.field
+        new_field = new_instance.field
+            
+        if old_field:
+            old_field.earliest_changed_dependency_date = minNone(old_field.earliest_changed_dependency_date, 
+                                                                 old_earliest_probereading_date)
+            old_field.save()
 
-        added_fields   = set( new_instance.field_list.all() ) - \
-                         set( old_instance.field_list.all() ) 
-                         
-        for field in removed_fields:
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                             old_earliest_probereading_date)
-            field.save()
+        if new_field:
+            new_field.earliest_changed_dependency_date = minNone(new_field.earliest_changed_dependency_date, 
+                                                                 new_earliest_probereading_date)
+            new_field.save()
 
-        for field in added_fields:
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                             new_earliest_probereading_date)
-            field.save()
     else: # new object or delete object
+
         radio_id = instance.radio_id
         season_start_date = instance.crop_season.season_start_date
         season_end_date   = instance.crop_season.season_end_date
         probereadings     = ProbeReading.objects.filter(radio_id=radio_id, 
-                                                             reading_datetime__range=(season_start_date,
+                                                             datetime__range=(season_start_date,
                                                                                             season_end_date)
                                                              )
         if probereadings:
-            earliest_probereading_date = probereadings.earliest('reading_datetime').reading_datetime.date();
+            earliest_probereading_date = probereadings.earliest('datetime').datetime.date();
         else: 
             earliest_probereading_date = None;
 
-        if instance.id and instance.field_list:
-            for field in instance.field_list.all():
-                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                                 earliest_probereading_date)
-                field.save()
+        if instance.id and instance.field:
+            field=instance.field
+            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                             earliest_probereading_date)
+            field.save()

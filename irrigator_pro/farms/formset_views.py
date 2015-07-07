@@ -8,15 +8,6 @@ from django.forms.widgets import HiddenInput as HiddenInput
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
 class Farms_FormsetView(ModelFormSetView):
-    # model = WaterHistory
-    # template_name = 'farms/water_history_list.html'
-    # fields = [ 'date', 'field_list',  'rain', 'irrigation', 'comment' ]
-    # widgets = {
-    #    'comment':     Textarea(attrs={'rows':2, 'cols':20}),
-    #    'description': Textarea(attrs={'rows':2, 'cols':20}),
-    #    'date':        TextInput(attrs={'width':10, 'class':'hasDatePicker'}),
-    #    }
-
     can_delete=True
 
     @method_decorator(login_required)
@@ -28,12 +19,18 @@ class Farms_FormsetView(ModelFormSetView):
     def get_queryset(self):
         user = self.request.user
         queryset = super(Farms_FormsetView, self).get_queryset()
-        queryset = queryset.filter( Q(field_list__farm__farmer=user) |
-                                    Q(field_list__farm__users=user) )
+
+        if hasattr(self, 'field_list'):
+            queryset = queryset.filter( Q(field_list__farm__farmer=user) |
+                                        Q(field_list__farm__users=user) )
+        elif hasattr(self, 'field'):
+            queryset = queryset.filter( Q(field__farm__farmer=user) |
+                                        Q(field__farm__users=user) )
+
         if self.season:
             queryset = queryset.filter( crop_season=int(self.season) )
             if self.field:
-                queryset = queryset.filter( field_list=int(self.field) )
+                queryset = queryset.filter( field=int(self.field) )
         return queryset.distinct()
 
     def fields_filter(self, user, season=None, field=None):
@@ -97,7 +94,7 @@ class ProbeFormsetView(Farms_FormsetView):
     fields = [ 'crop_season',
                'name',
                'description',
-               'field_list',
+               'field',
                'radio_id',
                'comment']
     widgets = {
@@ -140,15 +137,15 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     model = WaterHistory
     template_name = 'farms/water_history_list.html'
     fields = [ 'crop_season',
-               'date',
-               'field_list',
+               'datetime',
+               'field',
                'rain',
                'irrigation',
                'comment' ]
     widgets = {
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),
-        'date':        TextInput(attrs={'width':10, 'class':'hasDatePicker'}),
+        'datetime':    TextInput(attrs={'width':10, 'class':'hasDateTimePicker'}),
         'crop_season': HiddenInput(),
     }
     extra = 2

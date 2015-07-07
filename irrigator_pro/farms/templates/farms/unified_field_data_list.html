@@ -211,7 +211,7 @@
                                                     </button>                                                
                                             </td>
 
-                                            <td>{{ record.reading_datetime|time:"H:i" }}</td>
+                                            <td>{{ record.datetime|time:"H:i" }}</td>
                                             
                                             <td>{{record.source_type}}</td>
                                             <td>{{ record.soil_potential_8 }}</td>
@@ -278,7 +278,7 @@
                                         Subsequent rows. Don't add computed entries or date. Most code duplicated from above
                                         Need a better way.
                                         {% endcomment %}
-                                        <td>{{ record.reading_datetime|time:"H:i" }}</td>
+                                        <td>{{ record.datetime|time:"H:i" }}</td>
                                         <td>{{ record.source_type}}</td>
                                         <td>{{ record.soil_potential_8 }}</td>
                                         <td>{{ record.soil_potential_16 }}</td>

@@ -33,12 +33,11 @@ def generate_daily_report(report_date, user):
 
     # Create a dictionary with ('field', 'crop_season')
     crop_season_field = {}
-    for x in crop_season_list:
-        for field in x.field_list.all():
-            crop_season_field[field] = x
+    for cs in crop_season_list:
+        for field in cs.field_list.all():
+            crop_season_field[field] = cs
     
     for farm in farm_list:
-
         field_list = Field.objects.filter(farm = farm)
         for field in field_list:
 
@@ -100,23 +99,23 @@ def get_daily_report(farm, field, crop_season, user, report_date):
                     
         latest_water_record = None
         if len(whList) > 0:
-            latestWH = whList.filter(field_list = field) #.latest('date')
-            latest_water_record = whList.latest('date')
+            latestWH = whList.filter(field = field) 
+            latest_water_record = whList.latest('datetime')
 
             # Now get the latest measurement record from the probes.
             # First all the probes for a given pair (field, crop season)
 
-            probe_list = Probe.objects.filter(field_list = field, crop_season = crop_season)
+            probe_list = Probe.objects.filter(field = field, crop_season = crop_season)
             latest_probe_reading = None
             if (len(probe_list) > 0):
                 radio_id = probe_list[0].radio_id
                 probe_readings = ProbeReading.objects.filter(radio_id = radio_id)
                 # Same radio id can be used across seasons. Filter based on (Start, end) of 
                 # crop season
-                probe_readings = probe_readings.filter(reading_datetime__gte = crop_season.season_start_date,
-                                                       reading_datetime__lte = crop_season.season_end_date)
+                probe_readings = probe_readings.filter(datetime__gte = crop_season.season_start_date,
+                                                       datetime__lte = crop_season.season_end_date)
                 if (probe_readings is not None and len(probe_readings) > 0):
-                    latest_probe_reading = probe_readings.latest('reading_datetime')
+                    latest_probe_reading = probe_readings.latest('datetime')
                     
                         
 
@@ -125,7 +124,7 @@ def get_daily_report(farm, field, crop_season, user, report_date):
             latest_is_wr = None
             if (latest_water_record is None and latest_probe_reading is None): pass
             elif  (latest_water_record is not None and latest_probe_reading is not None):
-                latest_is_wr = True if (latest_water_record.date > latest_probe_reading.reading_datetime.date()) else False
+                latest_is_wr = (latest_water_record.datetime.date() > latest_probe_reading.datetime.date()) 
             else:
                 if (latest_water_record is not None):
                     latest_is_wr = True
@@ -134,12 +133,10 @@ def get_daily_report(farm, field, crop_season, user, report_date):
             if (latest_is_wr is not None):
                 if (latest_is_wr):
                     srf.last_data_entry_type = "Rain or irrigation"
-                    # Ensure we have a datetime object for consistency in data
-                    x = latest_water_record.date
-                    srf.time_last_data_entry = datetime(x.year, x.month, x.day)
+                    srf.time_last_data_entry = latest_water_record.datetime
                 else:
                     srf.last_data_entry_type = "Probe reading"
-                    srf.time_last_data_entry = latest_probe_reading.reading_datetime
+                    srf.time_last_data_entry = latest_probe_reading.datetime
             
                     # Add link to water register
             
