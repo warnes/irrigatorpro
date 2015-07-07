@@ -58,8 +58,12 @@ class Farms_FormsetView(ModelFormSetView):
             if "field_list" in form.fields:
                 form.fields["field_list"].queryset  = self.fields_filter(self.request.user,
                                                                          season=self.season,
-                                                                         #field=self.field)
                                                                          )
+
+            if "field" in form.fields:
+                form.fields["field"].initial = self.field
+
+
             if "crop_season" in form.fields:
                 form.fields["crop_season"].queryset = self.crop_season_filter(self.request.user,
                                                                               season=self.season)
@@ -145,7 +149,8 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     widgets = {
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),
-        'datetime':    TextInput(attrs={'width':10, 'class':'hasDateTimePicker'}),
+        'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
         'crop_season': HiddenInput(),
+        'field':       HiddenInput(),
     }
     extra = 2

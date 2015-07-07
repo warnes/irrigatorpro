@@ -566,6 +566,8 @@ class WaterRegister(Audit):
     # Fields specifying the Field
     crop_season           = models.ForeignKey(CropSeason)
     field                 = models.ForeignKey(Field)
+
+    # Date
     date                  = models.DateField()
 
     # Fields copied from CropEvent records
