@@ -86,12 +86,19 @@ td {
 /******************/
 
 .submit-bar {
-    background-color: #FFF;
-    width: 100%;
+    /* background-color: #FFF; */
+    /* width: 100%; */
+    background: rgb(255, 255, 255); /* Fall-back for browsers that don't support rgba */
+    background: rgba(255, 255, 255, 0);
     position: fixed;
-    bottom:20px;
+    bottom: 20px;
     text-align: left;
     padding: 10px;
+
+    width: 350px;
+    /* position: fixed; */
+    left: 50%;
+    margin: 0 0 0 -12.5%;
 }
 
 
@@ -482,6 +489,7 @@ table.floatThead-table {
 table.unified-table {
     table-layout: fixed;
     background-color: #eefcff;
+    margin-bottom: 30px;
 }
 
 
