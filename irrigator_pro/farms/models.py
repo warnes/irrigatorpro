@@ -2,7 +2,7 @@ import decimal
 
 from common.models import Audit, Comment, Location, Location_Optional, NameDesc
 
-from datetime import timedelta
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
 from django.contrib.auth.models import User
@@ -405,12 +405,6 @@ class FieldDataReading(Audit, Comment):
 
     datetime            = models.DateTimeField(blank=False, null=False)
 
-    def date(self):
-        return self.datetime.date()
-
-    def time(self):
-        return self.datetime.time()
-
     min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
                                               verbose_name='Minimum temperature in last 24 hours') 
@@ -427,8 +421,6 @@ class FieldDataReading(Audit, Comment):
     soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
     soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
 
-
-
     # temperature_units   = CharField(max_length = 10, default=TEMPERATURE_UNIT_CHOICES[0])
     # water_amount_units  = CharField(max_length = 10, default=WATER_AMOUNT_UNIT_CHOICES[0])
     # pressure_units      = CharField(max_length = 10, default=PRESSURE_UNIT_CHOICES[0])
@@ -437,6 +429,37 @@ class FieldDataReading(Audit, Comment):
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
     irrigation          = models.DecimalField("irrigation in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
+
+    ## These property function allow treating 'date' and 'time' as
+    ## fields, which automagically get/set the components of
+    ## self.datetime
+    @property 
+    def date(self):
+        if self.datetime:
+            return self.datetime.date()
+        else:
+            return None
+
+    @date.setter
+    def date(self, value):
+        if self.datetime:
+            self.datetime = datetime.combine( value, self.datetime.time() )
+        else:
+            self.datetime = datetime.combine( value, time(0,0) )            
+
+    @property
+    def time(self):
+        if self.datetime:
+            return self.datetime.time()
+        else:
+            return None
+
+    @time.setter
+    def time(self, value):
+        if self.datetime:
+            self.datetime = datetime.combine( self.datetime.date(), value)
+        else:
+            self.datetime = datetime.combine( date.today(), value)            
 
     class Meta:
         abstract = True
@@ -449,7 +472,7 @@ class ProbeReading(FieldDataReading):
     """
 
     # from Audit: cdate, cuser, mdate, muser
-    # from FieldDataReading: datetime, min_temp_24_hours,
+    # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
     #                        max_temp_24_hours, ignore, 
     #                        soil_potential_8, soil_potential_16,
     #                        soil_potential_24, rain, irrigation
@@ -509,7 +532,7 @@ class ProbeReading(FieldDataReading):
 class WaterHistory(FieldDataReading):
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    # from FieldDataReading: datetime, min_temp_24_hours,
+    # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
     #                        max_temp_24_hours, ignore, 
     #                        soil_potential_8, soil_potential_16,
     #                        soil_potential_24, rain, irrigation
@@ -530,7 +553,9 @@ class WaterHistory(FieldDataReading):
 
 
 
-
+#################
+### ProbeSync ###
+#################
 
 class ProbeSync(Audit):
     """
@@ -556,19 +581,20 @@ class ProbeSync(Audit):
 ### Water Register ###
 ######################
 
-class WaterRegister(Audit):
+class WaterRegister(FieldDataReading):
     """
     Model for computed available water content
     """
-
+    # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
+    # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
+    #                        max_temp_24_hours, ignore, 
+    #                        soil_potential_8, soil_potential_16,
+    #                        soil_potential_24, rain, irrigation
 
     # Fields specifying the Field
     crop_season           = models.ForeignKey(CropSeason)
     field                 = models.ForeignKey(Field)
-
-    # Date
-    date                  = models.DateField()
 
     # Fields copied from CropEvent records
     crop_stage            = models.CharField(max_length=32) # CropEvent.name
@@ -583,10 +609,6 @@ class WaterRegister(Audit):
     message               = models.TextField(blank=True)
     irrigate_to_max       = models.BooleanField(default=False)
     
-    # Fields copied from WaterRecord records
-    rain                  = models.DecimalField(max_digits=4, decimal_places=2, blank=True) # #.##
-    irrigation            = models.DecimalField(max_digits=4, decimal_places=2, blank=True) # #.##
-
     # Calculated fields - Numeric
     average_water_content = models.DecimalField(max_digits=4, decimal_places=2) # ##.##
     max_observed_temp_2in = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True) # ###.#
@@ -610,11 +632,11 @@ class WaterRegister(Audit):
 
     class Meta:
         verbose_name = "Water Register"
-        unique_together = ( ("crop_season", "field", "date"), )
-        ordering        = ("crop_season", "field", "date")
+        unique_together = ( ("crop_season", "field", "datetime"), )
+        ordering        = ("crop_season", "field", "datetime")
 
     def __unicode__(self):
-        return u"%s - %s - %s" % ("crop_season", "field", "date")
+        return u"%s - %s - %s" % ("crop_season", "field", "datetime")
 
 
 

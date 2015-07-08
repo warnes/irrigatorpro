@@ -312,7 +312,7 @@ admin.site.register(ProbeReading, ProbeReadingAdmin)
 class WaterRegisterAdmin(AuditAdmin):
     fields = [ 'crop_season',
                'field',
-               'date',
+               'datetime',
            
                'crop_stage',
                'daily_water_use',
@@ -335,6 +335,6 @@ class WaterRegisterAdmin(AuditAdmin):
              + Audit.fields
     list_display  = fields
     list_editable = fields[3:-4]
-    list_filter = [ 'crop_season', 'field', 'date', 'crop_stage', 'computed_from_probes' ]
+    list_filter = [ 'crop_season', 'field', 'datetime', 'crop_stage', 'computed_from_probes' ]
 
 admin.site.register(WaterRegister, WaterRegisterAdmin)
