@@ -198,8 +198,10 @@ class CropSeasonEventAdmin(AuditAdmin):
                'crop_season', 
                'crop_event', 
                'date', 
-               'get_event_order', 
-               'get_event_duration' ] \
+               #'get_event_order', 
+               #'get_event_duration',
+               #'get_key_event'
+               ] \
              + Comment.fields
     list_display  = fields[:-1]
     list_editable = [ 'date' ]
