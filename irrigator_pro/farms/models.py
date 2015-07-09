@@ -398,7 +398,7 @@ class Probe(NameDesc, Comment, Audit):
 
 ###############################################################
 ### Abstract base probe reading, which for now is the base for
-### ProbeReading, WaterHistory, and WaterRegister
+### ProbeReading, WaterHistory, WaterRegister, and UnifiedTable
 ###############################################################
 
 class FieldDataReading(Audit, Comment):
@@ -475,6 +475,25 @@ class FieldDataReading(Audit, Comment):
     class Meta:
         abstract = True
 
+###############################################################
+### Abstract class holding 'crop season' and 'field' for use by 
+### WaterHistory, WaterRegister, and UnifiedTable
+###############################################################
+
+
+class CropSeasonField(models.Model):
+    """
+    Class to hold 'crop_season' and 'field' for use in WaterHistory
+    and WaterRegister 
+    """
+    crop_season             = models.ForeignKey(CropSeason)
+    field                   = models.ForeignKey(Field)
+
+    class Meta:
+        abstract = True
+
+
+
 ####################
 ### ProbeReading ###
 ####################
@@ -533,12 +552,11 @@ class ProbeReading(FieldDataReading):
         else:
             return thermocouple_2_temp
 
-
 ####################
 ### WaterHistory ###
 ####################
 
-class WaterHistory(FieldDataReading):
+class WaterHistory(CropSeasonField, FieldDataReading):
 
     def __init__(self, *args, **kwargs): 
         '''
@@ -555,9 +573,6 @@ class WaterHistory(FieldDataReading):
     #                        soil_potential_8, soil_potential_16,
     #                        soil_potential_24, rain, irrigation
 
-    crop_season             = models.ForeignKey(CropSeason)
-    field                   = models.ForeignKey(Field)
-
     class Meta:
         verbose_name        = "Water History"
         verbose_name_plural = "Water Histories"
@@ -566,32 +581,25 @@ class WaterHistory(FieldDataReading):
         return u"Water History Entry [%s] for %s" % ( self.id , self.datetime ) 
 
 
-######################
-### Water Register ###
-######################
+#################################################################################
+### WaterRegisterFields abstract class to hold fields used by both WaterHistory
+### and UnifiedTable
+#################################################################################
 
-class WaterRegister(FieldDataReading):
+class WaterRegisterFields(FieldDataReading):
     """
-    Model for computed available water content
+    Fields for computed available water content
     """
-
-    def __init__(self, *args, **kwargs): 
-        '''
-        Change the default value of 'source' to 'Computed'
-        '''
-        super(WaterRegister, self).__init__(*args, **kwargs) 
-        self._meta.get_field('source').default = 'Computed'
-
 
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
-    # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
-    #                        max_temp_24_hours, ignore, 
+    # from FieldDataReading: datetime, date*, time*, 
+    #                        min_temp_24_hours,
+    #                        max_temp_24_hours,
+    #                        ignore, 
     #                        soil_potential_8, soil_potential_16,
-    #                        soil_potential_24, rain, irrigation
-
-    crop_season             = models.ForeignKey(CropSeason)
-    field                   = models.ForeignKey(Field)
+    #                        soil_potential_24, 
+    #                        rain, irrigation
 
     # Fields copied from CropEvent records
     crop_stage            = models.CharField(max_length=32) # CropEvent.name
@@ -626,14 +634,54 @@ class WaterRegister(FieldDataReading):
 
     days_to_irrigation  = models.SmallIntegerField(default = -1)
 
+    class Meta:
+        abstract = True
+
+######################
+### Water Register ###
+######################
+
+class WaterRegister(CropSeasonField, WaterRegisterFields):
+
+    def __init__(self, *args, **kwargs): 
+        '''
+        Change the default value of 'source' to 'Computed'
+        '''
+        super(WaterRegister, self).__init__(*args, **kwargs) 
+        self._meta.get_field('source').default = 'Computed'
 
     class Meta:
         verbose_name = "Water Register"
         unique_together = ( ("crop_season", "field", "datetime"), )
-        ordering        = ("crop_season", "field", "datetime")
+        ordering        =   ("crop_season", "field", "datetime")
 
     def __unicode__(self):
-        return u"%s - %s - %s" % ("crop_season", "field", "datetime")
+        return u"Water Register for %s - %s - %s" % (self.crop_season, 
+                                                     self.field, 
+                                                     self.datetime)
+
+#####################
+### Unified Table ###
+#####################
+
+class UnifiedTable(CropSeasonField, WaterRegisterFields):
+    """
+    Model to hold concatinated outer joins of
+        WaterRegister x WaterHistory and  
+        WaterRegister x ProbeReading 
+    for creation of the unified data entry and water register page
+    """
+    waterregister = models.ForeignKey(WaterRegister, blank=False)
+    waterhistory  = models.ForeignKey(WaterHistory,  blank=True)
+    probereading  = models.ForeignKey(ProbeReading,  blank=True)
+    
+
+    class Meta:
+        verbose_name        = "Unified Table Entry"
+        verbose_name_plural = "Unified Table Entries"
+        unique_together = ( ("crop_season", "field", "source", "datetime"), )
+        ordering        =   ("crop_season", "field", "source", "datetime")
+
 
 
 #################

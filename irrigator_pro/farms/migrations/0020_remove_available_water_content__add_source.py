@@ -15,39 +15,48 @@ class Migration(migrations.Migration):
             model_name='waterhistory',
             name='available_water_content',
         ),
+
         migrations.AddField(
             model_name='waterhistory',
             name='source',
-            field=models.CharField(default=b'Unknown', 
+            field=models.CharField(default=b'User', 
                                    max_length=8, 
                                    choices=[(b'UGADB', b'UGA Database'), 
                                             (b'User', b'User Entry'), 
                                             (b'Computed', b'Computed'), 
-                                            (b'Unknown', b'Unknown')]
+                                            (b'Unknown', b'Unknown')],
+                                   blank=False
                                    ),
             preserve_default=True,
         ),
-        migrations.AddField(
-            model_name='waterregister',
-            name='source',
-            field=models.CharField(default=b'Unknown', 
-                                   max_length=8, 
-                                   choices=[(b'UGADB', b'UGA Database'), 
-                                            (b'User', b'User Entry'),
-                                            (b'Computed', b'Computed'), 
-                                            (b'Unknown', b'Unknown')]
-                                   ),
-            preserve_default=True,
-        ),
+
         migrations.AlterField(
             model_name='probereading',
             name='source',
-            field=models.CharField(default=b'Unknown', 
+            field=models.CharField(default=b'UGADB', 
                                    max_length=8, 
                                    choices=[(b'UGADB', b'UGA Database'), 
                                             (b'User', b'User Entry'), 
                                             (b'Computed', b'Computed'), 
-                                            (b'Unknown', b'Unknown')]),
+                                            (b'Unknown', b'Unknown')],
+                                   blank=False
+                                   ),
             preserve_default=True,
         ),
+
+        migrations.AddField(
+            model_name='waterregister',
+            name='source',
+            field=models.CharField(default=b'Computed', 
+                                   max_length=8,
+                                   choices=[(b'UGADB', b'UGA Database'),
+                                            (b'User', b'User Entry'),
+                                            (b'Computed', b'Computed'),
+                                            (b'Unknown', b'Unknown')],
+                                   blank=False
+                                   ),
+            preserve_default=True,
+        ),
+
+
     ]
