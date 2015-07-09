@@ -8,6 +8,9 @@ from datetime import date, datetime
 
 from farms.generate_water_register import generate_water_register
 
+# workarounds for the absence of query datetime__date operator
+from common.utils import d2dt_min, d2dt_max, d2dt_range
+
 
 def farms_filter(user):
     return Farm.objects.filter( Q(farmer=user) |
@@ -72,8 +75,11 @@ def get_cumulative_report(farm, field, crop_season, user, start_date, end_date):
 
     # Get the water registry for the crop season / field
     wr_list = WaterRegister.objects.filter(crop_season = crop_season, 
-                                           field = field).order_by('-date').filter(Q(date__lte =  end_date,
-                                                                                     date__gte = start_date))
+                                           field = field).order_by('-datetime').filter(Q(datetime__gte = d2dt_min(start_date), \
+                                                                                         datetime__lte = d2dt_max(end_date)
+                                                                                         )
+                                                                                       )
+                                                                                         
                 
     if len(wr_list) == 0: return None
     wr = wr_list[0]

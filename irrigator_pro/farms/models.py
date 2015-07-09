@@ -396,12 +396,23 @@ class Probe(NameDesc, Comment, Audit):
 
 
 
-#####################################################
-### Abstract base probe reading, which for now is the
-### base for ProbeReading and WaterHistory.
-#####################################################
+###############################################################
+### Abstract base probe reading, which for now is the base for
+### ProbeReading, WaterHistory, and WaterRegister
+###############################################################
 
 class FieldDataReading(Audit, Comment):
+
+    SOURCE_CHOICES = ( 
+                       ('UGADB',    'UGA Database'),
+                       ('User',     'User Entry'),
+                       ('Computed', 'Computed'),
+                       ('Unknown',  'Unknown'),
+                     )
+    source             = models.CharField(max_length=8,
+                                          choices=SOURCE_CHOICES,
+                                          default='Unknown'
+                                          )
 
     datetime            = models.DateTimeField(blank=False, null=False)
 
@@ -464,12 +475,21 @@ class FieldDataReading(Audit, Comment):
     class Meta:
         abstract = True
 
-
+####################
+### ProbeReading ###
+####################
 
 class ProbeReading(FieldDataReading):
     """
     Model for CSV data read from probe files
     """
+
+    def __init__(self, *args, **kwargs): 
+        '''
+        Change the default value of 'source' to 'UGADB'
+        '''
+        super(ProbeReading, self).__init__(*args, **kwargs) 
+        self._meta.get_field('source').default = 'UGADB'
 
     # from Audit: cdate, cuser, mdate, muser
     # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
@@ -497,15 +517,6 @@ class ProbeReading(FieldDataReading):
                                               verbose_name='Thermocouple 2 Temperature in Degrees Celcius') 
     minutes_awake       = models.PositiveSmallIntegerField(blank=True, null=True)
 
-    SOURCE_CHOICES = ( ('UGADB', 'UGA Database'),
-                       ('User', 'User Entry'),
-                     )
-    source             = models.CharField(max_length=6,
-                                          choices=SOURCE_CHOICES,
-                                          default="User")
-
-
-    source_type      = 'UGA Database'
 
     class Meta:
         verbose_name = "Probe Reading"
@@ -523,13 +534,20 @@ class ProbeReading(FieldDataReading):
             return thermocouple_2_temp
 
 
-
-
-#############
-### Water ###
-#############
+####################
+### WaterHistory ###
+####################
 
 class WaterHistory(FieldDataReading):
+
+    def __init__(self, *args, **kwargs): 
+        '''
+        Change the default value of 'source' to 'User'
+        '''
+        super(WaterHistory, self).__init__(*args, **kwargs) 
+        self._meta.get_field('source').default = 'User'
+
+
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
@@ -539,10 +557,6 @@ class WaterHistory(FieldDataReading):
 
     crop_season             = models.ForeignKey(CropSeason)
     field                   = models.ForeignKey(Field)
-    available_water_content = models.DecimalField(max_digits=4, decimal_places=2, default=0.0, # ##.##
-                                                  blank=True, null=True)   # Null --> Not yet calculated
-
-    source_type                  = 'Manual'
 
     class Meta:
         verbose_name        = "Water History"
@@ -550,31 +564,6 @@ class WaterHistory(FieldDataReading):
 
     def __unicode__(self):
         return u"Water History Entry [%s] for %s" % ( self.id , self.datetime ) 
-
-
-
-#################
-### ProbeSync ###
-#################
-
-class ProbeSync(Audit):
-    """
-    Model for tracking automatic import of probe information from ftp site
-    """
-    datetime  = models.DateTimeField()
-    success   = models.BooleanField(default=False)
-    message   = models.TextField()
-    nfiles    = models.PositiveIntegerField(default=0)
-    nrecords  = models.PositiveIntegerField(default=0)
-    filenames = models.TextField(blank=True)
-
-    class Meta:
-        get_latest_by = "datetime"
-        verbose_name  = "Probe Data Synchronization"
-
-
-    def __unicode__(self):
-        return u"ProbeSync %s" % self.datetime
 
 
 ######################
@@ -585,6 +574,15 @@ class WaterRegister(FieldDataReading):
     """
     Model for computed available water content
     """
+
+    def __init__(self, *args, **kwargs): 
+        '''
+        Change the default value of 'source' to 'Computed'
+        '''
+        super(WaterRegister, self).__init__(*args, **kwargs) 
+        self._meta.get_field('source').default = 'Computed'
+
+
     # from Comment: comment
     # from Audit: cdate, cuser, mdate, muser
     # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,
@@ -592,9 +590,8 @@ class WaterRegister(FieldDataReading):
     #                        soil_potential_8, soil_potential_16,
     #                        soil_potential_24, rain, irrigation
 
-    # Fields specifying the Field
-    crop_season           = models.ForeignKey(CropSeason)
-    field                 = models.ForeignKey(Field)
+    crop_season             = models.ForeignKey(CropSeason)
+    field                   = models.ForeignKey(Field)
 
     # Fields copied from CropEvent records
     crop_stage            = models.CharField(max_length=32) # CropEvent.name
@@ -639,8 +636,33 @@ class WaterRegister(FieldDataReading):
         return u"%s - %s - %s" % ("crop_season", "field", "datetime")
 
 
+#################
+### ProbeSync ###
+#################
+
+class ProbeSync(Audit):
+    """
+    Model for tracking automatic import of probe information from ftp site
+    """
+    datetime  = models.DateTimeField()
+    success   = models.BooleanField(default=False)
+    message   = models.TextField()
+    nfiles    = models.PositiveIntegerField(default=0)
+    nrecords  = models.PositiveIntegerField(default=0)
+    filenames = models.TextField(blank=True)
+
+    class Meta:
+        get_latest_by = "datetime"
+        verbose_name  = "Probe Data Synchronization"
 
 
+    def __unicode__(self):
+        return u"ProbeSync %s" % self.datetime
+
+
+###################
+### InvitedUser ###
+###################
 
 class InvitedUser(NameDesc, Audit):
     email       = models.EmailField(unique = True)

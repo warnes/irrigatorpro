@@ -11,14 +11,21 @@ from datetime import datetime, date, timedelta
 
 from irrigator_pro.settings import WATER_REGISTER_DELTA
 
-###
-### Sometimes the is a string, sometime a string.
-### always convert to date
+# workarounds for the absence of query datetime__date operator
+from common.utils import d2dt_min, d2dt_max, d2dt_range
+
 
 def getDateObject(thisDate):
+    '''
+    Coerce argument to class date
+    '''
     if isinstance(thisDate, date):
         return thisDate
-    return datetime.strptime(thisDate, "%Y-%m-%d").date()
+    elif isinstance(thisDate, datetime):
+        return thisDate.date()
+    else:
+        return datetime.strptime(thisDate, "%Y-%m-%d").date()
+
 
 def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
@@ -30,7 +37,11 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
     generate_water_register(crop_season, field, user, report_date)
     water_register_query = WaterRegister.objects.filter(crop_season = crop_season,
-                                                        field = field).order_by('-date').filter(Q(date__lte =  report_date+timedelta(WATER_REGISTER_DELTA)))
+                                                        field = field
+                                                        ).order_by('-datetime'
+                                                                   ).filter(Q(datetime__lte =  d2dt_min(report_date + timedelta(WATER_REGISTER_DELTA))
+                                                                              )
+                                                                            )
     
     ### probe_readings will contain all the readings in increasing order of time.
     probe_readings = get_probe_readings(crop_season, field, None, report_date)
@@ -53,7 +64,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
         current_form = all_forms[form_index]
         form_index = form_index + 1
 
-        while current_form is not None and getDateObject(current_form['date'].value()) < crop_season.season_start_date:
+        while current_form is not None and getDateObject(current_form['datetime'].value()).date() < crop_season.season_start_date:
             if form_index == len(forms):
                 current_form = None
             else:
@@ -63,7 +74,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
     for day in daterange(crop_season.season_start_date, report_date + timedelta(days=1)):
         try:
-            water_register = water_register_query.get(date = day)
+            water_register = water_register_query.get(datetime__range = d2dt_range(day))
             day_record = UnifiedReport(day, water_register)
 
             ## Next two while
@@ -99,7 +110,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     report_plus_delta = min(report_date + timedelta(days=WATER_REGISTER_DELTA), crop_season.season_end_date)
     
     for day in daterange(report_date + timedelta(days=1), report_plus_delta):
-        water_register = water_register_query.get(date = day)
+        water_register = water_register_query.get(datetime__range = d2dt_range(day))
         day_record = UnifiedReport(day, water_register)
         ret.append(day_record)
         

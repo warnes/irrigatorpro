@@ -15,8 +15,8 @@ from farms.models import Farm, Field, CropSeason, CropSeasonEvent, Probe
 from farms.readonly import ReadonlyFormset
 
 def crop_seasons_filter(user):
-    crop_season_list = CropSeason.objects.filter( Q(field__farm__farmer=user) |
-                                                  Q(field__farm__users=user) ).distinct()
+    crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
+                                                  Q(field_list__farm__users=user) ).distinct()
     if crop_season_list:
         return crop_season_list
     else:
@@ -33,7 +33,7 @@ crop_season_fields = (
                    'crop',
                    'season_start_date',
                    'season_end_date',
-                   'field',
+                   'field_list',
                    'comment'
                    )
 
@@ -120,18 +120,24 @@ class CropSeasonUpdateView(UpdateWithInlinesView):
         user = self.request.user
         queryset = super(CropSeasonUpdateView, self).get_queryset()
 
-        queryset = queryset.filter( Q(field__farm__farmer=user) |
-                                    Q(field__farm__users=user)
+        queryset = queryset.filter( Q(field_list__farm__farmer=user) |
+                                    Q(field_list__farm__users=user)
                                   )
 
         return queryset.distinct()
 
+    def get_context_data(self, **kwargs):
+        context = super(CropSeasonUpdateView, self).get_context_data(**kwargs)
+        field_list = context['object'].field_list.all()
+        context['field_list'] = field_list
+        return context
+
     def get_form(self, *args, **kwargs):
         """
-        Ensure that the "Field" widget only shows fields that correspind to this user
+        Ensure that the "Field List" widget only shows fields that correspind to this user
         """
         form = super(CropSeasonUpdateView, self).get_form(*args, **kwargs)
-        form.fields["field"].queryset = fields_filter(self.request.user)
+        form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
     def forms_valid(self, form, inlines):
@@ -163,8 +169,8 @@ class CropSeasonCreateView(CreateWithInlinesView):
         user = self.request.user
         queryset = super(CropSeasonCreateView, self).get_queryset()
 
-        queryset = queryset.filter( Q(field__farm__farmer=user) |
-                                    Q(field__farm__users=user)
+        queryset = queryset.filter( Q(field_list__farm__farmer=user) |
+                                    Q(field_list__farm__users=user)
                                   )
 
         return queryset.distinct()
@@ -176,7 +182,7 @@ class CropSeasonCreateView(CreateWithInlinesView):
 
     def get_form(self, *args, **kwargs):
         form = super(CropSeasonCreateView, self).get_form(*args, **kwargs)
-        form.fields["field"].queryset = fields_filter(self.request.user)
+        form.fields["field_list"].queryset = fields_filter(self.request.user)
         return form
 
     def forms_valid(self, form, inlines):

@@ -11,6 +11,9 @@ from farms.models import WaterRegister, CropSeason, Field
 
 import django
 
+# workarounds for the absence of query datetime__date operator
+from common.utils import d2dt_min, d2dt_max, d2dt_range
+
 import matplotlib as mp
 # Set default font size
 mp.rcParams['axes.titlesize'] = "x-large" # fontsize of the axes title
@@ -45,8 +48,9 @@ def get_water_register_list(report_date, crop_season, field):
 
     wr_list = WaterRegister.objects.filter(crop_season = cs,
                                            field = fld,
-                                           date__lte = end_date,
-                                           date__gte = start_date).order_by('date')
+                                           datetime__lte = d2dt_min(end_date),
+                                           datetime__gte = d2dt_max(start_date)
+                                           ).order_by('datetime')
     return wr_list
     
 
@@ -81,23 +85,23 @@ def plot_daily_use(request, crop_season, field):
     ir_after=[]
     aw_after=[]
     for wr in wr_list:
-        x.append(wr.date)
+        x.append(wr.datetime.date())
 
         # NB: entries on report_date need to be in both groups to make
         # line continuous
-        if (wr.date <= report_date):
+        if (wr.datetime.date() <= report_date):
             wu_before.append(wr.daily_water_use)
             rf_before.append(wr.rain)
             ir_before.append(wr.irrigation)
             aw_before.append(wr.average_water_content)
-            x_before.append(wr.date)
+            x_before.append(wr.datetime.date())
 
-        if (wr.date >= report_date):
+        if (wr.datetime.date() >= report_date):
             wu_after.append(wr.daily_water_use)
             rf_after.append(wr.rain)
             ir_after.append(wr.irrigation)
             aw_after.append(wr.average_water_content)
-            x_after.append(wr.date)
+            x_after.append(wr.datetime.date())
 
     wu_plot_before.plot_date(x_before, wu_before, 'g-', label = "Water Usage")
     rf_plot_before.plot_date(x_before, rf_before, 'c-', label = "Rain",                  drawstyle='steps-pre')
@@ -175,8 +179,8 @@ def plot_cumulative_use(request, crop_season, field):
 
         # NB: entries on report_date need to be in both groups to make
         # line continuous
-        if (wr.date <= report_date):
-            x_before.append(wr.date)
+        if (wr.datetime.date() <= report_date):
+            x_before.append(wr.datetime.date())
             wu_before.append(wu_total)
 
             #NB: offset these slightly so they are all visible even when rf and/or ir are zero 
@@ -184,8 +188,8 @@ def plot_cumulative_use(request, crop_season, field):
             ir_before.append(ir_total + Decimal(0.1) )               
             tw_before.append(tw_total + Decimal(0.2) )
 
-        if (wr.date >= report_date):
-            x_after.append(wr.date)
+        if (wr.datetime.date() >= report_date):
+            x_after.append(wr.datetime.date())
             wu_after.append(wu_total)
 
             #NB: offset these slightly so they are all visible even when rf and/or ir are zero 

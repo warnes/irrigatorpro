@@ -219,7 +219,6 @@ class WaterHistoryAdmin(AuditAdmin):
              + Comment.fields
     list_display  = [ 'pk', 'crop_season' ] + fields[1:-1]
     list_editable = [ 'crop_season', 'field', 'datetime', 'rain', 'irrigation' ]
-    readonly_fields = [ 'available_water_content' ]
     list_filter = [ 'crop_season', 'field__farm', 'field__farm__farmer', 'datetime' ]
 
 admin.site.register(WaterHistory, WaterHistoryAdmin)

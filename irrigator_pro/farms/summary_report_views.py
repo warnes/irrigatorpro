@@ -11,6 +11,10 @@ from datetime import date, datetime
 
 from generate_daily_report import generate_daily_report
 
+# workarounds for the absence of query datetime__date operator
+from common.utils import d2dt_min, d2dt_max, d2dt_range
+
+
 class SummaryReportListView(TemplateView):
     template_name = "farms/summary_report.html"
 
