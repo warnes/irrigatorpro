@@ -401,14 +401,15 @@ class Probe(NameDesc, Comment, Audit):
 ### ProbeReading, WaterHistory, WaterRegister, and UnifiedTable
 ###############################################################
 
+SOURCE_CHOICES = ( 
+    ('UGADB',    'UGA Database'),
+    ('User',     'User Entry'),
+    ('Computed', 'Computed'),
+    ('Unknown',  'Unknown'),
+    )
+
 class FieldDataReading(Audit, Comment):
 
-    SOURCE_CHOICES = ( 
-                       ('UGADB',    'UGA Database'),
-                       ('User',     'User Entry'),
-                       ('Computed', 'Computed'),
-                       ('Unknown',  'Unknown'),
-                     )
     source             = models.CharField(max_length=8,
                                           choices=SOURCE_CHOICES,
                                           default='Unknown'
@@ -428,9 +429,9 @@ class FieldDataReading(Audit, Comment):
     ignore              = models.BooleanField(default=False, blank=True)
 
 
-    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
-    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
-    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0.0) # ###.##
+    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
+    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
 
     # temperature_units   = CharField(max_length = 10, default=TEMPERATURE_UNIT_CHOICES[0])
     # water_amount_units  = CharField(max_length = 10, default=WATER_AMOUNT_UNIT_CHOICES[0])
@@ -674,14 +675,32 @@ class UnifiedTable(CropSeasonField, WaterRegisterFields):
     waterregister = models.ForeignKey(WaterRegister, blank=False)
     waterhistory  = models.ForeignKey(WaterHistory,  blank=True)
     probereading  = models.ForeignKey(ProbeReading,  blank=True)
+
+    pr_source     = models.CharField(max_length=8,
+                                     choices=SOURCE_CHOICES,
+                                     default='Unknown'
+                                     )
+    wh_source     = models.CharField(max_length=8,
+                                     choices=SOURCE_CHOICES,
+                                     default='Unknown'
+                                     )
+    wr_source     = models.CharField(max_length=8,
+                                     choices=SOURCE_CHOICES,
+                                     default='Unknown'
+                                     )
+
     
+    pr_datetime   = models.DateTimeField(blank=True, null=True)
+    wh_datetime   = models.DateTimeField(blank=True, null=True)
+    wr_datetime   = models.DateTimeField(blank=True, null=True)
+
 
     class Meta:
         verbose_name        = "Unified Table Entry"
         verbose_name_plural = "Unified Table Entries"
-        unique_together = ( ("crop_season", "field", "source", "datetime"), )
-        ordering        =   ("crop_season", "field", "source", "datetime")
-
+        unique_together     = ( ("crop_season", "field", "source", "datetime"), )
+        ordering            =   ("crop_season", "field", "source", "datetime")
+        managed             = False 
 
 
 #################

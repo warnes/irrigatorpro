@@ -73,19 +73,19 @@ urlpatterns = patterns('',
                        #############
 
                        ## Water History
-                       url(r'^water_history/$',                               WaterHistoryFormsetView.as_view(),  name='water_history'),
-                       url(r'^water_history/(?P<season>\d+)$',                WaterHistoryFormsetView.as_view(),  name='water_history_season'),
+                       url(r'^water_history/$',                               EmptyView.as_view(),                name='water_history'),
+                       url(r'^water_history/(?P<season>\d+)$',                EmptyView.as_view(),                name='water_history_season'),
                        url(r'^water_history/(?P<season>\d+)/(?P<field>\d+)$', WaterHistoryFormsetView.as_view(),  name='water_history_season_field'),
                        
 
                        ## Probe Reading pages
-                       url(r'^probe_readings/$',                               ProbeReadingEmptyView.as_view(),   name='probe_readings' ),
-                       url(r'^probe_readings/(?P<season>\d+)$',                ProbeReadingFormsetView.as_view(), name='probe_reading_season' ),
+                       url(r'^probe_readings/$',                               EmptyView.as_view(),               name='probe_readings' ),
+                       url(r'^probe_readings/(?P<season>\d+)$',                EmptyView.as_view(),               name='probe_reading_season' ),
                        url(r'^probe_readings/(?P<season>\d+)/(?P<field>\d+)$', ProbeReadingFormsetView.as_view(), name='probe_reading_season_field' ),
 
                        ## Water Register
-                       url(r'^water_register/$',                               WaterRegisterEmptyView.as_view(), name='water_register'),
-                       url(r'^water_register/(?P<season>\d+)$',                WaterRegisterListView.as_view(),  name='water_register_season'),
+                       url(r'^water_register/$',                               EmptyView.as_view(),              name='water_register'),
+                       url(r'^water_register/(?P<season>\d+)$',                EmptyView.as_view(),              name='water_register_season'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)$', WaterRegisterListView.as_view(),  name='water_register_season_field'),
                        url(r'^water_register/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$',
                                                                                WaterRegisterListView.as_view(),  name='water_register_season_field_date'),
@@ -99,11 +99,11 @@ urlpatterns = patterns('',
                        ## but keep everything while testing
 
                        ## Unified water
-                       url(r'^unified_water/$',                               UnifiedFieldDataEmptyView.as_view(), name='unified_water'),
-                       url(r'^unified_water/(?P<season>\d+)$',                UnifiedFieldDataListView.as_view(),  name='unified_water_season'),
+                       url(r'^unified_water/$',                               EmptyView.as_view(),                 name='unified_water'),
+                       url(r'^unified_water/(?P<season>\d+)$',                EmptyView.as_view(), name='          unified_water_season'),
                        url(r'^unified_water/(?P<season>\d+)/(?P<field>\d+)$', UnifiedFieldDataListView.as_view(),  name='unified_water_season_field'),
                        url(r'^unified_water/(?P<season>\d+)/(?P<field>\d+)/(?P<date>\d{4}-\d{2}-\d{2})$',
-                           UnifiedFieldDataListView.as_view(),  name='unified_water_season_field_date'),
+                                                                              UnifiedFieldDataListView.as_view(),  name='unified_water_season_field_date'),
 
 
                        ## Reports 

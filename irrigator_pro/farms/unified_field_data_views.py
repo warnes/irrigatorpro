@@ -30,13 +30,6 @@ from farms.utils import get_probe_readings, to_faren, to_inches
 
 from datetime import date, datetime
 
-class UnifiedFieldDataEmptyView(TemplateView):
-    template_name = 'farms/water_register_empty.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(UnifiedFieldDataEmptyView, self).dispatch(*args, **kwargs)
-
 ######################################################################
 ### Views class for the unified view of fields data: rain, irrigation,
 ### temps, etc as well as computed values from the water register.

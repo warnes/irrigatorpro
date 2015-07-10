@@ -103,8 +103,8 @@
 
                         {% if object|day_records == 0 %}
                             <tr class ="data_row"
-                                data-for-date='{{ object.date|date:"Y-m-d" }}'
-                                id="row-{{ object.date|date:"Y-m-d" }}"
+                                data-for-date="{{ object.date|date:'Y-m-d' }}"
+                                id="row-{{ object.date|date:'Y-m-d' }}"
                                 {% if object.date|is_today  %}class="row-today" {% endif %}
                                 {% if object.date|is_past   %}class="row-past"  {% endif %}
                                 {% if object.date|is_future %}class="row-future"{% endif %}
@@ -120,7 +120,11 @@
                                     {% if not object.date|is_future %}
                                         <br>
                                         <button type="button" 
-                                                onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
+						whichone="1"
+                                                onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', 
+                                                                '{{ object.date|date:"Y-m-d"}}', 
+                                                                '{{ object.time|time:"H:M"}}', 
+                                                                 {{ crop_season.pk }});">
                                             <i class="fa fa-pencil-square-o"></i>
                                         </button>
                                     {% endif %}
@@ -199,16 +203,28 @@
                                         
 
                                         {% with rowspan=object|day_records %}
-                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
-                                                <button type="button" 
-                                                        {% if object.forms %}
-                                                        onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
-                                                        {% else %}
-                                                    onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
-                                                        {% endif %}
-
-                                                        <i class="fa fa-pencil-square-o"></i>
-                                                    </button>                                                
+                                          <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
+                                            {% if object.forms %}
+                                               <button type="button" 
+						       whichone="2"
+						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
+						                       '{{ object.date|date:"Y-m-d"}}',  
+   								       '{{ object.time|time:"H:M"}}', 
+						                       {{ crop_season.pk }});"  
+						       >
+						 <i class="fa fa-pencil-square-o"></i>
+                                               </button>                                                
+					     {% else %}
+                                               <button type="button"
+						       whichone="3"
+						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
+						                       '{{ object.date|date:"Y-m-d"}}',  
+   								       '{{ object.time|time:"H:M"}}', 
+						                       {{ crop_season.pk }});"  
+						       >
+						 <i class="fa fa-pencil-square-o"></i>
+                                               </button>                                                
+					     {% endif %}
                                             </td>
 
                                             <td>{{ record.datetime|time:"H:i" }}</td>
@@ -315,18 +331,18 @@
                                     class="data_row"
                                     id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
                                     {% with rowspan=object|day_records %}
-                                        {% if forloop.first and object.uga_records|length == 0 %}
-                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
-                                                <button type="button" 
-                                                        onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', '{{ object.date|date:"Y-m-d"}}', {{ crop_season.pk }})">
-                                                    <i class="fa fa-pencil-square-o"></i>
-
-                                            </td>
-
-                                        {% endif %}
-
-
-
+                                      {% if forloop.first and object.uga_records|length == 0 %}
+                                        <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
+                                          <button type="button"  
+						  whichone="4"
+                                                  onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', 
+						                  '{{ object.date|date:"Y-m-d"}}', 
+   								  '{{ object.time|time:"H:M"}}', 
+						                  {{ crop_season.pk }});">
+                                            <i class="fa fa-pencil-square-o"></i>
+					  </button>
+                                        </td>
+                                      {% endif %}
   	                                {% for input in form %}
   	                                    {% if input.is_hidden %}
   		                                {{ input }}
@@ -392,8 +408,8 @@
                                             
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.water_register.message }}</td>
 
-                                        {% endif %}
-                                        <td>{{ form.comment }}</td>
+                                      {% endif %}
+                                      <td>{{ form.comment }}</td>
 
                                     </tr>
                                 {% endwith %}
@@ -409,7 +425,7 @@
                 <button value="Submit" type="submit" class="btn btn-success">
   	            <i class="fa fa-floppy-o"></i> Save Changes
                 </button>        
-  	        <a class="btn btn-warning" href="/settings/farm/">
+  		<a class="btn btn-warning" href="{{ request.get_full_path }}">
   	            <i class="fa fa-undo fa-fw"></i> Cancel Changes
   	        </a>
             </div>
@@ -440,6 +456,8 @@
     {% else %}
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js"></script>
     {% endif %}
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 
     <script>
         $(function() {

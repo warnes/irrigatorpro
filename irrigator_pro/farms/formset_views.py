@@ -145,6 +145,11 @@ class WaterHistoryFormsetView(Farms_FormsetView):
                'field',
                'rain',
                'irrigation',
+               'soil_potential_8',
+               'soil_potential_16',
+               'soil_potential_24',
+               'min_temp_24_hours',
+               'max_temp_24_hours',
                'comment' ]
     widgets = {
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),

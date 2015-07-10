@@ -53,7 +53,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     current_probe_reading = None
     if probe_readings is not None and len(probe_readings) > 0:
         current_probe_reading = probe_readings.pop()
-        while current_probe_reading is not None and current_probe_reading.datetime.date() < crop_season.season_start_date:
+        while current_probe_reading is not None and current_probe_reading.date < crop_season.season_start_date:
             if len(probe_readings) == 0:
                 current_probe_reading = None
             else:
@@ -82,7 +82,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             day_record = UnifiedReport(day, water_register)
 
             ## Next two while
-            while current_probe_reading is not None and current_probe_reading.datetime.date() == day:
+            while current_probe_reading is not None and current_probe_reading.date == day:
                 day_record.uga_records.append(current_probe_reading)
                 if len(probe_readings) > 0:
                     current_probe_reading = probe_readings.pop()
