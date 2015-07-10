@@ -14,7 +14,6 @@ function addRow(afterRowID, date, time, crop_season_pk) {
     // 
 
     var nb_current_forms = $("#id_form-TOTAL_FORMS").val()
-    console.log(nb_current_forms)
 
     if(time <= ''){
 	time = moment().format("HH:MM")
@@ -45,15 +44,12 @@ function addRow(afterRowID, date, time, crop_season_pk) {
 
     // From bob.js package
     var newRow = bob.string.formatString(newRowFormat, nb_current_forms);
-    console.log("newRow=" + newRow);
-    console.log("afterRowID=" + afterRowID);
 
     $("#id_form-TOTAL_FORMS").val(parseInt(nb_current_forms)+1)
     //$("input[id=id_form-TOTAL_FORMS]").val(parseInt(nb_current_forms)+1)
     $("#" + afterRowID).after(newRow)
 
     selectString = bob.string.formatString("#id_form-{0}-time", nb_current_forms);
-    console.log("selectString:" + selectString)
 
     $(selectString).datetimepicker({
 	timeOnly:true,
