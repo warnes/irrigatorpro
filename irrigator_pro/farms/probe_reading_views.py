@@ -19,13 +19,29 @@ class ProbeReadingEmptyView(TemplateView):
 class ProbeReadingFormsetView(ModelFormSetView):
     model = ProbeReading
     template_name = 'farms/probe_readings.html'
-    fields = [
-        'datetime',
-        'radio_id',
-        'soil_potential_8', 'soil_potential_16', 'soil_potential_24',
-        'battery_percent',
-        'thermocouple_1_temp', 'thermocouple_2_temp'
-             ]
+    fields = [ 'datetime',
+               'radio_id',
+               'soil_potential_8',
+               'soil_potential_16',
+               'soil_potential_24',
+               'min_temp_24_hours',
+               'max_temp_24_hours',
+               'rain',
+               'irrigation',
+               'battery_percent',
+               'thermocouple_1_temp', 
+               'thermocouple_2_temp',
+               'comment' ]
+    
+    widgets = {
+        'comment':     Textarea(attrs={'rows':2, 'cols':20}),
+        'description': Textarea(attrs={'rows':2, 'cols':20}),
+        'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
+        'crop_season': HiddenInput(),
+        'field':       HiddenInput(),
+    }
+
+
     widgets = {
         'radio_id': HiddenInput()
         }
