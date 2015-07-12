@@ -18,18 +18,32 @@ def convert_probe_field_list_to_field(apps, schema_editor):
 
    cursor = connection.cursor()
    cursor.execute("select * from farms_probe_field_list")
+
+   previous_id = -1
    for (id, probe_id, field_id) in cursor.fetchall():
-      #print "Working on ", (id, probe_id, field_id)
+      # print "Working on ", (id, probe_id, field_id)
+      
+      """
 
-      probe = Probe.objects.get(id=probe_id)
-      if probe.field_id is None:
-         probe.field_id = field_id
-      else:
-         probe.id = None
-         probe.pk = None
-         probe.field_id = field_id
+      If there are multiple fields assigned just preserve the first one
+      otherwise a unique constraing on the pair (cdop_season_id, radio_id)
+      will be violated.
 
-      probe.save()
+      This is necessary only for Alain's test server.
+
+      """
+
+      if probe_id != previous_id:
+         previous_id = probe_id
+         probe = Probe.objects.get(id=probe_id)
+         if probe.field_id is None:
+            probe.field_id = field_id
+         else:
+            probe.id = None
+            probe.pk = None
+            probe.field_id = field_id
+            
+            probe.save()
 
 def convert_waterhistory_field_list_to_field(apps, schema_editor):
    """

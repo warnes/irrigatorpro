@@ -46,12 +46,13 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                                )
 
     ### probe_readings will contain all the readings in increasing order of time.
-    probe_readings = get_probe_readings(crop_season, field, None, report_date)
-    probe_readings.reverse()
 
-    ret = []
+
     current_probe_reading = None
+    probe_readings = get_probe_readings(crop_season, field, None, report_date)
+
     if probe_readings is not None and len(probe_readings) > 0:
+        probe_readings.reverse()
         current_probe_reading = probe_readings.pop()
         while current_probe_reading is not None and current_probe_reading.date < crop_season.season_start_date:
             if len(probe_readings) == 0:
@@ -59,9 +60,12 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             else:
                 current_probe_reading = probe_readings.pop()
 
+
     form_index = 0
     current_form = None
     all_forms = wh_formset.forms
+    ret = []
+
     if all_forms is not None and len(all_forms) > 0:
         current_form = all_forms[form_index]
         form_index = form_index + 1
