@@ -56,7 +56,8 @@ function addRow(afterRowID, date, time, crop_season_pk) {
 	buttonText: '<i class="fa fa-clock-o"></i>',
 	format:'H:i'
     })
-    $(selectString).css('width', '3em');
+    $(selectString).css('width', '5em');
+
 
 }
 
@@ -170,11 +171,23 @@ function colorPastTodayFuture() {
 $(document).ready(function() {
 
 
-    $("input[id$=reading_time]").timepicker({
-        timeFormat: 'HH:mm'
+     // $("input[id$=datetime]").datetimepicker({
+     //     timeOnly:true,
+     //     buttonText: '<i class="fa fa-clock-o"></i>',
+     //     format:'H:i'
+     // });
+
+
+
+
+    $(".time-entry").datetimepicker({
+        timeOnly:true,
+        yearRange: "1900:2017",
+        buttonText: '<i class="fa fa-clock-o"></i>',
+        format:'H:i'
     });
 
-
+    $(".time-entry").css('width', '5em');
 
     start_date = getStartDate();
     end_date = getEndDate();
@@ -310,7 +323,7 @@ $(document).ready(function() {
      * and will convert if necessary, remove last character
      */
 
-    // This till not work as long as the type in the input in 'number'
+    // This will not work as long as the type in the input in 'number'
 
     // $(".units_temp_form input").focusout(function() {
 

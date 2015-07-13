@@ -29,6 +29,12 @@ def getDateObject(thisDate):
         return datetime.strptime(thisDate, "%Y-%m-%d").date()
 
 
+"""
+Returns the list of object for display in the template.
+Each object is an instance of the class UnifiedReport,
+defined below.
+"""
+
 def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
     if crop_season.season_start_date > report_date:
@@ -123,6 +129,17 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
         ret.append(day_record)
         
     return  ret
+
+
+"""
+
+Object used for display by the template. Each object is for one
+calendar date. It contains the date and the water register for this day, in
+addition to a list of probe readings (uga_records) and a list of forms, each
+corresponding to one manual water event. The forms are extracted from the formset
+
+"""
+
 
 class UnifiedReport:
     

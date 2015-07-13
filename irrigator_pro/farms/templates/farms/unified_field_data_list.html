@@ -317,10 +317,11 @@
                             {% endcomment %}
                             {% for form in object.forms  %}
 
+
                                 {% comment %}
 
                                 List the water history records. If this is the
-                                first for this date one AND there is no probe
+                                first for this date AND there is no probe
                                 readings then this is the first row for this
                                 date in the table.
 
@@ -349,7 +350,11 @@
                                             {% endif %}
                                         {% endfor %}
 
-                                        <td class="time-entry">{{ form.reading_time.error }}{{ form.reading_time }}</td>
+                                        <td>
+                                            <input class="time-entry" id='time-{{ form.datetime.auto_id|form_index }}'
+                                                   name='time-{{ form.datetime.auto_id|form_index }}'
+                                                   value="{{ form.instance.datetime|time_format }}"/>
+                                        </td>
                                         <td>Manual Entry</td>
                                         <td>{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
                                         <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>

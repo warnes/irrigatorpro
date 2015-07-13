@@ -16,6 +16,7 @@ from django.db.models import Q
 from django.utils import timezone
 
 from django.http import HttpResponseRedirect
+from django import forms
 from django.forms.widgets import HiddenInput as HiddenInput
 from django.forms.widgets import TextInput as TextInput
 from django.forms.widgets import TimeInput as TimeInput
@@ -56,14 +57,13 @@ class UnifiedFieldDataListView(ModelFormSetView):
     widgets  = {
         'crop_season': HiddenInput(),
         'date': HiddenInput(),
-        'time': TextInput(attrs={'size':'8'}),
-        'datetime': TextInput(attrs={'size':'8'})
+       'datetime': HiddenInput(),
     }
     extra = 0
     can_delete=True
 
     def get(self, request, *args, **kwargs):
-
+        if DEBUG: print 'Into the unified_field_data_view::get'
         self.wh_formset = self.construct_formset() #super(UnifiedFieldDataListView, self).construct_formset()
         self.object_list = generate_objects(self.wh_formset,
                                             self.crop_season, 
@@ -107,6 +107,9 @@ class UnifiedFieldDataListView(ModelFormSetView):
     ### clicks in at least one field from a form.
 
     def formset_valid(self, formset):
+
+
+        if DEBUG: print 'Into formset_valid'
 
         changed_form_ids = self.request.POST.getlist('changed_forms[]')
         formset.save(commit=False)
@@ -186,7 +189,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
     def formset_invalid(self, formset):
-
+        if DEBUG: print 'Into formset_invalid'
         self.wh_formset = formset
         self.object_list = generate_objects(formset,
                                             self.crop_season, 
@@ -200,7 +203,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-
+        if DEBUG: print 'Into dispatch'
         self.crop_season = CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
         try:
@@ -220,7 +223,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
         context['crop_season']  = self.crop_season
         context['field']        = self.field
         context['report_date']  = self.report_date
-        #context['datetime']     = self.datetime
 
         return context
 
