@@ -226,9 +226,12 @@ $(document).ready(function() {
      * Create a hidden input with the form id when a input is
      * clicked. This is required to prevent all forms from being saved
      * each time the units are being converted.
+     *
+     * In the form the textarea for the comment does not use
+     * the input tag.
      */
     
-    $('form input').change( function() {
+    $('form input, form textarea').change( function() {
 
         /**
          * Only use if if id has either the pattern: 
@@ -240,7 +243,7 @@ $(document).ready(function() {
          */
         
 
-        //console.log("Clicked for form: " + $(this).attr("id"));
+        console.log("Clicked for form: " + $(this).attr("id"));
         var pattern1 = new RegExp("id_form-(\\d+)");
         var pattern2 = new RegExp("manual-entry-time-(\\d+)");
 

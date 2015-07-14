@@ -53,7 +53,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
         'max_temp_24_hours',
         'ignore',
         'rain',
-        'irrigation'
+        'irrigation',
+        'comment'
     ]
     widgets  = {
         'crop_season': HiddenInput(),
