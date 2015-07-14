@@ -18,6 +18,8 @@ function addRow(afterRowID, date, time, crop_season_pk) {
     if(time <= ''){
 	time = moment().format("HH:MM")
     }
+
+    var datetime = date + " " + time;
     
     var newRowFormat=
         "<tr id='new-{0}'>" +
@@ -34,7 +36,7 @@ function addRow(afterRowID, date, time, crop_season_pk) {
         "<td><input id='id_form-{0}-rain' name='form-{0}-rain' step='0.01' type='number'  value='0'/></td>" +
         "<td><input id='id_form-{0}-irrigation' name='form-{0}-irrigation' step='0.01' type='number' value='0'  /></td>" +
         "<td><input id='id_form-{0}-ignore' name='form-{0}-ignore' type='checkbox'/></td>" +
-	"<td></td>" +
+	"<td><input id='id_form-{0}-datetime' name='form-{0}-datetime' type='hidden' value='" + datetime + "'/> </td>" +
 	"<td></td>" +
 	"<td></td>" +
 	"<td></td>" +
@@ -171,18 +173,9 @@ function colorPastTodayFuture() {
 $(document).ready(function() {
 
 
-     // $("input[id$=datetime]").datetimepicker({
-     //     timeOnly:true,
-     //     buttonText: '<i class="fa fa-clock-o"></i>',
-     //     format:'H:i'
-     // });
-
-
-
 
     $(".time-entry").datetimepicker({
         timeOnly:true,
-        yearRange: "1900:2017",
         buttonText: '<i class="fa fa-clock-o"></i>',
         format:'H:i'
     });
@@ -235,18 +228,33 @@ $(document).ready(function() {
      * each time the units are being converted.
      */
     
-    $('form input').click( function() {
+    $('form input').change( function() {
 
-        // Only use if if id has the form: id_form-\d+.*, in which case we only
-        // name of the form is id_form_\d+-id.
+        /**
+         * Only use if if id has either the pattern: 
+         *      id_form-(\d+).*
+         * or
+         *      manual-entry-time-(\d+)*
+         * 
+         * The matched number indicates the form index
+         */
         
-        // Could make this one static...
-        var pattern = new RegExp("id_form-\\d+");
-        var res = pattern.exec($(this).attr("id"));
+
+        //console.log("Clicked for form: " + $(this).attr("id"));
+        var pattern1 = new RegExp("id_form-(\\d+)");
+        var pattern2 = new RegExp("manual-entry-time-(\\d+)");
+
+        var res = pattern1.exec($(this).attr("id"));
         
         if (res == null)
+            res = pattern2.exec($(this).attr("id"));
+
+        if (res == null) {
+            console.log("No match");
             return;
-        form_id = res[0] + "-id";
+        }
+        //console.log("Matched for form: " + res[1]);
+        form_id = "id_form-" + res[1] + "-id";
         
         // Add the form id to hidden input
 

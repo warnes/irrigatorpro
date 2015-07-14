@@ -351,8 +351,8 @@
                                         {% endfor %}
 
                                         <td>
-                                            <input class="time-entry" id='time-{{ form.datetime.auto_id|form_index }}'
-                                                   name='time-{{ form.datetime.auto_id|form_index }}'
+                                            <input class="time-entry" id='manual-entry-time-{{ form.datetime.auto_id|form_index }}'
+                                                   name='manual-entry-time-{{ form.datetime.auto_id|form_index }}'
                                                    value="{{ form.instance.datetime|time_format }}"/>
                                         </td>
                                         <td>Manual Entry</td>

@@ -1,5 +1,6 @@
 from extra_views import ModelFormSetView
 from pprint import pprint
+import re
 from django.utils.datastructures import MultiValueDictKeyError
 
 from irrigator_pro.settings import DEBUG
@@ -63,7 +64,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
     can_delete=True
 
     def get(self, request, *args, **kwargs):
-        if DEBUG: print 'Into the unified_field_data_view::get'
         self.wh_formset = self.construct_formset() #super(UnifiedFieldDataListView, self).construct_formset()
         self.object_list = generate_objects(self.wh_formset,
                                             self.crop_season, 
@@ -104,10 +104,10 @@ class UnifiedFieldDataListView(ModelFormSetView):
     ### could look like they changed even if they have not.  To avoid saving
     ### objects that have not changed, causing unnecessary recomputation to
     ### the water register, there is a hidden field that is added when a user
-    ### clicks in at least one field from a form.
+    ### clicks in at least one field from a form. This includes the time,
+    ### which is not really part of the form.
 
     def formset_valid(self, formset):
-
 
         if DEBUG: print 'Into formset_valid'
 
@@ -119,7 +119,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
         for obj in formset.deleted_objects:
-            print "Will delete: obj"
+            if DEBUG: print "Will delete: obj"
             obj.delete()
 
         for form in formset.forms:
@@ -143,11 +143,16 @@ class UnifiedFieldDataListView(ModelFormSetView):
                         obj.rain = to_inches(obj.rain)
                         obj.irrigation = to_inches(obj.irrigation)
 
+                    ### Update the datetime field. The date itself does not change,
+                    ### but the time may have.
+                    new_time = self.request.POST["manual-entry-time-" + form.prefix[5:]]
 
+                    hr_min = re.search("(\d+):(\d+)", new_time)
+                    obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
                     obj.save()
 
 
-        ### The field list is not part of the form. Add to new objects
+        ### The field  is not part of the form. Add to new objects
         ## Need this in order to create new_objects list
         for obj in formset.new_objects:
             obj.field=self.field
@@ -190,6 +195,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     def formset_invalid(self, formset):
         if DEBUG: print 'Into formset_invalid'
+        if DEBUG: print formset.errors
+
         self.wh_formset = formset
         self.object_list = generate_objects(formset,
                                             self.crop_season, 

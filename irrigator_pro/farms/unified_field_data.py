@@ -19,6 +19,7 @@ def getDateObject(thisDate):
     '''
     Coerce argument to class date
     '''
+
     if thisDate is None:
         return None
     elif isinstance(thisDate, datetime):
@@ -26,7 +27,7 @@ def getDateObject(thisDate):
     elif isinstance(thisDate, date):
         return thisDate
     else:
-        return datetime.strptime(thisDate, "%Y-%m-%d").date()
+        return datetime.strptime(thisDate, "%Y-%m-%d %H:%M:%S").date()
 
 
 """
