@@ -16,14 +16,12 @@
                                                  style="width: 6em">
     </h1>
 
-  <div id="date-error" style="color:red; display: none">
-    Date must be a valid date in the format YYYY-MM-DD between
-    {{crop_season.season_start_date|date:"Y-m-d"}} and
-    {{crop_season.season_end_date|date:"Y-m-d"}}.
-  </div>
+    <div id="date-error" style="color:red; display: none">
+        Date must be a valid date in the format YYYY-MM-DD between
+        {{crop_season.season_start_date|date:"Y-m-d"}} and
+        {{crop_season.season_end_date|date:"Y-m-d"}}.
+    </div>
 
-
-    
     <h2>
         <em>{{crop_season}}</em>
         - 
@@ -33,10 +31,7 @@
                 class="btn btn-success float-right"
                 type="button" 
                 style="margin-bottom: 10px">Show Entire Season</button>
-        
     </h2>
-
-
 
     {% if object_list %}
         {{ wh_formset.id }}
@@ -229,7 +224,7 @@
 
                                             <td>{{ record.datetime|time:"H:i" }}</td>
                                             
-                                            <td>{{record.source_type}}</td>
+                                            <td>UGA</td>
                                             <td>{{ record.soil_potential_8 }}</td>
                                             <td>{{ record.soil_potential_16 }}</td>
                                             <td>{{ record.soil_potential_24 }}</td>
@@ -295,7 +290,7 @@
                                         Need a better way.
                                         {% endcomment %}
                                         <td>{{ record.datetime|time:"H:i" }}</td>
-                                        <td>{{ record.source_type}}</td>
+                                        <td>UGA</td>
                                         <td>{{ record.soil_potential_8 }}</td>
                                         <td>{{ record.soil_potential_16 }}</td>
                                         <td>{{ record.soil_potential_24 }}</td>
