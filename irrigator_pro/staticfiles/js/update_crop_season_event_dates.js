@@ -77,3 +77,73 @@ function update_event_dates(next_rows, delta)
         $(this_date_input).css("background-color","#FFFFCC");   
     }
 }
+
+
+
+
+
+function set_event_range() {
+    /*** 
+         This function sets date ranges to the limits given 
+         by season_start_date and season_end_date
+    ***/ 
+
+    /* Get the season start and end dates */
+    minDate = $('input[id=id_season_start_date]').val();
+    maxDate = $('input[id=id_season_end_date]').val();
+    
+    /* Restrict season end date to start after the season start date */
+    $('input[id=id_season_end_date]').datepicker( 
+        "option", "minDate", minDate
+    )
+
+    /* Restrict event dates to range specified by crop season */
+    $('input[id$=date]').filter('[id^=id_cropseasonevent]').datepicker( 
+        "option", "minDate", minDate
+    ).datepicker(
+        "option", "maxDate", maxDate
+    );
+} 
+
+
+function show_non_key_events() {
+    $('.non-key-event').toggleClass('hidden',false)
+}
+
+ 
+function hide_non_key_events() {
+    $('.non-key-event').toggleClass('hidden',true)
+}
+
+
+$(function() {
+    /* Update crop season event dates when crop season start date changes */
+    $("#id_season_start_date").change( season_start_date_change );
+
+    /* Update later dates when earlier dates change */
+    $("div.cropseason_field_wrapper .hasDatepicker").change( crop_event_date_change );
+    
+    /* Set event date ranges on page load */ 
+    set_event_range();
+    
+    $('input[id=id_season_start_date]').change(set_event_range);
+    $('input[id=id_season_end_date]').change(set_event_range);
+})
+
+
+
+$(document).ready(function() {
+
+    /**
+     * Disable datepicker since it is only used as a hidden input in a
+     * form.
+     */
+    
+    $('form input:hidden').each(function() {
+        // Could be more refined and only destroy
+        // on date fields, but there doesn't seem
+        // to be an issue here.
+        $(this).datepicker('destroy');
+    });
+});
+

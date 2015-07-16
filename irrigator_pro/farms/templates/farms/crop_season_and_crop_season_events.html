@@ -3,58 +3,6 @@
 
 {% block scripts %}
 <script src="{{ STATIC_URL }}js/update_crop_season_event_dates.js"></script>
-<script type="text/javascript">
-    function set_event_range()
-    {
-        /*** 
-           This function sets date ranges to the limits given 
-           by season_start_date and season_end_date
-         ***/ 
-
-        /* Get the season staet and end dates */
-        minDate = $('input[id=id_season_start_date]').val();
-        maxDate = $('input[id=id_season_end_date]').val();
-
-        /* Restrict season end date to start after the season start date */
-        $('input[id=id_season_end_date]').datepicker( 
-            "option", "minDate", minDate
-        )
-
-        /* Restrict event dates to range specified by crop season */
-        $('input[id$=date]').filter('[id^=id_cropseasonevent]').datepicker( 
-            "option", "minDate", minDate
-        ).datepicker(
-            "option", "maxDate", maxDate
-        );
-    } 
-
-    function show_non_key_events()
-    {
-      $('.non-key-event').toggleClass('hidden',false)
-    }
-
-    function hide_non_key_events()
-    {
-      $('.non-key-event').toggleClass('hidden',true)
-    }
-
-
-    $(
-      function() {
-        /* Update crop season event dates when crop season start date changes */
-        $("#id_season_start_date").change( season_start_date_change );
-
-        /* Update later dates when earlier dates change */
-        $("div.cropseason_field_wrapper .hasDatepicker").change( crop_event_date_change );
-
-        /* Set event date ranges on page load */ 
-        set_event_range();
-
-        $('input[id=id_season_start_date]').change(set_event_range);
-        $('input[id=id_season_end_date]').change(set_event_range);
-      }
-     )
-</script>
 {% endblock %}
 
 
@@ -68,45 +16,45 @@
   </h1>
 
   <form action="{{ request.path }}" method="post">{% csrf_token %}
-    {% if form.non_field_errors %}
-      <div class="alert alert-danger">
-	{{ form.non_field_errors }}
+      {% if form.non_field_errors %}
+          <div class="alert alert-danger">
+	      {{ form.non_field_errors }}
+          </div>
+      {% endif %}
+
+      <div class="cropseason_wrapper">
+          <table class="default-form">
+	      <tbody>
+	          {% for input in form %}
+	              <tr>
+	                  <td>{{ input.label_tag }}</td>
+	                  <td>
+		              {{ input }}
+	                  </td>
+	                  <td>
+		              {% if input.errors %}
+		                  <div class="inline-alert alert-danger">
+		                      {{ input.errors }}
+	                          </div>
+		              {% else %}
+		                  {% if input.field.required %}(Required){% endif %}
+		              {% endif %}
+	                  </td>
+	              </tr>
+	          {% endfor %}
+	          <tr>
+	              <td type="hidden">
+	                  <input id="season_start_date_before" 
+		                 name="season_start_date_before" 
+		                 type="hidden" 
+		                 value="{{ form.instance.season_start_date|date:"Y-m-d" }}">
+	              </td>
+	          </tr>
+	      </tbody>
+          </table>
       </div>
-    {% endif %}
 
-    <div class="cropseason_wrapper">
-      <table class="default-form">
-	<tbody>
-	  {% for input in form %}
-	    <tr>
-	      <td>{{ input.label_tag }}</td>
-	      <td>
-		{{ input }}
-	      </td>
-	      <td>
-		{% if input.errors %}
-		  <div class="inline-alert alert-danger">
-		    {{ input.errors }}
-	          </div>
-		{% else %}
-		  {% if input.field.required %}(Required){% endif %}
-		{% endif %}
-	      </td>
-	    </tr>
-	  {% endfor %}
-	  <tr>
-	    <td type="hidden">
-	      <input id="season_start_date_before" 
-		     name="season_start_date_before" 
-		     type="hidden" 
-		     value="{{ form.instance.season_start_date|date:"Y-m-d" }}">
-	    </td>
-	  </tr>
-	</tbody>
-      </table>
-    </div>
-
-    <h2>Fields
+      <h2>Fields
       
       <div class="float-right">
 
