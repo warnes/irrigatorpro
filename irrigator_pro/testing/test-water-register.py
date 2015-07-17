@@ -36,24 +36,55 @@ django.setup()
 
 from datetime import date, datetime
 from django.contrib.auth.models import User
-from farms.generate_water_register import earliest_register_to_update, generate_water_register
-from farms.models import CropSeason, Field
+from farms.generate_water_register import earliest_register_to_update, generate_water_register, calculateAWC_RainIrrigation
+from farms.models import CropSeason, Field, WaterHistory
+from farms.utils import get_probe_readings_dict
+
+crop_season = CropSeason.objects.get(name='Corn 2015', description='mine')  # need one with probes.
+field = Field.objects.get(name='North')
+
 
 print 'Performing query'
 earliest_date = earliest_register_to_update(date(2015,07,03),
-                                            CropSeason.objects.get(name='Corn 2015', description='mine'),
-                                            Field.objects.get(name='North'))
+                                            crop_season,
+                                            field)
 
 print '############### Earliest to update', earliest_date
 
 
 print '############### Generating register'
 
-generate_water_register(CropSeason.objects.get(name='Corn 2015', description='mine'),
-                        Field.objects.get(name='North'),
+generate_water_register(crop_season,
+                        field,
                         User.objects.get(email='aalebl@gmail.com'))
 
 
+print '############### Testing calculateAWC_RainIrrigation'
+
+
+probe_readings = get_probe_readings_dict(field, crop_season)
+water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
+                                                  field=field).all()
+
+(rain, irrigation) = calculateAWC_RainIrrigation(crop_season,
+                                                 field,
+                                                 date(2015, 06, 30), 
+                                                 water_history_query,
+                                                 probe_readings)
+
+
+(rain, irrigation) = calculateAWC_RainIrrigation(crop_season,
+                                                 field,
+                                                 date(2015, 07, 01), 
+                                                 water_history_query,
+                                                 probe_readings)
+
+
+(rain, irrigation) = calculateAWC_RainIrrigation(crop_season,
+                                                 field,
+                                                 date(2015, 07, 02), 
+                                                 water_history_query,
+                                                 probe_readings)
 
 
 

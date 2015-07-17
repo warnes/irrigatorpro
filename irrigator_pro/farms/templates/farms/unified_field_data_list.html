@@ -300,8 +300,11 @@
                                         
                                         <td class="units_depth">{{ record.rain }}</td>
                                         <td class="units_depth">{{ record.irrigation }}</td>
+                                        <td><input name="uga-{{ record.pk }}" 
+                                                   type="checkbox"
+                                                   {% if record.ignore %}checked{% endif %}>
+                                        </td>
 
-                                        <td>{{ record.ignore }}</td>
                                         <td></td>
                                         
                                     {% endif %}

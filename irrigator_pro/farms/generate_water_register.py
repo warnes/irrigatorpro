@@ -263,7 +263,8 @@ def twoTempAverage(temp1, temp2):
 def calculateAWC_RainIrrigation(crop_season, 
                                 field, 
                                 date, 
-                                water_history_query=None):
+                                water_history_query,
+                                probe_readings):
 
     """
     Calculate total rain/irrigations. Values are added over all records
@@ -274,18 +275,30 @@ def calculateAWC_RainIrrigation(crop_season,
     if isinstance(date, datetime):
         date = date.date()
 
-    if water_history_query is None:
-        water_history_query = WaterHistory.objects.filter(crop_season=crop_season,
-                                                          field=field).all()
+    rainfall = Decimal(0.0)
+    irrigation = Decimal(0.0)
 
-    wh_list = water_history_query.filter(datetime__range=d2dt_range(date)).all()
 
-    if wh_list:
-        rainfall   = sum( map( lambda wh: wh.rain, wh_list ) )
-        irrigation = sum( map( lambda wh: wh.irrigation, wh_list) )
-        return ( rainfall, irrigation )
+    # First calculate the rainfall/irrigation coming from probe readings
+    if date in probe_readings:
+        if DEBUG: print "Have probe readings for ", date
+        rainfall = sum( map( lambda pr: pr.rain, probe_readings[date]))
+        irrigation = sum( map( lambda pr: pr.irrigation, probe_readings[date]))
+
+        if DEBUG: print "Rainfall, irrigation from probes" , rainfall, ", ", irrigation
+
     else:
-        return ( 0.0, 0.0 )
+        print date, " has no probe readings"
+    
+
+    # Now add the values coming from the water history (soon to be renamed manual reading)
+    wh_list = water_history_query.filter(datetime__range=d2dt_range(date)).all()
+    if wh_list:
+        rainfall   = rainfall + sum( map( lambda wh: wh.rain, wh_list ) )
+        irrigation = irrigation + sum( map( lambda wh: wh.irrigation, wh_list) )
+
+    if DEBUG: print "Returning ", rainfall, ", ", irrigation
+    return ( rainfall, irrigation )
 
 
 def quantize( f ):
@@ -564,8 +577,11 @@ def generate_water_register(crop_season,
 
         ####
         ## Get (manually entered) water register entries
-        wr.rain, wr.irrigation  = calculateAWC_RainIrrigation(crop_season, field, date, 
-                                                              water_history_query=water_history_query)
+        wr.rain, wr.irrigation  = calculateAWC_RainIrrigation(crop_season,
+                                                              field,
+                                                              date, 
+                                                              water_history_query,
+                                                              probe_readings)
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
         if DEBUG: print "  AWC_register=", AWC_register
         ##
