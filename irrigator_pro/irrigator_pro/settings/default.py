@@ -22,27 +22,11 @@ WATER_REGISTER_DELTA = 7
 
 
 ###
-# Use ConfigParser to pull private values from irrigator_pro.conf
-### 
-
-import ConfigParser
-config = ConfigParser.ConfigParser()
-config.read(os.path.join(ABSOLUTE_PROJECT_ROOT, "irrigator_pro", "settings", "irrigator_pro.conf"))
-def unquote(str):
-    str = re.sub(r'^\"(.*)\"$', '\\1', str)
-    str = re.sub(r'^\'(.*)\'$', '\\1', str)
-    return str
-
-###
 # Site settings
 ###
 
 # Name displayed on pages, for easy change
 SITE_NAME = "IrrigatorPro (Devel)"
-
-# Make this unique, and don't share it with anybody.
-# http://www.miniwebtool.com/django-secret-key-generator/
-SECRET_KEY = unquote(config.get('Django','SECRET_KEY'))
 
 SITE_ID = 1
 
