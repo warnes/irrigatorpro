@@ -19,9 +19,6 @@ def get_probe_readings(crop_season, field, start_date = None, end_date = None):
     # Make sure radio ids are unique
     radio_ids = list(set(radio_ids))
 
-    ## Collect all the probe readings: for each radio ID keep one only one probe reading 
-    ## from the date sent as parameter. If there is more than one keep the latest.
-
     if start_date is None:
         start_date = crop_season.season_start_date
         
@@ -68,7 +65,6 @@ def get_probe_readings_dict(field, crop_season, start_date = None, end_date = No
     
     # Make sure radio ids are unique
     radio_ids = list(set(radio_ids))
-
 
     for day in daterange(start_date, end_date + timedelta(days=1)):
         for r_id in radio_ids:
