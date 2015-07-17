@@ -168,6 +168,14 @@ class UnifiedFieldDataListView(ModelFormSetView):
                 if DEBUG: print "Converting temps from cm to in"
                 obj.rain = to_inches(obj.rain)
                 obj.irrigation = to_inches(obj.irrigation)
+
+            new_time = self.request.POST["form-" + form.prefix[5:] + "-time"]
+
+            hr_min = re.search("(\d+):(\d+)", new_time)
+            obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
+            obj.save()
+                
+
             obj.save()
 
 

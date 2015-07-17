@@ -47,8 +47,10 @@ print "user: ", user
 
 # Get a crop season
 
-crop_season = CropSeason.objects.get(pk=19)  # need one with probes.
-field = Field.objects.get(pk=33)
+
+crop_season = CropSeason.objects.get(name='Corn 2015', description='mine')  # need one with probes.
+field = Field.objects.get(name='North')
+
 print 'crop season: ', crop_season
 print 'field: ', field
 

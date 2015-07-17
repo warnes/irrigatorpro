@@ -46,6 +46,7 @@ function addRow(afterRowID, date, time, crop_season_pk) {
 
     // From bob.js package
     var newRow = bob.string.formatString(newRowFormat, nb_current_forms);
+    console.log("new row: " + newRow);
 
     $("#id_form-TOTAL_FORMS").val(parseInt(nb_current_forms)+1)
     //$("input[id=id_form-TOTAL_FORMS]").val(parseInt(nb_current_forms)+1)

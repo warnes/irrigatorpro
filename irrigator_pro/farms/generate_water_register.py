@@ -13,10 +13,15 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from common.utils import daterange, minNone, safelog
 
+from farms.utils import get_probe_readings_dict
+
 # workarounds for the absence of query datetime__date operator
 from common.utils import d2dt_min, d2dt_max, d2dt_range 
 
 LN40 = math.log(40.0)
+
+
+probe_readings = {}
 
 
 ########################################################################
@@ -46,16 +51,8 @@ def calculateAWC_ProbeReading(crop_season,
     if isinstance(date, datetime):
         date = date.date()
 
-    probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
-    radio_ids = []
-    if len(probes) == 0:
-        return ( None, None )
-    else:
-        for probe in probes:
-            radio_ids.append(probe.radio_id)
-    
-    # Make sure radio ids are unique
-    radio_ids = list(set(radio_ids))
+    if len(probe_readings) == 0: return ( None, None )
+
 
 
     ## Get the maximum root depth
@@ -65,20 +62,6 @@ def calculateAWC_ProbeReading(crop_season,
     else:
         return ( None, None )
 
-
-    ## Collect all the probe readings: for each radio ID keep one only one probe reading 
-    ## from the date sent as parameter. If there is more than one keep the latest.
-
-
-    probe_readings = []
-    for r_id in radio_ids:
-        probe_reading = ProbeReading.objects.filter(radio_id=r_id,
-                                                    datetime__startswith=date).order_by('datetime').last()
-
-        if  probe_reading:
-            probe_readings.append(probe_reading)
-
-            
     if len(probe_readings) == 0:
         return ( None, None )
 
@@ -187,8 +170,6 @@ def calculateAWC_min(crop_season,
     Calculate the minumum Available Water Content for the specified field.
     """
 
-    probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
-
     ## Get the maximum root depth
     if crop_season:
         crop = crop_season.crop
@@ -283,6 +264,12 @@ def calculateAWC_RainIrrigation(crop_season,
                                 field, 
                                 date, 
                                 water_history_query=None):
+
+    """
+    Calculate total rain/irrigations. Values are added over all records
+    for that day. Two queries are required, since rain/irrigation can now
+    come from the probe readings as well.
+    """
 
     if isinstance(date, datetime):
         date = date.date()
@@ -432,18 +419,11 @@ def generate_water_register(crop_season,
     ####
 
 
+    probe_readings = get_probe_readings_dict(field, crop_season, start_date, report_date)
+
 
     ####
     ## Cache values / queries for later use
-
-
-    # try:
-    #     probe = Probe.objects.get(crop_season=crop_season, field=field)
-    #     radio_id = probe.radio_id
-    # except ObjectDoesNotExist:
-    #     probe = None
-    #     radio_id = None
-
 
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
                                                             field=field).all()

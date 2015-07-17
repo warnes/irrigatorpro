@@ -30,30 +30,32 @@ if __name__ == "__main__":
     # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
+
 import django
 django.setup()
 
 
+"""
+For now only test dictionary creation.
+"""
+from farms.models import *
 from datetime import date, datetime
 from django.contrib.auth.models import User
-from farms.generate_water_register import earliest_register_to_update, generate_water_register
-from farms.models import CropSeason, Field
 
-print 'Performing query'
-earliest_date = earliest_register_to_update(date(2015,07,03),
-                                            CropSeason.objects.get(name='Corn 2015', description='mine'),
-                                            Field.objects.get(name='North'))
+from farms.utils import get_probe_readings_dict
 
-print '############### Earliest to update', earliest_date
+# Get the cumulative report in a given date range. 
 
+user = User.objects.get(email='aalebl@gmail.com')
+print "user: ", user
 
-print '############### Generating register'
+# Get a crop season
 
-generate_water_register(CropSeason.objects.get(name='Corn 2015', description='mine'),
-                        Field.objects.get(name='North'),
-                        User.objects.get(email='aalebl@gmail.com'))
+crop_season = CropSeason.objects.get(name='Corn 2015', description='mine')  # need one with probes.
+field = Field.objects.get(name='North')
+print 'crop season: ', crop_season
+print 'field: ', field
 
 
-
-
-
+dict = get_probe_readings_dict(field, crop_season)
+print "Dict: ", dict
