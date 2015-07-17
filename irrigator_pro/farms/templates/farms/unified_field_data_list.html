@@ -202,7 +202,7 @@
                                             {% if object.forms %}
                                                <button type="button" 
 						       whichone="2"
-						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
+						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|add:rowspan|sub:1 }}', 
 						                       '{{ object.date|date:"Y-m-d"}}',  
    								       '{{ object.time|time:"H:M"}}', 
 						                       {{ crop_season.pk }});"  
@@ -212,7 +212,7 @@
 					     {% else %}
                                                <button type="button"
 						       whichone="3"
-						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
+						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|add:rowspan|sub:1 }}', 
 						                       '{{ object.date|date:"Y-m-d"}}',  
    								       '{{ object.time|time:"H:M"}}', 
 						                       {{ crop_season.pk }});"  

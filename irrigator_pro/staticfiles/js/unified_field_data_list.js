@@ -22,27 +22,27 @@ function addRow(afterRowID, date, time, crop_season_pk) {
     var datetime = date + " " + time;
     
     var newRowFormat=
-        "<tr id='new-{0}'>" +
-        "<td>" + date + "<input id='id_form-{0}-date' name='form-{0}-date' type='hidden' value='" + date + "' />"  + 
-        "<input id='id_form-{0}-crop_season' name='form-{0}-crop_season' type='hidden' value='" + crop_season_pk + "' />" +
-        "</td>" +
-        "<td><input id='id_form-{0}-time' name='form-{0}-time' value='" + time + "'/></td>" +
-        "<td>Manual Entry</td>" +
-        "<td><input id='id_form-{0}-soil_potential_8' name='form-{0}-soil_potential_8' step='0.01' type='number' /></td>"+
-        "<td><input id='id_form-{0}-soil_potential_16' name='form-{0}-soil_potential_16' step='0.01' type='number' /></td>" +
-        "<td><input id='id_form-{0}-soil_potential_24' name='form-{0}-soil_potential_24' step='0.01' type='number' /></td>" +
-        "<td><input id='id_form-{0}-min_temp_24_hours' name='form-3-min_temp_24_hours' step='0.01' type='number' /></td>" +
-        "<td><input id='id_form-{0}-max_temp_24_hours' name='form-3-max_temp_24_hours' step='0.01' type='number' /></td>" +
-        "<td><input id='id_form-{0}-rain' name='form-{0}-rain' step='0.01' type='number'  value='0'/></td>" +
-        "<td><input id='id_form-{0}-irrigation' name='form-{0}-irrigation' step='0.01' type='number' value='0'  /></td>" +
-        "<td><input id='id_form-{0}-ignore' name='form-{0}-ignore' type='checkbox'/></td>" +
-	"<td><input id='id_form-{0}-datetime' name='form-{0}-datetime' type='hidden' value='" + datetime + "'/> </td>" +
-	"<td></td>" +
-	"<td></td>" +
-	"<td></td>" +
-	"<td></td>" +
-	"<td></td>" +
-        "</tr>";
+        '<tr id="new-{0}">' +
+        '<td>' + date + '<input id="id_form-{0}-date" name="form-{0}-date" type="hidden" value="' + date + '" />'  + 
+        '<input id="id_form-{0}-crop_season" name="form-{0}-crop_season" type="hidden" value="' + crop_season_pk + '" />' +
+        '</td>' +
+        '<td><input id="id_form-{0}-time" name="form-{0}-time" value="' + time + '"/></td>' +
+        '<td>Manual Entry</td>' +
+        '<td><input id="id_form-{0}-soil_potential_8" name="form-{0}-soil_potential_8" step="0.01" type="number" /></td>'+
+        '<td><input id="id_form-{0}-soil_potential_16" name="form-{0}-soil_potential_16" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-soil_potential_24" name="form-{0}-soil_potential_24" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-min_temp_24_hours" name="form-3-min_temp_24_hours" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-max_temp_24_hours" name="form-3-max_temp_24_hours" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-rain" name="form-{0}-rain" step="0.01" type="number"  value="0"/></td>' +
+        '<td><input id="id_form-{0}-irrigation" name="form-{0}-irrigation" step="0.01" type="number" value="0"  /></td>' +
+        '<td><input id="id_form-{0}-ignore" name="form-{0}-ignore" type="checkbox"/></td>' +
+	'<td><input id="id_form-{0}-datetime" name="form-{0}-datetime" type="hidden" value="' + datetime + '"/> </td>' +
+	'<td></td>' +
+	'<td></td>' +
+	'<td></td>' +
+	'<td></td>' +
+	'<td><textarea cols="40" id="id_form-{0}-comment" name="form-{0}-comment" rows="3"></textarea></td>' +
+        '</tr>';
 
     // From bob.js package
     var newRow = bob.string.formatString(newRowFormat, nb_current_forms);

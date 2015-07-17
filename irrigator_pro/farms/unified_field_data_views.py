@@ -188,13 +188,14 @@ class UnifiedFieldDataListView(ModelFormSetView):
         ignored = [int(k[4:]) for k in self.request.POST.keys() if 'uga' in k]
         all_probe_readings = get_probe_readings(self.crop_season, self.field)
 
-        for pr in all_probe_readings:
-            if pr.ignore and pr.pk not in ignored:
-                pr.ignore = False
-                pr.save()
-            elif not pr.ignore and pr.pk in ignored:
-                pr.ignore = True
-                pr.save()
+        if len(all_probe_readings) > 0:
+            for pr in all_probe_readings:
+                if pr.ignore and pr.pk not in ignored:
+                    pr.ignore = False
+                    pr.save()
+                elif not pr.ignore and pr.pk in ignored:
+                    pr.ignore = True
+                    pr.save()
 
         return HttpResponseRedirect(reverse("unified_water_season_field",
                                             kwargs={'season': self.crop_season.pk,
