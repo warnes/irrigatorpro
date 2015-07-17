@@ -120,8 +120,9 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
         for obj in formset.deleted_objects:
-            if DEBUG: print "Will delete: obj"
-            obj.delete()
+            if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
+            if isinstance(obj, WaterHistory):
+                WaterHistory.delete(obj)
 
         for form in formset.forms:
             if form.cleaned_data['DELETE']:

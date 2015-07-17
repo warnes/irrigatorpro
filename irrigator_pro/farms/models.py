@@ -661,46 +661,46 @@ class WaterRegister(CropSeasonField, WaterRegisterFields):
                                                      self.field, 
                                                      self.datetime)
 
-#####################
-### Unified Table ###
-#####################
+# #####################
+# ### Unified Table ###
+# #####################
 
-class UnifiedTable(CropSeasonField, WaterRegisterFields):
-    """
-    Model to hold concatinated outer joins of
-        WaterRegister x WaterHistory and  
-        WaterRegister x ProbeReading 
-    for creation of the unified data entry and water register page
-    """
-    waterregister = models.ForeignKey(WaterRegister, blank=False)
-    waterhistory  = models.ForeignKey(WaterHistory,  blank=True)
-    probereading  = models.ForeignKey(ProbeReading,  blank=True)
+# class UnifiedTable(CropSeasonField, WaterRegisterFields):
+#     """
+#     Model to hold concatinated outer joins of
+#         WaterRegister x WaterHistory and  
+#         WaterRegister x ProbeReading 
+#     for creation of the unified data entry and water register page
+#     """
+#     waterregister = models.ForeignKey(WaterRegister, blank=False)
+#     waterhistory  = models.ForeignKey(WaterHistory,  blank=True)
+#     probereading  = models.ForeignKey(ProbeReading,  blank=True)
 
-    pr_source     = models.CharField(max_length=8,
-                                     choices=SOURCE_CHOICES,
-                                     default='Unknown'
-                                     )
-    wh_source     = models.CharField(max_length=8,
-                                     choices=SOURCE_CHOICES,
-                                     default='Unknown'
-                                     )
-    wr_source     = models.CharField(max_length=8,
-                                     choices=SOURCE_CHOICES,
-                                     default='Unknown'
-                                     )
+#     pr_source     = models.CharField(max_length=8,
+#                                      choices=SOURCE_CHOICES,
+#                                      default='Unknown'
+#                                      )
+#     wh_source     = models.CharField(max_length=8,
+#                                      choices=SOURCE_CHOICES,
+#                                      default='Unknown'
+#                                      )
+#     wr_source     = models.CharField(max_length=8,
+#                                      choices=SOURCE_CHOICES,
+#                                      default='Unknown'
+#                                      )
 
     
-    pr_datetime   = models.DateTimeField(blank=True, null=True)
-    wh_datetime   = models.DateTimeField(blank=True, null=True)
-    wr_datetime   = models.DateTimeField(blank=True, null=True)
+#     pr_datetime   = models.DateTimeField(blank=True, null=True)
+#     wh_datetime   = models.DateTimeField(blank=True, null=True)
+#     wr_datetime   = models.DateTimeField(blank=True, null=True)
 
 
-    class Meta:
-        verbose_name        = "Unified Table Entry"
-        verbose_name_plural = "Unified Table Entries"
-        unique_together     = ( ("crop_season", "field", "source", "datetime"), )
-        ordering            =   ("crop_season", "field", "source", "datetime")
-        managed             = False 
+#     class Meta:
+#         verbose_name        = "Unified Table Entry"
+#         verbose_name_plural = "Unified Table Entries"
+#         unique_together     = ( ("crop_season", "field", "source", "datetime"), )
+#         ordering            =   ("crop_season", "field", "source", "datetime")
+#         managed             = False 
 
 
 #################
