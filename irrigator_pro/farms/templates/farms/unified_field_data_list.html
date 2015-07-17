@@ -120,7 +120,7 @@
                                                                 '{{ object.date|date:"Y-m-d"}}', 
                                                                 '{{ object.time|time:"H:M"}}', 
                                                                  {{ crop_season.pk }});">
-                                            <i class="fa fa-pencil-square-o"></i>
+                                            <i class="fa fa-plus-square-o"></i>
                                         </button>
                                     {% endif %}
                                 </td>
@@ -202,22 +202,22 @@
                                             {% if object.forms %}
                                                <button type="button" 
 						       whichone="2"
-						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|add:rowspan|sub:1 }}', 
+						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', 
 						                       '{{ object.date|date:"Y-m-d"}}',  
    								       '{{ object.time|time:"H:M"}}', 
 						                       {{ crop_season.pk }});"  
 						       >
-						 <i class="fa fa-pencil-square-o"></i>
+						 <i class="fa fa-plus-square-o"></i>
                                                </button>                                                
 					     {% else %}
                                                <button type="button"
 						       whichone="3"
-						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|add:rowspan|sub:1 }}', 
+						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
 						                       '{{ object.date|date:"Y-m-d"}}',  
    								       '{{ object.time|time:"H:M"}}', 
 						                       {{ crop_season.pk }});"  
 						       >
-						 <i class="fa fa-pencil-square-o"></i>
+						 <i class="fa fa-plus-square-o"></i>
                                                </button>                                                
 					     {% endif %}
                                             </td>
@@ -304,14 +304,13 @@
                                                    type="checkbox"
                                                    {% if record.ignore %}checked{% endif %}>
                                         </td>
-
                                         <td></td>
                                         
                                     {% endif %}
                                 </tr>
                             {% endfor %}
                             {% comment %}
-                            Now add the forms
+                            Now add the water history record forms
                             {% endcomment %}
                             {% for form in object.forms  %}
 
@@ -338,7 +337,7 @@
 						                  '{{ object.date|date:"Y-m-d"}}', 
    								  '{{ object.time|time:"H:M"}}', 
 						                  {{ crop_season.pk }});">
-                                            <i class="fa fa-pencil-square-o"></i>
+                                            <i class="fa fa-plus-square-o"></i>
 					  </button>
                                         </td>
                                       {% endif %}
