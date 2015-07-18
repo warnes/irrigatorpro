@@ -1,3 +1,5 @@
+from django.conf import settings
+
 class UGARouter(object):
 
     def db_for_read(self, model, **hints):
@@ -15,7 +17,8 @@ class UGARouter(object):
         """
         if obj1._state.db == obj2._state.db:
             return True
-        return None
+        else:
+            return None
 
     def allow_migrate(self, db, model):
         """
