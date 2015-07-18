@@ -11,9 +11,14 @@ import sys
 # Where am I?
 ###
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner' 
-ABSOLUTE_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), 
-                                                     '..', '..'))
+TEST_RUNNER = 'uga.test_runner.ManagedModelTestRunner' 
+ABSOLUTE_PROJECT_ROOT = os.path.abspath(
+                           os.path.join(
+                              os.path.dirname(__file__), 
+                              '..', 
+                              '..'
+                              )
+                           )
 
 ###
 # Number of days in future where we generate a water register.
@@ -260,6 +265,7 @@ LOCAL_APPS = (
     'contact_info',
     'common',
     'farms',
+    'uga',
     'irrigator_pro',
     'notifications',
     'home',
@@ -271,6 +277,10 @@ INSTALLED_APPS = LOCAL_APPS \
                  + CORE_APPS \
                  + EXTERNAL_APPS \
                  + AUTHENTICATION_APPS
+
+
+# Routers maps which models and records to databases
+DATABASE_ROUTERS = [ 'uga.router.UGARouter' ]
 
 
 ###

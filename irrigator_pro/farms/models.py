@@ -92,7 +92,6 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
 
     class Meta:
         ordering = ["farmer"]
-        pass
 
 
 #############
