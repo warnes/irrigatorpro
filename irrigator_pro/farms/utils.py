@@ -57,7 +57,7 @@ def get_probe_readings_dict(field, crop_season, start_date = None, end_date = No
     probe_readings = {}
 
     probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
-    if len(probes) == 0: return
+    if len(probes) == 0: return {}
     radio_ids = []
 
     for probe in probes:
