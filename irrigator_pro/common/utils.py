@@ -62,6 +62,16 @@ def d2dt_range(date):
              )
 
 
+def quantize( f ):
+    """ Convert to a Decimal with resolution of 0.01 """
+    # An issue within the python Decimal class causes conversion from
+    # Decimal to Decimal to fail if the module is reloaded.  Work
+    # around that issue by converting to string, then to a Decimal.
+    retval = Decimal(str(f)).quantize( Decimal('0.01') )
+
+    return retval
+
+
 ## Tests
 if True: #False:
     dt = date(2014,01,05)

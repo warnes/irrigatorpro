@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
-from common.utils import daterange, minNone, safelog
+from common.utils import daterange, minNone, safelog, quantize
 
 from farms.utils import get_probe_readings_dict
 
@@ -21,12 +21,9 @@ from common.utils import d2dt_min, d2dt_max, d2dt_range
 LN40 = math.log(40.0)
 
 
-probe_readings = {}
-
-
-########################################################################
-## Calculate the AWC based on probe reading for a given crop_season,
-## date and field.
+##########################################################################
+## Calculate the AWC based on probe reading and manual entries for a given
+## crop_season, date and field.
 ##
 ## There can be more than one probe for a given field/date. As of
 ## now it looks like multiple probes will have different soil depth,
@@ -34,15 +31,17 @@ probe_readings = {}
 ## probes are used for the same depth. If the initial assumption
 ## holds true (only one probe / depth) then averaging will give the
 ## correct results.
-########################################################################
+##########################################################################
 
-def calculateAWC_ProbeReading(crop_season,
-                              field,
-                              date):
+def calculateAWC(crop_season,
+                 field,
+                 date,
+                 water_history_query,
+                 probe_readings):
     """
     Calculate the Available Water Content for the specified field and date
-    from Probe Reading data (if available).  If no probe reading
-    exists, returns None.
+    from Probe Reading data (if available) and WaterHistory (or manual
+    entries, if available).
 
     Also returns the temperature, so that the return value is a tuple
     of (AWC, temp)
@@ -51,10 +50,6 @@ def calculateAWC_ProbeReading(crop_season,
     if isinstance(date, datetime):
         date = date.date()
 
-    if len(probe_readings) == 0: return ( None, None )
-
-
-
     ## Get the maximum root depth
     if crop_season:
         crop = crop_season.crop
@@ -62,8 +57,6 @@ def calculateAWC_ProbeReading(crop_season,
     else:
         return ( None, None )
 
-    if len(probe_readings) == 0:
-        return ( None, None )
 
     ## Extract soil parameters
     soil_type_parameter_query = SoilTypeParameter.objects.filter(soil_type=field.soil_type).all()
@@ -114,21 +107,46 @@ def calculateAWC_ProbeReading(crop_season,
 
     ### Loop here through loop readings for all the probes given day.
 
-    AWC_8_l  = []
-    AWC_16_l = []
-    AWC_24_l = []
 
     def AWC(slope, potential):
         return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
 
-    for probe_reading in probe_readings:
-        AWC_8_l.append ( AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 ) )
-        AWC_16_l.append( AWC( soil_type_16in.slope, probe_reading.soil_potential_16) )
-        AWC_24_l.append( AWC( soil_type_24in.slope, probe_reading.soil_potential_24) )
 
-    AWC_8  = min(AWC_8_l)
-    AWC_16 = min(AWC_16_l)
-    AWC_24 = min(AWC_24_l)
+    latest_measurement_date = datetime( date - timedelta(days=1))
+
+    AWC_8  = None
+    AWC_16 = None
+    AWC_24 = None
+
+
+    if date in probe_readings:
+        for probe_reading in probe_readings[date]:
+            if probe_reading.datetime > latest_measurement_date:
+                if probe_reading.soil_potential_8:
+                    AWC_8_l = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
+                if probe_reading.soil_potential_16:
+                    AWC_16 = AWC( soil_type_16in.slope, probe_reading.soil_potential_16)
+                if probe_reading.soil_potential_24:
+                    AWC_24 = AWC( soil_type_24in.slope, probe_reading.soil_potential_24)
+                latest_measurement_date = probe_reading.datetime
+
+
+    ## Now get the potentials based on water history
+    for wh in water_history_query.filter(datetime__range=d2dt_range(date)).all():
+        if probe_reading.datetime > latest_measurement_date:
+            if wh.soil_potential_8:
+                AWC_8 = AWC( soil_type_8in.slope,  wh.soil_potential_8 )
+            if wh.soil_potential_16:
+                AWC_16 = AWC( soil_type_8in.slope,  wh.soil_potential_16 )
+            if wh.soil_potential_24:
+                AWC_8_l = AWC( soil_type_8in.slope,  wh.soil_potential_24 )
+
+
+    ### If any of the AWC has no value returns nothing
+
+    if not AWC_8 or not AWC_16 or not AWC_24:
+        return (None, None)
+    
 
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
@@ -167,7 +185,7 @@ def calculateAWC_ProbeReading(crop_season,
 def calculateAWC_min(crop_season,
                      field):
     """
-    Calculate the minumum Available Water Content for the specified field.
+    Calculate the minimum Available Water Content for the specified field.
     """
 
     ## Get the maximum root depth
@@ -260,11 +278,11 @@ def twoTempAverage(temp1, temp2):
     return temp
 
 
-def calculateAWC_RainIrrigation(crop_season, 
-                                field, 
-                                date, 
-                                water_history_query,
-                                probe_readings):
+def calculate_total_RainIrrigation(crop_season, 
+                                   field, 
+                                   date, 
+                                   water_history_query,
+                                   probe_readings):
 
     """
     Calculate total rain/irrigations. Values are added over all records
@@ -301,14 +319,6 @@ def calculateAWC_RainIrrigation(crop_season,
     return ( rainfall, irrigation )
 
 
-def quantize( f ):
-    """ Convert to a Decimal with resolution of 0.01 """
-    # An issue within the python Decimal class causes conversion from
-    # Decimal to Decimal to fail if the module is reloaded.  Work
-    # around that issue by converting to string, then to a Decimal.
-    retval = Decimal(str(f)).quantize( Decimal('0.01') )
-
-    return retval
 
 
 ##
@@ -566,22 +576,32 @@ def generate_water_register(crop_season,
         #temp = None
 
         # Could return (None, None) if there are no probes.
-        # Moved this validation to calculateAWC_ProbeReading,
+        # Moved this validation to calculateAWC,
         # since there is already code to validate.
-        AWC_probe, temp = calculateAWC_ProbeReading(crop_season,
-                                                    field,
-                                                    date) 
+        AWC_probe, temp = calculateAWC(crop_season,
+                                       field,
+                                       date,
+                                       water_history_query,
+                                       probe_readings) 
         if DEBUG: print "  AWC_probe=", AWC_probe
         ##
         ####
 
         ####
         ## Get (manually entered) water register entries
-        wr.rain, wr.irrigation  = calculateAWC_RainIrrigation(crop_season,
-                                                              field,
-                                                              date, 
-                                                              water_history_query,
-                                                              probe_readings)
+        wr.rain, wr.irrigation  = calculate_total_RainIrrigation(crop_season,
+                                                                 field,
+                                                                 date, 
+                                                                 water_history_query,
+                                                                 probe_readings)
+
+        # wr.min_temp_24_hours, wr.max_temp_24_hours = calculate_min_max_24_hours(crop_season,
+        #                                                                         field,
+        #                                                                         date,
+        #                                                                         water_history_query,
+        #                                                                         probe_readings)
+
+        
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
         if DEBUG: print "  AWC_register=", AWC_register
         ##

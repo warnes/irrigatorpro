@@ -56,6 +56,8 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
 
     current_probe_reading = None
+
+    ### TODO Use dictionary here:
     probe_readings = get_probe_readings(crop_season, field, None, report_date)
 
     if probe_readings is not None and len(probe_readings) > 0:
