@@ -2,7 +2,7 @@ import math
 import sys
 from decimal import Decimal
 from numpy import nanmean
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, time
 
 
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT, COMPUTE_FULL_SEASON, WATER_REGISTER_DELTA, DEBUG
@@ -112,7 +112,9 @@ def calculateAWC(crop_season,
         return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
 
 
-    latest_measurement_date = datetime( date - timedelta(days=1))
+    ### TODO Need to add tzinfo here, otherwise we need to keep the ugly hack below.
+
+    latest_measurement_date = datetime.combine( date, time(0,0,0) )
 
     AWC_8  = None
     AWC_16 = None
@@ -121,9 +123,10 @@ def calculateAWC(crop_season,
 
     if date in probe_readings:
         for probe_reading in probe_readings[date]:
+            latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
             if probe_reading.datetime > latest_measurement_date:
                 if probe_reading.soil_potential_8:
-                    AWC_8_l = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
+                    AWC_8 = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
                 if probe_reading.soil_potential_16:
                     AWC_16 = AWC( soil_type_16in.slope, probe_reading.soil_potential_16)
                 if probe_reading.soil_potential_24:
@@ -132,15 +135,18 @@ def calculateAWC(crop_season,
 
 
     ## Now get the potentials based on water history
+
     for wh in water_history_query.filter(datetime__range=d2dt_range(date)).all():
-        if probe_reading.datetime > latest_measurement_date:
+        if DEBUG: print "tzinfo for wh: ", wh.datetime.tzinfo
+        latest_measurement_date = latest_measurement_date.replace(tzinfo=wh.datetime.tzinfo)
+        if wh.datetime > latest_measurement_date:
             if wh.soil_potential_8:
                 AWC_8 = AWC( soil_type_8in.slope,  wh.soil_potential_8 )
             if wh.soil_potential_16:
-                AWC_16 = AWC( soil_type_8in.slope,  wh.soil_potential_16 )
+                AWC_16 = AWC( soil_type_16in.slope,  wh.soil_potential_16 )
             if wh.soil_potential_24:
-                AWC_8_l = AWC( soil_type_8in.slope,  wh.soil_potential_24 )
-
+                AWC_24 = AWC( soil_type_24in.slope,  wh.soil_potential_24 )
+            latest_measurement_date = wh.datetime
 
     ### If any of the AWC has no value returns nothing
 

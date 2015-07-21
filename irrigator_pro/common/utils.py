@@ -1,4 +1,6 @@
 from datetime import date, datetime, time, timedelta
+from decimal import Decimal
+
 import math
 
 def daterange(start_date, end_date):
