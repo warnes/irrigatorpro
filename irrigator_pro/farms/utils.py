@@ -6,36 +6,36 @@ from common.utils import daterange
 
 ### May not be required anymore, now that the dict is defined.
 
-def get_probe_readings(crop_season, field, start_date = None, end_date = None):
+# def get_probe_readings(crop_season, field, start_date = None, end_date = None):
   
-    probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
-    radio_ids = []
-    if probes is None or len(probes) == 0:
-        return None
-    else:
-        for probe in probes:
-            radio_ids.append(probe.radio_id)
+#     probes = Probe.objects.filter(crop_season=crop_season, field=field).all()
+#     radio_ids = []
+#     if probes is None or len(probes) == 0:
+#         return None
+#     else:
+#         for probe in probes:
+#             radio_ids.append(probe.radio_id)
     
-    # Make sure radio ids are unique
-    radio_ids = list(set(radio_ids))
+#     # Make sure radio ids are unique
+#     radio_ids = list(set(radio_ids))
 
-    if start_date is None:
-        start_date = crop_season.season_start_date
+#     if start_date is None:
+#         start_date = crop_season.season_start_date
         
-    if end_date is None:
-        end_date = min(date.today(), crop_season.season_end_date)
+#     if end_date is None:
+#         end_date = min(date.today(), crop_season.season_end_date)
 
 
-    probe_readings = []
-    for r_id in radio_ids:
-        probe_reading = ProbeReading.objects.filter(radio_id=r_id,
-                                                    datetime__gte = start_date,
-                                                    datetime__lte = end_date).order_by('datetime').all()
+#     probe_readings = []
+#     for r_id in radio_ids:
+#         probe_reading = ProbeReading.objects.filter(radio_id=r_id,
+#                                                     datetime__gte = start_date,
+#                                                     datetime__lte = end_date).order_by('datetime').all()
         
-        if  probe_reading:
-            probe_readings.extend(probe_reading.all())
+#         if  probe_reading:
+#             probe_readings.extend(probe_reading.all())
 
-    return probe_readings
+#     return probe_readings
 
 
 

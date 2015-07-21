@@ -2,7 +2,7 @@ from farms.models import *
 from common.utils import daterange
 
 from farms.generate_water_register import generate_water_register
-from farms.utils import get_probe_readings
+from farms.utils import get_probe_readings_dict
 from django.forms.models import modelformset_factory
 
 from django.db.models import Q
@@ -52,24 +52,11 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                                Q(datetime__lte =  d2dt_min(report_date + timedelta(WATER_REGISTER_DELTA))) 
                                )
 
-    ### probe_readings will contain all the readings in increasing order of time.
+    probe_readings_dict = get_probe_readings_dict(field, crop_season, None, report_date)
 
 
-    current_probe_reading = None
 
-    ### TODO Use dictionary here:
-    probe_readings = get_probe_readings(crop_season, field, None, report_date)
-
-    if probe_readings is not None and len(probe_readings) > 0:
-        probe_readings.reverse()
-        current_probe_reading = probe_readings.pop()
-        while current_probe_reading is not None and current_probe_reading.date < crop_season.season_start_date:
-            if len(probe_readings) == 0:
-                current_probe_reading = None
-            else:
-                current_probe_reading = probe_readings.pop()
-
-
+    ### Get all the forms defined by the formset created from the water history objects
     form_index = 0
     current_form = None
     all_forms = wh_formset.forms
@@ -90,39 +77,30 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                 
 
     for day in daterange(crop_season.season_start_date, report_date + timedelta(days=1)):
-        #try:
-            water_register = water_register_query.get(datetime__range = d2dt_range(day))
-            day_record = UnifiedReport(day, water_register)
+        water_register = water_register_query.get(datetime__range = d2dt_range(day))
+        day_record = UnifiedReport(day, water_register)
 
-            ## Next two while
-            while current_probe_reading is not None and current_probe_reading.date == day:
-                day_record.uga_records.append(current_probe_reading)
-                if len(probe_readings) > 0:
-                    current_probe_reading = probe_readings.pop()
-                else:
-                    current_probe_reading = None
-            
 
-            while current_form is not None and getDateObject(current_form['datetime'].value()) == day:
-                day_record.forms.append(current_form)
-                if form_index == len(all_forms):
-                    current_form = None
-                else:
-                    current_form = all_forms[form_index]
-                    form_index = form_index + 1
+        if day in probe_readings_dict:
+            day_record.uga_records = probe_readings_dict[day]
 
-            ret.append(day_record)
-            
-        #except BaseException as x:
-        #    return None
 
+        while current_form is not None and getDateObject(current_form['datetime'].value()) == day:
+            day_record.forms.append(current_form)
+            if form_index == len(all_forms):
+                current_form = None
+            else:
+                current_form = all_forms[form_index]
+                form_index = form_index + 1
+
+        ret.append(day_record)
 
     # Add records for days in the future
     
     ### Might want days=WATER_REGISTER_DELTA+1 below, but we don't do it
     ### in generate_water_register
 
-    ### Also this loop could be merges with above. But this is easier to see
+    ### Also this loop could be merged with above. But this is easier to see
     ### what happens
     report_plus_delta = min(report_date + timedelta(days=WATER_REGISTER_DELTA), crop_season.season_end_date)
     
