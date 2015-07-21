@@ -123,7 +123,9 @@ def calculateAWC(crop_season,
 
     if date in probe_readings:
         for probe_reading in probe_readings[date]:
-            latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
+
+            ## TODO Should have (here and below) to be done only once.
+            latest_measurement_date = latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
             if probe_reading.datetime > latest_measurement_date:
                 if probe_reading.soil_potential_8:
                     AWC_8 = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
