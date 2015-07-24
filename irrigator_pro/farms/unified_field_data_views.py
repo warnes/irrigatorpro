@@ -189,7 +189,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
         all_probe_readings = get_probe_readings_dict(self.field, self.crop_season)
 
         if len(all_probe_readings) > 0:
-            for list in all_probe_readings.items:
+            for list in all_probe_readings.items():
                 for pr in list:
                     if pr.ignore and pr.pk not in ignored:
                         pr.ignore = False
@@ -241,6 +241,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
         context['crop_season']  = self.crop_season
         context['field']        = self.field
         context['report_date']  = self.report_date
+        context['SITE_NAME']    = 'Unified Water Page'
 
         return context
 
