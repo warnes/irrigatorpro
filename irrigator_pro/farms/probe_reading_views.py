@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.forms.widgets import HiddenInput
 
 from farms.models import CropSeason, Field, Probe, ProbeReading
+from common.utils import d2dt_min, d2dt_max
 
 class ProbeReadingEmptyView(TemplateView):
     template_name = 'farms/probe_readings_empty.html'
@@ -84,8 +85,8 @@ class ProbeReadingFormsetView(ModelFormSetView):
 
         if self.season:
             crop_season = CropSeason.objects.get(pk=self.season.pk)
-            queryset = queryset.filter( datetime__gte=crop_season.season_start_date,
-                                        datetime__lte=crop_season.season_end_date )
+            queryset = queryset.filter( datetime__gte=d2dt_min(crop_season.season_start_date),
+                                        datetime__lte=d2dt_max(crop_season.season_end_date))
 
 
         return queryset.distinct()

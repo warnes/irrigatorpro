@@ -1,7 +1,17 @@
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 
+from django.utils import timezone
+
 import math
+
+min_time = time.min
+min_time = min_time.replace(tzinfo =  timezone.get_current_timezone())
+
+max_time = time.max
+max_time = max_time.replace(tzinfo =  timezone.get_current_timezone())
+
+
 
 def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
@@ -29,7 +39,7 @@ def d2dt_min(date):
     but this is not supported until django 1.9, so for now we need to do
          .fiter(datetime__lte=d2dt_min(date))
     """
-    return datetime.combine(date, time.min)
+    return datetime.combine(date, min_time)
 
 
 def d2dt_max(date):
@@ -44,7 +54,8 @@ def d2dt_max(date):
     but this is not supported until django 1.9, so for now we need to do
          .fiter(datetime__gte=d2dt_max(date))
     """
-    return datetime.combine(date, time.min)
+    return datetime.combine(date, max_time)
+
 
 
 def d2dt_range(date):
@@ -59,8 +70,8 @@ def d2dt_range(date):
     but this is not supported until django 1.9, so for now we need to do
          .fiter(datetime__rage=d2dt_range(date))
     """
-    return  ( datetime.combine(date, time.min), \
-             datetime.combine(date, time.max) \
+    return  ( datetime.combine(date, min_time), \
+              datetime.combine(date, max_time) \
              )
 
 

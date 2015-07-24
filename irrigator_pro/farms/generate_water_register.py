@@ -296,6 +296,8 @@ def calculate_total_RainIrrigation(crop_season,
     Calculate total rain/irrigations. Values are added over all records
     for that day. Two queries are required, since rain/irrigation can now
     come from the probe readings as well.
+
+    :param probe_readings: a dictionary of the form (data, list(ProbeReading))
     """
 
     if isinstance(date, datetime):
@@ -306,6 +308,8 @@ def calculate_total_RainIrrigation(crop_season,
 
 
     # First calculate the rainfall/irrigation coming from probe readings
+    
+    if DEBUG: print "Keys for probe readings: ", probe_readings.keys()
     if date in probe_readings:
         if DEBUG: print "Have probe readings for ", date
         rainfall = sum( map( lambda pr: pr.rain, probe_readings[date]))
@@ -449,7 +453,7 @@ def generate_water_register(crop_season,
     ##
     ####
 
-
+    print "Start date, report date to create dict: ", start_date, report_date
     probe_readings = get_probe_readings_dict(field, crop_season, start_date, report_date)
 
 
@@ -487,7 +491,7 @@ def generate_water_register(crop_season,
                                                      )
             AWC_initial = wr_yesterday.average_water_content
         except:
-            raise RuntimeError("No previous water_register record on " + first_process_date );
+            raise RuntimeError("No previous water_register record on " + str(first_process_date) );
 
     ## First pass, calculate water profile (AWC)
     if DEBUG: print "First pass, calculate water profile (AWC)"
@@ -497,7 +501,7 @@ def generate_water_register(crop_season,
     if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
-        if DEBUG: print "  Working on ", date
+        # if DEBUG: print "  Working on ", date
         ####
         ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
         ##
@@ -525,8 +529,6 @@ def generate_water_register(crop_season,
             irrigate_to_max_seen_prev = wr_prev.irrigate_to_max_seen
             irrigate_to_max_achieved_prev = wr_prev.irrigate_to_max_achieved
 
-
-
         ####
         
 
@@ -542,7 +544,6 @@ def generate_water_register(crop_season,
 
         try: 
             wr = wr_query.filter(datetime__range=d2dt_range(date))[0]
-
             computed_from_probes  = False
             irrigate_flag         = False
             too_hot_flag          = False
@@ -561,7 +562,7 @@ def generate_water_register(crop_season,
                 field = field,
                 datetime = d2dt_min(date)
             )
-        
+
         ####
         ## Copy information from crop event record 
         cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('-date').first()
@@ -661,7 +662,6 @@ def generate_water_register(crop_season,
         wr_prev = wr
 
         ## Write to the database
-        if DEBUG: print "  saving..."
         wr.save()
 
     ## Refresh query
@@ -755,7 +755,6 @@ def generate_water_register(crop_season,
                     wr.check_sensors_flag = True
 
         ## Write to the database
-        if DEBUG: print "saving..."
         wr.save()
 
 

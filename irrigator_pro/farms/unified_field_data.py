@@ -44,7 +44,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     if crop_season.season_end_date < report_date:
         report_date = crop_season.season_end_date
 
-    generate_water_register(crop_season, field, user, report_date)
+    generate_water_register(crop_season, field, user, None, report_date)
 
     water_register_query = WaterRegister.objects.filter(crop_season = crop_season, field = field)
     water_register_query = water_register_query.order_by('-datetime')
