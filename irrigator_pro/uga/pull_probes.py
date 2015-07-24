@@ -46,11 +46,16 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
        records
     """
 
+    print "Working on %s for %s" % (crop_season, field) 
+
+    if crop_season is None or field is None:
+        return []
+
     if not isinstance(crop_season, CropSeason):
         crop_season = CropSeason.objects.get(pk=crop_season)
 
     if not isinstance(field, Field):
-        field= Field.objects.get(pk=field)
+        field=Field.objects.get(pk=field)
 
     if user is None:
         user = User.objects.filter(username='SyncProcess').first()
@@ -64,7 +69,7 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
 
     # return if nothing to do
     if len(probes) == 0:
-        return [{}]
+        return []
     
     sql1 = """
     SELECT DISTINCT ON (dt::date)
@@ -122,7 +127,7 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
       (
       %s
       ) AS a
-    LEFT JOIN 
+    FULL OUTER JOIN 
       (
       %s
       ) AS b

@@ -30,3 +30,10 @@ class UGAProbeData(models.Model):
                                             self.soil_potential_24,
                                             self.thermocouple_1_temp,
                                             self.thermocouple_2_temp)
+
+    def get_radio_ids(self):
+        """
+        Return a list of all available probe radio_ids
+        """
+        recs = self.objects.values('radio_id').distinct()
+        return [ r['radio_id'] for r in recs]

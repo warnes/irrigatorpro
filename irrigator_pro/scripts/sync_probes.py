@@ -145,7 +145,7 @@ if store_clean:
 
 
 start_time = timezone.now()
-records = pull_probes_by_period( date.today(), date.today() )
+records = pull_probes_by_period( date_start, date_end )
 elapsed = timezone.now() - start_time
 
 nRecords = len(records)
