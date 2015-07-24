@@ -7,13 +7,6 @@ from django.utils     import timezone # for make_aware, get_default_timezone
 from uga.aggregates   import *
 from django.contrib.auth.models import User
 
-field = Field.objects.get(name='East 1')
-cs    = CropSeason.objects.get(name='Corn 2015', field_list=field)
-day   = date.today()
-user  = User.objects.get(email='greg@warnes.net')
-today = date.today()
-
-
 def to_tz(datetime):
     return timezone.make_aware( datetime, timezone.get_default_timezone() )
 
@@ -228,6 +221,13 @@ def pull_probes_by_period(start_date=None, end_date=None, user=None):
 
 
 if __name__ == "__main__":
+
+    field = Field.objects.get(name='East 1')
+    cs    = CropSeason.objects.get(name='Corn 2015', field_list=field)
+    day   = date.today()
+    user  = User.objects.get(email='greg@warnes.net')
+    today = date.today()
+
     start_time = timezone.now()
     ret = pull_probes_by_cropseason_field(crop_season=cs, field=field)
     print "One CropSeason + field took %s seconds to update %d WaterHistory records" % ( 
