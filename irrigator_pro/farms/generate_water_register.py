@@ -43,8 +43,6 @@ def calculateAWC(crop_season,
     from Probe Reading data (if available) and WaterHistory (or manual
     entries, if available).
 
-    Also returns the temperature, so that the return value is a tuple
-    of (AWC, temp)
     """
 
     if isinstance(date, datetime):
@@ -55,7 +53,7 @@ def calculateAWC(crop_season,
         crop = crop_season.crop
         max_root_depth = crop_season.crop.max_root_depth
     else:
-        return ( None, None )
+        return None
 
 
     ## Extract soil parameters
@@ -153,7 +151,7 @@ def calculateAWC(crop_season,
     ### If any of the AWC has no value returns nothing
 
     if not AWC_8 or not AWC_16 or not AWC_24:
-        return (None, None)
+        return None
     
 
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
@@ -173,20 +171,7 @@ def calculateAWC(crop_season,
     else: # max_root_depth > 16
         AWC = (AWC_8 + AWC_16 + AWC_24) / 3
 
-
-    ####
-    ## Extract temperature 
-    ####
-    temp1 = 0 #celciusToFarenheit( probe_reading.thermocouple_1_temp )
-    #    temp2 = celciusToFarenheit( probe_reading.thermocouple_2_temp )
-    
-    ### Current probes don't actually have two temperature probes
-    ### installed.  Only the first probe is installed and operational,
-    ### so ignore the second and simply use the first one.
-    ## temp = twoTempAverage(temp1, temp2)
-    temp = tempRangeCheck(temp1)
-
-    return (AWC, temp)
+    return AWC
 
 
 
@@ -263,27 +248,29 @@ def tempRangeCheck(temp):
     return temp
 
 
-def twoTempAverage(temp1, temp2):
-    """
-    Average two temperatures, properly handling values that are None
-    or out of range
-    """
+# def twoTempAverage(temp1, temp2):
+#     """
+#     Average two temperatures, properly handling values that are None
+#     or out of range
+#     """
 
-    # Apply temperature sanity checks (assuming temp in degrees
-    # Fareneheit)
-    temp1 = tempRangeCheck(temp1)
-    temp2 = tempRangeCheck(temp1)
+#     # Apply temperature sanity checks (assuming temp in degrees
+#     # Fareneheit)
+#     temp1 = tempRangeCheck(temp1)
+#     temp2 = tempRangeCheck(temp1)
 
-    # Calculate average
-    if temp1 is None and temp2 is None:
-        temp = None
-    elif temp1 is None:
-        temp = float(temp2)
-    elif temp2 is None:
-        temp = float(temp1)
-    else:
-        temp = float( temp1 + temp2 ) / 2
-    return temp
+#     # Calculate average
+#     if temp1 is None and temp2 is None:
+#         temp = None
+#     elif temp1 is None:
+#         temp = float(temp2)
+#     elif temp2 is None:
+#         temp = float(temp1)
+#     else:
+#         temp = float( temp1 + temp2 ) / 2
+#     return temp
+
+
 
 
 def calculate_total_RainIrrigation(crop_season, 
@@ -295,7 +282,8 @@ def calculate_total_RainIrrigation(crop_season,
     """
     Calculate total rain/irrigations. Values are added over all records
     for that day. Two queries are required, since rain/irrigation can now
-    come from the probe readings as well.
+    come from the probe readings as well. Calculate min/max temps for the
+    day as well.
 
     :param probe_readings: a dictionary of the form (data, list(ProbeReading))
     """
@@ -306,19 +294,19 @@ def calculate_total_RainIrrigation(crop_season,
     rainfall = Decimal(0.0)
     irrigation = Decimal(0.0)
 
+    min_temp = None
+    max_temp = None
 
     # First calculate the rainfall/irrigation coming from probe readings
     
-    if DEBUG: print "Keys for probe readings: ", probe_readings.keys()
     if date in probe_readings:
-        if DEBUG: print "Have probe readings for ", date
         rainfall = sum( map( lambda pr: pr.rain, probe_readings[date]))
         irrigation = sum( map( lambda pr: pr.irrigation, probe_readings[date]))
 
-        if DEBUG: print "Rainfall, irrigation from probes" , rainfall, ", ", irrigation
-
+        min_temp = minNone(*map( lambda pr: pr.min_temp_24_hours, probe_readings[date]))
+        max_temp = max(map( lambda pr: pr.max_temp_24_hours, probe_readings[date]))
     else:
-        print date, " has no probe readings"
+        pass
     
 
     # Now add the values coming from the water history (soon to be renamed manual reading)
@@ -327,9 +315,12 @@ def calculate_total_RainIrrigation(crop_season,
         rainfall   = rainfall + sum( map( lambda wh: wh.rain, wh_list ) )
         irrigation = irrigation + sum( map( lambda wh: wh.irrigation, wh_list) )
 
-    if DEBUG: print "Returning ", rainfall, ", ", irrigation
-    return ( rainfall, irrigation )
+        min_temp = minNone(min_temp, minNone(*map( lambda wh: wh.min_temp_24_hours, wh_list)))
+        max_temp = max(max_temp, max(map( lambda wh: wh.max_temp_24_hours, wh_list)))
 
+    ## Really need min_temp?
+    if DEBUG: print "Min temp, max temp for: ", date, min_temp, max_temp
+    return ( rainfall, irrigation, min_temp, max_temp )
 
 
 
@@ -587,28 +578,22 @@ def generate_water_register(crop_season,
         # Could return (None, None) if there are no probes.
         # Moved this validation to calculateAWC,
         # since there is already code to validate.
-        AWC_probe, temp = calculateAWC(crop_season,
-                                       field,
-                                       date,
-                                       water_history_query,
-                                       probe_readings) 
+        AWC_probe = calculateAWC(crop_season,
+                                 field,
+                                 date,
+                                 water_history_query,
+                                 probe_readings) 
         if DEBUG: print "  AWC_probe=", AWC_probe
         ##
         ####
 
         ####
         ## Get (manually entered) water register entries
-        wr.rain, wr.irrigation  = calculate_total_RainIrrigation(crop_season,
-                                                                 field,
-                                                                 date, 
-                                                                 water_history_query,
-                                                                 probe_readings)
-
-        # wr.min_temp_24_hours, wr.max_temp_24_hours = calculate_min_max_24_hours(crop_season,
-        #                                                                         field,
-        #                                                                         date,
-        #                                                                         water_history_query,
-        #                                                                         probe_readings)
+        wr.rain, wr.irrigation, min_temp, max_temp  = calculate_total_RainIrrigation(crop_season,
+                                                                                     field,
+                                                                                     date, 
+                                                                                     water_history_query,
+                                                                                     probe_readings)
 
         
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
@@ -647,13 +632,13 @@ def generate_water_register(crop_season,
         ## Calculate and store max temperature since last appreciable rainfall or irrigation
         if wr.average_water_content >= float(AWC_prev) + 0.1:
             # Max temp is only today's value 
-            wr.max_observed_temp_2in = temp
+            wr.max_observed_temp_2in = max_temp
 
             # Reset max temp calculation
             temps_since_last_water_date = []
         else:
             # Add today's temperature
-            temps_since_last_water_date.append(temp)
+            temps_since_last_water_date.append(max_temp)
 
             # Calculate max temp
             wr.max_observed_temp_2in = max(temps_since_last_water_date)
