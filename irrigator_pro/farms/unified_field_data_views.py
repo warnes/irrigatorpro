@@ -189,8 +189,11 @@ class UnifiedFieldDataListView(ModelFormSetView):
         all_probe_readings = get_probe_readings_dict(self.field, self.crop_season)
 
         if len(all_probe_readings) > 0:
-            for list in all_probe_readings.items():
-                for pr in list:
+            for (date, queryset) in all_probe_readings.items():
+                for pr in queryset.all():
+                    pr.date = date
+                    #for list in all_probe_readings.items():
+                    #for pr in list:
                     if pr.ignore and pr.pk not in ignored:
                         pr.ignore = False
                         pr.save()
