@@ -17,9 +17,6 @@ def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
         yield start_date + timedelta(days=n)
 
-def minNone( *args ):
-    args = filter( lambda x: x is not None, args)
-    return min(args)
 
 def safelog( val ):
     if val <= 0:
@@ -73,6 +70,24 @@ def d2dt_range(date):
     return  ( datetime.combine(date, min_time), \
               datetime.combine(date, max_time) \
              )
+
+
+
+def minNone(*values):
+
+    """
+    In python None is considered smaller than any number, and a min on a list
+    containing None will return None, which is not what we want.
+    """
+
+    if not values or len(values) == 0:
+        return None
+
+    not_none = [x for x in values if x is not None]
+    if len(not_none)==0:
+        return None
+
+    return min(not_none)
 
 
 def quantize( f ):
