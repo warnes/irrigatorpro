@@ -55,9 +55,10 @@ def handler_WaterHistory(sender, instance, **kwargs):
     else:   
         try:
             field = instance.field
-            field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
-                                                             instance.datetime.date()
-                                                             )
+            if instance.datetime:
+                field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date, 
+                                                                 instance.datetime.date()
+                                                                 )
             field.save()
         except ValueError:
             pass
