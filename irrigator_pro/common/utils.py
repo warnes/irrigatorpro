@@ -73,19 +73,24 @@ def d2dt_range(date):
 
 
 
-def minNone(*values):
+def minNone(*args):
 
     """
     In python None is considered smaller than any number, and a min on a list
     containing None will return None, which is not what we want.
     """
 
-    if not values or len(values) == 0:
+    if not args or len(args) == 0:
         return None
 
-    not_none = [x for x in values if x is not None]
-    if len(not_none)==0:
+
+    args = filter( lambda x: x is not None, args)
+    if len(args)==0:
         return None
+
+    return min(args)
+
+
 
     return min(not_none)
 
