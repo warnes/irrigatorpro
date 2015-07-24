@@ -456,7 +456,7 @@ class FieldDataReading(Audit, Comment):
         if self.datetime:
             self.datetime = datetime.combine( value, self.datetime.time() )
         else:
-            self.datetime = datetime.combine( value, time(0,0) )            
+            self.datetime = datetime.combine( value, time.min )            
 
     @property
     def time(self):

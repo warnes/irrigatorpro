@@ -114,7 +114,7 @@ def calculateAWC(crop_season,
 
     ### TODO Need to add tzinfo here, otherwise we need to keep the ugly hack below.
 
-    latest_measurement_date = datetime.combine( date, time(0,0,0) )
+    latest_measurement_date = datetime.combine( date, time.max )
 
     AWC_8  = None
     AWC_16 = None
