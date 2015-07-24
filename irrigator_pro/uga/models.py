@@ -1,4 +1,5 @@
 from django.db import models
+from farms.models import *
 
 class UGAProbeData(models.Model):
     id                  = models.AutoField    (db_column="data_id", primary_key=True)
@@ -29,12 +30,3 @@ class UGAProbeData(models.Model):
                                             self.soil_potential_24,
                                             self.thermocouple_1_temp,
                                             self.thermocouple_2_temp)
-
-    def generate_water_history_records(self, crop_season, field):
-        """
-        from crop season and field, determine probe radio_id(s) and
-        date range.  Using this information run a query that calcuates
-        (1) the most recent 8,16,24 soil potentials, and (2) the
-        minimum and maximum observed temperatures.
-        """
-        pass

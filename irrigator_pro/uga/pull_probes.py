@@ -5,6 +5,7 @@ from datetime         import date, datetime, time, timedelta
 from django.db.models import Count
 from django.utils     import timezone # for make_aware, get_default_timezone
 from uga.aggregates   import *
+from django.contrib.auth.models import User
 
 field = Field.objects.get(name='East 1')
 cs    = CropSeason.objects.get(name='Corn 2015', field_list=field)
@@ -17,10 +18,12 @@ def to_tz(datetime):
     return timezone.make_aware( datetime, timezone.get_default_timezone() )
 
 
-def pull_probes_by_cropseason_field(crop_season, field):
+def pull_probes_by_cropseason_field(crop_season, field, user=None):
     """
     Query the UGA database and pull relevant probe summary data into
     the WaterHistory table for the specified crop season and field.  
+
+    Returns a list contiaing the created/updated water records
 
     This is accompished by:
     1. Identifying probes assigned to this cropseason and field
@@ -49,6 +52,11 @@ def pull_probes_by_cropseason_field(crop_season, field):
     if not isinstance(field, Field):
         field= Field.objects.get(pk=field)
 
+    if user is None:
+        user = User.objects.filter(username='SyncProcess').first()
+        if user is None:
+           user = User.objects.create_user(username='SyncProcess',
+                                           email='webmaster@irrigatorpro.org')
     
     # Get the RadioIDs to query
     probes = Probe.objects.filter(crop_season=crop_season, field=field).distinct()
@@ -132,12 +140,13 @@ def pull_probes_by_cropseason_field(crop_season, field):
                       'soil_potential_24',
                       ]
     
+    accum = []
     for upd in query_join:
         (wh, created) = WaterHistory.objects.get_or_create(
             crop_season=crop_season,
             field=field,
-            datetime__gte=datetime.combine(upd.date, time.min),
-            datetime__lte=datetime.combine(upd.date, time.max),
+            datetime__gte=to_tz(datetime.combine(upd.date, time.min)),
+            datetime__lte=to_tz(datetime.combine(upd.date, time.max)),
             source="UGA",
             defaults = { 'cuser': user,
                          'cdate': timezone.now(),
@@ -170,15 +179,18 @@ def pull_probes_by_cropseason_field(crop_season, field):
         wh.mdate             = timezone.now()
     
         wh.save()
-
+        accum.append( wh )
     
+    return accum
 
 
-def pull_probes_by_period(start_date=None, end_date=None):
+def pull_probes_by_period(start_date=None, end_date=None, user=None):
     """
     Query the UGA database and pull relevant probe summary data into
     the WaterHistory table for fields in crop seasons that overlap the
     specified date interval.
+
+    Returns a list contiaing the created/updated water records
 
     If omitted or None, start_date defaults to datetime.min.
     If omitted or None, end_date   defaults to datetime.max.
@@ -202,16 +214,26 @@ def pull_probes_by_period(start_date=None, end_date=None):
 
     # csDictList has one record for each CropSeason, Field pair
     # overlapping the provided date.
+    accum = []
     for csDict in csDictList:
-        pull_probes_by_cropseason_field(crop_season=csDict['id'],
-                                        field=csDict['field_list'])
+        accum.extend( pull_probes_by_cropseason_field(crop_season=csDict['id'],
+                                                      field=csDict['field_list'],
+                                                      user=user) )
+    return accum
 
 
-if False:
+if __name__ == "__main__":
     start_time = timezone.now()
-    pull_probes_by_cropseason_field(crop_season=cs, field=field)
-    print "One cropseason + field took %s seconds" % ( timezone.now() - start_time )
+    ret = pull_probes_by_cropseason_field(crop_season=cs, field=field)
+    print "One CropSeason + field took %s seconds to update %d WaterHistory records" % ( 
+        timezone.now() - start_time,
+        len(ret)
+        )
     
     start_time = timezone.now()
-    pull_probes_by_period( date.today(), date.today() )
-    print "All current cropseasons + fields took %s seconds" % ( timezone.now() - start_time )
+    ret = pull_probes_by_period( date.today(), date.today() )
+    print "All current cropseasons + fields took %s seconds to update %d WaterHistory records" % ( 
+        timezone.now() - start_time,
+        len(ret)
+        )
+    
