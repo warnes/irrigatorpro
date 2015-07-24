@@ -241,7 +241,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
         context['crop_season']  = self.crop_season
         context['field']        = self.field
         context['report_date']  = self.report_date
-        context['SITE_NAME']    = 'Unified Water Page'
 
         return context
 

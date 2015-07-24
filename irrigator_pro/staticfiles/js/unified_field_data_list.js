@@ -16,7 +16,7 @@ function addRow(afterRowID, date, time, crop_season_pk) {
     var nb_current_forms = $("#id_form-TOTAL_FORMS").val()
 
     if(time <= ''){
-	time = moment().format("HH:MM")
+	time = moment().format("HH:mm")
     }
 
     var datetime = date + " " + time;
