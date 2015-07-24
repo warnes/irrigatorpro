@@ -177,8 +177,8 @@ def calculateAWC(crop_season,
     ####
     ## Extract temperature 
     ####
-    temp1 = celciusToFarenheit( probe_reading.thermocouple_1_temp )
-    temp2 = celciusToFarenheit( probe_reading.thermocouple_2_temp )
+    temp1 = 0 #celciusToFarenheit( probe_reading.thermocouple_1_temp )
+    #    temp2 = celciusToFarenheit( probe_reading.thermocouple_2_temp )
     
     ### Current probes don't actually have two temperature probes
     ### installed.  Only the first probe is installed and operational,
