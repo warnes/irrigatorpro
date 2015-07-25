@@ -128,19 +128,14 @@ class UnifiedFieldDataListView(ModelFormSetView):
                 if DEBUG: print 'Should have been deleted'
 
             else:
-                if DEBUG: print 'Will not delete, may save'
-
                 if "id_"+form.prefix+"-id"  in changed_form_ids:
-                    if DEBUG: print "Will save form with id: ", form.prefix
                     ### Convert values if necessary
                     obj = form.save(commit=False)
                     if self.request.POST['temp_units']=='C':
-                        if DEBUG: print "Converting temps from C to F"
                         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
                         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
                     if self.request.POST['depth_units']=='cm':
-                        if DEBUG: print "Converting temps from cm to in"
                         obj.rain = to_inches(obj.rain)
                         obj.irrigation = to_inches(obj.irrigation)
 
@@ -160,12 +155,10 @@ class UnifiedFieldDataListView(ModelFormSetView):
             obj.save(force_update=False)
             ### Copied from above. Need to factor out
             if self.request.POST['temp_units']=='C':
-                if DEBUG: print "Converting temps from C to F"
                 obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
                 obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
 
             if self.request.POST['depth_units']=='cm':
-                if DEBUG: print "Converting temps from cm to in"
                 obj.rain = to_inches(obj.rain)
                 obj.irrigation = to_inches(obj.irrigation)
 
@@ -224,7 +217,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
-        if DEBUG: print 'Into dispatch'
         self.crop_season = CropSeason.objects.get(pk=int(kwargs.get('season', None)))
         self.field       = Field.objects.get(pk=int(kwargs.get('field', None)))
         try:

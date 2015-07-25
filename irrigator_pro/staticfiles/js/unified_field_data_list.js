@@ -31,8 +31,8 @@ function addRow(afterRowID, date, time, crop_season_pk) {
         '<td><input id="id_form-{0}-soil_potential_8" name="form-{0}-soil_potential_8" step="0.01" type="number" /></td>'+
         '<td><input id="id_form-{0}-soil_potential_16" name="form-{0}-soil_potential_16" step="0.01" type="number" /></td>' +
         '<td><input id="id_form-{0}-soil_potential_24" name="form-{0}-soil_potential_24" step="0.01" type="number" /></td>' +
-        '<td><input id="id_form-{0}-min_temp_24_hours" name="form-3-min_temp_24_hours" step="0.01" type="number" /></td>' +
-        '<td><input id="id_form-{0}-max_temp_24_hours" name="form-3-max_temp_24_hours" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-min_temp_24_hours" name="form-{0}-min_temp_24_hours" step="0.01" type="number" /></td>' +
+        '<td><input id="id_form-{0}-max_temp_24_hours" name="form-{0}-max_temp_24_hours" step="0.01" type="number" /></td>' +
         '<td><input id="id_form-{0}-rain" name="form-{0}-rain" step="0.01" type="number"  value="0"/></td>' +
         '<td><input id="id_form-{0}-irrigation" name="form-{0}-irrigation" step="0.01" type="number" value="0"  /></td>' +
         '<td><input id="id_form-{0}-ignore" name="form-{0}-ignore" type="checkbox"/></td>' +
