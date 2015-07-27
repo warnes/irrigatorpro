@@ -1,11 +1,14 @@
-from django.test      import TestCase
-from farms.models     import *
-from uga.models       import *
 from datetime         import date, datetime, time, timedelta
-from django.db.models import Count
-from django.utils     import timezone # for make_aware, get_default_timezone
-from uga.aggregates   import *
+
 from django.contrib.auth.models import User
+from django.db.models import Count
+from django.test      import TestCase
+from django.utils     import timezone # for make_aware, get_default_timezone
+
+from farms.models     import *
+
+from uga.aggregates   import *
+from uga.models       import *
 
 def to_tz(datetime):
     return timezone.make_aware( datetime, timezone.get_default_timezone() )
