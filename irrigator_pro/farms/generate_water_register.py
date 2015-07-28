@@ -13,8 +13,6 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from common.utils import daterange, minNone, safelog, quantize
 
-from farms.utils import get_probe_readings_dict
-
 # workarounds for the absence of query datetime__date operator
 from common.utils import d2dt_min, d2dt_max, d2dt_range 
 
@@ -36,8 +34,7 @@ LN40 = math.log(40.0)
 def calculateAWC(crop_season,
                  field,
                  date,
-                 water_history_query,
-                 probe_readings):
+                 water_history_query):
     """
     Calculate the Available Water Content for the specified field and date
     from Probe Reading data (if available) and WaterHistory (or manual
@@ -112,26 +109,26 @@ def calculateAWC(crop_season,
 
     ### TODO Need to add tzinfo here, otherwise we need to keep the ugly hack below.
 
-    latest_measurement_date = datetime.combine( date, time.max )
+    latest_measurement_date = datetime.combine( date, time.min )
 
     AWC_8  = None
     AWC_16 = None
     AWC_24 = None
 
 
-    if date in probe_readings:
-        for probe_reading in probe_readings[date]:
+    # if date in probe_readings:
+    #     for probe_reading in probe_readings[date]:
 
-            ## TODO Should have (here and below) to be done only once.
-            latest_measurement_date = latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
-            if probe_reading.datetime > latest_measurement_date:
-                if probe_reading.soil_potential_8:
-                    AWC_8 = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
-                if probe_reading.soil_potential_16:
-                    AWC_16 = AWC( soil_type_16in.slope, probe_reading.soil_potential_16)
-                if probe_reading.soil_potential_24:
-                    AWC_24 = AWC( soil_type_24in.slope, probe_reading.soil_potential_24)
-                latest_measurement_date = probe_reading.datetime
+    #         ## TODO Should have (here and below) to be done only once.
+    #         latest_measurement_date = latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
+    #         if probe_reading.datetime > latest_measurement_date:
+    #             if probe_reading.soil_potential_8:
+    #                 AWC_8 = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
+    #             if probe_reading.soil_potential_16:
+    #                 AWC_16 = AWC( soil_type_16in.slope, probe_reading.soil_potential_16)
+    #             if probe_reading.soil_potential_24:
+    #                 AWC_24 = AWC( soil_type_24in.slope, probe_reading.soil_potential_24)
+    #             latest_measurement_date = probe_reading.datetime
 
 
     ## Now get the potentials based on water history
@@ -248,36 +245,10 @@ def tempRangeCheck(temp):
     return temp
 
 
-# def twoTempAverage(temp1, temp2):
-#     """
-#     Average two temperatures, properly handling values that are None
-#     or out of range
-#     """
-
-#     # Apply temperature sanity checks (assuming temp in degrees
-#     # Fareneheit)
-#     temp1 = tempRangeCheck(temp1)
-#     temp2 = tempRangeCheck(temp1)
-
-#     # Calculate average
-#     if temp1 is None and temp2 is None:
-#         temp = None
-#     elif temp1 is None:
-#         temp = float(temp2)
-#     elif temp2 is None:
-#         temp = float(temp1)
-#     else:
-#         temp = float( temp1 + temp2 ) / 2
-#     return temp
-
-
-
-
 def calculate_total_RainIrrigation(crop_season, 
                                    field, 
                                    date, 
-                                   water_history_query,
-                                   probe_readings):
+                                   water_history_query):
 
     """
     Calculate total rain/irrigations. Values are added over all records
@@ -285,7 +256,6 @@ def calculate_total_RainIrrigation(crop_season,
     come from the probe readings as well. Calculate min/max temps for the
     day as well.
 
-    :param probe_readings: a dictionary of the form (data, list(ProbeReading))
     """
 
     if isinstance(date, datetime):
@@ -296,18 +266,6 @@ def calculate_total_RainIrrigation(crop_season,
 
     min_temp = None
     max_temp = None
-
-    # First calculate the rainfall/irrigation coming from probe readings
-    
-    if date in probe_readings:
-        rainfall = sum( map( lambda pr: pr.rain, probe_readings[date]))
-        irrigation = sum( map( lambda pr: pr.irrigation, probe_readings[date]))
-
-        min_temp = minNone(*map( lambda pr: pr.min_temp_24_hours, probe_readings[date]))
-        max_temp = max(map( lambda pr: pr.max_temp_24_hours, probe_readings[date]))
-    else:
-        pass
-    
 
     # Now add the values coming from the water history (soon to be renamed manual reading)
     wh_list = water_history_query.filter(datetime__range=d2dt_range(date)).all()
@@ -363,37 +321,9 @@ def earliest_register_to_update(report_date,
     else:
         earliest_to_update = earliest_wh_update.datetime.date()
 
-    # Get the earliest probe reading that has been modified after the latest
-    # water register has been modified
-        
-    try:
-        probe_list = Probe.objects.filter(crop_season=crop_season, field=field).all()
-
-        earliest_changed_probe = None
-        for probe in probe_list:
-            earliest_changed = ProbeReading.objects.filter(radio_id=probe.radio_id).filter(Q(mdate__gte = latest_water_register.mdate)).order_by('datetime').first()
-
-            if earliest_changed_probe is None:
-                earliest_changed_probe = earliest_changed
-            else:
-                if earliest_changed is not None and earliest_changed.datetime < earliest_changed_probe.datetime:
-                    earliest_changed_probe = earliest_changed
-
-        if earliest_changed_probe is None:
-            if DEBUG: print 'No probe will cause update (nothing changed)'
-        else:
-            if earliest_changed_probe.datetime.date() < earliest_to_update:
-                earliest_to_update = earliest_changed_probe.datetime.date()
-                if DEBUG: print 'Update caused by updated probe reading'
-            else:
-                if DEBUG: print 'Probe will not cause update (wh even earlier)'
-
-    except ObjectDoesNotExist:
-        if DEBUG: print 'No probe will cause update in water register (no probe)'
-
     if DEBUG: print "Caclulated dependency dates:"
     if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
-    if DEBUG: print "earliest changed probe:", earliest_to_update
+    if DEBUG: print "earliest changed water history:", earliest_to_update
     if DEBUG: print "latest_water_register.date + 1:", latest_water_register.datetime.date() + timedelta(1)
 
     return minNone(dependency_mdate, earliest_to_update, 
@@ -442,12 +372,6 @@ def generate_water_register(crop_season,
 
         end_date = min(last_register_date, crop_season.season_end_date) + timedelta(1)
     ##
-    ####
-
-    print "Start date, report date to create dict: ", start_date, report_date
-    probe_readings = get_probe_readings_dict(field, crop_season, start_date, report_date)
-
-
     ####
     ## Cache values / queries for later use
 
@@ -581,8 +505,8 @@ def generate_water_register(crop_season,
         AWC_probe = calculateAWC(crop_season,
                                  field,
                                  date,
-                                 water_history_query,
-                                 probe_readings) 
+                                 water_history_query)
+
         if DEBUG: print "  AWC_probe=", AWC_probe
         ##
         ####
@@ -592,9 +516,7 @@ def generate_water_register(crop_season,
         wr.rain, wr.irrigation, min_temp, max_temp  = calculate_total_RainIrrigation(crop_season,
                                                                                      field,
                                                                                      date, 
-                                                                                     water_history_query,
-                                                                                     probe_readings)
-
+                                                                                     water_history_query)
         
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
         if DEBUG: print "  AWC_register=", AWC_register

@@ -10,7 +10,7 @@ register = template.Library()
 
 @register.filter(expects_localtime=True)
 def day_records(day_records):
-    return len(day_records.uga_records) + len(day_records.forms)
+    return len(day_records.all_forms)
 
 
 @register.filter(expects_localtime=True)

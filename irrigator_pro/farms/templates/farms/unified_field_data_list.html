@@ -117,9 +117,9 @@
                                         <button type="button" 
 						whichone="1"
                                                 onclick="addRow('row-{{ object.date|date:"Y-m-d" }}', 
-                                                                '{{ object.date|date:"Y-m-d"}}', 
-                                                                '', /*'{{ object.time|time:"H:M"}}', */ 
-                                                                 {{ crop_season.pk }});">
+                                                         '{{ object.date|date:"Y-m-d"}}', 
+                                                         '', /*'{{ object.time|time:"H:M"}}', */ 
+                                                         {{ crop_season.pk }});">
                                             <i class="fa fa-plus-square-o"></i>
                                         </button>
                                     {% endif %}
@@ -180,139 +180,14 @@
                                 <td></td>
                             </tr>
                         {% else %}
-                            {% for record in object.uga_records  %}
-                                <tr data-for-date='{{ object.date|date:"Y-m-d" }}'
-                                    class="data_row"
-                                    id="row-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}"
-                                    {% if object.date|is_today  %}class="row-today" {% endif %}
-                                    {% if object.date|is_past   %}class="row-past"  {% endif %}
-                                    {% if object.date|is_future %}class="row-future"{% endif %}
-                                    >
-
-                                    {% if forloop.first %}
-
-                                        {% comment %}
-                                        First time around we need to add date and water register entries, with appropriate
-                                        Column span
-                                        {% endcomment %}
-                                        
-
-                                        {% with rowspan=object|day_records %}
-                                          <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
-                                            {% if object.forms %}
-                                               <button type="button" 
-						       whichone="2"
-						       onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', 
-						                       '{{ object.date|date:"Y-m-d"}}',  
-   								       '{{ object.time|time:"H:M"}}', 
-						                       {{ crop_season.pk }});"  
-						       >
-						 <i class="fa fa-plus-square-o"></i>
-                                               </button>                                                
-					     {% else %}
-                                               <button type="button"
-						       whichone="3"
-						       onclick="addRow('row-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length }}', 
-						                       '{{ object.date|date:"Y-m-d"}}',  
-   								       '{{ object.time|time:"H:M"}}', 
-						                       {{ crop_season.pk }});"  
-						       >
-						 <i class="fa fa-plus-square-o"></i>
-                                               </button>                                                
-					     {% endif %}
-                                            </td>
-
-                                            <td>{{ record.datetime|time:"H:i" }}</td>
-                                            
-                                            <td>UGA</td>
-                                            <td>{{ record.soil_potential_8 }}</td>
-                                            <td>{{ record.soil_potential_16 }}</td>
-                                            <td>{{ record.soil_potential_24 }}</td>
-
-                                            <td class="units_temp">{{ record.min_temp_24_hours }}</td>
-                                            <td class="units_temp">{{ record.max_temp_24_hours }}</td>
-                                            
-                                            <td class="units_depth">{{ record.rain }}</td>
-                                            <td class="units_depth">{{ record.irrigation }}</td>
-
-                                            <td><input name="uga-{{ record.pk }}" 
-                                                       type="checkbox"
-                                                       {% if record.ignore %}checked{% endif %}>
-                                            </td>
-                                            
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
-                                            <td rowspan="{{ rowspan }}">
-	                                        {% if object.water_register.computed_from_probes %}
-		                                    <i class="fa fa-rss"></i>
-	                                        {% endif %}
-	                                        {{ object.water_register.average_water_content|floatformat:2 }}
-	                                        {% if object.water_register.average_water_content <= 0.0 %}
-		                                    <img src="/static/img/svg/droplet_red.svg" height="14px" style="vertical-align:text-bottom;"/> 
-	                                        {% endif %}
-                                            </td>
-
-                                            <td class ="dti" rowspan="{{ rowspan }}">
-	                                        {% if object.water_register.irrigate_flag %}
-		                                    <div>
-		                                        <b>Irrigate Today</b>
-		                                        {% if object.water_register.average_water_content <= 0.0 %}
-		                                            AWC
-		                                        {% endif %}
-		                                        {% if object.water_register.max_temp_2in and object.water_register.max_temp_2in  < object.water_register.max_observed_temp_2in %}
-		                                            Temp
-		                                        {% endif %}
-                                                        
-		                                    </div>
-		                                {% elif object.water_register.check_sensors_flag %}
-		                                    <div >
-		                                        {%if object.water_register.days_to_irrigation == 1 %}
-		                                            Irrigate Tomorrow
-		                                        {% else %}
-		                                            Irrigate in {{object.water_register.days_to_irrigation}} days
-		                                        {% endif %}
-		                                    </div>
-		                                {% endif %}
-		                                {% if object.water_register.dry_down_flag %}
-		                                    <div >
-		                                        Dry-Down
-		                                    </div>
-		                                {% endif %}
-                                            </td>
-                                            <td rowspan="{{ rowspan }}">{{ object.water_register.message }}</td>
-                                            <td>{{ record.comment }}</td>
-                                            
-                                        {% endwith %}
-                                        
-                                    {% else  %}
-                                        {% comment %}
-                                        Subsequent rows. Don't add computed entries or date. Most code duplicated from above
-                                        Need a better way.
-                                        {% endcomment %}
-                                        <td>{{ record.datetime|time:"H:i" }}</td>
-                                        <td>UGA</td>
-                                        <td>{{ record.soil_potential_8 }}</td>
-                                        <td>{{ record.soil_potential_16 }}</td>
-                                        <td>{{ record.soil_potential_24 }}</td>
-
-                                        <td class="units_temp">{{ record.min_temp_24_hours }}</td>
-                                        <td class="units_temp">{{ record.max_temp_24_hours }}</td>
-                                        
-                                        <td class="units_depth">{{ record.rain }}</td>
-                                        <td class="units_depth">{{ record.irrigation }}</td>
-                                        <td><input name="uga-{{ record.pk }}" 
-                                                   type="checkbox"
-                                                   {% if record.ignore %}checked{% endif %}>
-                                        </td>
-                                        <td></td>
-                                        
-                                    {% endif %}
-                                </tr>
-                            {% endfor %}
                             {% comment %}
-                            Now add the water history record forms
+                            Else statement for if object|day_records == 0
+                            Will look through all the record. It is assumed that the UGA record is the first.
+                            After load some jquery/javascript will make uga record non-editable except for
+                            the ignore and comment fields.
                             {% endcomment %}
-                            {% for form in object.forms  %}
+
+                            {% for form in object.all_forms  %}
 
 
                                 {% comment %}
@@ -329,18 +204,18 @@
                                     class="data_row"
                                     id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
                                     {% with rowspan=object|day_records %}
-                                      {% if forloop.first and object.uga_records|length == 0 %}
-                                        <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
-                                          <button type="button"  
-						  whichone="4"
-                                                  onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.forms|length|sub:1 }}', 
-						                  '{{ object.date|date:"Y-m-d"}}', 
-   								  '{{ object.time|time:"H:M"}}', 
-						                  {{ crop_season.pk }});">
-                                            <i class="fa fa-plus-square-o"></i>
-					  </button>
-                                        </td>
-                                      {% endif %}
+                                        {% if forloop.first %}
+                                            <td rowspan= "{{rowspan}}" >{{ object.date|date:"Y-m-d"}}<br>
+                                                <button type="button"  
+						        whichone="4"
+                                                        onclick="addRow('row-manual-{{ object.date|date:"Y-m-d" }}-{{ object.all_forms|length|sub:1 }}', 
+						                 '{{ object.date|date:"Y-m-d"}}', 
+   								 '{{ object.time|time:"H:M"}}', 
+						                 {{ crop_season.pk }});">
+                                                    <i class="fa fa-plus-square-o"></i>
+					        </button>
+                                            </td>
+                                        {% endif %}
   	                                {% for input in form %}
   	                                    {% if input.is_hidden %}
   		                                {{ input }}
@@ -352,23 +227,20 @@
                                                    name='manual-entry-time-{{ form.datetime.auto_id|form_index }}'
                                                    value="{{ form.instance.datetime|time_format }}"/>
                                         </td>
-                                        <td>Manual Entry</td>
+                                        <td>{{ form.source.value }}</td>
                                         <td>{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
                                         <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
                                         <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
                                         
                                         <td class="units_temp_form">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
                                         <td class="units_temp_form">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
-                                    
+                                        
                                         <td class="units_depth_form">{{ form.rain.error }}{{ form.rain }}</td>
                                         <td class="units_depth_form">{{ form.irrigation.error }}{{ form.irrigation }}</td>
-                                        <td>{{ form.DELETE }}</td>
+                                        <td>{{ form.ignore }}</td>
 
-                                        {% comment %}
-                                        The exact same code is copied above. 
-                                        {% endcomment %}
                                         
-                                        {% if forloop.first and object.uga_records|length == 0 %}
+                                        {% if forloop.first %}
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.crop_stage }}</td>
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.daily_water_use }}</td>
                                             <td rowspan="{{ rowspan }}">
@@ -410,11 +282,11 @@
                                             
                                             <td rowspan="{{ rowspan }}">{{ object.water_register.water_register.message }}</td>
 
-                                      {% endif %}
-                                      <td>{{ form.comment }}</td>
+                                        {% endif %}
+                                        <td>{{ form.comment }}</td>
 
-                                    </tr>
-                                {% endwith %}
+                                </tr>
+                                    {% endwith %}
                             {% endfor %}
 
 
@@ -432,7 +304,7 @@
   	        </a>
             </div>
 
-        
+            
             {{ wh_formset.management_form }}
         </form>
 
@@ -462,18 +334,18 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 
     <script>
-        $(function() {
-            $( "#datepicker" ).datepicker(
-    	        {
-    	            minDate: new Date({{crop_season.season_start_date.year}},
-    	                              {{crop_season.season_start_date.month}}-1,
-    	                              {{crop_season.season_start_date.day}}),
-    	            maxDate: new Date({{crop_season.season_end_date.year}},
-    	                              {{crop_season.season_end_date.month}}-1,
-    	                              {{crop_season.season_end_date.day}})
-    	        }		
-    	    );
-        });
+     $(function() {
+         $( "#datepicker" ).datepicker(
+    	     {
+    	         minDate: new Date({{crop_season.season_start_date.year}},
+    	                           {{crop_season.season_start_date.month}}-1,
+    	                           {{crop_season.season_start_date.day}}),
+    	         maxDate: new Date({{crop_season.season_end_date.year}},
+    	                           {{crop_season.season_end_date.month}}-1,
+    	                           {{crop_season.season_end_date.day}})
+    	     }		
+    	 );
+     });
 
      function getStartDate() {
          return new Date({{crop_season.season_start_date.year}},

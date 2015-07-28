@@ -21,6 +21,10 @@ def probe_reading_to_water_history(apps, schema_editor):
     probe_query = Probe.objects.all()
     probe_reading_query = ProbeReading.objects.all()
 
+
+    ### Not right: can be multiple probes with same radio id. Must filter probe reading
+    ### so datetime falls in right crop season.
+
     for probe in probe_query:
         for probe_reading in probe_reading_query.filter(radio_id = probe.radio_id):
             wh = WaterHistory(
@@ -39,6 +43,9 @@ def probe_reading_to_water_history(apps, schema_editor):
                 cuser_id                = probe_reading.cuser_id,
                 mdate                   = timezone.now()
             )
+
+            print "Creating wh for ", probe_reading.datetime
+            print "Crop season field: ", probe.field_id, " - ", probe.crop_season_id
             wh.save()
         ## Don't set ignore since it means nothing here.
     

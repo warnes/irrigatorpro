@@ -2,9 +2,8 @@ from farms.models import *
 from common.utils import daterange
 
 from farms.generate_water_register import generate_water_register
-from farms.utils import get_probe_readings_dict
-from django.forms.models import modelformset_factory
 
+from django.forms.models import modelformset_factory
 from django.db.models import Q
 
 from datetime import datetime, date, timedelta
@@ -30,13 +29,19 @@ def getDateObject(thisDate):
         return datetime.strptime(thisDate, "%Y-%m-%d %H:%M:%S").date()
 
 
-"""
-Returns the list of object for display in the template.
-Each object is an instance of the class UnifiedReport,
-defined below.
-"""
 
 def generate_objects(wh_formset, crop_season, field, user,  report_date):
+
+    """
+    Returns the list of object for display in the template.
+    Each object is an instance of the class UnifiedReport,
+    defined below.
+
+    We assume that the wh_formset is sorted by date, but not necessarily
+    by source. In this implementation there are two possible sources for 
+    the WaterHistory objects for one date: at most one UGA and any number
+    of User.
+    """
 
     if crop_season.season_start_date > report_date:
         return None
@@ -52,8 +57,9 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                                Q(datetime__lte =  d2dt_min(report_date + timedelta(WATER_REGISTER_DELTA))) 
                                )
 
-    probe_readings_dict = get_probe_readings_dict(field, crop_season, None, report_date)
-
+    print 
+    for wr in water_register_query:
+        print "Have in query: ", wr.datetime, " - ",  wr.field.pk, " - ", wr.crop_season.pk
 
 
     ### Get all the forms defined by the formset created from the water history objects
@@ -66,12 +72,14 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
         current_form = all_forms[form_index]
         form_index = form_index + 1
 
+        ## Point to the first form in the current crop season
         while current_form is not None and \
               getDateObject(current_form['datetime'].value()) is not None and \
               getDateObject(current_form['datetime'].value()) < crop_season.season_start_date:
             if form_index == len(all_forms):
                 current_form = None
             else:
+                #print "IF WE SEE THIS THEN THIS LOOP IS NECESSARY"
                 current_form = all_forms[form_index]
                 form_index = form_index + 1
                 
@@ -80,13 +88,18 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
         water_register = water_register_query.get(datetime__range = d2dt_range(day))
         day_record = UnifiedReport(day, water_register)
 
-
-        if day in probe_readings_dict:
-            day_record.uga_records = probe_readings_dict[day]
-
-
         while current_form is not None and getDateObject(current_form['datetime'].value()) == day:
-            day_record.forms.append(current_form)
+            if current_form['source'].value() == "UGA":
+                if day_record.uga_form is not None:
+                    raise RuntimeError("There are two UGA probes defined for: " + str(day))
+
+                day_record.add_uga(current_form)
+
+            elif current_form['source'].value() == "User":
+                day_record.all_forms.append(current_form)
+            else:
+                raise RuntimeError("Unrecogized source type: " + current_form['source'].value())
+
             if form_index == len(all_forms):
                 current_form = None
             else:
@@ -105,6 +118,8 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     report_plus_delta = min(report_date + timedelta(days=WATER_REGISTER_DELTA), crop_season.season_end_date)
     
     for day in daterange(report_date + timedelta(days=1), report_plus_delta):
+        print "day is: ", day
+        print "Getting water register for: ", d2dt_range(day)
         water_register = water_register_query.get(datetime__range = d2dt_range(day))
         day_record = UnifiedReport(day, water_register)
         ret.append(day_record)
@@ -112,20 +127,32 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     return  ret
 
 
-"""
-
-Object used for display by the template. Each object is for one
-calendar date. It contains the date and the water register for this day, in
-addition to a list of probe readings (uga_records) and a list of forms, each
-corresponding to one manual water event. The forms are extracted from the formset
-
-"""
 
 
 class UnifiedReport:
+    """
+    Object used for display by the template. Each object is for one calendar
+    date. It contains the date and the water register for this day, in
+    addition to a list of probe readings (uga_records) and a list of forms,
+    each corresponding to one manual water event. The forms are extracted from
+    the formset
+    """
+
+
     
     def __init__(self, date, water_register):
         self.date = date
         self.water_register = water_register
-        self.uga_records = []
-        self.forms = []
+        self.uga_form = None ## Only for quick check that there are not two of them.
+        self.all_forms = []
+
+    def add_uga(self, u):
+        """
+        Want the UGA record to be the first in the list, but 
+        don't know it is the first that will be added.
+        """
+        self.uga_form = u
+        self.all_forms[0:0] = [u]
+
+
+

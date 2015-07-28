@@ -28,7 +28,7 @@ import types
 from farms.models import CropSeason, Field, WaterRegister, WaterHistory, ProbeReading
 #from farms.generate_water_register import generate_water_register
 from farms.unified_field_data import generate_objects
-from farms.utils import get_probe_readings_dict, to_faren, to_inches
+from farms.utils import to_faren, to_inches
 
 from datetime import date, datetime
 
@@ -43,9 +43,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
     model = WaterHistory
     fields = [
         'crop_season',
+        'source',
         'datetime',
-        #'date',
-        #'time',
         'soil_potential_8',
         'soil_potential_16',
         'soil_potential_24',
@@ -59,7 +58,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
     widgets  = {
         'crop_season': HiddenInput(),
         'date': HiddenInput(),
-       'datetime': HiddenInput(),
+        'datetime': HiddenInput(),
+        'source': HiddenInput(),
     }
     extra = 0
     can_delete=True

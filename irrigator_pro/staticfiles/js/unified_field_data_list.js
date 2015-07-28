@@ -25,6 +25,7 @@ function addRow(afterRowID, date, time, crop_season_pk) {
         '<tr id="new-{0}">' +
         '<td>' + date + '<input id="id_form-{0}-date" name="form-{0}-date" type="hidden" value="' + date + '" />'  + 
         '<input id="id_form-{0}-crop_season" name="form-{0}-crop_season" type="hidden" value="' + crop_season_pk + '" />' +
+        '<input id="id_form-{0}-source" name="form-{0}-source" type="hidden" value="User" />' +
         '</td>' +
         '<td><input id="id_form-{0}-time" name="form-{0}-time" value="' + time + '"/></td>' +
         '<td>Manual Entry</td>' +
