@@ -202,6 +202,20 @@ $(document).ready(function() {
 
 
 
+    /**
+     * Disable some of the forms for the UGA water history rows.
+     */
+
+    $(".UGA .uga-hide input").each(function() {
+        $(this).prop('disabled', true);
+    });
+
+    $(".UGA .uga-time input").each(function() {
+        $(this).datetimepicker('destroy');
+    });
+
+
+
 
     // Initial settings for the number of rows to show
     $("#rows_option").html(showCompleteText);

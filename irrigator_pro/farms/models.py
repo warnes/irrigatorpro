@@ -401,7 +401,7 @@ class Probe(NameDesc, Comment, Audit):
 ###############################################################
 
 SOURCE_CHOICES = ( 
-    ('UGADB',    'UGA Database'),
+    ('UGA',    'UGA Database'),
     ('User',     'User Entry'),
     ('Computed', 'Computed'),
     ('Unknown',  'Unknown'),
@@ -505,10 +505,10 @@ class ProbeReading(FieldDataReading):
 
     def __init__(self, *args, **kwargs): 
         '''
-        Change the default value of 'source' to 'UGADB'
+        Change the default value of 'source' to 'UGA'
         '''
         super(ProbeReading, self).__init__(*args, **kwargs) 
-        self._meta.get_field('source').default = 'UGADB'
+        self._meta.get_field('source').default = 'UGA'
 
     # from Audit: cdate, cuser, mdate, muser
     # from FieldDataReading: datetime, date*, time*, min_temp_24_hours,

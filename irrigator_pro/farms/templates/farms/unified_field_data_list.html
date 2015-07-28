@@ -201,7 +201,7 @@
 
 
                                 <tr data-for-date='{{ object.date|date:"Y-m-d" }}'
-                                    class="data_row"
+                                    class="data_row {{ form.source.value }}"
                                     id="row-manual-{{ object.date|date:"Y-m-d" }}-{{ forloop.counter0 }}">
                                     {% with rowspan=object|day_records %}
                                         {% if forloop.first %}
@@ -222,21 +222,21 @@
                                             {% endif %}
                                         {% endfor %}
 
-                                        <td>
+                                        <td class="uga-time uga-hide" >
                                             <input class="time-entry" id='manual-entry-time-{{ form.datetime.auto_id|form_index }}'
                                                    name='manual-entry-time-{{ form.datetime.auto_id|form_index }}'
                                                    value="{{ form.instance.datetime|time_format }}"/>
                                         </td>
                                         <td>{{ form.source.value }}</td>
-                                        <td>{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
-                                        <td>{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
-                                        <td>{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
                                         
-                                        <td class="units_temp_form">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
-                                        <td class="units_temp_form">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
+                                        <td class="units_temp_form uga-hide">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
+                                        <td class="units_temp_form uga-hide">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
                                         
-                                        <td class="units_depth_form">{{ form.rain.error }}{{ form.rain }}</td>
-                                        <td class="units_depth_form">{{ form.irrigation.error }}{{ form.irrigation }}</td>
+                                        <td class="units_depth_form uga-hide">{{ form.rain.error }}{{ form.rain }}</td>
+                                        <td class="units_depth_form uga-hide">{{ form.irrigation.error }}{{ form.irrigation }}</td>
                                         <td>{{ form.ignore }}</td>
 
                                         

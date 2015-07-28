@@ -129,23 +129,39 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
             else:
                 if "id_"+form.prefix+"-id"  in changed_form_ids:
-                    ### Convert values if necessary
-                    obj = form.save(commit=False)
-                    if self.request.POST['temp_units']=='C':
-                        obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                        obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+
+                    print "pk for object: ", form.cleaned_data['id'].pk
+                    print "comment for object: ", form.cleaned_data['comment']
+                    print "source for object: ", form.cleaned_data['source']
+
+                    ### If this is a UGA WH just save the ignore, comment directly to DB, don't
+                    ### save form since it will mess the other values.
+
+                    if form.cleaned_data['id'].source == "UGA":
+                        obj = WaterHistory.objects.get(pk = form.cleaned_data['id'].pk)
+                        obj.ignore = form.cleaned_data['ignore']
+                        obj.comment = form.cleaned_data['comment']
+                        obj.save()
+
+                    else:
+                        ### Convert values if necessary
+                        obj = form.save(commit=False)
+                        if self.request.POST['temp_units']=='C':
+                            obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                            obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
-                    if self.request.POST['depth_units']=='cm':
-                        obj.rain = to_inches(obj.rain)
-                        obj.irrigation = to_inches(obj.irrigation)
+                            if self.request.POST['depth_units']=='cm':
+                                obj.rain = to_inches(obj.rain)
+                                obj.irrigation = to_inches(obj.irrigation)
 
-                    ### Update the datetime field. The date itself does not change,
-                    ### but the time may have.
-                    new_time = self.request.POST["manual-entry-time-" + form.prefix[5:]]
-
-                    hr_min = re.search("(\d+):(\d+)", new_time)
-                    obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
-                    obj.save()
+                                ### Update the datetime field. The date itself does not change,
+                                ### but the time may have.
+                                ### Will only have a value for User WH object.
+                                new_time = self.request.POST.get("manual-entry-time-" + form.prefix[5:])
+                                if new_time:
+                                    hr_min = re.search("(\d+):(\d+)", new_time)
+                                    obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
+                        obj.save()
 
 
         ### The field  is not part of the form. Add to new objects
@@ -172,27 +188,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
             obj.save()
 
 
-        # ignore name for uga probes in form is uga-ID
-        # Here we only receive the ids for the probes that are set to ignore,
-        # it doesn't mean there's a change and we want to be sure we don't
-        # change anything unnecessarily otherwise we trigger computation
-        # of water registers
-
-        ignored = [int(k[4:]) for k in self.request.POST.keys() if 'uga' in k]
-        all_probe_readings = get_probe_readings_dict(self.field, self.crop_season)
-
-        if len(all_probe_readings) > 0:
-            for (date, queryset) in all_probe_readings.items():
-                for pr in queryset.all():
-                    pr.date = date
-                    #for list in all_probe_readings.items():
-                    #for pr in list:
-                    if pr.ignore and pr.pk not in ignored:
-                        pr.ignore = False
-                        pr.save()
-                    elif not pr.ignore and pr.pk in ignored:
-                        pr.ignore = True
-                        pr.save()
 
         return HttpResponseRedirect(reverse("unified_water_season_field",
                                             kwargs={'season': self.crop_season.pk,
