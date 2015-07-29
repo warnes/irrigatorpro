@@ -376,7 +376,8 @@ def generate_water_register(crop_season,
     ## Cache values / queries for later use
 
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
-                                                            field=field).all()
+                                                            field=field,
+                                                            ignore = False).all()
     crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
                                                               crop_season__field_list=field).distinct().all()
     ####
@@ -416,7 +417,6 @@ def generate_water_register(crop_season,
     if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
-        # if DEBUG: print "  Working on ", date
         ####
         ## Get AWC for yesterday, and copy the irrigate_to_max_seen, irrigate_to_max_achieved flags
         ##
@@ -585,8 +585,6 @@ def generate_water_register(crop_season,
     drydown_flag              = False
     irrigate_to_max_days      = 0
     for date in daterange(first_process_date, end_date):
-        if DEBUG: print "  Working on ", date
-
         wr = wr_query.filter(datetime__range=d2dt_range(date))[0]
 
         ## Will handle both the case where the first irrigate_to_flag set to 
