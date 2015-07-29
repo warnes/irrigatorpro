@@ -23,10 +23,13 @@ def probe_reading_to_water_history(apps, schema_editor):
 
 
     ### Not right: can be multiple probes with same radio id. Must filter probe reading
-    ### so datetime falls in right crop season.
+    ### so datetime falls in right crop season .
 
     for probe in probe_query:
-        for probe_reading in probe_reading_query.filter(radio_id = probe.radio_id):
+        for probe_reading in probe_reading_query.filter(radio_id = probe.radio_id,
+                                                        datetime__range=(probe.crop_season.season_start_date,
+                                                                         probe.crop_season.season_end_date)):
+
             wh = WaterHistory(
                 source                  = "UGA",
                 crop_season_id          = probe.crop_season_id,
