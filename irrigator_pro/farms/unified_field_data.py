@@ -86,8 +86,10 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
         while current_form is not None and getDateObject(current_form['datetime'].value()) == day:
             if current_form['source'].value() == "UGA":
                 if day_record.uga_form is not None:
-                    raise RuntimeError("There are two UGA probes defined for: " + str(day))
-
+                    message = "There is more than one UGA probe defined for %s on %s " % \
+                              (crop_season, day)
+                    #raise RuntimeError(message)
+                    print message
                 day_record.add_uga(current_form)
 
             elif current_form['source'].value() == "User":
@@ -113,10 +115,14 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
     report_plus_delta = min(report_date + timedelta(days=WATER_REGISTER_DELTA), crop_season.season_end_date)
     
     for day in daterange(report_date + timedelta(days=1), report_plus_delta):
-        water_register = water_register_query.get(datetime__range = d2dt_range(day))
-        day_record = UnifiedReport(day, water_register)
-        ret.append(day_record)
-        
+        water_register = water_register_query.filter(datetime__range = d2dt_range(day))
+        if len(water_register) == 1:
+            day_record = UnifiedReport(day, water_register[0])
+            ret.append(day_record)
+        else:
+            print "Found %d WaterRegister entries on %s for %s " % ( len(water_register),
+                                                                     day,
+                                                                     crop_season )
     return  ret
 
 
