@@ -96,7 +96,7 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                 day_record.all_forms.append(current_form)
             else:
                 # raise RuntimeError("Unrecogized source type: " + current_form['source'].value())
-                print "Have a WaterHistory of 'Unknown' type. Ignoring for now.
+                print "Have a WaterHistory of 'Unknown' type. Ignoring for now."
 
             if form_index == len(all_forms):
                 current_form = None
