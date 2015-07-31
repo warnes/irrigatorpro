@@ -288,21 +288,6 @@ $(document).ready(function() {
         }
     });
 
-
-
-    /**
-     * Remove the type=number from the rain and irrigation, and put them back
-     * just before form is submitted.
-     *
-     * Would work, have not tested setting back to number on submit.
-     */
-
-
-    // $(".units_temp_form input").each(function() {
-    //     $(this).removeAttr("type");
-
-    // });
-    
     $(".dti").each(function() {
     	
     	var contents = $(this).text();
@@ -331,44 +316,6 @@ $(document).ready(function() {
     	
     	
     });
-
-
-    /**
-     * Create an event for the text inputs containing a temperature
-     * changes. If it ends with [fF] or [cC] will convert depending on what
-     * the form says.
-     *
-     * Will only chage if matches reg
-     *  (valid_float)\s*[fFcF]
-     *
-     * and will convert if necessary, remove last character
-     */
-
-    // This will not work as long as the type in the input in 'number'
-
-    // $(".units_temp_form input").focusout(function() {
-
-
-    //     $(this).removeAttr("type");
-            
-
-    //     var regex = /(\d+)\s*([cCfF])$/g;
-    //     var text = $(this).val().trim();
-
-    //     console.log("Executing on: ", text);
-
-    //     result = regex.exec(text);
-
-    //     console.log(result);
-
-    //     $(this).attr("type", "number");
-
-    //     // var tmp = parseFloat($(this).val().trim());
-    //     // if (isNaN(tmp)) {
-    //     //     return;
-    //     // }
-    //     // $(this).val(round_2(F(tmp)));
-    // });
 
 
     $("table.unified-table").floatThead({
