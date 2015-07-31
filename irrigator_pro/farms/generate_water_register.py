@@ -277,7 +277,7 @@ def calculate_total_RainIrrigation(crop_season,
         max_temp = max(max_temp, max(map( lambda wh: wh.max_temp_24_hours, wh_list)))
 
     ## Really need min_temp?
-    if DEBUG: print "Min temp, max temp for: ", date, min_temp, max_temp
+    #if DEBUG: print "Min temp, max temp for: ", date, min_temp, max_temp
     return ( rainfall, irrigation, min_temp, max_temp )
 
 
@@ -294,17 +294,17 @@ def earliest_register_to_update(report_date,
     # Start by getting the dependency modification date stored in the field object
     dependency_mdate = field.earliest_changed_dependency_date
 
-    if DEBUG: print "Earliest changed date:", dependency_mdate
+    ##if DEBUG: print "Earliest changed date:", dependency_mdate
 
     # Get the modification time of the latest water register
     latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
                                                          field=field
                                                      ).order_by('-datetime').first()
     if latest_water_register is None:
-        if DEBUG: print 'No water register yet'
+        ##        if DEBUG: print 'No water register yet'
         return crop_season.season_start_date
     
-    if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
+        #if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
 
 
 
@@ -321,10 +321,10 @@ def earliest_register_to_update(report_date,
     else:
         earliest_to_update = earliest_wh_update.datetime.date()
 
-    if DEBUG: print "Caclulated dependency dates:"
-    if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
-    if DEBUG: print "earliest changed water history:", earliest_to_update
-    if DEBUG: print "latest_water_register.date + 1:", latest_water_register.datetime.date() + timedelta(1)
+    # if DEBUG: print "Caclulated dependency dates:"
+    # if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
+    # if DEBUG: print "earliest changed water history:", earliest_to_update
+    # if DEBUG: print "latest_water_register.date + 1:", latest_water_register.datetime.date() + timedelta(1)
 
     return minNone(dependency_mdate, earliest_to_update, 
                    latest_water_register.datetime.date() + timedelta(1))
@@ -507,19 +507,19 @@ def generate_water_register(crop_season,
                                  date,
                                  water_history_query)
 
-        if DEBUG: print "  AWC_probe=", AWC_probe
+        ##if DEBUG: print "  AWC_probe=", AWC_probe
         ##
         ####
 
         ####
         ## Get (manually entered) water register entries
-        wr.rain, wr.irrigation, min_temp, max_temp  = calculate_total_RainIrrigation(crop_season,
-                                                                                     field,
-                                                                                     date, 
-                                                                                     water_history_query)
+        wr.rain, wr.irrigation, wr.min_temp_24_hours, max_temp_24_hours  = calculate_total_RainIrrigation(crop_season,
+                                                                                                          field,
+                                                                                                          date, 
+                                                                                                          water_history_query)
         
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
-        if DEBUG: print "  AWC_register=", AWC_register
+        ##if DEBUG: print "  AWC_register=", AWC_register
         ##
         ####
 
@@ -531,8 +531,8 @@ def generate_water_register(crop_season,
         else:
             wr.average_water_content = quantize(AWC_register)
             wr.computed_from_probes  = False
-        if DEBUG: print "  wr.average_water_content=", wr.average_water_content
-        if DEBUG: print "  wr.computed_from_probes=", wr.computed_from_probes
+        # if DEBUG: print "  wr.average_water_content=", wr.average_water_content
+        # if DEBUG: print "  wr.computed_from_probes=", wr.computed_from_probes
         ##
         ####
 
@@ -554,13 +554,13 @@ def generate_water_register(crop_season,
         ## Calculate and store max temperature since last appreciable rainfall or irrigation
         if wr.average_water_content >= float(AWC_prev) + 0.1:
             # Max temp is only today's value 
-            wr.max_observed_temp_2in = max_temp
+            wr.max_observed_temp_2in = wr.max_temp_24_hours
 
             # Reset max temp calculation
             temps_since_last_water_date = []
         else:
             # Add today's temperature
-            temps_since_last_water_date.append(max_temp)
+            temps_since_last_water_date.append(wr.max_temp_24_hours)
 
             # Calculate max temp
             wr.max_observed_temp_2in = max(temps_since_last_water_date)
