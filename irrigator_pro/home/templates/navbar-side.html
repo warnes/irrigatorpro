@@ -1,7 +1,9 @@
 <!-- Sidebar -->
+{% load today_filters %}
 {% load object_lists %}
 {% farm_list %}
 {% crop_season_list %}
+
 
 <!--
 <nav class="navbar-default navbar-static-side" role="navigation">
@@ -62,12 +64,14 @@
 	    </a>
 
 	    <ul class="nav">
-	      {% for item in crop_season_list %}
-		<li>
-  		  <a href="{% url 'crop_season_list' %}{{ item.pk }}">
-  		    {{ item.name }}
-  		  </a>
-		</li>
+	      {% for season in crop_season_list %}
+		{% if season|today_in_season %}
+		  <li>
+  		    <a href="{% url 'crop_season_list' %}{{ season.pk }}">
+  		      {{ season.name }}
+  		    </a>
+		  </li>
+		{% endif %}
 	      {% endfor %}
 
 	      <li>
@@ -87,12 +91,14 @@
 
 	    {% if crop_season_list %}
 	      <ul class="nav">
-		{% for item in crop_season_list %}
-		  <li>
-  		    <a href="{% url 'probes' %}{{ item.pk }}">
-  		      {{ item.name }}
-  		    </a>
-		  </li>
+		{% for season in crop_season_list %}
+		  {% if season|today_in_season %}
+		    <li>
+  		      <a href="{% url 'probes' %}{{ season.pk }}">
+  			{{ season.name }}
+  		      </a>
+		    </li>
+		  {% endif %}
 		{% endfor %}
               </ul>
 	    {% endif %}
@@ -148,21 +154,23 @@
 	    {% if crop_season_list %}
 	      <ul class="nav nav-secondary">
 		{% for season in crop_season_list %}
-		  <li>
-  		    <a href="{% url 'water_history' %}{{ season.pk }}">
-  		      {{ season.name }}
-		      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
-  		    </a>
-		    <ul class="nav">
-		      {% for field in season.field_list_all %}
-			<li>
-		    	  <a href="{% url 'water_history' %}{{ season.pk }}/{{ field.pk }}">
-		    	    {{ field }}
-		    	  </a>
-		     	</li>
-		      {% endfor %}
-		    </ul>
-		  </li>
+		  {% if season|today_in_season %}
+		    <li>
+  		      <a href="{% url 'water_history' %}{{ season.pk }}">
+  			{{ season.name }}
+			<i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+  		      </a>
+		      <ul class="nav">
+			{% for field in season.field_list_all %}
+			  <li>
+		    	    <a href="{% url 'water_history' %}{{ season.pk }}/{{ field.pk }}">
+		    	      {{ field }}
+		    	    </a>
+		     	  </li>
+			{% endfor %}
+		      </ul>
+		    </li>
+		  {% endif %}
 		{% endfor %}
               </ul>
 	    {% endif %}
@@ -209,21 +217,23 @@
 	    {% if crop_season_list %}
 	      <ul class="nav nav-secondary">
 		{% for season in crop_season_list %}
-		  <li>
-  		    <a href="{% url 'unified_water' %}{{ season.pk }}">
-  		      {{ season.name }}
-		      <i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
-  		    </a>
-		    <ul class="nav">
-		      {% for field in season.field_list_all %}
-			<li>
-		    	  <a href="{% url 'unified_water' %}{{ season.pk }}/{{ field.pk }}">
-		    	    {{ field }}
-		    	  </a>
-		     	</li>
-		      {% endfor %}
-		    </ul>
-		  </li>
+		  {% if season|today_in_season %}
+		    <li>
+  		      <a href="{% url 'unified_water' %}{{ season.pk }}">
+  			{{ season.name }}
+			<i class="fa fa-caret-square-o-right fa-fw fa-right"></i>
+  		      </a>
+		      <ul class="nav">
+			{% for field in season.field_list_all %}
+			  <li>
+		    	    <a href="{% url 'unified_water' %}{{ season.pk }}/{{ field.pk }}">
+		    	      {{ field }}
+		    	    </a>
+		     	  </li>
+			{% endfor %}
+		      </ul>
+		    </li>
+		  {% endif %}
 		{% endfor %}
               </ul>
 	    {% endif %}
