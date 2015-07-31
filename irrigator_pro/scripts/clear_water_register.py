@@ -50,7 +50,12 @@ print
 print
 print "Deleting all water register objects...",
 WaterRegister.objects.all().delete()
+print "Done."
+print
 
+print 
+print "Regenerating WaterRegister records..." 
+print
 for crop_season in CropSeason.objects.all():
     for field in crop_season.field_list.all():
         print "Regenerating WaterRegister for '%s' field '%s'." % (crop_season, field)
