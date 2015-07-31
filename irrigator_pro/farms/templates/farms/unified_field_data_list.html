@@ -346,12 +346,21 @@
 
 {% block scripts %}
 
+    <!-- Code to handle special features of unified_field_data page -->
     {% if debug %}
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js?t={% now 'c' %}"></script>
     {% else %}
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js"></script>
     {% endif %}
 
+    <!-- When checkbox is toggled, change text in row to strike-through --> 
+    {% if debug %}
+        <script src="{{ STATIC_URL }}js/strikeout.js?t={% now 'c' %}"></script>
+    {% else %}
+        <script src="{{ STATIC_URL }}js/strikeout.js"></script>
+    {% endif %}
+
+    <!-- provides datetime parsing/formatting and now() -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 
     <script>

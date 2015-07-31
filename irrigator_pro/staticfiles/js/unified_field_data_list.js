@@ -150,8 +150,6 @@ function convert_depths() {
  * Color the rows based on today's date.
  */
 
-
-
 function colorPastTodayFuture() {
 
     var reportDateVal = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val() );
@@ -172,27 +170,31 @@ function colorPastTodayFuture() {
 }
 
 
+/*** 
+ *  Code to run on page load
+***/
+
 $(document).ready(function() {
 
-
-
+    /* Add time picker to Time entry field */
     $(".time-entry").datetimepicker({
         timeOnly:true,
         buttonText: '<i class="fa fa-clock-o"></i>',
         format:'H:i'
     });
 
+    /* Set width of Time entry field */
     $(".time-entry").css('width', '5em');
 
+    /* Store dates for later use */
     start_date = getStartDate();
-    end_date = getEndDate();
+    end_date   = getEndDate();
 
 
     /**
      * Disable datepicker since it is only used as a hidden input in a
      * form.
      */
-    
     $('form input:hidden').each(function() {
         // Could be more refined and only destroy
         // on date fields, but there doesn't seem
@@ -200,12 +202,9 @@ $(document).ready(function() {
         $(this).datepicker('destroy');
     });
 
-
-
     /**
      * Disable some of the forms for the UGA water history rows.
      */
-
     $(".UGA .uga-hide input").each(function() {
         $(this).prop('disabled', true);
     });
@@ -214,14 +213,11 @@ $(document).ready(function() {
         $(this).datetimepicker('destroy');
     });
 
-
-
-
     // Initial settings for the number of rows to show
     $("#rows_option").html(showCompleteText);
     show15();
        	
-    // Apply toggle to table
+    // Apply number of rows toggle to table
     $("#rows_option").click(
        	function() {
        	    if ($(this).html() == showCompleteText) {
@@ -233,8 +229,6 @@ $(document).ready(function() {
        	    }
        	}
     );
-
-
 
 
 

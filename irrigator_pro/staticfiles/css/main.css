@@ -28,7 +28,6 @@ h1 em, h2 em {
     background-color: #eefcff;
 }
 
-
 body {
     padding-top: 62 px;
     padding-bottom: 40px;
@@ -40,7 +39,6 @@ body {
     margin: 0px;
     width: auto;
 }
-
 
 .contents {
     margin-top: 50px;
@@ -64,11 +62,9 @@ footer {
     font-weight: bold;
 }
 
-
 td {
     padding: 2px;
 }
-
 
 /*********************/
 /* Display of Alerts */
@@ -101,12 +97,9 @@ td {
     margin: 0 0 0 -12.5%;
 }
 
-
 /***********/
 /* formset */
 /***********/
-
-
 
 table.formset, table.formset tr, table.formset td, table.formset th {
     border: 1px solid #006B00;
@@ -137,7 +130,6 @@ a.add-row, a.delete-row {
     color: #d2322d;
 }
 
-
 .add-icon {
     color: #5cb85c;
     border-color: #398439;
@@ -161,9 +153,6 @@ table.list-table, table.list-table tr, table.list-table td, table.list-table th 
 tr.dynamic-form-add, tr.dynamic-form-add td, a.add-row  {
     text-align: center  !important;
 }
-
-
-
 
 /***********/
 /* Tooltip */
@@ -289,7 +278,6 @@ table.water-register tr td:nth-child(2), table.water-register tr td:nth-child(6)
 }
 /***/
 
-
 /*** Set width of columns ***/
 table.water-register header1 th:nth-child(1) {
     column-width:10em;
@@ -316,7 +304,6 @@ table.water-register tr.header2 th:nth-child(10) {
 }
 /***/
 
-
 .computed-from-probes {
     text-decoration:line-through;
     color: gray;
@@ -336,7 +323,6 @@ tr.row-future, tr.row-future td {
 }
 /***/
 
-
 /******************************************
 * Summary Report.
 * For now just copy from water register.
@@ -352,8 +338,6 @@ table.summary-report tr.header1 th, table.summary-report tr.header2 th {
     padding: 5px;
 }
 
-
-
 table.summary-report tr.header1 th:nth-child(6), table.summary-report tr.header1 th:nth-child(7)  {
     border-right-width: 3px;
     border-right-style: double;
@@ -364,12 +348,10 @@ table.summary-report tr.header2 th:nth-child(2)  {
     border-right-style: double;
 }
 
-
 table.summary-report tr td:nth-child(6), table.summary-report tr td:nth-child(8)   {
     border-right-width: 3px;
     border-right-style: double;
 }
-
 
 /*** Set width of columns ***/
 table.summary-report header1 th:nth-child(1) {
@@ -377,7 +359,6 @@ table.summary-report header1 th:nth-child(1) {
     -moz-column-width:10em; /* Firefox */
     -webkit-column-width:10em; /* Safari and Chrome */
 }
-
 
 table.summary-report tr.header2 th:nth-child(4) {
     column-width:12em;
@@ -390,8 +371,6 @@ table.summary-report tr.header2 th:nth-child(10) {
     -moz-column-width:20em; /* Firefox */
     -webkit-column-width:20em; /* Safari and Chrome */
 }
-
-
 
 /**
  * Plots for water register
@@ -421,11 +400,9 @@ img.align-left {
     }
 }
 
-
 /**
  * Tables for the sms/email entering
 */
-
 
 table.notifications, table.notifications td, table.notifications th, table.notifications tr {
     border: 1px solid #006B00;
@@ -441,14 +418,9 @@ table.notifications-new, table.notifications th, table.notifications tr {
 
 }
 
-
 table.notifications-new td {
     border: 1px solid #006B00;
 }
-
-
-
-
 
 table.tablesorter  tr.header1 th:nth-child(1) {
     background-position: center right;
@@ -466,14 +438,10 @@ table.tablesorter  tr.header1 th:nth-child(1) {
     }
 }
 
-
-
-
 table.auth-users {
     border: 1px solid #006B00;
 
 }
-
 
 table.auth-users th {
     text-align: center;
@@ -485,14 +453,11 @@ table.floatThead-table {
     background-color: #FFF;
 }
 
-
 table.unified-table {
     table-layout: fixed;
     background-color: #eefcff;
     margin-bottom: 30px;
 }
-
-
 
 .unit-choices {
     background-color: #FFF;
@@ -501,4 +466,8 @@ table.unified-table {
 .readonly {
     background-color: transparent;
     color: gray;
+}
+
+.strikeout {
+    text-decoration: line-through;
 }

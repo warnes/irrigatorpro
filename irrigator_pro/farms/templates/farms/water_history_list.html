@@ -38,6 +38,14 @@
 
     })
 </script>
+
+<!-- When checkbox is toggled, change text in row to strike-through --> 
+{% if debug %}
+  <script src="{{ STATIC_URL }}js/strikeout.js?t={% now 'c' %}"></script>
+{% else %}
+  <script src="{{ STATIC_URL }}js/strikeout.js"></script>
+{% endif %}
+
 {% endblock %}
 
 
@@ -82,6 +90,7 @@
   	  <th>Min Temp (&deg;F)</th>
   	  <th>Max Temp (&deg;F)</th>
   	  <th>Comment</th>
+  	  <th>Ignore</th>
   	  <th>Delete</th>
   	</tr>
         </thead>
@@ -144,3 +153,5 @@
     </form>
 
 {% endblock %}
+
+

@@ -11,9 +11,12 @@ $(function() {
 	showOn:'button',
     });
 
-    activateDatePicker()
+    activateDatePicker();
 
     setNavigation();
+
+    // Make as readonly all input elements within object with class readonly.
+    $('.readonly').find(':input').attr('readonly', 'readonly').addClass('readonly');
 });
 
 function storeDate()
@@ -129,3 +132,8 @@ function daysBetween(firstDate, secondDate) {
     var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
     return   Math.round((secondDate.getTime() - firstDate.getTime())/(oneDay));
 }
+
+
+
+
+ 
