@@ -506,10 +506,10 @@ def generate_water_register(crop_season,
 
         ####
         ## Get (manually entered) water register entries
-        wr.rain, wr.irrigation, wr.min_temp_24_hours, max_temp_24_hours  = calculate_total_RainIrrigation(crop_season,
-                                                                                                          field,
-                                                                                                          date, 
-                                                                                                          water_history_query)
+        wr.rain, wr.irrigation, wr.min_temp_24_hours, wr.max_temp_24_hours  = calculate_total_RainIrrigation(crop_season,
+                                                                                                             field,
+                                                                                                             date, 
+                                                                                                             water_history_query)
         
         AWC_register = float(AWC_prev) - float(wr.daily_water_use) + float(wr.rain) + float(wr.irrigation)
         ##if DEBUG: print "  AWC_register=", AWC_register

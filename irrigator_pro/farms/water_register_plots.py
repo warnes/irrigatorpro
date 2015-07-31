@@ -267,11 +267,11 @@ def plot_daily_temperature(request, crop_season, field):
             x_after.append(wr.datetime.date())
 
     min_plot_before.plot_date(x_before, min_before, 'g-', label = "Mininum Daily Temperature")
-    max_plot_before.plot_date(x_before, max_before, 'c-', label = "Maximum Daily Temperature", drawstyle='steps-pre')
+    max_plot_before.plot_date(x_before, max_before, 'c-', label = "Maximum Daily Temperature")
 
 
     min_plot_after.plot_date(x_after, min_after, 'g:')
-    max_plot_after.plot_date(x_after, max_after, 'c:', drawstyle='steps-pre')
+    max_plot_after.plot_date(x_after, max_after, 'c:')
 
     min_plot_before.legend(loc = 'best')
 
