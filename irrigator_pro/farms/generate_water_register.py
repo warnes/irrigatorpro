@@ -36,10 +36,8 @@ def calculateAWC(crop_season,
                  date,
                  water_history_query):
     """
-    Calculate the Available Water Content for the specified field and date
-    from Probe Reading data (if available) and WaterHistory (or manual
-    entries, if available).
-
+    Calculate the Available Water Content for the specified field and
+    date from the relevant WaterHistory records.
     """
 
     if isinstance(date, datetime):
@@ -98,14 +96,8 @@ def calculateAWC(crop_season,
     ##
 
 
-    ## Loop through probe readings. Only keep values when reading >0
-
-    ### Loop here through loop readings for all the probes given day.
-
-
     def AWC(slope, potential):
         return slope * 24 * ( safelog( abs(potential) )  - LN40 ) 
-
 
     ### TODO Need to add tzinfo here, otherwise we need to keep the ugly hack below.
 
@@ -115,42 +107,23 @@ def calculateAWC(crop_season,
     AWC_16 = None
     AWC_24 = None
 
-
-    # if date in probe_readings:
-    #     for probe_reading in probe_readings[date]:
-
-    #         ## TODO Should have (here and below) to be done only once.
-    #         latest_measurement_date = latest_measurement_date.replace(tzinfo=probe_reading.datetime.tzinfo)
-    #         if probe_reading.datetime > latest_measurement_date:
-    #             if probe_reading.soil_potential_8:
-    #                 AWC_8 = AWC( soil_type_8in.slope,  probe_reading.soil_potential_8 )
-    #             if probe_reading.soil_potential_16:
-    #                 AWC_16 = AWC( soil_type_16in.slope, probe_reading.soil_potential_16)
-    #             if probe_reading.soil_potential_24:
-    #                 AWC_24 = AWC( soil_type_24in.slope, probe_reading.soil_potential_24)
-    #             latest_measurement_date = probe_reading.datetime
-
-
     ## Now get the potentials based on water history
 
     for wh in water_history_query.filter(datetime__range=d2dt_range(date)).all():
-        #if DEBUG: print "tzinfo for wh: ", wh.datetime.tzinfo
         latest_measurement_date = latest_measurement_date.replace(tzinfo=wh.datetime.tzinfo)
         if wh.datetime > latest_measurement_date:
-            if wh.soil_potential_8:
+            if wh.soil_potential_8 is not None:
                 AWC_8 = AWC( soil_type_8in.slope,  wh.soil_potential_8 )
-            if wh.soil_potential_16:
+            if wh.soil_potential_16 is not None:
                 AWC_16 = AWC( soil_type_16in.slope,  wh.soil_potential_16 )
-            if wh.soil_potential_24:
+            if wh.soil_potential_24 is not None:
                 AWC_24 = AWC( soil_type_24in.slope,  wh.soil_potential_24 )
             latest_measurement_date = wh.datetime
 
-    ### If any of the AWC has no value returns nothing
-
-    if not AWC_8 or not AWC_16 or not AWC_24:
+    ### If no AWC values, returns nothing
+    if (AWC_8 is None) and (AWC_16 is None) and (AWC_24 is None):
         return None
     
-
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
     if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)
@@ -225,17 +198,6 @@ def calculateAWC_min(crop_season,
         AWC_min = (AWC_8_min + AWC_16_min + AWC_24_min) / 3
 
     return (AWC_min)
-
-
-def tempRangeCheck(temp):
-    """
-    Apply temperature sanity check (assuming temp in degrees
-    Fareneheit)
-    """
-    if temp > 140 or temp < 0:
-        temp = None
-
-    return temp
 
 
 def calculate_total_RainIrrigation(crop_season, 
