@@ -10,6 +10,43 @@ from email.mime.multipart import MIMEMultipart
 
 class EmailListEmpty(Exception): pass
 
+
+email_template = """
+<html>
+  <head>
+    <style>
+      table {
+      border-collapse: collapse;
+      }
+
+      table, td, th {
+      border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Abbreviated daily report for %(date)s<h1>
+	<table>
+	  <thead>
+	    <th> Field</th>
+	    <th> Crop</th>
+	    <th> Growth Stage</th>
+	    <th> Status</th>
+	    <th> Message</th>
+	  </thead>
+	  <tbody>
+             %(rows)s
+	  </tbody>
+	</table>
+
+	<p>
+	  For details visit
+	  <a href="%(host)s/report/summary_report/">Daily Report</a>.
+	</p>
+  </body>
+</html>
+"""
+
 class EmailMessage():
 
 
@@ -69,36 +106,24 @@ class EmailMessage():
         return ""
         
         
-        
 
     def createEmailMessage(self):
-
-
-        topText = "<html><body>This is and abbreviated daily report for " + date.today().isoformat() + "<br/>If you want a more detailed report you can follow this link: <a href= \"" + NOTIFICATION_HOST + "\">daily report </a><br/><br/>"
-
-        tableHeader = "<table style = 'border: 1px solid black; border-collapse: collapse;'>";
-        headers = "<thead><row style = 'border: 1px solid black;'>";
-        
-        for h in ['Field', 'Crop', 'Growth Stage', 'Status', 'Message']:
-            headers += ("<th style = 'border: 1px solid black;' >" + h + "</th>")
-        headers += "</row></thead>"
-        
-        rows = "<tbody>"
-        
+        rows = ""
         for report in self.reportEntries:
-            rows += "<tr style = 'border: 1px solid black;'>"
+            rows += "<tr>"
             for cell in [
                 report.field,
                 report.crop,
                 report.growth_stage,
                 self.getStatus(report),
                 report.message]:
-                rows += ("<td style = 'border: 1px solid black;'>" + str(cell) + "</td>")
+                rows += ("<td>%s</td>" % cell )
             rows += "</tr>"
 
-        tableEnd = "</tbody></table></body></html>"
+        email_body = email_template % { 'date': date.today().isoformat(),
+                                        'rows' : rows,
+                                        'host' : NOTIFICATION_HOST }
 
-        print topText, "\n", tableHeader , "\n",  headers , "\n",  rows , "\n",  tableEnd
-
-        return topText + tableHeader + headers + rows + tableEnd
+        print email_body
+        return email_body
 
