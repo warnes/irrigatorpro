@@ -398,7 +398,7 @@ function dateChangedManually() {
     	return;
     }
     
-    if( newDate < startDate || newDate > endDate )
+    if( newDate < start_date || newDate > end_date )
     {
         $("#date-error").css("display", "inline");
         return; 
