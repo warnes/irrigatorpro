@@ -38,8 +38,10 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
 import django
+from django.contrib.auth.models import User
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
-from farms.models import WaterRegister
+from farms.models import WaterRegister, CropSeason
+from farms.generate_water_register import generate_water_register
 
 # Start up django
 django.setup()
@@ -48,6 +50,17 @@ print
 print
 print "Deleting all water register objects...",
 WaterRegister.objects.all().delete()
+
+for crop_season in CropSeason.objects.all():
+    for field in crop_season.field_list.all():
+        print "Will regenerate for: ", crop_season, field
+        generate_water_register(crop_season,
+                                field,
+                                User.objects.get(email='aalebl@gmail.com'))
+
+
+
+
 print "Done."
 print
 print
