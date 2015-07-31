@@ -85,6 +85,10 @@ class UnifiedFieldDataListView(ModelFormSetView):
     def get_queryset(self):
         query = super(UnifiedFieldDataListView, self).get_queryset().filter(crop_season=self.crop_season,
                                                                             field=self.field).all().order_by("datetime")
+
+        # Add report_date to request so it can be used for the plots
+        self.request.session['report_date'] = self.report_date.isoformat()
+
         return query
 
 
