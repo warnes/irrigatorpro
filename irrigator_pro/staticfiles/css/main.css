@@ -497,3 +497,8 @@ table.unified-table {
 .unit-choices {
     background-color: #FFF;
 }
+
+.readonly {
+    background-color: transparent;
+    color: gray;
+}
