@@ -10,7 +10,7 @@
     <form id = "change-date" method="get">
     	Daily report for <input type="text" id="datepicker" 
     	name="date"
-    	value='{{report_date |date:"Y-m-d" }}' 
+    	value='{{ report_date|date:"Y-m-d" }}' 
     	onchange="validateAndSubmit()"
     	style="width: 6em">
     </form>
@@ -48,57 +48,60 @@
     <tbody>
       {% for object in object_list %}
       <tr>
-		<td>{{ object.farm}} </td>
-		<td>
-                   <a href = '{{ object.water_register_url }}'>{{ object.field }}</a>
-                </td>
-		<td>{{ object.crop }}</td>
-		<td>{{ object.growth_stage }}</td>
-		<!-- Copy code from water_register for the status. -->
-		<td class="dti">
-			{% if object.water_register_object.irrigate_flag %}
-			<div >
-		    	<b>Irrigate Today</b>
-		    	{% if object.water_register_object.average_water_content <= 0.0 %}
-		      	AWC
-		    	{% endif %}
-		    	{% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
-		      	Temp
-		    	{% endif %}
-		  	</div>
-			{% elif object.water_register_object.check_sensors_flag %}
-		  	<div >
-		  		{%if object.days_to_irrigation == 1 %}
-		    	Irrigate Tomorrow
-		    	{% else %}
-		    	Irrigate in {{object.days_to_irrigation}} days
-		    	{% endif %}
-		  	</div>
-			{% endif %}
-			{% if object.water_register_object.dry_down_flag %}
-		  	<div class="alert-inline alert-info">
-		    	Dry-Down
-		  	</div>
-			{% endif %}
-		</td>
-		<td>{{ object.message }}</td>
-		<td>{{ object.cumulative_rain }}</td>
-		<td>{{ object.cumulative_irrigation_vol }}</td>
-		<td>{{ object.last_data_entry_type }}</td>
-		<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
-	</tr>
+	<td>
+  	  <a href="{% url 'farm_id' object.farm.id %}">{{ object.farm}}</a>
+	</td>
+	<td>
+          <a href = '{{ object.water_register_url }}'>{{ object.field }}</a>
+        </td>
+	<td>{{ object.crop }}</td>
+	<td>{{ object.growth_stage }}</td>
 
-   {% endfor %}
-  
+	<!-- Copy code from water_register for the status. -->
+	<td class="dti">
+	  {% if object.water_register_object.irrigate_flag %}
+	    <div >
+	      <b>Irrigate Today</b>
+	      {% if object.water_register_object.average_water_content <= 0.0 %}
+		AWC
+	      {% endif %}
+	      {% if object.water_register_object.max_temp_2in and object.water_register_object.max_observed_temp_2in > object.water_register_object.max_temp_2in %}
+		Temp
+	      {% endif %}
+	    </div>
+	  {% elif object.water_register_object.check_sensors_flag %}
+	    <div >
+	      {%if object.days_to_irrigation == 1 %}
+		Irrigate Tomorrow
+	      {% else %}
+		Irrigate in {{object.days_to_irrigation}} days
+	      {% endif %}
+	    </div>
+	  {% endif %}
+	  {% if object.water_register_object.dry_down_flag %}
+	    <div class="alert-inline alert-info">
+	      Dry-Down
+	    </div>
+	  {% endif %}
+	</td>
+	<td>{{ object.message }}</td>
+	<td>{{ object.cumulative_rain }}</td>
+	<td>{{ object.cumulative_irrigation_vol }}</td>
+	<td>{{ object.last_data_entry_type }}</td>
+	<td>{{ object.time_last_data_entry | date:"Y-m-d H:i:s"}} </td>
+      </tr>
+
+{% endfor %}
+
     </tbody>
   </table>
 
-  {% else %}
-      <h2 class="alert alert-warning">No information for this date.</h2>
-  {% endif %}
+{% else %}
+  <h2 class="alert alert-warning">No information for this date.</h2>
+{% endif %}
 
 
-	
+
 
 {% endblock %}
 
