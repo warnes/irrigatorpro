@@ -26,9 +26,15 @@ def getDateObject(thisDate):
     elif isinstance(thisDate, date):
         return thisDate
     else:
-        return datetime.strptime(thisDate, "%Y-%m-%d %H:%M:%S").date()
-
-
+        if thisDate.count(':') == 2: 
+            return datetime.strptime(thisDate, "%Y-%m-%d %H:%M:%S").date()
+        elif thisDate.count(':') == 1: 
+            return datetime.strptime(thisDate, "%Y-%m-%d %H:%M").date()
+        elif thisDate.count(':') == 0: 
+            return datetime.strptime(thisDate, "%Y-%m-%d").date()
+        else:
+            raise RuntimeError("Unknown datetime format '%s'." % thisDate)
+        
 
 def generate_objects(wh_formset, crop_season, field, user,  report_date):
 
@@ -97,6 +103,8 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
             else:
                 # raise RuntimeError("Unrecogized source type: " + current_form['source'].value())
                 print "Have a WaterHistory of 'Unknown' type. Ignoring for now."
+                print current_form
+                day_record.all_forms.append(current_form)
 
             if form_index == len(all_forms):
                 current_form = None
