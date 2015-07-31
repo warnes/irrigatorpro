@@ -66,7 +66,7 @@ if user is None:
                                     email='webmaster@irrigatorpro.org')
 
 ## Handle Command Line Arguments
-today = timezone.now().date()
+today = timezone.now()
 
 ## By default, synchronize current CropSeasons
 date_start_default = today
@@ -92,6 +92,10 @@ parser.add_argument('--clean',
                     action='store_true',
                     help='Clean out existing entries in the time range.'
                     ) 
+parser.add_argument('--all',
+                   action='store_true',
+                   help='Process all available crop seasons from 2013-01-01 forward'
+                   )
 
 
 args = parser.parse_args()
@@ -99,14 +103,28 @@ args = parser.parse_args()
 store_log    = not args.no_log
 store_clean  = args.clean
 if args.date_start: 
-    date_start   = datetime.strptime("%s EST" % args.date_start, "%Y-%m-%d %Z").date()
+    date_start   = datetime.strptime("%s EST" % args.date_start, "%Y-%m-%d %Z")
 else:
     date_start   = date_start_default
 
 if args.date_end:
-    date_end     = datetime.strptime("%s EST" % args.date_end, "%Y-%m-%d %Z").date()
+    date_end     = datetime.strptime("%s EST" % args.date_end, "%Y-%m-%d %Z")
 else:
     date_end     = date_end_default
+
+if args.all:
+    date_start = datetime.strptime("2011-01-01 EST", "%Y-%m-%d %Z")
+    date_end   = today
+
+def to_tz_date(datetime):
+    if timezone.is_aware(datetime):
+        return datetime.date()
+    else:
+        return timezone.make_aware( datetime, timezone.get_default_timezone() ).date()
+
+date_start = to_tz_date(date_start)
+date_end   = to_tz_date(date_end)
+
 
 ## Store a record of this run
 
@@ -132,12 +150,14 @@ sys.stderr.write("for crop seasons active between %s and %s. \n" % ( date_start,
 sys.stderr.write("\n")
 
 if store_clean:
-    pr_query = ProbeReading.objects.filter(datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+    pr_query = WaterHistory.objects.filter(source='UGA',
+                                           datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
                                            datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
                                            )
     nrecords_before = len(pr_query)
     pr_query.delete()
-    pr_query = ProbeReading.objects.filter(datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
+    pr_query = WaterHistory.objects.filter(source='UGA',
+                                           datetime__gte=datetime.strptime("%s" % date_start, "%Y-%m-%d"),
                                            datetime__lt=datetime.strptime("%s" % date_end,   "%Y-%m-%d") + timedelta(days=1)
                                            )
     nrecords_after = len(pr_query)

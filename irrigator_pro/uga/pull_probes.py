@@ -10,11 +10,13 @@ from farms.models     import *
 from uga.aggregates   import *
 from uga.models       import *
 
+from common.utils     import celciusToFarenheit
+
 def to_tz(datetime):
     return timezone.make_aware( datetime, timezone.get_default_timezone() )
 
 
-def pull_probes_by_cropseason_field(crop_season, field, user=None):
+def pull_probes_by_cropseason_field(crop_season, field, user=None, verbose=False):
     """
     Query the UGA database and pull relevant probe summary data into
     the WaterHistory table for the specified crop season and field.  
@@ -42,7 +44,8 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
        records
     """
 
-    print "Working on %s for %s" % (crop_season, field) 
+    if verbose:
+        print "Working on CropSeason #%s for Field %s" % (crop_season, field) 
 
     if crop_season is None or field is None:
         return []
@@ -153,7 +156,7 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
                          'cdate': timezone.now(),
                          'muser': user,
                          'mdate': timezone.now(),
-                         'datetime':upd.datetime,
+                         'datetime':to_tz(upd.datetime),
                          }
             )
     
@@ -161,8 +164,8 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None):
         wh.crop_season       = crop_season
         wh.field             = field
         wh.datetime          = to_tz(upd.datetime) 
-        wh.max_temp_24_hours = upd.max_temp_24_hours
-        wh.min_temp_24_hours = upd.min_temp_24_hours
+        wh.max_temp_24_hours = celciusToFarenheit(upd.max_temp_24_hours)
+        wh.min_temp_24_hours = celciusToFarenheit(upd.min_temp_24_hours)
         wh.soil_potential_8  = upd.soil_potential_8
         wh.soil_potential_16 = upd.soil_potential_16
         wh.soil_potential_24 = upd.soil_potential_24

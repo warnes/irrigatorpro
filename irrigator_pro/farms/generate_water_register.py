@@ -14,7 +14,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from common.utils import daterange, minNone, safelog, quantize
 
 # workarounds for the absence of query datetime__date operator
-from common.utils import d2dt_min, d2dt_max, d2dt_range 
+from common.utils import d2dt_min, d2dt_max, d2dt_range
 
 LN40 = math.log(40.0)
 
@@ -225,13 +225,6 @@ def calculateAWC_min(crop_season,
         AWC_min = (AWC_8_min + AWC_16_min + AWC_24_min) / 3
 
     return (AWC_min)
-
-
-def celciusToFarenheit(celcius):
-    if celcius is None:
-        return None
-    else:
-        return float(celcius) * 1.8 + 32.0 
 
 
 def tempRangeCheck(temp):
