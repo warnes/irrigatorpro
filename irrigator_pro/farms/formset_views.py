@@ -4,7 +4,6 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.forms.widgets import HiddenInput as HiddenInput
-from django_readonlywidget.widgets import ReadOnlyWidget
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
