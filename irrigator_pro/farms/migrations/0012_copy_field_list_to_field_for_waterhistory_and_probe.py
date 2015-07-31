@@ -21,7 +21,7 @@ def convert_probe_field_list_to_field(apps, schema_editor):
 
    previous_id = -1
    for (id, probe_id, field_id) in cursor.fetchall():
-      # print "Working on ", (id, probe_id, field_id)
+      #print "Working on record #%d: Probe #%d, Field #%d" %(id, probe_id, field_id)
       
       """
 
@@ -43,7 +43,7 @@ def convert_probe_field_list_to_field(apps, schema_editor):
             probe.pk = None
             probe.field_id = field_id
             
-            probe.save()
+         probe.save()
 
 def convert_waterhistory_field_list_to_field(apps, schema_editor):
    """
