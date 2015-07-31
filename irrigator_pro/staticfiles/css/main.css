@@ -95,6 +95,7 @@ td {
     /* position: fixed; */
     left: 50%;
     margin: 0 0 0 -12.5%;
+    z-index: 10;  // So it is on top of the plots.
 }
 
 /***********/
