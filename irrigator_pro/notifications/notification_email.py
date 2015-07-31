@@ -25,7 +25,7 @@ email_template = """
     </style>
   </head>
   <body>
-    <h1>Abbreviated daily report for %(date)s<h1>
+    <h1>Abbreviated daily report for %(date)s</h1>
 	<table>
 	  <thead>
 	    <th> Field</th>
@@ -39,10 +39,10 @@ email_template = """
 	  </tbody>
 	</table>
 
-	<p>
-	  For details visit
+	<h2>
+	  For complete details visit
 	  <a href="%(host)s/report/summary_report/">Daily Report</a>.
-	</p>
+	</h2>
   </body>
 </html>
 """
@@ -110,15 +110,15 @@ class EmailMessage():
     def createEmailMessage(self):
         rows = ""
         for report in self.reportEntries:
-            rows += "<tr>"
+            rows += "             <tr>\n"
             for cell in [
                 report.field,
                 report.crop,
                 report.growth_stage,
                 self.getStatus(report),
                 report.message]:
-                rows += ("<td>%s</td>" % cell )
-            rows += "</tr>"
+                rows += ("               <td>%s</td>\n" % cell )
+            rows += "             </tr>\n"
 
         email_body = email_template % { 'date': date.today().isoformat(),
                                         'rows' : rows,
