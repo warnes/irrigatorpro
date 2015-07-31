@@ -161,12 +161,16 @@
     <BR>
 
     <div class = "row">
-      <div class = "col-md-6 col-xs-12">
+      <div class = "col-md-4 col-xs-12">
 	<img class = " water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
       </div> <!-- col-md-6-->
-      <div class = "col-md-6 col-xs-12">
+      <div class = "col-md-4 col-xs-12">
 	<img class = " water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
       </div> <!-- col-md-6-->
+      <div class = "col-md-4 col-xs-12">
+	<img class = " water-register-plot" src= {%url 'daily_temperature'  crop_season.pk field.pk  %} />
+      </div> <!-- col-md-6-->
+
     </div> <!-- row -->
 
   {% else %}

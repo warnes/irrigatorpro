@@ -224,5 +224,68 @@ def plot_cumulative_use(request, crop_season, field):
 
 
 
+def plot_daily_temperature(request, crop_season, field):
+
+    report_date = get_report_date(request.session['report_date'])
+    wr_list = get_water_register_list(report_date, crop_season, field)
+
+    fig=Figure()
+
+    min_plot_before=fig.add_subplot(111)
+    max_plot_before=fig.add_subplot(111)
+
+    min_plot_after=fig.add_subplot(111)
+    max_plot_after=fig.add_subplot(111)
+
+    x=[]
+    x_before = []
+    x_after= []
+
+    min_before=[]
+    max_before=[]
+
+    min_after=[]
+    max_after=[]
+
+
+    for wr in wr_list:
+        x.append(wr.datetime.date())
+        
+
+        print "Adding values for date: ", wr.datetime
+        print wr.min_temp_24_hours, ", ", wr.max_temp_24_hours
+        # NB: entries on report_date need to be in both groups to make
+        # line continuous
+        if (wr.datetime.date() <= report_date):
+            min_before.append(wr.min_temp_24_hours)
+            max_before.append(wr.max_temp_24_hours)
+            x_before.append(wr.datetime.date())
+           
+        if (wr.datetime.date() >= report_date):
+            min_after.append(wr.min_temp_24_hours)
+            max_after.append(wr.max_temp_24_hours)
+            x_after.append(wr.datetime.date())
+
+    min_plot_before.plot_date(x_before, min_before, 'g-', label = "Mininum Daily Temperature")
+    max_plot_before.plot_date(x_before, max_before, 'c-', label = "Maximum Daily Temperature", drawstyle='steps-pre')
+
+
+    min_plot_after.plot_date(x_after, min_after, 'g:')
+    max_plot_after.plot_date(x_after, max_after, 'c:', drawstyle='steps-pre')
+
+    min_plot_before.legend(loc = 'best')
+
+    min_plot_before.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
+    min_plot_before.set_ylabel("F", fontsize=16)
+
+    min_plot_before.grid()
+
+    fig.autofmt_xdate()
+    fig.suptitle("Daily Temperatures", fontsize = 20)
+    canvas=FigureCanvas(fig)
+    response=django.http.HttpResponse(content_type='image/png')
+    fig.savefig(response, transparent=True, format='png')
+
+    return response
 
     

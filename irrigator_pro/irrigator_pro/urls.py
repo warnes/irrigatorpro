@@ -94,6 +94,10 @@ urlpatterns = patterns('',
                                                                                'farms.water_register_plots.plot_daily_use',      name='daily_use'),
                        url(r'^water_register/plot/cumulative/(?P<crop_season>\d+)/(?P<field>\d+)',
                                                                                'farms.water_register_plots.plot_cumulative_use', name='cumulative_use'),
+                       url(r'^water_register/plot/temperature/(?P<crop_season>\d+)/(?P<field>\d+)',
+                                                                               'farms.water_register_plots.plot_daily_temperature', name='daily_temperature'),
+
+
 
                        ## Unified data entry and register. Will eventually replace water register and water history
                        ## but keep everything while testing
