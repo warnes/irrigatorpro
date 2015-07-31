@@ -1,52 +1,9 @@
 {% extends "base.html" %}
 
-
-{% block scripts %}
-<script type="text/javascript">
-    /* This function cleans up datepickers when a new formset row is added */
-    function renewDatePickers() {
-        /* Clear out old datepicker event handlers */
-        $("input[id$=date]").datepicker('destroy');
-
-        /* Remove buttons that got copied by formset.add */
-        $("input[id$=date]").siblings("button").remove();
-
-        /* 
-           Re-activate date pickers, restricting dates to the range 
-           specified by the crop season   
-        */
-        $("input[id$=date]").datepicker({ 
-            minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
-            maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
-        });
-    }
-
-    $(function() {
-        /* Enable add row / delete row */
-        $('#formset tbody tr').formset({
-            addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
-            deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
-            added: renewDatePickers,
-            keepFieldValues: "input[type$=number]",
-        })
-
-       /*
-          Instead of setting the minDate/maxDate separately, 
-          reuse renewDatePickers code 
-        */
-       renewDatePickers();
-
-    })
-</script>
-
-<!-- When checkbox is toggled, change text in row to strike-through --> 
-{% if debug %}
-  <script src="{{ STATIC_URL }}js/strikeout.js?t={% now 'c' %}"></script>
-{% else %}
-  <script src="{{ STATIC_URL }}js/strikeout.js"></script>
-{% endif %}
-
+{% block extrahead %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
 {% endblock %}
+
 
 
 {% block content %}
@@ -120,7 +77,7 @@
   	    {% endfor %}
   	  </tr>
   	{% endfor %}
-  	</table>
+      </table>
   
   
       <div class="submit-bar">
@@ -155,3 +112,50 @@
 {% endblock %}
 
 
+
+{% block scripts %}
+  <!-- When checkbox is toggled, change text in row to strike-through --> 
+  {% if debug %}
+    <script src="{{ STATIC_URL }}js/strikeout.js?t={% now 'c' %}"></script>
+  {% else %}
+    <script src="{{ STATIC_URL }}js/strikeout.js"></script>
+  {% endif %}
+  
+  <script type="text/javascript">
+  /* This function cleans up datepickers when a new formset row is added */
+  function renewDatePickers() {
+      /* Clear out old datepicker event handlers */
+      $("input[id$=date]").datepicker('destroy');
+  
+      /* Remove buttons that got copied by formset.add */
+      $("input[id$=date]").siblings("button").remove();
+  
+      /* 
+         Re-activate date pickers, restricting dates to the range 
+         specified by the crop season   
+      */
+      $("input[id$=date]").datepicker({ 
+          minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
+          maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
+      });
+  }
+  
+  $(function() {
+      /* Enable add row / delete row */
+      $('#formset tbody tr').formset({
+          addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
+          deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
+          added: renewDatePickers,
+          keepFieldValues: "input[type$=number]",
+      })
+  
+      /*
+        Instead of setting the minDate/maxDate separately, 
+        reuse renewDatePickers code 
+      */
+      renewDatePickers();
+  
+  })
+</script>
+
+{% endblock %}
