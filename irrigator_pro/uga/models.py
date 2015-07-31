@@ -31,9 +31,11 @@ class UGAProbeData(models.Model):
                                             self.thermocouple_1_temp,
                                             self.thermocouple_2_temp)
 
-    def get_radio_ids(self):
-        """
-        Return a list of all available probe radio_ids
-        """
-        recs = self.objects.values('radio_id').distinct()
-        return [ r['radio_id'] for r in recs]
+def get_all_radio_ids():
+    """
+    Return a list of all available probe radio_ids
+    """
+    recs = UGAProbeData.objects.values('radio_id').distinct()
+    radio_ids = [ r['radio_id'] for r in recs]
+    radio_ids.sort()
+    return radio_ids
