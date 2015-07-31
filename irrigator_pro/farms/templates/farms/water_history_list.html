@@ -73,6 +73,7 @@
         <thead>
   	<tr>
   	  <th>Date & Time</th>
+	  <th>Source</th>
   	  <th>Rain</th>
   	  <th>Irrigation</th>
   	  <th>Soil Potential 8" </th>
@@ -87,9 +88,14 @@
   
   
         <tbody>
-  	{% for field in formset %}
-  	  <tr>
-  	    {% for input in field %}
+  	{% for form in formset %}
+	  {% if form.source.value == "UGA" %}
+	    <tr class="readonly">
+	  {% else %}
+            <tr class="">
+	  {% endif %}
+	    </td>
+  	    {% for input in form %}
   	      {% if not input.is_hidden %}
   		<td>
   		  {% if input.errors %}
