@@ -408,6 +408,9 @@ SOURCE_CHOICES = (
     )
 
 class FieldDataReading(Audit, Comment):
+    #  All temperatures are stored in degrees Farenheit
+    #  All depths are stored in inches
+    #  All pressures are in kilopascals (kPa) == centibar (100 bar)
 
     source             = models.CharField(max_length=8,
                                           choices=SOURCE_CHOICES,
@@ -418,11 +421,11 @@ class FieldDataReading(Audit, Comment):
 
     min_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
-                                              verbose_name='Minimum temperature in last 24 hours') 
+                                              verbose_name='Minimum temperature in last 24 hours in degrees Farenheit') 
     
     max_temp_24_hours   = models.DecimalField(max_digits=5, decimal_places=2, # ###.##
                                               blank=True, null=True,
-                                              verbose_name='Maximum temperature in last 24 hours') 
+                                              verbose_name='Maximum temperature in last 24 hours in degrees Farenheit') 
 
 
     ignore              = models.BooleanField(default=False, blank=True)
@@ -432,13 +435,9 @@ class FieldDataReading(Audit, Comment):
     soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
     soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
 
-    # temperature_units   = CharField(max_length = 10, default=TEMPERATURE_UNIT_CHOICES[0])
-    # water_amount_units  = CharField(max_length = 10, default=WATER_AMOUNT_UNIT_CHOICES[0])
-    # pressure_units      = CharField(max_length = 10, default=PRESSURE_UNIT_CHOICES[0])
-
-    rain                = models.DecimalField("rainfall in inches", blank = True,
+    rain                = models.DecimalField("Rainfall in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
-    irrigation          = models.DecimalField("irrigation in inches", blank = True,
+    irrigation          = models.DecimalField("Irrigation in inches", blank = True,
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
 
     ## These property function allow treating 'date' and 'time' as
