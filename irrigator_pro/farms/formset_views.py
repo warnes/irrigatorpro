@@ -61,8 +61,10 @@ class Farms_FormsetView(ModelFormSetView):
                                                                          )
 
             if "field" in form.fields:
-                form.fields["field"].initial = self.field
-
+                form.fields["field"].initial  = self.field
+                form.fields["field"].queryset = self.fields_filter(self.request.user,
+                                                                   season=self.season,
+                                                                   )
 
             if "crop_season" in form.fields:
                 form.fields["crop_season"].queryset = self.crop_season_filter(self.request.user,
