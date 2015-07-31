@@ -30,7 +30,7 @@ def get_report_date(date_str):
     m = pattern.match(date_str)
 
     report_date = datetime.date(int (m.group(1)), int (m.group(2)), int (m.group(3)))
-    print 'report_date: ', report_date
+    #print 'report_date: ', report_date
     return report_date
 
 
@@ -252,8 +252,8 @@ def plot_daily_temperature(request, crop_season, field):
         x.append(wr.datetime.date())
         
 
-        print "Adding values for date: ", wr.datetime
-        print wr.min_temp_24_hours, ", ", wr.max_temp_24_hours
+        #print "Adding values for date: ", wr.datetime
+        #print wr.min_temp_24_hours, ", ", wr.max_temp_24_hours
         # NB: entries on report_date need to be in both groups to make
         # line continuous
         if (wr.datetime.date() <= report_date):

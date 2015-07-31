@@ -407,7 +407,7 @@ def generate_water_register(crop_season,
     temps_since_last_water_date = []
     wr_prev = None
 
-    if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
+    #if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
         ####
@@ -572,7 +572,7 @@ def generate_water_register(crop_season,
                                             ).all()
         
     ## Second pass, calculate flags 
-    if DEBUG: print "Second pass, calculate flags"
+    #if DEBUG: print "Second pass, calculate flags"
     irrigate_to_max_flag_seen = False
     irrigate_to_max_achieved  = False
     drydown_flag              = False

@@ -83,7 +83,7 @@ def handler_ProbeReading(sender, instance, **kwargs):
             new_date = minNone(field.earliest_changed_dependency_date, 
                                old_instance.datetime.date() )
             field.earliest_changed_dependency_date = new_date
-            if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+            #if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
             field.save()
 
     this_radio_id = instance.radio_id
@@ -98,7 +98,7 @@ def handler_ProbeReading(sender, instance, **kwargs):
         new_date = minNone(field.earliest_changed_dependency_date, 
                            instance.datetime.date() )
         field.earliest_changed_dependency_date = new_date
-        if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
+        #if DEBUG: print "Field %s: %s --> %s " % (field, field.earliest_changed_dependency_date, new_date)
         field.save()
 
 
