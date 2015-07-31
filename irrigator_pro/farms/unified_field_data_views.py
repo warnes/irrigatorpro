@@ -150,17 +150,17 @@ class UnifiedFieldDataListView(ModelFormSetView):
                             obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
                             obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
-                            if self.request.POST['depth_units']=='cm':
-                                obj.rain = to_inches(obj.rain)
-                                obj.irrigation = to_inches(obj.irrigation)
+                        if self.request.POST['depth_units']=='cm':
+                            obj.rain = to_inches(obj.rain)
+                            obj.irrigation = to_inches(obj.irrigation)
 
-                                ### Update the datetime field. The date itself does not change,
-                                ### but the time may have.
-                                ### Will only have a value for User WH object.
-                                new_time = self.request.POST.get("manual-entry-time-" + form.prefix[5:])
-                                if new_time:
-                                    hr_min = re.search("(\d+):(\d+)", new_time)
-                                    obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
+                        ### Update the datetime field. The date itself does not change,
+                        ### but the time may have.
+                        ### Will only have a value for User WH object.
+                        new_time = self.request.POST.get("manual-entry-time-" + form.prefix[5:])
+                        if new_time:
+                            hr_min = re.search("(\d+):(\d+)", new_time)
+                            obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
                         obj.save()
 
 
