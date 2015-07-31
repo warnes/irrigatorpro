@@ -41,7 +41,7 @@ email_template = """
 
 	<h2>
 	  For complete details visit
-	  <a href="%(host)s/report/summary_report/">Daily Report</a>.
+	  <a href="%(URL)s">Daily Report</a>.
 	</h2>
   </body>
 </html>
@@ -122,7 +122,7 @@ class EmailMessage():
 
         email_body = email_template % { 'date': date.today().isoformat(),
                                         'rows' : rows,
-                                        'host' : NOTIFICATION_HOST }
+                                        'URL' : NOTIFICATION_HOST }
 
         print email_body
         return email_body
