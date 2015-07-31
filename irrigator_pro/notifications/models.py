@@ -48,12 +48,13 @@ class NotificationsRule(Comment, Audit):
         return ', '.join([ obj.email for obj in r])
 
     def recipients_changed(sender, **kwargs):
+
         # Must be an easier way, but this will work for now
-        if kwargs.get('action') != "post_add": return
+        if kwargs.get('action') != "post_remove": return
         farm = kwargs.get('instance', None)
         farm_users = farm.get_farmer_and_user_objects()
-
         for notify in NotificationsRule.objects.all():  # Here should filter by checking farm in first field. .filter(Q(field_list__[0].farm = sender)):
+
             if len( notify.field_list.all() ) > 0:
                 aField = notify.field_list.all()[0]
                 if aField.farm != farm: continue
