@@ -26,3 +26,10 @@ def compare_today(value):
     if isinstance(value, datetime):
         value = value.date()
     return value - date.today()
+
+@register.filter(expects_locattime=True)
+def today_in_season(season):
+    start_date = season.season_start_date
+    end_date   = season.season_end_date
+    return (start_date <= date.today() <= end_date)
+        
