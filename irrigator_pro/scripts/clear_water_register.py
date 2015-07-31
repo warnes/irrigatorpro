@@ -53,7 +53,7 @@ WaterRegister.objects.all().delete()
 
 for crop_season in CropSeason.objects.all():
     for field in crop_season.field_list.all():
-        print "Will regenerate for: ", crop_season, field
+        print "Regenerating WaterRegister for '%s' field '%s'." % (crop_season, field)
         generate_water_register(crop_season,
                                 field,
                                 User.objects.get(email='aalebl@gmail.com'))
