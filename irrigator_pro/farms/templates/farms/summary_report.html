@@ -2,6 +2,7 @@
 
 {% block extrahead %}
 <link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="//cdn.datatables.net/tabletools/2.2.4/css/dataTables.tableTools.css">
 {% endblock %}
 
 {% block content %}
@@ -110,97 +111,106 @@
 
 
 {% block scripts %}
-
   <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+  <script src="//www.datatables.net/release-datatables/extensions/TableTools/js/dataTables.tableTools.js"></script>
 
 <script>
 function validateAndSubmit() {
-	
-	var newDate;
-	try {
-		newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
-		window.onbeforeunload = null;
-		$("#change-date").submit();
-	} catch (e) {
-		$("#date-error").css("visibility", "visible");
-		return;
-	}
-	
+    
+    var newDate;
+    try {
+	newDate = $.datepicker.parseDate('yy-mm-dd', $("#datepicker").val());
+	window.onbeforeunload = null;
+	$("#change-date").submit();
+    } catch (e) {
+	$("#date-error").css("visibility", "visible");
+	return;
+    }
+    
 }
 
 var data_sort_value = 'data-sort-value';
 
-$(document).ready(function() 
-    {
-    	
-    	
-		$(".dti").each(function() {
-              
-			var contents = $(this).text();
-               
-			$(this).attr(data_sort_value, "100");
-         	if (contents.indexOf("Dry") > 0) {
-				$(this).attr(data_sort_value, "50");
-				$(this).children().first().addClass("alert-inline alert-info");
-			} else if (contents.indexOf("Today") > 0) {
-				$(this).attr(data_sort_value, "1");
-				$(this).children().first().addClass("alert-inline alert-danger");
-			} else if (contents.indexOf("Tomorrow") > 0) {
-				$(this).attr(data_sort_value, "2");
-				$(this).children().first().addClass("alert-inline alert-warning");
-			} else {
-				number = contents.replace(/\D/g, '');
-				if (number != "") {
-					$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
-					if (number < 4) {
-						$(this).children().first().addClass("alert-inline alert-warning");
-					} else {
-						$(this).children().first().addClass("alert-inline alert-success");
-					}
-				}
-			}
-		});
-               
-
-    	
-    	
-      <!-- 	$('table').tablesorter( { -->
-      <!-- 		textExtraction: function(node) { -->
-      <!-- 			var attr = $(node).attr(data_sort_value); -->
-      <!--   		if (typeof attr !== 'undefined' && attr !== false) { -->
-      <!--        		return attr; -->
-      <!--   		} -->
-      <!--   		return $(node).text();  -->
-        		
-      <!-- 		}, -->
-    	
-      <!-- 		sortList: [[4,0]], -->
-    		
-      <!-- 			headers: { -->
-      <!--   		// set "sorter: false" (no quotes) to disable the column -->
-      <!--   		0: { sorter: "text" }, -->
-      <!--   		1: { sorter: "text" }, -->
-      <!--  		 	2: { sorter:  "text"}, -->
-      <!--   		3: { sorter:  "text"}, -->
-      <!--   		4: { sorter:  "digit"}, -->
-      <!--  		 	5: { sorter:  false}, -->
-      <!--  		 	6: { sorter:  false}, -->
-      <!--   		7: { sorter:  false}, -->
-      <!--   		8: { sorter:  false}, -->
-      <!-- 		} -->
-      <!-- }); -->
+$(document).ready(function() {
+    $(".dti").each(function() {
 	
-	$( "#datepicker" ).datepicker(
-		{
-			maxDate: new Date(),
-			minDate: new Date(2013, 03, 01)
-		}		
-	);
-
-     $('table.summary-report').DataTable({"iDisplayLength": 100});
+	var contents = $(this).text();
+	
+	$(this).attr(data_sort_value, "100");
+        if (contents.indexOf("Dry") > 0) {
+	    $(this).attr(data_sort_value, "50");
+	    $(this).children().first().addClass("alert-inline alert-info");
+	} else if (contents.indexOf("Today") > 0) {
+	    $(this).attr(data_sort_value, "1");
+	    $(this).children().first().addClass("alert-inline alert-danger");
+	} else if (contents.indexOf("Tomorrow") > 0) {
+	    $(this).attr(data_sort_value, "2");
+	    $(this).children().first().addClass("alert-inline alert-warning");
+	} else {
+	    number = contents.replace(/\D/g, '');
+	    if (number != "") {
+		$(this).attr(data_sort_value, "" + (parseInt(number) + 1));
+		if (number < 4) {
+		    $(this).children().first().addClass("alert-inline alert-warning");
+		} else {
+		    $(this).children().first().addClass("alert-inline alert-success");
+		}
+	    }
+	}
+    });
+     
+    
+    /* 	$('table').tablesorter( { */
+    /* 		textExtraction: function(node) { */
+    /* 			var attr = $(node).attr(data_sort_value); */
+    /*   		if (typeof attr !== 'undefined' && attr !== false) { */
+    /*        		return attr; */
+    /*   		} */
+    /*   		return $(node).text();  */
+    
+    /* 		}, */
+    
+    /* 		sortList: [[4,0]], */
+    
+    /* 			headers: { */
+    /*   		// set "sorter: false" (no quotes) to disable the column */
+    /*   		0: { sorter: "text" }, */
+    /*   		1: { sorter: "text" }, */
+    /*  		 	2: { sorter:  "text"}, */
+    /*   		3: { sorter:  "text"}, */
+    /*   		4: { sorter:  "digit"}, */
+    /*  		 	5: { sorter:  false}, */
+    /*  		 	6: { sorter:  false}, */
+    /*   		7: { sorter:  false}, */
+    /*   		8: { sorter:  false}, */
+    /* 		} */
+    /* }); */
+    
+    $( "#datepicker" ).datepicker({
+	maxDate: new Date(),
+	minDate: new Date(2013, 03, 01)
+    });
+    
+    $('table.summary-report').DataTable({
+	"iDisplayLength": 100,
+	"dom": 'T<"clear">lfrtip',
+    	"tableTools": {
+       	    "sSwfPath": "//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls_pdf.swf"
+	},
+    	"oTableTools": {
+            "aButtons": [
+                "copy",
+                "csv",
+                "xls",
+                {
+                    "sExtends": "pdf",
+                    "sPdfOrientation": "landscape"
+                },
+                "print"
+            ]
+        }
+    });
 
 });
-
-
 </script>
 {% endblock %}

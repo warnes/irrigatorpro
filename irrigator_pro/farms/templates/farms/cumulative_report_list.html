@@ -146,29 +146,47 @@
     }
     
     $(document).ready(function() {
-      <!-- $('table').tablesorter( { -->
-      <!--   		sortList: [[0,0]], -->
+      /* $('table').tablesorter( { */
+      /*   		sortList: [[0,0]], */
         		
-      <!-- 			headers: { -->
-      <!--       		// set "sorter: false" (no quotes) to disable the column -->
-      <!--       		0: { sorter: "text" }, -->
-      <!--       		1: { sorter: "text" }, -->
-      <!--      		 	2: { sorter:  "text"}, -->
-      <!--       		3: { sorter:  "date"}, -->
-      <!--       		4: { sorter:  "date"}, -->
-      <!--      		 	5: { sorter:  "digit"}, -->
-      <!--      		 	6: { sorter:  "digit"}, -->
-      <!--       		7: { sorter:  "digit"}, -->
-      <!--       		8: { sorter:  "digit"}, -->
-      <!--   		} -->
-      <!--     }); -->
+      /* 			headers: { */
+      /*       		// set "sorter: false" (no quotes) to disable the column */
+      /*       		0: { sorter: "text" }, */
+      /*       		1: { sorter: "text" }, */
+      /*      		 	2: { sorter:  "text"}, */
+      /*       		3: { sorter:  "date"}, */
+      /*       		4: { sorter:  "date"}, */
+      /*      		 	5: { sorter:  "digit"}, */
+      /*      		 	6: { sorter:  "digit"}, */
+      /*       		7: { sorter:  "digit"}, */
+      /*       		8: { sorter:  "digit"}, */
+      /*   		} */
+      /*     }); */
     	
       $( "#start_datepicker, #end_datepicker " ).datepicker({
           maxDate: new Date(),
           minDate: new Date(2013, 03, 01)
           });
 
-     $('table.cumulative-report').DataTable({"iDisplayLength": 100});
+    $('table.cumulative-report').DataTable({
+	"iDisplayLength": 100,
+	"dom": 'T<"clear">lfrtip',
+    	"tableTools": {
+       	    "sSwfPath": "//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls_pdf.swf"
+	},
+    	"oTableTools": {
+            "aButtons": [
+                "copy",
+                "csv",
+                "xls",
+                {
+                    "sExtends": "pdf",
+                    "sPdfOrientation": "landscape"
+                },
+                "print"
+            ]
+        }
+    });
     	
     });
   </script>
