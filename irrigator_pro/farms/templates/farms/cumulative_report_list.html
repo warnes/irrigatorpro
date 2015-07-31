@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+{% endblock %}
+
 
 {% block content %}
 
   <form id = "change-date" onsubmit="return validateForm()"  method="get">
      <h1>
         <i class="fa fa-pencil-square-o fa-fw"> </i>
-        Cumulative Report 
-     </h1>
-     <h2> 
+        Cumulative Report for 
+
     	<input type="text" id="start_datepicker" 
     		name="start_date"
 	       onchange = "showButton()"
@@ -23,7 +26,7 @@
                 size="10"
     		>
         <input id="submit-dates" type="submit" value="Update" style="display:none"></input>
-     </h2>
+     </h1>
   </form>
  
   <div id="start-date-error" class="alert alert-error" style="display: none">
@@ -80,6 +83,9 @@
 
 
 {% block scripts %}
+
+  <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+
   <script>
     var earliestDate = new Date({{earliest_date.year}},
     							{{earliest_date.month}}-1,
@@ -139,33 +145,30 @@
     		return true;
     }
     
-    $(document).ready(function() 
-        {
-        	$('table').tablesorter( {
+    $(document).ready(function() {
+      <!-- $('table').tablesorter( { -->
+      <!--   		sortList: [[0,0]], -->
         		
-        	
-        		sortList: [[0,0]],
-        		
-    			headers: {
-            		// set "sorter: false" (no quotes) to disable the column
-            		0: { sorter: "text" },
-            		1: { sorter: "text" },
-           		 	2: { sorter:  "text"},
-            		3: { sorter:  "date"},
-            		4: { sorter:  "date"},
-           		 	5: { sorter:  "digit"},
-           		 	6: { sorter:  "digit"},
-            		7: { sorter:  "digit"},
-            		8: { sorter:  "digit"},
-        		}
-          });
+      <!-- 			headers: { -->
+      <!--       		// set "sorter: false" (no quotes) to disable the column -->
+      <!--       		0: { sorter: "text" }, -->
+      <!--       		1: { sorter: "text" }, -->
+      <!--      		 	2: { sorter:  "text"}, -->
+      <!--       		3: { sorter:  "date"}, -->
+      <!--       		4: { sorter:  "date"}, -->
+      <!--      		 	5: { sorter:  "digit"}, -->
+      <!--      		 	6: { sorter:  "digit"}, -->
+      <!--       		7: { sorter:  "digit"}, -->
+      <!--       		8: { sorter:  "digit"}, -->
+      <!--   		} -->
+      <!--     }); -->
     	
-    	$( "#start_datepicker, #end_datepicker " ).datepicker(
-    		{
-    			maxDate: new Date(),
-    			minDate: new Date(2013, 03, 01)
-    		}		
-    	);
+      $( "#start_datepicker, #end_datepicker " ).datepicker({
+          maxDate: new Date(),
+          minDate: new Date(2013, 03, 01)
+          });
+
+     $('table.cumulative-report').DataTable({"iDisplayLength": 100});
     	
     });
   </script>

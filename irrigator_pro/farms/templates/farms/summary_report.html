@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% block extrahead %}
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
+{% endblock %}
 
 {% block content %}
 
@@ -108,10 +111,9 @@
 
 {% block scripts %}
 
+  <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
 
 <script>
-
-
 function validateAndSubmit() {
 	
 	var newDate;
@@ -162,31 +164,31 @@ $(document).ready(function()
 
     	
     	
-    	$('table').tablesorter( {
-    		textExtraction: function(node) {
-      			var attr = $(node).attr(data_sort_value);
-        		if (typeof attr !== 'undefined' && attr !== false) {
-             		return attr;
-        		}
-        		return $(node).text(); 
+      <!-- 	$('table').tablesorter( { -->
+      <!-- 		textExtraction: function(node) { -->
+      <!-- 			var attr = $(node).attr(data_sort_value); -->
+      <!--   		if (typeof attr !== 'undefined' && attr !== false) { -->
+      <!--        		return attr; -->
+      <!--   		} -->
+      <!--   		return $(node).text();  -->
         		
-      		},
+      <!-- 		}, -->
     	
-    		sortList: [[4,0]],
+      <!-- 		sortList: [[4,0]], -->
     		
-			headers: {
-        		// set "sorter: false" (no quotes) to disable the column
-        		0: { sorter: "text" },
-        		1: { sorter: "text" },
-       		 	2: { sorter:  "text"},
-        		3: { sorter:  "text"},
-        		4: { sorter:  "digit"},
-       		 	5: { sorter:  false},
-       		 	6: { sorter:  false},
-        		7: { sorter:  false},
-        		8: { sorter:  false},
-    		}
-      });
+      <!-- 			headers: { -->
+      <!--   		// set "sorter: false" (no quotes) to disable the column -->
+      <!--   		0: { sorter: "text" }, -->
+      <!--   		1: { sorter: "text" }, -->
+      <!--  		 	2: { sorter:  "text"}, -->
+      <!--   		3: { sorter:  "text"}, -->
+      <!--   		4: { sorter:  "digit"}, -->
+      <!--  		 	5: { sorter:  false}, -->
+      <!--  		 	6: { sorter:  false}, -->
+      <!--   		7: { sorter:  false}, -->
+      <!--   		8: { sorter:  false}, -->
+      <!-- 		} -->
+      <!-- }); -->
 	
 	$( "#datepicker" ).datepicker(
 		{
@@ -194,7 +196,9 @@ $(document).ready(function()
 			minDate: new Date(2013, 03, 01)
 		}		
 	);
-	
+
+     $('table.summary-report').DataTable({"iDisplayLength": 100});
+
 });
 
 
