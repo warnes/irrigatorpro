@@ -401,7 +401,7 @@ class Probe(NameDesc, Comment, Audit):
 ###############################################################
 
 SOURCE_CHOICES = ( 
-    ('UGA',    'UGA Database'),
+    ('UGA',      'UGA Database'),
     ('User',     'User Entry'),
     ('Computed', 'Computed'),
     ('Unknown',  'Unknown'),
@@ -411,7 +411,7 @@ class FieldDataReading(Audit, Comment):
 
     source             = models.CharField(max_length=8,
                                           choices=SOURCE_CHOICES,
-                                          default='Unknown'
+                                          default='User'
                                           )
 
     datetime            = models.DateTimeField(blank=False, null=False)
