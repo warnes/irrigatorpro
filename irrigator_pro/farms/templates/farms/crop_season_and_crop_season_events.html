@@ -3,6 +3,11 @@
 
 {% block scripts %}
 <script src="{{ STATIC_URL }}js/update_crop_season_event_dates.js"></script>
+
+$(document).ready(function() { 
+    $('select').chosen();
+});
+
 {% endblock %}
 
 

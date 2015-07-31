@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-
 {% load auth_id %}
+
 {% block content %}
 
   <h1>Farm
@@ -185,6 +185,8 @@ $(function() {
         {% endif %}
         minLength: 2,
     });
+        
+    $('select').chosen();
 });
 </script>
 
