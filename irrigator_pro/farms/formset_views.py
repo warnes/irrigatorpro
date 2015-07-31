@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.forms.widgets import HiddenInput as HiddenInput
+from django_readonlywidget.widgets import ReadOnlyWidget
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
@@ -142,6 +143,7 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     template_name = 'farms/water_history_list.html'
     fields = [ 'crop_season',
                'datetime',
+               'source',
                'field',
                'rain',
                'irrigation',
@@ -157,5 +159,9 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
         'crop_season': HiddenInput(),
         'field':       HiddenInput(),
+        'source':      TextInput(attrs={'style':'width:5em;', 
+                                        'class':'readonly',
+                                        'readonly':True }),
     }
     extra = 2
+
