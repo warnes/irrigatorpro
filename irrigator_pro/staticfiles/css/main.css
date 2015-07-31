@@ -482,9 +482,10 @@ table.unified-table {
 
 @media print
 {    
-    .no-print, .no-print *
+    .no-print, .no-print *, .submit-bar
     {
         display: none !important;
     }
+    
 }
  
