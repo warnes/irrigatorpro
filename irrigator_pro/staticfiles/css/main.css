@@ -464,6 +464,11 @@ table.unified-table {
     background-color: #FFF;
 }
 
+.unit-choices table {
+    margin-left:auto;
+    margin-right:auto;
+}
+
 .readonly {
     background-color: transparent;
     color: gray;
