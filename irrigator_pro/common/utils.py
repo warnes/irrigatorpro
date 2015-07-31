@@ -105,9 +105,19 @@ def quantize( f ):
     return retval
 
 
+def celciusToFarenheit(celcius):
+    """ Convert a temperatur in Celcius to Farenheit """
+    if celcius is None:
+        return None
+    else:
+        return float(celcius) * 1.8 + 32.0 
+
+
 ## Tests
 if True: #False:
     dt = date(2014,01,05)
     print dt
     print d2dt_min(dt)
     print d2dt_range(dt)
+
+
