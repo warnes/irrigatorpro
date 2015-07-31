@@ -9,11 +9,11 @@
         
         <i class="fa fa-pencil-square-o fa-fw"> </i>
         
-        Water Register and data entry for <input type="text" id="datepicker" 
-                                                 onchange="dateChangedManually()"
-                                                 name="report-date"
-                                                 value='{{report_date |date:"Y-m-d" }}' 
-                                                 style="width: 6em">
+        Water Register for <input type="text" id="datepicker" 
+                                  onchange="dateChangedManually()"
+                                  name="report-date"
+                                  value='{{report_date |date:"Y-m-d" }}' 
+                                  style="width: 6em">
     </h1>
 
     <div id="date-error" style="color:red; display: none">
@@ -23,9 +23,11 @@
     </div>
 
     <h2>
-        <em>{{crop_season}}</em>
-        - 
-        <em>{{field}}</em>
+        <em>
+	  <a href="{% url 'crop_season_id' crop_season.id %}">
+	    {{crop_season}} - {{field}}
+	  </a>
+	</em>
         
         <button id="rows_option" 
                 class="btn btn-success float-right"
