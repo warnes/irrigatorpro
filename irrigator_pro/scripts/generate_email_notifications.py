@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 import os, os.path, sys
-
-import socket
+import argparse, socket
 
 def get_emails(notification_rec):
-
-    
+    """
+    Get list of emails for users listed in the specified notification
+    """
     # Use a set instead of list as there could be duplicates.
     ret = []
 
@@ -48,6 +48,15 @@ if __name__ == "__main__":
     # Get settings
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
+
+## Parse Arguments
+parser = argparse.ArgumentParser(description='Generate email notifications')
+parser.add_argument('--force',
+                    action='store_true',
+                    default=None,
+                    help="Generate email message, even if time doesn't match")
+args = parser.parse_args()
+
 import django
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from datetime import date, datetime, time
@@ -67,15 +76,13 @@ django.setup()
 eastern = pytz.timezone("US/Eastern")
 
 # Get all the active notifications
-
 notifications_query = NotificationsRule.objects.filter(notification_type="Email").exclude(level = "None")
 print "# of notifications: ", notifications_query.count()
 
-
 daily_reports = {}
 
-# Set to doday when done testing
-today = date(2014, 07, 03);
+# Set to today when done testing
+today = timezone.now().date()
 
 p = re.compile('(\d+):(\d+)\s+(\w+)')
 for notify in notifications_query:
@@ -104,8 +111,10 @@ for notify in notifications_query:
 
     difference = localNotificationTime - localCurrentTime
     if difference.days != -1 or (86399 - difference.seconds) > (60*14):
-        print "Would not normally send email, but do it now for testing."
-        # continue
+        if args.force:
+            print "Forced.  Ignoring time delta"
+        else:
+            continue
 
     print "Will send email for notification: ", notify.label
 
