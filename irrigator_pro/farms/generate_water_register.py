@@ -134,7 +134,7 @@ def calculateAWC(crop_season,
     ## Now get the potentials based on water history
 
     for wh in water_history_query.filter(datetime__range=d2dt_range(date)).all():
-        if DEBUG: print "tzinfo for wh: ", wh.datetime.tzinfo
+        #if DEBUG: print "tzinfo for wh: ", wh.datetime.tzinfo
         latest_measurement_date = latest_measurement_date.replace(tzinfo=wh.datetime.tzinfo)
         if wh.datetime > latest_measurement_date:
             if wh.soil_potential_8:
@@ -531,11 +531,11 @@ def generate_water_register(crop_season,
 
         ## Enforce min and maximum soil water content based on soil type
         if wr.average_water_content > maxWater: 
-            if DEBUG: print "  Enforce max soil AWC: ", maxWater
+            #if DEBUG: print "  Enforce max soil AWC: ", maxWater
             wr.average_water_content = maxWater
 
         if wr.average_water_content < minWater: 
-            if DEBUG: print "  Enforce min soil AWC: ", minWater
+            #if DEBUG: print "  Enforce min soil AWC: ", minWater
             wr.average_water_content = minWater
 
         ## Store user into accounting info..
