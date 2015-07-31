@@ -59,8 +59,8 @@
       
       {% for object in object_list %}
       <tr>
-  		<td>{{ object.farm}} </td>
-  		<td><a href = '{{ object.water_register_url }}'>{{ object.field}}</a> </td>
+  		<td><a href="{% url 'farm_id' object.farm.id %}">{{ object.farm}}</a> </td>
+  		<td><a href="{{ object.water_register_url }}">{{ object.field}}</a> </td>
   		<td>{{ object.crop }}</td>
   		<td>{{ object.start_date | date:"Y-m-d"}}</td>
   		<td>{{ object.end_date | date:"Y-m-d"}}</td>
