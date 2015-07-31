@@ -477,3 +477,14 @@ table.unified-table {
 .strikeout {
     text-decoration: line-through;
 }
+
+
+
+@media print
+{    
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
+ 
