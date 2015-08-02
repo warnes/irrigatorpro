@@ -109,7 +109,7 @@
     {% endif %}
 
     
-    <table id="formset" class="formset default-form">
+    <table id="formset" class="formset default-form field-formset">
       <thead>
 	<tr>
 	  {% for label in field_form_headers %}
@@ -122,7 +122,11 @@
 	{% for field in field_form %}
 	  <tr>
 	    {% for input in field %}
-	      <td>
+	      {% if input.is_hidden %}
+		<td class="hidden">
+	      {% else %}
+		<td>
+	      {% endif %}
 		{% if input.errors %}
 		  <div class="inline-alert alert-danger">
 		    {{ input.errors }}
@@ -176,15 +180,19 @@
   {% endif %}
 
 <script>
-$(function() {
+  $(function() {
     $("#new_auth_user").autocomplete({
-        {% if farm.pk %}
+    {% if farm.pk %}
           source: "{%url 'filter_auth_users_farm' farm.pk %}",
         {% else %}
           source: "{%url 'filter_auth_users' %}",
         {% endif %}
         minLength: 2,
     });
+
+  $('.delete-row').parent().removeClass('hidden');
+  $('input[id$=DELETE]').parent().addClass('hidden');
+  $('.field-formset th').slice(-2).addClass('hidden');
 });
 </script>
 
