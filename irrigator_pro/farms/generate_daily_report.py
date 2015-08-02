@@ -70,7 +70,7 @@ def get_daily_report(farm, field, crop_season, user, report_date):
     srf.field = field
     srf.farm = farm
     srf.crop = crop_season.crop
-    srf.water_register_url = reverse('water_register_season_field_date', 
+    srf.water_register_url = reverse('unified_water_season_field_date',
                                      kwargs={'season': crop_season.pk,
                                              'field':  field.pk,
                                              'date':   report_date}
