@@ -12,8 +12,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- http://jqueryui.com/themeroller/ -->
-    <!-- http://stackoverflow.com/questions/1348559/are-there-hosted-jquery-ui-themes-anywhere -->
+    <!-- //jqueryui.com/themeroller/ -->
+    <!-- //stackoverflow.com/questions/1348559/are-there-hosted-jquery-ui-themes-anywhere -->
     <link rel="stylesheet" href="{% static 'css/jquery-ui/jquery-ui-base.css' %}">
 
     <!-- Bootstrap -->
@@ -116,12 +116,6 @@
 
   <script src="{% static 'js/plugins.js' %}"></script>
 
-  {% if debug %}
-      <script src="{{ STATIC_URL }}js/main.js?t={% now 'c' %}"></script>
-  {% else %}
-      <script src="{% static 'js/main.js'    %}"></script>
-  {% endif %}
-
   <script src="{% static 'js/plugins/metisMenu/jquery.metisMenu.js' %}"></script>
 
   <!-- SB Admin -->
@@ -145,8 +139,14 @@
   <script src="{% static 'js/lib/modernizr-2.6.2-respond-1.1.0.min.js' %}"></script>
 
 
-  <!-- uncomment and adjust for google analytics -->
+  <!-- provides datetime parsing/formatting and now() -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
 
+  <!-- provides js-cookie for setting/getting cookies (800b) -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.3/js.cookie.js"></script>
+
+
+  <!-- Uncomment and adjust for google analytics -->
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -166,8 +166,13 @@
     });
   </script>
 
-
   {% block scripts %}{% endblock %}
+
+  {% if debug %}
+      <script src="{{ STATIC_URL }}js/main.js?t={% now 'c' %}"></script>
+  {% else %}
+      <script src="{% static 'js/main.js'    %}"></script>
+  {% endif %}
 
   <!-- End of Scripts -->
     

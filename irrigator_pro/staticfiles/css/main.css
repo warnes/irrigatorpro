@@ -479,6 +479,31 @@ table.unified-table {
 }
 
 
+/* Settings for Chosen */
+div#temp_units_chosen {
+    width: 7em !important;
+}
+
+div#depth_units_chosen {
+    width: 6em !important;
+}
+
+.cropseason_wrapper .chosen_container {
+    width: 301;
+    height: auto;
+}
+
+#summaryreport_length .chosen-container {
+    width: 5em !important;
+}
+
+div#show_all_seasons_chosen {
+    width: 7em !important;
+}
+
+#show_all_seasons_chosen > a {
+    color: DarkGreen !important;
+}
 
 @media print
 {    

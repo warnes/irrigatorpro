@@ -362,9 +362,6 @@
         <script src="{{ STATIC_URL }}js/strikeout.js"></script>
     {% endif %}
 
-    <!-- provides datetime parsing/formatting and now() -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
-
     <script>
      $(function() {
          $( "#datepicker" ).datepicker(
@@ -377,11 +374,6 @@
     	                           {{crop_season.season_end_date.day}})
     	     }		
     	 );
-
-         $('select').chosen();
-         $('.chosen-container').css('width','10em');
-
-
      });
 
      function getStartDate() {
@@ -396,9 +388,6 @@
                          {{crop_season.season_end_date.day}});
 
      }
-
-     $('select').chosen();
-
     </script>
 
 {% endblock %}

@@ -169,28 +169,25 @@
           });
 
     $('table.cumulative-report').DataTable({
-	"iDisplayLength": 100,
-	"dom": 'T<"clear">lfrtip',
-    	"tableTools": {
-       	    "sSwfPath": "//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls_pdf.swf"
-	},
-    	"oTableTools": {
-            "aButtons": [
-                "copy",
-                "csv",
-                "xls",
-                {
-                    "sExtends": "pdf",
-                    "sPdfOrientation": "landscape"
-                },
-                "print"
-            ]
-        }
-    });
-
-    $('select').chosen();    	
-    $('.chosen-container').css('width','auto');
-
+  	"iDisplayLength": 100,
+  	"dom": 'T<"clear">lfrtip',
+      	"tableTools": {
+         	    "sSwfPath": "//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls_pdf.swf"
+  	},
+      	"oTableTools": {
+              "aButtons": [
+                  "copy",
+                  "csv",
+                  "xls",
+                  {
+                      "sExtends": "pdf",
+                      "sPdfOrientation": "landscape"
+                  },
+                  "print"
+              ]
+          }
+      });
+  
     });
   </script>
 {% endblock %}

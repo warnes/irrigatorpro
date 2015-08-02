@@ -1,7 +1,9 @@
-from sys import stdout, stderr
-from farms.models import Farm, CropSeason
 from django.db.models import Q
 from django.template import Library, Node, TemplateSyntaxError, resolve_variable
+from farms.models import Farm, CropSeason
+from operator import itemgetter, attrgetter, methodcaller
+from sys import stdout, stderr
+
 
 register = Library()
 
@@ -11,24 +13,6 @@ class ContextNode(Node):
 
   def render(self, context):
     return self.func(context)
-
-# @register.tag
-# def some_tag(parser, tokens):
-#   bits = token.split_contents()
-#   tag = bits.pop(0) # pop tag
-#   context_var = None
-
-#   if len(bits):
-#     context_var = bits.pop(0)
-
-#   user_var = bits.pop()
-
-#   # This is a wrapper function to accept the context variable
-#   def some_tag_wrap(context):
-#     context[context_var] = SomeModel.objects.filter(user = resolve_variable(user_var, context))
-#     return ''
-
-#   return ContextNode(some_tag_wrap)
 
 @register.tag
 def farm_list(parser, token):
@@ -58,9 +42,17 @@ def crop_season_list(parser, token):
         user = context['request'].user
         crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
                                                       Q(field_list__farm__users=user) ).distinct()
-        context['crop_season_list'] = crop_season_list
 
+        # sort list by year *decreasing* so new seasons are at the top
+        crop_season_list = sorted(crop_season_list, 
+                                  key = lambda cs: -cs.season_start_date.year )
+
+        map(inner, crop_season_list )
+
+        context['crop_season_list'] = crop_season_list
+        
         for crop_season in crop_season_list:
+            crop_season.year = crop_season.season_start_date.year
             crop_season.field_list_all = crop_season.field_list.all()
             crop_season.probe_list_all = crop_season.probe_set.all()
             probe_field_list = []
