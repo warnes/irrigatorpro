@@ -38,12 +38,12 @@ if __name__ == "__main__":
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "irrigator_pro.settings")
 
 import django
+import pytz
 from irrigator_pro.settings import ABSOLUTE_PROJECT_ROOT
 from farms.models import ProbeSync
 from django.contrib.auth.models import User
 from django.utils import timezone
-import pytz
-
+from farms.generate_water_register import generate_water_register
 
 ## Current Timezone
 eastern = pytz.timezone("US/Eastern")
@@ -75,7 +75,7 @@ date_start_default = today
 date_end_default   = today
 
 ## Parse Arguments
-parser = argparse.ArgumentParser(description='Download probe readings and import into database')
+parser = argparse.ArgumentParser(description='Download probe readings and import into database, then recompute affected water register records')
 parser.add_argument('--date-start',
                     action='store',
                     default=None,
@@ -94,8 +94,12 @@ parser.add_argument('--clean',
                     ) 
 parser.add_argument('--all',
                    action='store_true',
-                   help='Process all available crop seasons from 2013-01-01 forward'
+                   help='Process all available crop seasons from 2013-01-01 forward.'
                    )
+parser.add_argument('--no-recompute',
+                    action='store_true',
+                    help='Do not recompute water register records affected by updates.'
+                    )
 
 
 args = parser.parse_args()
@@ -190,3 +194,16 @@ if store_log:
 print "%d WaterRegister records created/updated in %f seconds." % (nRecords, elapsed.total_seconds())
 sys.stderr.write("\n\n")
 
+print
+print "Updating water register records..."
+print
+nChanged = 0
+for crop_season in CropSeason.objects.all():
+    for field in crop_season.field_list.all():
+        nChanged += generate_water_register(crop_season,
+                                            field,
+                                            User.objects.get(email='aalebl@gmail.com'))
+print
+print "%d water register records updated." % nChanged
+print
+print

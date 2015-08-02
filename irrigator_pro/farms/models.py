@@ -4,6 +4,7 @@ from common.models import Audit, Comment, Location, Location_Optional, NameDesc
 
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal
+from dirtyfields import DirtyFieldsMixin
 
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
@@ -555,7 +556,7 @@ class ProbeReading(FieldDataReading):
 ### WaterHistory ###
 ####################
 
-class WaterHistory(CropSeasonField, FieldDataReading):
+class WaterHistory(CropSeasonField, FieldDataReading, DirtyFieldsMixin):
 
     def __init__(self, *args, **kwargs): 
         '''

@@ -272,7 +272,8 @@ def earliest_register_to_update(report_date,
 
     earliest_to_update = latest_water_register.datetime.date() + timedelta(days=1)
     if earliest_wh_update is None:
-        if DEBUG: print 'No WH will cause update to water register'
+        #if DEBUG: print 'No WH will cause update to water register'
+        pass
     else:
         earliest_to_update = earliest_wh_update.datetime.date()
 
@@ -286,7 +287,8 @@ def earliest_register_to_update(report_date,
 
 
 # In order to test we change the definition of "Today". It is passed
-# as a parameter, set to current day if not defined.
+# as a parameter, set to current day if not defined.  
+# Returns the number of modified records
 def generate_water_register(crop_season, 
                             field, 
                             user, 
@@ -298,9 +300,7 @@ def generate_water_register(crop_season,
     planting_event = CropSeasonEvent.objects.filter(crop_season=crop_season,
                                                     field=field,
                                                     crop_event__name='Planting').order_by("-date").first()
-
-
-    if not planting_event: return (None, None)
+    if not planting_event: return 0
     ##
     ####
 
@@ -365,7 +365,7 @@ def generate_water_register(crop_season,
             raise RuntimeError("No previous water_register record on " + str(first_process_date) );
 
     ## First pass, calculate water profile (AWC)
-    if DEBUG: print "First pass, calculate water profile (AWC)"
+    #if DEBUG: print "First pass, calculate water profile (AWC)"
     temps_since_last_water_date = []
     wr_prev = None
 
@@ -436,7 +436,8 @@ def generate_water_register(crop_season,
         ####
         ## Copy information from crop event record 
         cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('-date').first()
-	if cse is None: return
+	if cse is None: 
+            return 0
         ce = cse.crop_event
 
         wr.crop_stage      = ce.name
@@ -454,7 +455,6 @@ def generate_water_register(crop_season,
         #AWC_probe = None
         #temp = None
 
-        # Could return (None, None) if there are no probes.
         # Moved this validation to calculateAWC,
         # since there is already code to validate.
         AWC_probe = calculateAWC(crop_season,
@@ -539,6 +539,7 @@ def generate_water_register(crop_season,
     irrigate_to_max_achieved  = False
     drydown_flag              = False
     irrigate_to_max_days      = 0
+    nChanged                  = 0
     for date in daterange(first_process_date, end_date):
         wr = wr_query.filter(datetime__range=d2dt_range(date))[0]
 
@@ -616,10 +617,11 @@ def generate_water_register(crop_season,
 
         ## Write to the database
         wr.save()
+        nChanged += 1
 
 
     # reset the dependency date
     field.earliest_changed_dependency_date = None
     field.save()
 
-    return
+    return nChanged

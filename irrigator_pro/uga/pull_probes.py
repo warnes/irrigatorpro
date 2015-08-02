@@ -175,15 +175,18 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None, verbose=False
         if wh.ignore is None:   # Don''t overwrite ignore flag 
             wh.ignore = False
 
+        # Add creator id & timestamp if new
         if wh.pk is None:       # if wh is newly created
             wh.cuser             = user
             wh.cdate             = timezone.now()
+       
+        # only save if the information has changed
+        if wh.is_dirty(check_relationship=True):
+            wh.muser             = user
+            wh.mdate             = timezone.now()
 
-        wh.muser             = user
-        wh.mdate             = timezone.now()
-    
-        wh.save()
-        accum.append( wh )
+            wh.save()
+            accum.append( wh )
     
     return accum
 
