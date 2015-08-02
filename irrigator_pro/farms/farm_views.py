@@ -50,8 +50,7 @@ class FarmMixin:
 
         field_form = FieldFormSet(prefix='field', instance=self.object)
            
-        field_form_headers = map(lambda field: field.label,
-                                 field_form[0])
+        field_form_headers = map(lambda field: field.label, field_form[0])
         field_form_headers = map(lambda label: '' if label in ( 'Delete', 'Id', 'Farm' ) else label,
                                     field_form_headers)
 
@@ -172,8 +171,13 @@ class FarmMixin:
     def add_users(self, request, farm_object):
 
         added_users = request.POST.getlist('added_user')
+        removed_added_users = request.POST.getlist('removed_added_user')
 
         for u in added_users:
+            if u in removed_added_users: continue
+
+            # Can't remember why the need to strip here, but if really needed,
+            # then probably needed for removed_added_users as well.
             u = u.strip()
             try:
                 user = User.objects.get(email = u)

@@ -107,10 +107,11 @@ function add_auth_row() {
     var newID = "new_" + createValidID(newEmail);
     var myRow = "<tr id='" + newID +"'><td>" + newEmail 
 	+ "</td><td><button type='button' onclick='delete_new_auth_row(\""
-	+ newID
+	+ newID + "\""
+        + ','
+        + "\"" + newEmail 
 	+ "\")'>Delete</button></td></tr>";
 
-    
     $("#auth-users-body").append(myRow);
 
 
@@ -123,8 +124,21 @@ function add_auth_row() {
 }
 
 
-function delete_new_auth_row(id) {
+/**
+ * Remove a user that had been added to the list of 
+ * authorized users but not saved yet.
+ */
+function delete_new_auth_row(id,newEmail) {
     $("#" + id).remove();
+
+
+    $("#main-form").append(
+	$('<input id="' + create_hidden_id(newEmail) + '"/>')
+	    .attr('type', 'hidden')
+	    .attr('name', 'removed_added_user')
+	    .val(newEmail)
+    );
+
 
 }
 
