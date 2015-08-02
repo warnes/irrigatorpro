@@ -159,6 +159,20 @@ $(function() {
 
     activateDatePicker();
 
+
+    /**
+     * Disable datepicker on hidden infots.
+     * form.
+     */
+    $('form input:hidden').each(function() {
+        // Could be more refined and only destroy
+        // on date fields, but there doesn't seem
+        // to be an issue here.
+        $(this).datepicker('destroy');
+    });
+
+
+
     setNavigation();
 
     // Make as readonly all input elements within object with class readonly.
