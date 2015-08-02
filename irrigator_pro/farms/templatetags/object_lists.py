@@ -43,9 +43,12 @@ def crop_season_list(parser, token):
         crop_season_list = CropSeason.objects.filter( Q(field_list__farm__farmer=user) |
                                                       Q(field_list__farm__users=user) ).distinct()
 
-        # sort list by year *decreasing* so new seasons are at the top
+        # sort list by descending year so recent seasons are at the top
         crop_season_list = sorted(crop_season_list, 
                                   key = lambda cs: -cs.season_start_date.year )
+
+        def inner(cs):
+          print cs.season_start_date
 
         map(inner, crop_season_list )
 
