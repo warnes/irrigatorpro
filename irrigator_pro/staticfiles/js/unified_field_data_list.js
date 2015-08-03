@@ -191,16 +191,6 @@ $(document).ready(function() {
     end_date   = getEndDate();
 
 
-    /**
-     * Disable datepicker since it is only used as a hidden input in a
-     * form.
-     */
-    $('form input:hidden').each(function() {
-        // Could be more refined and only destroy
-        // on date fields, but there doesn't seem
-        // to be an issue here.
-        $(this).datepicker('destroy');
-    });
 
     /**
      * Disable some of the forms for the UGA water history rows.

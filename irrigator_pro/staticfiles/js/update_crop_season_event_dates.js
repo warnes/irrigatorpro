@@ -129,21 +129,3 @@ $(function() {
     $('input[id=id_season_start_date]').change(set_event_range);
     $('input[id=id_season_end_date]').change(set_event_range);
 })
-
-
-
-$(document).ready(function() {
-
-    /**
-     * Disable datepicker since it is only used as a hidden input in a
-     * form.
-     */
-    
-    $('form input:hidden').each(function() {
-        // Could be more refined and only destroy
-        // on date fields, but there doesn't seem
-        // to be an issue here.
-        $(this).datepicker('destroy');
-    });
-});
-
