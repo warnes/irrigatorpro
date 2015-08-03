@@ -16,6 +16,18 @@
       </div>
     {% endif %}
 
+
+    {% if form.errors or field_form.errors %}
+      <div class="alert alert-danger">
+          Some errors were detected on this page.
+          Please fix them and save again. <br>
+          Note that changes made to the <b>Authorised Users</b>
+      table have been saved.
+      </div>
+    {% endif %}
+
+
+
     <table class="default-form">
       <tbody>
 	{% for input in form %}

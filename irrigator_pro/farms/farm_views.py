@@ -83,7 +83,7 @@ class FarmMixin:
 
             return self.form_valid(request, form, field_form)
         else:
-            return self.form_invalid(form, field_form)
+            return self.form_invalid(request, form, field_form)
 
     def form_valid(self, request, form, field_form):
         """
@@ -100,13 +100,18 @@ class FarmMixin:
 
         return redirect(self.get_success_url())
 
-    def form_invalid(self, form, field_form):
+    def form_invalid(self, request, form, field_form):
         """
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
 
+        # Even if form is invalid still save authorized users data.
 
+        self.delete_users(request, self.object)
+        self.delete_invited_users(request, self.object)
+        self.add_users(request, self.object)
+        
         field_form_headers = map(lambda field: field.label,
                                  field_form[0])
         field_form_headers = map(lambda label: '' if label in ( 'Delete', 'Id', 'Farm' ) else label,
