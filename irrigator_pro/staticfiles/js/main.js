@@ -7,12 +7,12 @@ function storeDate()
 
 function activateDatePicker() {
     // Use date picker widget // Display calendar icon // Make narrower
-    $("input[id$=date]").datepicker().css({
+    $("input[id$=date]").not('form input:hidden').datepicker().css({
 	"width":"7em",
 	"margin": "2px" }).focus( storeDate )
 
     // Use datetime picker widget // Display calendar icon // Make narrower
-    $("input[id$=datetime]").datetimepicker({timeFormat: "hh:mm:ss"}).css({
+    $("input[id$=datetime]").not('form input:hidden').datetimepicker({timeFormat: "hh:mm:ss"}).css({
 	"width": "12em",
 	"margin": "2px"
     }).focus( storeDate )
@@ -158,20 +158,6 @@ $(function() {
     });
 
     activateDatePicker();
-
-
-    /**
-     * Disable datepicker on hidden infots.
-     * form.
-     */
-    $('form input:hidden').each(function() {
-        // Could be more refined and only destroy
-        // on date fields, but there doesn't seem
-        // to be an issue here.
-        $(this).datepicker('destroy');
-    });
-
-
 
     setNavigation();
 
