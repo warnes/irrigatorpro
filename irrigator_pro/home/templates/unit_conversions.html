@@ -1,0 +1,27 @@
+{% comment %}
+A simple template to create a menu to change the units in the table.
+{% endcomment %}
+
+<div class ="unit-choices">
+    <table>
+        <tr>
+            <td>Unit preference:</td>
+            <td>Temperature:</td>
+            <td>
+                <select id="temp_units" name="temp_units" onchange="convert_temps()">
+                    <option value="F" selected>Farenheit</option>
+                    <option value="C">Celsius</option>
+                </select>
+            </td>
+            <td>Depth:</td>
+            <td>
+                <select id="depth_units" class="depth_units"
+                        name="depth_units">
+                    <option value="in" selected>Inches</option>
+                    <option value="cm">Centimeters</option>
+                    <option value="mm">Millimeters</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
