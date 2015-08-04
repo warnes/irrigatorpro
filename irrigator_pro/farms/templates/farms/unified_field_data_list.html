@@ -51,9 +51,11 @@
                         </td>
                         <td>Depth:</td>
                         <td>
-                            <select id="depth_units" name="depth_units" onchange="convert_depths()">
+                            <select id="depth_units" class="depth_units"
+                                    name="depth_units">
                                 <option value="in" selected>Inches</option>
                                 <option value="cm">Centimeters</option>
+                                <option value="mm">Millimeters</option>
                             </select>
                         </td>
                     </tr>
@@ -350,8 +352,10 @@
 
     <!-- Code to handle special features of unified_field_data page -->
     {% if debug %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js?t={% now 'c' %}"></script>
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js?t={% now 'c' %}"></script>
     {% else %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js"></script>
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js"></script>
     {% endif %}
 
@@ -391,4 +395,6 @@
     </script>
 
 {% endblock %}
+
+
 
