@@ -1,7 +1,6 @@
 
 /**
- * Convert all elements related to temperature based on the new value. Have to
- * make sure that the elements are in the old units.
+ * File to handle all the unit conversions in irrigator_pro.
  */
 
 
@@ -75,6 +74,9 @@ function convert_depths(old_units, new_units) {
     }
 
 
+    /**
+     * Convert values used inform
+     */
     $(".units_depth_form input").each(function() {
         var tmp = parseFloat($(this).val().trim());
         if (isNaN(tmp)) {
@@ -83,26 +85,57 @@ function convert_depths(old_units, new_units) {
         $(this).val(round_2(tmp * mult));
     });
 
-    $(".units_depth ").each(function() {
-        var tmp = parseFloat($(this).text().trim());
-        if (isNaN(tmp)) {
-            return;
-        }
-        $(this).val(round_2(tmp * mult));
-    });
+
+    /**
+     * TODO Removed the conversion of cells that are not part of a form since
+     * we no longer have them. Can put it back if needed.
+     */
+
 }
 
 
 
+
+function change_header_units(new_units) {
+
+    $(".depth_header").each(function() {
+        $(this).text($(this).text().replace(/\(\w+\)\s*$/, "(" + new_units + ")"));
+    });
+
+}
+
+
 $(document).ready(function() {
+
     $(".depth_units").change(function() {
-        convert_depths($(this).attr("current-value"), $(this).val()); 
+
+        /**
+         * Change the values in the cells, saving the new units so we know
+         * what it is next time there is a change.
+         */
+        convert_depths($(this).attr("current-value"), $(this).val());
+        change_header_units($(this).val());
         $(this).attr("current-value", $(this).val());
     });
 
 
+
+    /**
+     * TODO This will apply to all elements in the same page. May want to
+     * modify if we want more than one element in a page to use the same
+     * class.
+     */
+
     $(".depth_units").each(function(){
         $(this).attr("current-value", $(this).val());
+    });
+
+    /**
+     * TODO Hardcoded to start with inches. Should modify to start based
+     * on specific object. Related to above comment.
+     */
+    $(".depth_header").each(function() {
+        $(this).text($(this).text() + " (in)");
     });
 
 });
