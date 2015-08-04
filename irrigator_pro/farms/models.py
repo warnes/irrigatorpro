@@ -7,7 +7,7 @@ from decimal import Decimal
 from dirtyfields import DirtyFieldsMixin
 
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils import timezone
 
@@ -432,13 +432,23 @@ class FieldDataReading(Audit, Comment):
     ignore              = models.BooleanField(default=False, blank=True)
 
 
-    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
-    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
-    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True) # ###.##
+    soil_potential_8    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True,
+                                              validators=[MinValueValidator(Decimal('0')),
+                                                          MaxValueValidator(Decimal('200'))]) # ###.##
+
+    soil_potential_16   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True,
+                                              validators=[MinValueValidator(Decimal('0')),
+                                                          MaxValueValidator(Decimal('200'))]) # ###.##
+
+    soil_potential_24   = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True,
+                                              validators=[MinValueValidator(Decimal('0')),
+                                                          MaxValueValidator(Decimal('200'))]) # ###.##
 
     rain                = models.DecimalField("Rainfall in inches", blank = True,
+                                              validators=[MinValueValidator(Decimal('0'))],
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
     irrigation          = models.DecimalField("Irrigation in inches", blank = True,
+                                              validators=[MinValueValidator(Decimal('0'))],
                                               max_digits=4, decimal_places=2, default=0.0) # ##.##
 
     ## These property function allow treating 'date' and 'time' as
