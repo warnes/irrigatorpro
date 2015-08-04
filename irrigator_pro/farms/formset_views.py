@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.forms.widgets import HiddenInput as HiddenInput
+from django.forms.widgets import NumberInput as NumberInput
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
@@ -165,6 +166,11 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'source':      TextInput(attrs={'style':'width:5em;', 
                                         'class':'readonly',
                                         'readonly':True }),
+        'rain':        NumberInput(attrs={'class':'units_depth_input '}),
+        'irrigation':  NumberInput(attrs={'class':'units_depth_input '}),
+        'min_temp_24_hours': NumberInput(attrs={'class':'units_temp_input '}),
+        'max_temp_24_hours': NumberInput(attrs={'class':'units_temp_input '}),
+
     }
     extra = 2
 

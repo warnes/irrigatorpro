@@ -20,6 +20,7 @@ from django import forms
 from django.forms.widgets import HiddenInput as HiddenInput
 from django.forms.widgets import TextInput as TextInput
 from django.forms.widgets import TimeInput as TimeInput
+from django.forms.widgets import NumberInput as NumberInput
 
 import os
 import types
@@ -59,6 +60,10 @@ class UnifiedFieldDataListView(ModelFormSetView):
         'date': HiddenInput(),
         'datetime': HiddenInput(),
         'source': HiddenInput(),
+        'rain':        NumberInput(attrs={'class':'units_depth_input '}),
+        'irrigation':  NumberInput(attrs={'class':'units_depth_input '}),
+        'min_temp_24_hours': NumberInput(attrs={'class':'units_temp_input '}),
+        'max_temp_24_hours': NumberInput(attrs={'class':'units_temp_input '}),
     }
     extra = 0
     can_delete=True

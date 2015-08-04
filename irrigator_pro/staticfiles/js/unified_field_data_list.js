@@ -109,6 +109,8 @@ $(document).ready(function() {
     $(".time-entry").css('width', '5em');
 
     /* Store dates for later use */
+
+    /** PROBLEM HERE: getStartDate is defined in the HTML file **/
     start_date = getStartDate();
     end_date   = getEndDate();
 

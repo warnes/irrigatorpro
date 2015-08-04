@@ -19,6 +19,9 @@
       {% endif %}
     </h2>
   
+
+
+      {% include "unit_conversions.html" %}
     <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
   
   
@@ -31,21 +34,20 @@
           {% endfor %}
         {% endfor %}
       {% endif %}
-  
-  
+
       <table class="formset" >
   
         <thead>
   	<tr>
   	  <th>Date & Time</th>
 	  <th>Source</th>
-  	  <th>Rain</th>
-  	  <th>Irrigation</th>
+  	  <th class="depth_header">Rain</th>
+  	  <th class="depth_header">Irrigation</th>
   	  <th>Soil Potential 8" </th>
   	  <th>Soil Potential 16"</th>
   	  <th>Soil Potential 24"</th>
-  	  <th>Min Temp (&deg;F)</th>
-  	  <th>Max Temp (&deg;F)</th>
+  	  <th class="temp_header">Min Temp</th>
+  	  <th class="temp_header">Max Temp</th>
   	  <th>Comment</th>
   	  <th>Ignore</th>
   	  <th>Delete</th>
@@ -114,6 +116,13 @@
 
 
 {% block scripts %}
+
+    {% if debug %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js?t={% now 'c' %}"></script>
+    {% else %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js"></script>
+    {% endif %}
+
   <!-- When checkbox is toggled, change text in row to strike-through --> 
   {% if debug %}
     <script src="{{ STATIC_URL }}js/strikeout.js?t={% now 'c' %}"></script>

@@ -4,6 +4,10 @@
  */
 
 
+degF = '\xB0F';
+degC = '\xB0C';
+
+
 
 // Would be nicer with anonymous function. Just making sure it works for now.
 
@@ -28,7 +32,7 @@ function convert_temps() {
         F = toFarenheit;
     }
 
-    $(".units_temp_form input").each(function() {
+    $(".units_temp_input").each(function() {
         var tmp = parseFloat($(this).val().trim());
         if (isNaN(tmp)) {
             return;
@@ -37,13 +41,13 @@ function convert_temps() {
     });
 
 
-    $(".units_temp").each(function() {
-        var tmp = parseFloat($(this).text().trim());
-        if (isNaN(tmp)) {
-            return;
-        }
-        $(this).val(round_2(F(tmp)));
-    });
+    // $(".units_temp").each(function() {
+    //     var tmp = parseFloat($(this).text().trim());
+    //     if (isNaN(tmp)) {
+    //         return;
+    //     }
+    //     $(this).val(round_2(F(tmp)));
+    // });
 
 
 }
@@ -73,11 +77,18 @@ function convert_depths(old_units, new_units) {
         }
     }
 
+    // /**
+    //  * Convert values used inform
+    //  */
+    // $(".units_depth_form input").each(function() {
+    //     var tmp = parseFloat($(this).val().trim());
+    //     if (isNaN(tmp)) {
+    //         return;
+    //     }
+    //     $(this).val(round_2(tmp * mult));
+    // });
 
-    /**
-     * Convert values used inform
-     */
-    $(".units_depth_form input").each(function() {
+    $(".units_depth_input").each(function() {
         var tmp = parseFloat($(this).val().trim());
         if (isNaN(tmp)) {
             return;
@@ -85,14 +96,23 @@ function convert_depths(old_units, new_units) {
         $(this).val(round_2(tmp * mult));
     });
 
-
-    /**
-     * TODO Removed the conversion of cells that are not part of a form since
-     * we no longer have them. Can put it back if needed.
-     */
-
 }
 
+
+
+
+
+
+function change_temp_headers(new_temp) {
+    replace_with = degC;
+    if (new_temp == "F") {
+        replace_with = degF;
+    }
+
+   $(".temp_header").each(function() {
+        $(this).text($(this).text().replace(/\(.+\)\s*$/, "(" + replace_with + ")"));
+    });
+}
 
 
 
@@ -119,6 +139,11 @@ $(document).ready(function() {
     });
 
 
+    $(".temp_units").change(function() {
+        convert_temps();
+        change_temp_headers($(this).val());
+    });
+
 
     /**
      * TODO This will apply to all elements in the same page. May want to
@@ -136,6 +161,10 @@ $(document).ready(function() {
      */
     $(".depth_header").each(function() {
         $(this).text($(this).text() + " (in)");
+    });
+
+    $(".temp_header").each(function() {
+        $(this).text($(this).text() + "(" + degF + ")");
     });
 
 });
