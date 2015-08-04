@@ -6,6 +6,11 @@ from django.utils.decorators import method_decorator
 from django.forms.widgets import HiddenInput as HiddenInput
 from django.forms.widgets import NumberInput as NumberInput
 
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+
+from irrigator_pro.settings import DEBUG
+
 from farms.models import CropSeason, Field, Probe, WaterHistory
 
 class Farms_FormsetView(ModelFormSetView):
@@ -140,6 +145,10 @@ class ProbeFormsetView(Farms_FormsetView):
 
 
 
+#########################################################################################################
+#########################################################################################################
+#########################################################################################################
+
 class WaterHistoryFormsetView(Farms_FormsetView):
     model = WaterHistory
     template_name = 'farms/water_history_list.html'
@@ -174,3 +183,23 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     }
     extra = 2
 
+
+    
+    def formset_valid(self, formset):
+        """
+        We redefine formset_valid() so we don't save form that didn't really change value
+        but django thinks they have because there has been a change in the units.
+        """
+
+        if DEBUG: print 'Into formset_valid'
+    
+        changed_form_ids = self.request.POST.getlist('changed_forms[]')
+        formset.save(commit=False)
+        
+        print len(changed_form_ids), " forms have changed"
+        print len(formset.deleted_objects), " forms deleted"
+
+
+        return HttpResponseRedirect(reverse("water_history_season_field",
+                                            kwargs={'season': self.season,
+                                                    'field': self.field}))

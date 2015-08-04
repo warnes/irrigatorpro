@@ -167,4 +167,62 @@ $(document).ready(function() {
         $(this).text($(this).text() + "(" + degF + ")");
     });
 
+
+
+
+    /**
+     * Create a hidden input with the form id when a input is
+     * clicked. This is required to prevent all forms from being saved
+     * each time the units are being converted.
+     *
+     * In the form the textarea for the comment does not use
+     * the input tag.
+     */
+    
+    $('form input, form textarea').change( function() {
+
+        /**
+         * Only use if if id has either the pattern: 
+         *      id_form-(\d+).*
+         * or
+         *      manual-entry-time-(\d+)*
+         * 
+         * The matched number indicates the form index
+         */
+        
+
+        console.log("Clicked for form: " + $(this).attr("id"));
+        var pattern1 = new RegExp("id_form-(\\d+)");
+        var pattern2 = new RegExp("manual-entry-time-(\\d+)");
+
+        var res = pattern1.exec($(this).attr("id"));
+        
+        if (res == null)
+            res = pattern2.exec($(this).attr("id"));
+
+        if (res == null) {
+            console.log("No match");
+            return;
+        }
+        //console.log("Matched for form: " + res[1]);
+        form_id = "id_form-" + res[1] + "-id";
+        
+        // Add the form id to hidden input
+
+        var add_to_form = true;
+        $('.changed_forms').each(function(){
+            if ($(this).val() == form_id) {
+                add_to_form = false;
+            }
+        });
+
+        if (add_to_form) {
+            $('<input>').attr({
+                class: 'changed_forms',
+                type: 'hidden',
+                name: "changed_forms[]",
+                value: form_id}).appendTo($(this).closest('form'));
+        } else {
+        }
+    });
 });

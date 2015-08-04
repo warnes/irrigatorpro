@@ -62,8 +62,8 @@
                         <th>8in</th>
                         <th>16in</th>
                         <th>24in</th>
-                        <th>Min</th>
-                        <th >Max</th>
+                        <th class="temp_header">Min</th>
+                        <th class="temp_header">Max</th>
                         <th class="depth_header">Rain</th>
                         <th class="depth_header">Irri&shy;gation</th>
                         <th>Stage</th>
@@ -211,15 +211,15 @@
                                                    value="{{ form.instance.datetime|time_format }}"/>
                                         </td>
                                         <td>{{ form.source.value }}</td>
-                                        <td class="uga-hide">{{ form.soil_potential_8.error }}{{ form.soil_potential_8 }}</td>
-                                        <td class="uga-hide">{{ form.soil_potential_16.error }}{{ form.soil_potential_16 }}</td>
-                                        <td class="uga-hide">{{ form.soil_potential_24.error }}{{ form.soil_potential_24 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_8.errors }}{{ form.soil_potential_8 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_16.errors }}{{ form.soil_potential_16 }}</td>
+                                        <td class="uga-hide">{{ form.soil_potential_24.errors }}{{ form.soil_potential_24 }}</td>
                                         
-                                        <td class="uga-hide">{{ form.min_temp_24_hours.error }}{{ form.min_temp_24_hours }}</td>
-                                        <td class="uga-hide">{{ form.max_temp_24_hours.error }}{{ form.max_temp_24_hours }}</td>
+                                        <td class="uga-hide">{{ form.min_temp_24_hours.errors }}{{ form.min_temp_24_hours }}</td>
+                                        <td class="uga-hide">{{ form.max_temp_24_hours.errors }}{{ form.max_temp_24_hours }}</td>
                                         
-                                        <td class="uga-hide">{{ form.rain.error }}{{ form.rain }}</td>
-                                        <td class="uga-hide">{{ form.irrigation.error }}{{ form.irrigation }}</td>
+                                        <td class="uga-hide">{{ form.rain.errors }}{{ form.rain }}</td>
+                                        <td class="uga-hide">{{ form.irrigation.errors }}{{ form.irrigation }}</td>
                                         <td>{{ form.ignore }}</td>
 
                                         

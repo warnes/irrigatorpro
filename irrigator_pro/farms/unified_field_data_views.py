@@ -203,12 +203,12 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
 
-    def formset_invalid(self, formset):
+    def formset_invalid(self, _formset):
         if DEBUG: print 'Into formset_invalid'
-        if DEBUG: print formset.errors
+        if DEBUG: print _formset.errors
 
-        self.wh_formset = formset
-        self.object_list = generate_objects(formset,
+        self.wh_formset = _formset
+        self.object_list = generate_objects(_formset,
                                             self.crop_season, 
                                             self.field, 
                                             self.request.user,
