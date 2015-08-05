@@ -158,10 +158,10 @@ class ProbeFormsetView(Farms_FormsetView):
 class WaterHistoryFormsetView(Farms_FormsetView):
     model = WaterHistory
     template_name = 'farms/water_history_list.html'
-    fields = [ 'crop_season',
+    fields = [ #'crop_season',
                'datetime',
                'source',
-               'field',
+               #'field',
                'rain',
                'irrigation',
                'soil_potential_8',
@@ -177,8 +177,8 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),
         'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
-        'crop_season': HiddenInput(),
-        'field':       HiddenInput(),
+        #'crop_season': HiddenInput(),
+        #'field':       HiddenInput(),
         # 'source':      TextInput(attrs={'style':'width:5em;' ,
         #                          'class':'readonly',
         #                          'readonly':True,
@@ -236,31 +236,42 @@ class WaterHistoryFormsetView(Farms_FormsetView):
                 #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
                 #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
+
+                obj.crop_season = CropSeason.objects.get(pk=int(self.season))
+                obj.field = Field.objects.get(pk=int(self.field))
                 obj.save()
 
 
         ### Process new objects
 
-        ## Need this in order to create new_objects list
-        for obj in formset.new_objects:
-            
-            obj.field=Field.objects.get(pk=int(self.field))
-            obj.crop_season=CropSeason.objects.get(pk=int(self.season))
-            obj.save(force_update=False)
-            ### Copied from above. Need to factor out
-            # if self.request.POST['temp_units']=='C':
-            #     if obj.min_temp_24_hours is not None:
-            #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-            #     if obj.max_temp_24_hours is not None:
-            #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+        ### Doesn't look like it's necessary, since new rows are saved above.
 
-            # if self.request.POST['depth_units']!='in':
-            #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-            #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+        # ## Need this in order to create new_objects list
+        # for obj in formset.new_objects:
+        #     print "new object: ", obj
+        #     obj.field=Field.objects.get(pk=int(self.field))
+        #     obj.crop_season=CropSeason.objects.get(pk=int(self.season))
+        #     obj.save(force_update=False)
+        #     ### Copied from above. Need to factor out
+        #     # if self.request.POST['temp_units']=='C':
+        #     #     if obj.min_temp_24_hours is not None:
+        #     #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+        #     #     if obj.max_temp_24_hours is not None:
+        #     #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+
+        #     # if self.request.POST['depth_units']!='in':
+        #     #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+        #     #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
 
-            obj.save()
+        #     obj.save()
 
         return HttpResponseRedirect(reverse("water_history_season_field",
                                             kwargs={'season': self.season,
                                                     'field': self.field}))
+
+
+    def formset_invalid(self, formset):
+        if DEBUG: print "Into formset_invalid"
+        if DEBUG: print formset.errors
+        super(WaterHistoryFormsetView, self).formset_invalid(formset)
