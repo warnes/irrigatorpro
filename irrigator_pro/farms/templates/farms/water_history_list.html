@@ -1,11 +1,5 @@
 {% extends "base.html" %}
 
-{% block extrahead %}
-<link rel="stylesheet" href="//cdn.datatables.net/1.10.7/css/jquery.dataTables.min.css">
-{% endblock %}
-
-
-
 {% block content %}
 
   <h1>
@@ -163,6 +157,10 @@
         reuse renewDatePickers code 
       */
       renewDatePickers();
+
+    $("table.formset").floatThead({
+        scrollingTop:50
+    });
   
   })
 </script>
