@@ -454,7 +454,7 @@ table.floatThead-table {
     background-color: #FFF;
 }
 
-table.unified-table {
+table.unified-table, table.formset {
     table-layout: fixed;
     background-color: #eefcff;
     margin-bottom: 30px;
