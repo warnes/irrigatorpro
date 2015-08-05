@@ -90,22 +90,9 @@
         </button>
   
   
-        {% if object.pk %}
-  	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
+  	<a class="btn btn-warning" href="{{ request.get_full_path }}">
   	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
   	</a>
-        {% else %}
-  	<a class="btn btn-warning" href="{% url 'farm_list' %}">
-  	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
-  	</a>
-        {% endif %}
-  
-        {% if object.pk %}
-  	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
-  	  <i class="fa fa-times fa-fw"></i> Delete
-  	</a>
-        {% endif %}
-  
       </div>
   
   
@@ -156,8 +143,13 @@
       $('.irr_data tbody tr').formset({
           addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
           deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
-          added: renewDatePickers,
           keepFieldValues: "input[type$=number]",
+          added: function(row) { 
+               renewDatePickers,
+               $(row).find("input[id$=time]").datetimepicker().css({"width":"12em", "margin":"2px"});
+               $(row).find("select[id$=source]").val("User Entry");
+               $(row).find("select[id$=source]").prop("disabled",true).trigger("chosen:updated");    
+          }
       })
   
       /*
@@ -169,7 +161,17 @@
     $("table.formset").floatThead({
         scrollingTop:50
     });
-  
+
+    $("select[id$=source]").each( function() { 
+         $(this).val( $(this).prop('value') ) 
+         $(this).prop('disabled', true).trigger("chosen:updated");
+    });
+
+    $("#formset").submit(function(){
+        $("select[id$=source]").prop('disabled',false);
+    });
+
+
   })
 </script>
 

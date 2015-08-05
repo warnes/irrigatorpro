@@ -402,8 +402,8 @@ class Probe(NameDesc, Comment, Audit):
 ###############################################################
 
 SOURCE_CHOICES = ( 
-    ('UGA',      'UGA Database'),
     ('User',     'User Entry'),
+    ('UGA',      'UGA Database'),
     ('Computed', 'Computed'),
     ('Unknown',  'Unknown'),
     )
@@ -444,12 +444,12 @@ class FieldDataReading(Audit, Comment):
                                               validators=[MinValueValidator(Decimal('0')),
                                                           MaxValueValidator(Decimal('200'))]) # ###.##
 
-    rain                = models.DecimalField("Rainfall in inches", blank = True,
+    rain                = models.DecimalField("Rainfall in inches", blank = True, null=True,
                                               validators=[MinValueValidator(Decimal('0'))],
-                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
-    irrigation          = models.DecimalField("Irrigation in inches", blank = True,
+                                              max_digits=4, decimal_places=2) # ##.##
+    irrigation          = models.DecimalField("Irrigation in inches", blank = True, null=True,
                                               validators=[MinValueValidator(Decimal('0'))],
-                                              max_digits=4, decimal_places=2, default=0.0) # ##.##
+                                              max_digits=4, decimal_places=2) # ##.##
 
     ## These property function allow treating 'date' and 'time' as
     ## fields, which automagically get/set the components of
