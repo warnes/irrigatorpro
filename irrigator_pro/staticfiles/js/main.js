@@ -7,12 +7,12 @@ function storeDate()
 
 function activateDatePicker() {
     // Use date picker widget // Display calendar icon // Make narrower
-    $("input[id$=date]").not('form input:hidden').datepicker().css({
+    $("input[id$=date]").not('form input:hidden').not('.hidden').datepicker().css({
 	"width":"7em",
 	"margin": "2px" }).focus( storeDate )
 
     // Use datetime picker widget // Display calendar icon // Make narrower
-    $("input[id$=datetime]").not('form input:hidden').datetimepicker({timeFormat: "hh:mm:ss"}).css({
+    $("input[id$=datetime]").not('form input:hidden').not('.hidden').datetimepicker({timeFormat: "hh:mm:ss"}).css({
 	"width": "12em",
 	"margin": "2px"
     }).focus( storeDate )
