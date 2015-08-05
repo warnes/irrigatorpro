@@ -9,7 +9,7 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('farms', '0023_rerder_source_choices'),
+        ('farms', '0023_reorder_source_choices'),
     ]
 
     operations = [
