@@ -109,11 +109,14 @@ def handler_CropSeasonEvent(sender, instance, **kwargs):
     if instance.id: # save changes to existing object
         new_instance = instance
         old_instance = CropSeasonEvent.objects.get(pk=instance.id)
-        old_instance.field.earliest_changed_dependency_date = old_instance.date
+        old_instance.field.earliest_changed_dependency_date = minNone(old_instance.field.earliest_changed_dependency_date,
+                                                                      old_instance.date)
         old_instance.field.save()
 
-    instance.field.earliest_changed_dependency_date = instance.date    
+    instance.field.earliest_changed_dependency_date = minNone(instance.field.earliest_changed_dependency_date,
+                                                              instance.date)
     instance.field.save()
+
 
 @receiver(pre_save, sender=CropSeason)
 @receiver(pre_delete, sender=CropSeason)
