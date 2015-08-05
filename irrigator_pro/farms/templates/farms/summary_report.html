@@ -202,9 +202,7 @@ $(document).ready(function() {
     
     var table = $('table.summary-report').DataTable({
 	"iDisplayLength": 100,
-	"dom": 'T<"clear">lfrtip',
-        "dom": 'C<"clear">lfrtip',
-        "dom": 'Rlfrtip',        
+	"dom": 'TCRlfrtip',  // R=Reorder, C=ColVis, T=TableTools
     	"tableTools": {
        	    "sSwfPath": "//cdn.datatables.net/tabletools/2.2.4/swf/copy_csv_xls_pdf.swf"
 	},
@@ -226,6 +224,11 @@ $(document).ready(function() {
         "offsetTop": 50
     } );
     //new $.fn.dataTable.KeyTable( table );
+
+
+    // FIXME: Should go into main.css ///
+    $(".ColVis").css("padding","0px 20px")
+
 });
 </script>
 {% endblock %}
