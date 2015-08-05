@@ -226,8 +226,8 @@ def calculate_total_RainIrrigation(crop_season,
     # Now add the values coming from the water history (soon to be renamed manual reading)
     wh_list = water_history_query.filter(datetime__range=d2dt_range(date)).all()
     if wh_list:
-        rainfall   = rainfall + sum( map( lambda wh: wh.rain, wh_list ) )
-        irrigation = irrigation + sum( map( lambda wh: wh.irrigation, wh_list) )
+        rainfall   = rainfall + sum( map( lambda wh: wh.rain if wh.rain else 0, wh_list ) )
+        irrigation = irrigation + sum( map( lambda wh: wh.irrigation if wh.irrigation else 0, wh_list) )
 
         min_temp = minNone(min_temp, minNone(*map( lambda wh: wh.min_temp_24_hours, wh_list)))
         max_temp = max(max_temp, max(map( lambda wh: wh.max_temp_24_hours, wh_list)))
