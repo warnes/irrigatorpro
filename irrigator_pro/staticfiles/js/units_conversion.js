@@ -145,11 +145,23 @@ $(document).ready(function() {
     });
 
 
+    /** 
+      Set initial column unit labels
+     **/
+    $(".depth_header").each(function() {
+	$(this).text($(this).text() + " (in)");
+    });        
+
+    $(".temp_header").each(function() {
+	$(this).text($(this).text() + " (" + degF + ")" );
+    });        
+
+
     /**
      * Pull default units from Cookie, if present, defaulting to inches & Farenheit. 
      * Should modify to start based on specific object. Related to next comment.
      */
-    
+
     if( Cookies.set("depth_units") == "cm") {
 	$(".depth_units").val("cm");
 	change_header_units("cm");
