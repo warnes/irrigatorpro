@@ -1,4 +1,4 @@
-from extra_views import ModelFormSetView
+from extra_views import ModelFormSetView, SortableListMixin
 from django.forms import Textarea, TextInput
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
@@ -15,6 +15,8 @@ from farms.models import CropSeason, Field, Probe, WaterHistory
 
 class Farms_FormsetView(ModelFormSetView):
     can_delete=True
+
+    sort_fields = []
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
@@ -37,6 +39,10 @@ class Farms_FormsetView(ModelFormSetView):
             queryset = queryset.filter( crop_season=int(self.season) )
             if self.field:
                 queryset = queryset.filter( field=int(self.field) )
+
+        if self.sort_fields:
+            queryset = queryset.order_by(*self.sort_fields)
+
         return queryset.distinct()
 
     def fields_filter(self, user, season=None, field=None):
@@ -166,6 +172,7 @@ class WaterHistoryFormsetView(Farms_FormsetView):
                'comment',
                'ignore'
                ]
+    sort_fields = [ 'datetime', '-source' ]
     widgets = {
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),
@@ -184,7 +191,6 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     extra = 2
 
 
-    
     def formset_valid(self, formset):
         """
         We redefine formset_valid() so we don't save form that didn't really change value
