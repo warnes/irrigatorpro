@@ -505,6 +505,10 @@ div#show_all_seasons_chosen {
     color: DarkGreen !important;
 }
 
+#depth_units_chosen .chosen-single {
+    width: 9em;
+}
+
 @media print
 {    
     .no-print, .no-print *, .submit-bar

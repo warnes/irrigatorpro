@@ -12,7 +12,7 @@ from django.http import HttpResponseRedirect
 from irrigator_pro.settings import DEBUG
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
-from farms.utils import to_faren, to_inches
+#from farms.utils import to_faren, to_inches
 
 class Farms_FormsetView(ModelFormSetView):
     can_delete=True
@@ -224,16 +224,16 @@ class WaterHistoryFormsetView(Farms_FormsetView):
                 print "source for object: ", form.cleaned_data['source']
 
 
-                if self.request.POST['temp_units']=='C':
-                    if obj.min_temp_24_hours is not None:
-                        obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                    if obj.max_temp_24_hours is not None:
-                        obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+                # if self.request.POST['temp_units']=='C':
+                #     if obj.min_temp_24_hours is not None:
+                #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                #     if obj.max_temp_24_hours is not None:
+                #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
 
 
-                if self.request.POST['depth_units']!='in':
-                    obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-                    obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+                # if self.request.POST['depth_units']!='in':
+                #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
                 obj.save()
 
@@ -247,15 +247,15 @@ class WaterHistoryFormsetView(Farms_FormsetView):
             obj.crop_season=CropSeason.objects.get(pk=int(self.season))
             obj.save(force_update=False)
             ### Copied from above. Need to factor out
-            if self.request.POST['temp_units']=='C':
-                if obj.min_temp_24_hours is not None:
-                    obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                if obj.max_temp_24_hours is not None:
-                    obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+            # if self.request.POST['temp_units']=='C':
+            #     if obj.min_temp_24_hours is not None:
+            #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+            #     if obj.max_temp_24_hours is not None:
+            #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
 
-            if self.request.POST['depth_units']!='in':
-                obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-                obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+            # if self.request.POST['depth_units']!='in':
+            #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+            #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
 
             obj.save()

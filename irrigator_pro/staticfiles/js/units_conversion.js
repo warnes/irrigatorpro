@@ -3,33 +3,34 @@
  * File to handle all the unit conversions in irrigator_pro.
  */
 
-
 degF = '\xB0F';
 degC = '\xB0C';
 
-
-
 // Would be nicer with anonymous function. Just making sure it works for now.
 
-function toCelsius(f) {
+function FtoC(f) {
     return (f-32.0) * 5.0 / 9.0;
 }
 
-function toFarenheit(c) {
+function CtoF(c) {
     return 9.0 * c/5.0 + 32.0;
 }
-
 
 function round_2(v) {
     return Math.round((v + 0.00001) * 100) / 100;
 }
 
-function convert_temps() {
-
-    if ($("#temp_units").val() == "C") {
-        F = toCelsius;
+function convert_temps(old_units, new_units) {
+    
+    if (old_units == new_units ) {
+	/* no conversion necessary */
+	return 
+    } else if (old_units == "F" & new_units == "C") {
+        conv = FtoC;
+    } else if (old_units == "C" & new_units == "F") {
+        conv = CtoF;
     } else {
-        F = toFarenheit;
+	throw "Unknown conversion requested: " + old_units +  " to " + new_units 
     }
 
     $(".units_temp_input").each(function() {
@@ -37,7 +38,7 @@ function convert_temps() {
         if (isNaN(tmp)) {
             return;
         }
-        $(this).val(round_2(F(tmp)));
+        $(this).val(round_2(conv(tmp)));
     });
 
 
@@ -60,33 +61,25 @@ function convert_temps() {
 function convert_depths(old_units, new_units) {
 
     var mult;
-    if (old_units == "in") {
-        mult = 2.54; // Converting in to cm
-        if (new_units == "mm") {
-            mult = 25.4; // Converting in to mm
-        }
-    } else if (old_units == "cm") {
-        mult = 0.3937008; // Converting cm to in
-        if (new_units == "mm") {
-            mult = 10.0
-        }
-    } else { // old_units == mm
-        mult = 0.03937008; // Converting mm to in
-        if (new_units == "cm") {
-            mult = 0.1; // Converting mm to cm
-        }
-    }
 
-    // /**
-    //  * Convert values used inform
-    //  */
-    // $(".units_depth_form input").each(function() {
-    //     var tmp = parseFloat($(this).val().trim());
-    //     if (isNaN(tmp)) {
-    //         return;
-    //     }
-    //     $(this).val(round_2(tmp * mult));
-    // });
+    if (old_units == new_units ) {
+	/* no conversion necessary */
+	return 
+    } else if (old_units == "in" & new_units== "cm" ) { 
+        mult = 2.54; 
+    } else if (old_units == "in" & new_units == "mm") {
+        mult = 25.4; 
+    } else if (old_units == "cm" & new_units == "in") {
+        mult = 0.3937008; 
+    } else if (old_units == "cm" & new_units == "mm") {
+            mult = 10.0
+    } else if (old_units == "mm" & new_units == "in") { 
+        mult = 0.03937008;
+    } else if (old_units == "mm" & new_units == "cm") {
+            mult = 0.1; 
+    } else {
+	throw "Unknown conversion requested: " + old_units +  " to " + new_units 
+    }
 
     $(".units_depth_input").each(function() {
         var tmp = parseFloat($(this).val().trim());
@@ -99,10 +92,6 @@ function convert_depths(old_units, new_units) {
 }
 
 
-
-
-
-
 function change_temp_headers(new_temp) {
     replace_with = degC;
     if (new_temp == "F") {
@@ -110,23 +99,22 @@ function change_temp_headers(new_temp) {
     }
 
    $(".temp_header").each(function() {
-        $(this).text($(this).text().replace(/\(.+\)\s*$/, "(" + replace_with + ")"));
+        $(this).text($(this).text().replace(/\s*\(.+\)\s*$/, " (" + replace_with + ")"));
     });
 }
-
 
 
 function change_header_units(new_units) {
 
     $(".depth_header").each(function() {
-        $(this).text($(this).text().replace(/\(\w+\)\s*$/, "(" + new_units + ")"));
+        $(this).text($(this).text().replace(/\s\(\w+\)\s*$/, " (" + new_units + ")"));
     });
 
 }
 
 
 $(document).ready(function() {
-
+    
     $(".depth_units").change(function() {
 
         /**
@@ -136,13 +124,53 @@ $(document).ready(function() {
         convert_depths($(this).attr("current-value"), $(this).val());
         change_header_units($(this).val());
         $(this).attr("current-value", $(this).val());
+	Cookies.set("depth_units", $(this).val()); // Store in cookie
     });
 
 
     $(".temp_units").change(function() {
-        convert_temps();
+        convert_temps($(this).attr("current-value"), $(this).val());
         change_temp_headers($(this).val());
+	$(this).attr("current-value", $(this).val());
+	Cookies.set("temp_units", $(this).val()); // Store in cookie
     });
+    
+
+    /**
+      Convert units to inches and Farenheit for submit 
+    **/
+    $("form#formset").submit(function(){
+	convert_depths( $(".depth_units").val(), "in");
+	convert_temps(  $(".temp_units").val(),  "F");
+    });
+
+
+    /**
+     * Pull default units from Cookie, if present, defaulting to inches & Farenheit. 
+     * Should modify to start based on specific object. Related to next comment.
+     */
+    
+    if( Cookies.set("depth_units") == "cm") {
+	$(".depth_units").val("cm");
+	change_header_units("cm");
+	convert_depths("in","cm");
+    } else if( Cookies.set("depth_units") == "mm") {
+	$(".depth_units").val("mm");
+	change_header_units("mm");
+	convert_depths("in","mm");
+    } else { 
+	change_header_units("in");
+	$(".depth_units").val("in");
+    }
+
+    if( Cookies.get("temp_units") == "C" ) {
+	$(".temp_units").val("C");
+	change_temp_headers($(this).val());
+	convert_temps("F","C");
+    } else { 
+	$(".temp_units").val("F");
+	change_temp_headers($(this).val());
+    }
 
 
     /**
@@ -155,19 +183,9 @@ $(document).ready(function() {
         $(this).attr("current-value", $(this).val());
     });
 
-    /**
-     * TODO Hardcoded to start with inches. Should modify to start based
-     * on specific object. Related to above comment.
-     */
-    $(".depth_header").each(function() {
-        $(this).text($(this).text() + " (in)");
+    $(".temp_units").each(function(){
+        $(this).attr("current-value", $(this).val());
     });
-
-    $(".temp_header").each(function() {
-        $(this).text($(this).text() + "(" + degF + ")");
-    });
-
-
 
 
     /**

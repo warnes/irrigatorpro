@@ -327,14 +327,21 @@
 {% endblock %}
 
 
+{% block scripts %}
+    <!-- Code to handle special unit conversions -->
+    {% if debug %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js?t={% now 'c' %}"></script>
+    {% else %}
+        <script src="{{ STATIC_URL }}js/units_conversion.js"></script>
+    {% endif %}
+{% endblock %}
+
 {% block scripts-after %}
 
     <!-- Code to handle special features of unified_field_data page -->
     {% if debug %}
-        <script src="{{ STATIC_URL }}js/units_conversion.js?t={% now 'c' %}"></script>
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js?t={% now 'c' %}"></script>
     {% else %}
-        <script src="{{ STATIC_URL }}js/units_conversion.js"></script>
         <script src="{{ STATIC_URL }}js/unified_field_data_list.js"></script>
     {% endif %}
 

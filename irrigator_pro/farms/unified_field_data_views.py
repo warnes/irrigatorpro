@@ -28,7 +28,7 @@ import types
 from farms.models import CropSeason, Field, WaterRegister, WaterHistory, ProbeReading
 #from farms.generate_water_register import generate_water_register
 from farms.unified_field_data import generate_objects
-from farms.utils import to_faren, to_inches
+#from farms.utils import to_faren, to_inches
 
 from datetime import date, datetime
 
@@ -154,16 +154,17 @@ class UnifiedFieldDataListView(ModelFormSetView):
                     else:
                         ### Convert values if necessary
                         obj = form.save(commit=False)
-                        if self.request.POST['temp_units']=='C':
-                            if obj.min_temp_24_hours is not None:
-                                obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                            if obj.max_temp_24_hours is not None:
-                                obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+                        # if self.request.POST['temp_units']=='C':
+                        #     if obj.min_temp_24_hours is not None:
+                        #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                        #     if obj.max_temp_24_hours is not None:
+                        #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
 
-                        if self.request.POST['depth_units']!='in':
-                            obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-                            obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+                        # if self.request.POST['depth_units']!='in':
+                        #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                        #     obj.irrigation = to_inches(obj.irrigation, self.request
+                                                       # .POST['depth_units'])
 
                         ### Update the datetime field. The date itself does not change,
                         ### but the time may have.
@@ -181,15 +182,15 @@ class UnifiedFieldDataListView(ModelFormSetView):
             obj.field=self.field
             obj.save(force_update=False)
             ### Copied from above. Need to factor out
-            if self.request.POST['temp_units']=='C':
-                if obj.min_temp_24_hours is not None:
-                    obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                if obj.max_temp_24_hours is not None:
-                    obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+            # if self.request.POST['temp_units']=='C':
+            #     if obj.min_temp_24_hours is not None:
+            #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+            #     if obj.max_temp_24_hours is not None:
+            #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
 
-            if self.request.POST['depth_units']!='in':
-                obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-                obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+            # if self.request.POST['depth_units']!='in':
+            #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+            #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
             new_time = self.request.POST["form-" + form.prefix[5:] + "-time"]
 
