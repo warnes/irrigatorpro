@@ -134,6 +134,7 @@ def calculateAWC(crop_season,
     #####
     ## NB: This would probably be better done via a linear
     ##     interpolation, rather than discrete steps.
+    AWC = None
     if max_root_depth <= 8 and AWC_8:
         AWC = AWC_8
     elif max_root_depth <= 16 and AWC_16:
