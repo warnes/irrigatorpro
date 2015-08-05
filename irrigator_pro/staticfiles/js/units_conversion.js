@@ -220,8 +220,6 @@ $(document).ready(function() {
          * The matched number indicates the form index
          */
         
-
-        console.log("Clicked for form: " + $(this).attr("id"));
         var pattern1 = new RegExp("id_form-(\\d+)");
         var pattern2 = new RegExp("manual-entry-time-(\\d+)");
 

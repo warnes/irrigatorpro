@@ -12,7 +12,7 @@ function activateDatePicker() {
 	"margin": "2px" }).focus( storeDate )
 
     // Use datetime picker widget // Display calendar icon // Make narrower
-    $("input[id$=datetime]").not('form input:hidden').not('.hidden').datetimepicker({timeFormat: "HH:mm:ss"}).css({
+    $("input[id$=datetime]").not('form input:hidden').not('.hidden').not('.readonly').datetimepicker({timeFormat: "hh:mm:ss"}).css({
 	"width": "12em",
 	"margin": "2px"
     }).focus( storeDate )

@@ -3,8 +3,7 @@ from django.forms import Textarea, TextInput
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.forms.widgets import HiddenInput as HiddenInput
-from django.forms.widgets import NumberInput as NumberInput
+from django.forms.widgets import HiddenInput, NumberInput, Select
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -179,10 +178,12 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'description': Textarea(attrs={'rows':2, 'cols':20}),
         'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
         'crop_season': HiddenInput(),
-        'field':        HiddenInput(),
-        'source':      TextInput(attrs={'style':'width:5em;', 
-                                        'class':'readonly',
-                                        'readonly':True }),
+        'field':       HiddenInput(),
+        # 'source':      TextInput(attrs={'style':'width:5em;' ,
+        #                          'class':'readonly',
+        #                          'readonly':True,
+        #                          }),
+        #'source':      Select(choices="User", attrs={'readonly':True, 'disabled':True}),
         'rain':        NumberInput(attrs={'class':'units_depth_input '}),
         'irrigation':  NumberInput(attrs={'class':'units_depth_input '}),
         'min_temp_24_hours': NumberInput(attrs={'class':'units_temp_input '}),
