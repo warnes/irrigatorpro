@@ -17,7 +17,7 @@
                   <th rowspan="2">Label</th>
                   <th rowspan="2">Farm</th>
                   <th rowspan="2">Fields</th>
-                  <th rowspan="2">Communication Type</th>
+<!--              <th rowspan="2">Communication Type</th>-->
                   <th rowspan="2">Frequency</th>
                   <th colspan="2">Notification Time</th>
                   <th rowspan="2">Recipients</th>
@@ -59,7 +59,7 @@
               <!-- Don't leave spaces in the contents for the following two cells.
                   It will break the javascript 
               -->
-              <td id = "row_notification_type_{{rec.pk}}" >{{rec.notification_type}}</td>
+              <!--<td id = "row_notification_type_{{rec.pk}}" >{{rec.notification_type}}</td>-->
               <td id = "row_notification_level_{{rec.pk}}">{{rec.level}}</td>
               
               <td id = "row_notification_time_{{rec.pk}}">{{rec.delivery_time}}</td>
@@ -85,14 +85,14 @@
   <div id="edit-entry" style="visibility:hidden">    
       <form action="{% url 'notifications' %}" method="post" id="edit-row">        {% csrf_token %}
           <input type="hidden" id = "new_row_pk" name="pk" value="-1"/> 
-          
+          <input type="hidden" id="communication-type" name="communication-type" value="Email"/>
           <table class="notifications-new">
               <thead>
               <tr>
                   <th>Label</th>
                   <th>Farm</th>
                   <th>Fields</th>
-                  <th>Communication Type</th>
+                  <!--                   <th>Communication Type</th>-->
                   <th>Frequency</th>
                   <th>Notification time</th>
                   <th>Time Zone</th>
@@ -124,7 +124,7 @@
               
               
                    </td>
-          
+          <!-- 
                   <td>
                       <select id="communication-type" name="communication-type">
                           {% for type in notifications_types %}
@@ -133,8 +133,8 @@
                   
                       </select>
                   </td>
-                  
-                  
+               -->   
+                   
                   <td> 
                       <select id="alert-level" name="alert-level">
                           {% for level in alert_levels %}
@@ -170,7 +170,7 @@
                   </td>
               </tr>
               <tr>
-                  <td colspan="8" style="align:left">
+                  <td colspan="7" style="align:left">
                       <input type="button" value="Save" onclick="validate_form(this.form)"></input>
                       <button type="button" id="cancelEdit">Cancel</button>
                   </td>
@@ -186,10 +186,10 @@
 
     var labelCell     = 1;
     var farmCell     = 2;
-    var commTypeCell = 4;
-    var alertLevelCell = 5;
-    var notificationTime_col = 6;
-    var timezone_col = 7;
+   //var commTypeCell = 4;
+    var alertLevelCell = 4;
+    var notificationTime_col = 5;
+    var timezone_col = 6;
     
     
     function editRow(notifications_pk) {
@@ -243,7 +243,7 @@
         }    
         
         $("#edit_row_alert_level_" + createValidID(tableRow.cells[alertLevelCell].innerHTML.trim()))[0].selected = true;
-        $("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
+        //$("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
         $("#edit_row_nt_" + createValidID(tableRow.cells[notificationTime_col].innerHTML.trim()))[0].selected = true;
         $("#edit_row_tz_" + createValidID(tableRow.cells[timezone_col].innerHTML.trim()))[0].selected = true;
         
@@ -426,11 +426,11 @@
                 1: { sorter: "text" },
                     2: { sorter:  "text"},
                 3: { sorter:  false},
-                4: { sorter:  "text"},
-                    5: { sorter:  "text"},
-                    6: { sorter:  false},
+                //4: { sorter:  "text"},
+                    4: { sorter:  "text"},
+                    5: { sorter:  false},
+                6: { sorter:  false},
                 7: { sorter:  false},
-                8: { sorter:  false},
             }
       });
 
