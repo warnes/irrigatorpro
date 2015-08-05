@@ -162,7 +162,12 @@ $(function() {
     setNavigation();
 
     // Make as readonly all input elements within object with class readonly.
-    $(".readonly").find(":input").attr("readonly","readonly").
+    //$(".readonly").find(":input").attr("readonly","readonly").
+    // addClass("readonly");
+    $(".readonly").
+	find(":input").
+	not("[id$=comment]").
+	attr("readonly","readonly").
 	addClass("readonly");
 
     // Set the value of show_all_seasons from a cookie (if present)
