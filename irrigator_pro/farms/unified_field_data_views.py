@@ -144,7 +144,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
                     ### If this is a UGA WH just save the ignore, comment directly to DB, don't
                     ### save form since it will mess the other values.
-
+                    ### Still needed???
                     if form.cleaned_data['id'].source == "UGA":
                         obj = WaterHistory.objects.get(pk = form.cleaned_data['id'].pk)
                         obj.ignore = form.cleaned_data['ignore']
@@ -155,12 +155,15 @@ class UnifiedFieldDataListView(ModelFormSetView):
                         ### Convert values if necessary
                         obj = form.save(commit=False)
                         if self.request.POST['temp_units']=='C':
-                            obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                            obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+                            if obj.min_temp_24_hours is not None:
+                                obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                            if obj.max_temp_24_hours is not None:
+                                obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
                         
-                        if self.request.POST['depth_units']=='cm':
-                            obj.rain = to_inches(obj.rain)
-                            obj.irrigation = to_inches(obj.irrigation)
+
+                        if self.request.POST['depth_units']!='in':
+                            obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                            obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
                         ### Update the datetime field. The date itself does not change,
                         ### but the time may have.
@@ -179,12 +182,14 @@ class UnifiedFieldDataListView(ModelFormSetView):
             obj.save(force_update=False)
             ### Copied from above. Need to factor out
             if self.request.POST['temp_units']=='C':
-                obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+                if obj.min_temp_24_hours is not None:
+                    obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                if obj.max_temp_24_hours is not None:
+                    obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
 
-            if self.request.POST['depth_units']=='cm':
-                obj.rain = to_inches(obj.rain)
-                obj.irrigation = to_inches(obj.irrigation)
+            if self.request.POST['depth_units']!='in':
+                obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
 
             new_time = self.request.POST["form-" + form.prefix[5:] + "-time"]
 
@@ -192,10 +197,6 @@ class UnifiedFieldDataListView(ModelFormSetView):
             obj.datetime = obj.datetime.replace(hour=int(hr_min.group(1)), minute=int(hr_min.group(2)))
             obj.save()
                 
-
-            obj.save()
-
-
 
         return HttpResponseRedirect(reverse("unified_water_season_field",
                                             kwargs={'season': self.crop_season.pk,

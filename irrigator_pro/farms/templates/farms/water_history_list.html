@@ -15,9 +15,10 @@
   
 
 
-      {% include "unit_conversions.html" %}
+
     <form id="formset" action="{{ request.path }}" method="post">{% csrf_token %}
-  
+
+    {% include "unit_conversions.html" %}  
   
       {% if formset.non_form_errors %}
         {% for dict in formset.non_form_errors %}
@@ -29,7 +30,7 @@
         {% endfor %}
       {% endif %}
 
-      <table class="formset" >
+      <table class="formset irr_data" >
   
         <thead>
   	<tr>
@@ -51,6 +52,13 @@
   
         <tbody>
   	{% for form in formset %}
+            {% for input in form %}
+  	        {% if input.is_hidden %}
+  		    {{ input }}
+                {% endif %}
+            {% endfor %}
+
+
 	  {% if form.source.value == "UGA" %}
 	    <tr class="readonly">
 	  {% else %}
@@ -145,7 +153,7 @@
   
   $(function() {
       /* Enable add row / delete row */
-      $('#formset tbody tr').formset({
+      $('.irr_data tbody tr').formset({
           addText: '<i class="iTooltip add-icon fa fa-plus-square" help="Add Row"> Add Row</i>',
           deleteText: '<i class="iTooltip delete-icon fa fa-minus-square" help="Delete Row"></i>',
           added: renewDatePickers,

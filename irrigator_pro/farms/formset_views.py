@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from irrigator_pro.settings import DEBUG
 
 from farms.models import CropSeason, Field, Probe, WaterHistory
+from farms.utils import to_faren, to_inches
 
 class Farms_FormsetView(ModelFormSetView):
     can_delete=True
@@ -178,7 +179,7 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'description': Textarea(attrs={'rows':2, 'cols':20}),
         'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
         'crop_season': HiddenInput(),
-        'field':       HiddenInput(),
+        'field':        HiddenInput(),
         'source':      TextInput(attrs={'style':'width:5em;', 
                                         'class':'readonly',
                                         'readonly':True }),
@@ -205,6 +206,59 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         print len(changed_form_ids), " forms have changed"
         print len(formset.deleted_objects), " forms deleted"
 
+
+        for obj in formset.deleted_objects:
+            if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
+            print "Deleted object with pk: ", obj.pk
+            obj.delete()
+
+
+        for form in formset.forms:
+            if form.cleaned_data.get('DELETE'):
+                if DEBUG: print 'Should have been deleted'
+                continue
+            obj = form.save(commit=False)
+            if "id_"+form.prefix+"-id"  in changed_form_ids:
+                #print "pk for object: ", form.cleaned_data['id'].pk
+                print "comment for object: ", form.cleaned_data['comment']
+                print "source for object: ", form.cleaned_data['source']
+
+
+                if self.request.POST['temp_units']=='C':
+                    if obj.min_temp_24_hours is not None:
+                        obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                    if obj.max_temp_24_hours is not None:
+                        obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+
+
+                if self.request.POST['depth_units']!='in':
+                    obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                    obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+
+                obj.save()
+
+
+        ### Process new objects
+
+        ## Need this in order to create new_objects list
+        for obj in formset.new_objects:
+            
+            obj.field=Field.objects.get(pk=int(self.field))
+            obj.crop_season=CropSeason.objects.get(pk=int(self.season))
+            obj.save(force_update=False)
+            ### Copied from above. Need to factor out
+            if self.request.POST['temp_units']=='C':
+                if obj.min_temp_24_hours is not None:
+                    obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
+                if obj.max_temp_24_hours is not None:
+                    obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
+
+            if self.request.POST['depth_units']!='in':
+                obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
+                obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
+
+
+            obj.save()
 
         return HttpResponseRedirect(reverse("water_history_season_field",
                                             kwargs={'season': self.season,
