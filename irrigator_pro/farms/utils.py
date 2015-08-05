@@ -1,6 +1,7 @@
 from farms.models import *
 from datetime import datetime, date
 
+from decimal import Decimal
 from common.utils import daterange
 
 # def get_probe_readings_dict(field, crop_season, start_date = None, end_date = None):
@@ -44,9 +45,9 @@ from common.utils import daterange
 
 
 def to_faren(temp_c):
-    return 9.0 * temp_c /5.0 + 32.0
+    return Decimal(9.0) * temp_c /Decimal(5.0) + Decimal(32.0)
 
 def to_inches(length_in_cm):
-    return length_in_cm * 0.3937008
+    return length_in_cm * Decimal(0.3937008)
 
 
