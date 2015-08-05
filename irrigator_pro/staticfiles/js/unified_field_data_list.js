@@ -28,7 +28,7 @@ function addRow(afterRowID, date, time, crop_season_pk) {
         '<input id="id_form-{0}-source" name="form-{0}-source" type="hidden" value="User" />' +
         '</td>' +
         '<td><input id="id_form-{0}-time" name="form-{0}-time" value="' + time + '"/></td>' +
-        '<td>Manual Entry</td>' +
+        '<td>User</td>' +
         '<td><input id="id_form-{0}-soil_potential_8" name="form-{0}-soil_potential_8" step="0.01" type="number" /></td>'+
         '<td><input id="id_form-{0}-soil_potential_16" name="form-{0}-soil_potential_16" step="0.01" type="number" /></td>' +
         '<td><input id="id_form-{0}-soil_potential_24" name="form-{0}-soil_potential_24" step="0.01" type="number" /></td>' +
@@ -61,6 +61,9 @@ function addRow(afterRowID, date, time, crop_season_pk) {
 	format:'H:i'
     })
     $(selectString).css('width', '5em');
+
+    $("table.unified-table").floatThead('reflow');
+
 
 
 }
