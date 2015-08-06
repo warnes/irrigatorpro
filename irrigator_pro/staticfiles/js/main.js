@@ -118,12 +118,12 @@ function filter_item() {
     if( $("select#show_all_seasons").val()=="all" ) {
 	$(this).show();
     } else {
-	start_date = $(this).attr("start_date");
-	end_date   = $(this).attr("end_date");
+	start_date = moment( $(this).attr("start_date") ).subtract(1, 'months');
+	end_date   = moment( $(this).attr("end_date")   ).add     (1, 'months');
 	now = moment();
 	//console.log(start_date + " through " + end_date);
-	if( now > moment(start_date) & 
-	    now < moment(end_date)     ){
+	if( now > start_date & 
+	    now < end_date     ){
 	    $(this).show();
 	    //console.log("showing" + start_date + " through " + end_date);
 	} else {
