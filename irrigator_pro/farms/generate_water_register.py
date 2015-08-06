@@ -129,6 +129,15 @@ def calculateAWC(crop_season,
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
     if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)
 
+    def noneAvg( *vals ):
+        vals = filter(lambda x:x is not None, vals)
+        n = len(vals)
+        if n==0: 
+            return None
+        else:
+            return sum(vals) / n
+        
+
     #####
     ## Calculate average AWC at the depths accessible to the crop
     ## roots.
@@ -137,11 +146,11 @@ def calculateAWC(crop_season,
     ##     interpolation, rather than discrete steps.
     AWC = None
     if max_root_depth <= 8 and AWC_8:
-        AWC = AWC_8
+        AWC = noneAve(AWC_8)
     elif max_root_depth <= 16 and AWC_16:
-        AWC = (AWC_8 + AWC_16) / 2
+        AWC = noneAvg(AWC_8, AWC_16)
     elif AWC_24: # max_root_depth > 16
-        AWC = (AWC_8 + AWC_16 + AWC_24) / 3
+        AWC = noneAvg(AWC_8, AWC_16, AWC_24)
 
     return AWC
 
