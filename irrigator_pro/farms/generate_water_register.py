@@ -141,7 +141,7 @@ def calculateAWC(crop_season,
     elif max_root_depth <= 16 and AWC_16:
         AWC = avgNone(AWC_8, AWC_16)
     elif AWC_24: # max_root_depth > 16
-        AWC = noneAvg(AWC_8, AWC_16, AWC_24)
+        AWC = avgNone(AWC_8, AWC_16, AWC_24)
 
     return AWC
 
