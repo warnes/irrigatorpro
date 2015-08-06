@@ -146,19 +146,21 @@ def pull_probes_by_cropseason_field(crop_season, field, user=None, verbose=False
     
     accum = []
     for upd in query_join:
-        (wh, created) = WaterHistory.objects.get_or_create(
+        whQuery = WaterHistory.objects.filter(
             crop_season=crop_season,
             field=field,
             datetime__gte=to_tz(datetime.combine(upd.date, time.min)),
             datetime__lte=to_tz(datetime.combine(upd.date, time.max)),
-            source="UGA",
-            defaults = { 'cuser': user,
-                         'cdate': timezone.now(),
-                         'muser': user,
-                         'mdate': timezone.now(),
-                         'datetime':to_tz(upd.datetime),
-                         }
-            )
+            source="UGA").order_by('datetime')
+        
+        if whQuery.count() >= 1:
+            wh = whQuery.last()
+            whQuery.exclude(id=wh.id).delete()  # remove extra instances
+        else:
+            wh = WaterHistory(crop_season=crop_season,
+                              field=field,
+                              source="UGA",
+                              )
     
         wh.source = 'UGA'
         wh.crop_season       = crop_season
