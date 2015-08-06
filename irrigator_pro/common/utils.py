@@ -72,17 +72,14 @@ def d2dt_range(date):
              )
 
 
-
 def minNone(*args):
-
     """
-    In python None is considered smaller than any number, and a min on a list
-    containing None will return None, which is not what we want.
+    In python any numeric comparison with None yeilds none, so and a
+    min on a list containing None will return None, which is not what
+    we want.
     """
-
     if not args or len(args) == 0:
         return None
-
 
     args = filter( lambda x: x is not None, args)
     if len(args)==0:
@@ -91,8 +88,16 @@ def minNone(*args):
     return min(args)
 
 
-
-    return min(not_none)
+def avgNone( *vals ):
+    """
+    Compute an average excluding None values.
+    """
+    vals = filter(lambda x:x is not None, vals)
+    n = len(vals)
+    if n==0: 
+        return None
+    else:
+        return sum(vals) / n
 
 
 def quantize( f ):

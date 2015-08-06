@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 
-from common.utils import daterange, minNone, safelog, quantize
+from common.utils import daterange, minNone, avgNone, safelog, quantize
 
 # workarounds for the absence of query datetime__date operator
 from common.utils import d2dt_min, d2dt_max, d2dt_range
@@ -127,16 +127,7 @@ def calculateAWC(crop_season,
     
     if AWC_8  > field.soil_type.max_available_water: AWC_8  = float(field.soil_type.max_available_water)
     if AWC_16 > field.soil_type.max_available_water: AWC_16 = float(field.soil_type.max_available_water)
-    if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)
-
-    def noneAvg( *vals ):
-        vals = filter(lambda x:x is not None, vals)
-        n = len(vals)
-        if n==0: 
-            return None
-        else:
-            return sum(vals) / n
-        
+    if AWC_24 > field.soil_type.max_available_water: AWC_24 = float(field.soil_type.max_available_water)       
 
     #####
     ## Calculate average AWC at the depths accessible to the crop
@@ -146,9 +137,9 @@ def calculateAWC(crop_season,
     ##     interpolation, rather than discrete steps.
     AWC = None
     if max_root_depth <= 8 and AWC_8:
-        AWC = noneAve(AWC_8)
+        AWC = avgNone(AWC_8)
     elif max_root_depth <= 16 and AWC_16:
-        AWC = noneAvg(AWC_8, AWC_16)
+        AWC = avgNone(AWC_8, AWC_16)
     elif AWC_24: # max_root_depth > 16
         AWC = noneAvg(AWC_8, AWC_16, AWC_24)
 
