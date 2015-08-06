@@ -199,30 +199,30 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         but django thinks they have because there has been a change in the units.
         """
 
-        if DEBUG: print 'Into formset_valid'
+        # if DEBUG: print 'Into formset_valid'
     
         changed_form_ids = self.request.POST.getlist('changed_forms[]')
         formset.save(commit=False)
         
-        print len(changed_form_ids), " forms have changed"
-        print len(formset.deleted_objects), " forms deleted"
+        # print len(changed_form_ids), " forms have changed"
+        # print len(formset.deleted_objects), " forms deleted"
 
 
         for obj in formset.deleted_objects:
-            if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
-            print "Deleted object with pk: ", obj.pk
+            # if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
+            # if DEBUG: print "Deleted object with pk: ", obj.pk
             obj.delete()
 
 
         for form in formset.forms:
             if form.cleaned_data.get('DELETE'):
-                if DEBUG: print 'Should have been deleted'
+                # if DEBUG: print 'Should have been deleted'
                 continue
             obj = form.save(commit=False)
             if "id_"+form.prefix+"-id"  in changed_form_ids:
-                #print "pk for object: ", form.cleaned_data['id'].pk
-                print "comment for object: ", form.cleaned_data['comment']
-                print "source for object: ", form.cleaned_data['source']
+                # print "pk for object: ", form.cleaned_data['id'].pk
+                # print "comment for object: ", form.cleaned_data['comment']
+                # print "source for object: ", form.cleaned_data['source']
 
 
                 # if self.request.POST['temp_units']=='C':

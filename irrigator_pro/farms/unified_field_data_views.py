@@ -118,7 +118,7 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     def formset_valid(self, formset):
 
-        if DEBUG: print 'Into formset_valid'
+        # if DEBUG: print 'Into formset_valid'
 
         changed_form_ids = self.request.POST.getlist('changed_forms[]')
         formset.save(commit=False)
@@ -128,19 +128,19 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
         for obj in formset.deleted_objects:
-            if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
+            # if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
             obj.delete()
 
         for form in formset.forms:
             if form.cleaned_data['DELETE']:
-                if DEBUG: print 'Should have been deleted'
-
+                # if DEBUG: print 'Should have been deleted'
+                pass
             else:
                 if "id_"+form.prefix+"-id"  in changed_form_ids:
 
-                    print "pk for object: ", form.cleaned_data['id'].pk
-                    print "comment for object: ", form.cleaned_data['comment']
-                    print "source for object: ", form.cleaned_data['source']
+                    # if DEBUG: print "pk for object: ", form.cleaned_data['id'].pk
+                    # if DEBUG: print "comment for object: ", form.cleaned_data['comment']
+                    # if DEBUG: print "source for object: ", form.cleaned_data['source']
 
                     ### If this is a UGA WH just save the ignore, comment directly to DB, don't
                     ### save form since it will mess the other values.
@@ -206,8 +206,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
 
     def formset_invalid(self, _formset):
-        if DEBUG: print 'Into formset_invalid'
-        if DEBUG: print _formset.errors
+        # if DEBUG: print 'Into formset_invalid'
+        # if DEBUG: print _formset.errors
 
         self.wh_formset = _formset
         self.object_list = generate_objects(_formset,

@@ -56,7 +56,7 @@ class WaterRegisterListView(ListView):
         self.update_water_register(self.crop_season, self.field, self.report_date)
 
         if not queryset.count():
-            print "No Water_Register records"
+            # if DEBUG: print "No Water_Register records"
             self.nb_records = 0
             return queryset
 
@@ -74,7 +74,7 @@ class WaterRegisterListView(ListView):
         # Add report_date to request so it can be used for the plots
         self.request.session['report_date'] = self.report_date.isoformat()
         self.nb_records = len(queryset.distinct())
-        print 'nb_records: ', self.nb_records
+        # if DEBUG: print 'nb_records: ', self.nb_records
         return queryset.distinct()
 
 
