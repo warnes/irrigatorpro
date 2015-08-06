@@ -107,12 +107,14 @@ function set_event_range() {
 
 
 function show_non_key_events() {
-    $('.non-key-event').toggleClass('hidden',false)
+    $('.non-key-event').toggleClass('hidden',false);
+    $('.non-key-event').find('input[id$=date]').not('[type=hidden]').datepicker().css({'width':'7em', 'margin':'2px'});
 }
 
  
 function hide_non_key_events() {
-    $('.non-key-event').toggleClass('hidden',true)
+    $('.non-key-event').toggleClass('hidden',true);
+    $('.non-key-event').find('.hasDatepicker').datepicker('destroy');
 }
 
 
