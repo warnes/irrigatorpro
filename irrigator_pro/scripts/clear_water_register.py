@@ -73,7 +73,7 @@ if not args.no_recompute:
     print 
     print "Regenerating WaterRegister records..." 
     print
-    for crop_season in CropSeason.objects.all():
+    for crop_season in CropSeason.objects.all().order_by('-season_start_date').prefetch_related('field_list'):
         for field in crop_season.field_list.all():
             print "Regenerating WaterRegister for '%s' field '%s'." % (crop_season, field)
             generate_water_register(crop_season,
