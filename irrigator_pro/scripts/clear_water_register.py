@@ -78,7 +78,8 @@ if not args.no_recompute:
             print "Regenerating WaterRegister for '%s' field '%s'." % (crop_season, field)
             generate_water_register(crop_season,
                                     field,
-                                    User.objects.get(email='aalebl@gmail.com'))
+                                    User.objects.get(email='aalebl@gmail.com'),
+                                    force=True)
 
 
 

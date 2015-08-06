@@ -298,7 +298,8 @@ def generate_water_register(crop_season,
                             field, 
                             user, 
                             start_date=None, 
-                            report_date=None):
+                            report_date=None,
+                            force=False):
 
     ####
     ## Determine planting date, and stop calculation if no planting has been done
@@ -342,11 +343,15 @@ def generate_water_register(crop_season,
                                                               field=field).distinct().select_related('crop_event')[:]
     ####
 
-    ## Find out what is the earliest water register to update, based on modification dates.
+    
 
-    first_process_date = max(crop_season.season_start_date,
-                             earliest_register_to_update(report_date, crop_season, field))
-
+    if force:
+        ## force recomputation from first date
+        first_process_date = start_date
+    else:
+        ## Use modification times to find the earliest water register to update
+        first_process_date = max(crop_season.season_start_date,
+                                 earliest_register_to_update(report_date, crop_season, field))
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
                                             field=field, 
@@ -448,9 +453,11 @@ def generate_water_register(crop_season,
         ## * last by CropEvent.order 
         cse = crop_season_events_query.filter(date__lte=date).order_by('crop_event__order').last()
         ## if DEBUG: print cse
-	if cse is None: 
-            raise RuntimeError("No CropSeasonEvent defined for %s %s on %s" % ( crop_season, field, date ) )
-            return 0
+	if cse is None:
+            print "No CropSeasonEvent defined for %s %s on %s.  Deleting WaterRegister record and skipping computation." % ( crop_season, field, date )
+            del(wr)
+            continue
+
         ce = cse.crop_event
 
         wr.crop_stage      = ce.name
