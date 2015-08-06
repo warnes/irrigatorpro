@@ -19,6 +19,10 @@ def send_invitation_email(invited_user, invited_by, farm):
     :type invited_by django.contrib.auth.User
 
     """
+    
+    if (invited_user is None) or (inivted_by is None) or (farm is None): 
+        return   # Don't send
+
 
     msg = MIMEText(create_message(invited_by, farm))
     msg['Subject'] = "Invitation to join Irrigator Pro"
