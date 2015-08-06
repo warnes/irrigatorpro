@@ -132,7 +132,7 @@ class ProbeFormsetView(Farms_FormsetView):
         crop_season = CropSeason.objects.get(pk=self.season)
         ### on the same page is made by Django.
         for form in formset.forms:
-            if len(form.cleaned_data)>0:
+            if len(form.cleaned_data)>0 and 'radio_id' in form.cleaned_data:
                 rid = form.cleaned_data['radio_id']
                 query = Probe.objects.filter(radio_id=rid).exclude(crop_season = crop_season).filter(Q(crop_season__season_end_date__gt = crop_season.season_start_date) &
                                                                                                      Q(crop_season__season_start_date__lt = crop_season.season_end_date))
