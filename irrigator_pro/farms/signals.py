@@ -109,13 +109,33 @@ def handler_CropSeasonEvent(sender, instance, **kwargs):
     if instance.id: # save changes to existing object
         new_instance = instance
         old_instance = CropSeasonEvent.objects.get(pk=instance.id)
-        old_instance.field.earliest_changed_dependency_date = minNone(old_instance.field.earliest_changed_dependency_date,
-                                                                      old_instance.date)
-        old_instance.field.save()
+        old_field = old_instance.field
+        # if DEBUG: 
+        #     print "Crop Season %s, Field %s, Old_Event_Date: %s " % (old_instance.crop_season,
+        #                                                              old_instance.crop_event,
+        #                                                              old_instance.date)
+        #     print "Crop Season %s, Field %s, New_Event_Date: %s " % (new_instance.crop_season,
+        #                                                              new_instance.crop_event,
+        #                                                              new_instance.date)
+        #     print "Old dependency_date: %s" % old_field.earliest_changed_dependency_date
 
-    instance.field.earliest_changed_dependency_date = minNone(instance.field.earliest_changed_dependency_date,
-                                                              instance.date)
-    instance.field.save()
+        dep_mdate = minNone(old_field.earliest_changed_dependency_date, old_instance.date)
+        old_instance.field.earliest_changed_dependency_date = dep_mdate
+        
+        old_field.save()
+        # if DEBUG:
+        #     print "New dependency_date: %s" % old_field.earliest_changed_dependency_date
+
+    field = instance.field
+    # if DEBUG: 
+    #     print "Crop Season %s, Field %s, Event_Date: %s " % (instance.crop_season,
+    #                                                          instance.crop_event,
+    #                                                          instance.date)
+    #     print "Old dependency_date: %s" % field.earliest_changed_dependency_date
+
+    field.earliest_changed_dependency_date = minNone(field.earliest_changed_dependency_date,
+                                                     instance.date)
+    field.save()
 
 
 @receiver(pre_save, sender=CropSeason)
