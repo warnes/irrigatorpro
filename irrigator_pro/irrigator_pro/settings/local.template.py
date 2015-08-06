@@ -2,28 +2,70 @@
 from default import *
 
 """
-This is the local settings template file. So, do not modify this file.
-Instead, make a copy as "local.py" and set the development variables in it.
+This is the local settings file. 
 """
 
 # local settings
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+SITE_NAME = "IrrigatorPro (Devel)"
 
-# DATABASES = {
-#     'default': {
-#         # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#         # The rest is not used with sqlite3:
-#         'USER': 'dev_user',
-#         'PASSWORD': 'dev_p@ssword',
-#         'HOST': 'localhost',
-#         'PORT': '',
-#     }
-# }
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'XXXXXX',
+        'USER': 'XXXXXX',
+        'PASSWORD': 'XXXXXXX',
+        'HOST': 'localhost',
+        'PORT': '',
+        },
+    'ugatifton': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ugatifton',
+        'USER': 'XXXXXX',
+        'PASSWORD': 'XXXXX',
+        'HOST': 'XXXXX',
+        'PORT': '',
+        },
+}
+
+##
+# For testing, don't use UGA database
+##
+TEST_RUNNING = 'test' in sys.argv
+if TEST_RUNNING:
+    DATABASE_ROUTERS = []
+    DATABASES.pop('ugatifton')
+
+###
+# Google Analytics
+###
+GA_KEY = "XXXXX"
+
+
+###
+# Security Settings
+###
+
+# Make this unique, and don't share it with anybody.
+# http://www.miniwebtool.com/django-secret-key-generator/
+SECRET_KEY="XXXXX"
+
+ALLOWED_HOSTS = [ 'XXXXX' ]
+
+### 
+# URL for Notification link back to server
+###
+NOTIFICATION_HOST = "http://XXXXX/farm/report/summary_report/"
+
+
+
+### 
+# Debugging settings
+###
 
 if DEBUG:
     # set INTERNAL_IPS to entire local network
@@ -36,9 +78,7 @@ if DEBUG:
                     return True
             return False
 
-    INTERNAL_IPS = WildcardNetwork(['127.0.0.1', '192.168.*.*'])
-
-    SITE_NAME = "IrrigatorPro for Corn (DEVELOPMENT)"
+    INTERNAL_IPS = WildcardNetwork(['*'])
 
     INSTALLED_APPS += (
         'debug_toolbar',
@@ -73,7 +113,7 @@ if DEBUG:
         'INSERT_BEFORE': '</body>',
     }
 
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
     ###
     # django-session-security Session Timeout Settings
@@ -98,3 +138,4 @@ if DEBUG:
     # EXPIRE_AT_BROWSER_CLOSE
     #    Required for this module to operate properl
     SESSION_EXPIRE_AT_BROWSER_CLOSE=False
+
