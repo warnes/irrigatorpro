@@ -274,4 +274,4 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     def formset_invalid(self, formset):
         if DEBUG: print "Into formset_invalid"
         if DEBUG: print formset.errors
-        super(WaterHistoryFormsetView, self).formset_invalid(formset)
+        return super(WaterHistoryFormsetView, self).formset_invalid(formset)
