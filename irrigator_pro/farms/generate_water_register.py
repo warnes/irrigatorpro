@@ -1,3 +1,4 @@
+
 import math
 import sys
 from decimal import Decimal
@@ -370,7 +371,7 @@ def generate_water_register(crop_season,
     temps_since_last_water_date = []
     wr_prev = None
 
-    if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
+    #if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
         ####
