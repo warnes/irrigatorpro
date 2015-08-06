@@ -251,17 +251,17 @@ def earliest_register_to_update(report_date,
     # Start by getting the dependency modification date stored in the field object
     dependency_mdate = field.earliest_changed_dependency_date
 
-    if DEBUG: print "Crop Season %s, Field %s, Earliest changed date %s" % (crop_season, field, dependency_mdate)
+    ## if DEBUG: print "Crop Season %s, Field %s, Earliest changed date %s" % (crop_season, field, dependency_mdate)
 
     # Get the modification time of the latest water register
     latest_water_register = WaterRegister.objects.filter(crop_season=crop_season,
                                                          field=field
                                                      ).order_by('-datetime').first()
     if latest_water_register is None:
-        if DEBUG: print 'No water register yet'
+        ##if DEBUG: print 'No water register yet'
         return crop_season.season_start_date
-    
-        if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
+
+    #if DEBUG: print 'Date of latest wr: ', latest_water_register.datetime.date()
 
 
 
@@ -274,20 +274,20 @@ def earliest_register_to_update(report_date,
 
     earliest_to_update = latest_water_register.datetime.date() + timedelta(days=1)
     if earliest_wh_update is None:
-        if DEBUG: print 'No WH will cause update to water register'
+        # if DEBUG: print 'No WH will cause update to water register'
         pass
     else:
         earliest_to_update = earliest_wh_update.datetime.date()
 
-    if DEBUG: print "Caclulated dependency dates:"
-    if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
-    if DEBUG: print "earliest changed water history:", earliest_to_update
-    if DEBUG: print "latest_water_register.date + 1:", latest_water_register.datetime.date() + timedelta(1)
+    # if DEBUG: print "Caclulated dependency dates:"
+    # if DEBUG: print "field.earliest_changed_dependency_date:", dependency_mdate
+    # if DEBUG: print "earliest changed water history:", earliest_to_update
+    # if DEBUG: print "latest_water_register.date + 1:", latest_water_register.datetime.date() + timedelta(1)
 
     retval = minNone(dependency_mdate, earliest_to_update, 
                    latest_water_register.datetime.date() + timedelta(1))
 
-    if DEBUG: print "Returning earliest_date: %s" % retval
+    # if DEBUG: print "Returning earliest_date: %s" % retval
     return retval
 
 
@@ -337,14 +337,15 @@ def generate_water_register(crop_season,
 
     water_history_query       = WaterHistory.objects.filter(crop_season=crop_season,
                                                             field=field,
-                                                            ignore = False).all()
+                                                            ignore = False)[:]
     crop_season_events_query = CropSeasonEvent.objects.filter(crop_season=crop_season, 
-                                                              crop_season__field_list=field).distinct().all()
+                                                              field=field).distinct().select_related('crop_event')[:]
     ####
 
     ## Find out what is the earliest water register to update, based on modification dates.
 
-    first_process_date = earliest_register_to_update(report_date, crop_season, field)
+    first_process_date = max(crop_season.season_start_date,
+                             earliest_register_to_update(report_date, crop_season, field))
 
 
     wr_query = WaterRegister.objects.filter(crop_season=crop_season,
@@ -374,7 +375,7 @@ def generate_water_register(crop_season,
     temps_since_last_water_date = []
     wr_prev = None
 
-    if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
+    # if DEBUG: print "Date range: %s to %s" % (first_process_date, end_date)
     ## Some optimization to do here: After the first pass we know the prev record is there.
     for  date in daterange(first_process_date, end_date):
         ####
@@ -445,8 +446,10 @@ def generate_water_register(crop_season,
         ## * CropSeasonEvent dates.  To manage this, first select
         ## * CropSeasonEvents that occur _on_or_before_ today, then select the 
         ## * last by CropEvent.order 
-        cse = crop_season_events_query.filter(date__lte=date).distinct().order_by('crop_event__order').last()
+        cse = crop_season_events_query.filter(date__lte=date).order_by('crop_event__order').last()
+        ## if DEBUG: print cse
 	if cse is None: 
+            raise RuntimeError("No CropSeasonEvent defined for %s %s on %s" % ( crop_season, field, date ) )
             return 0
         ce = cse.crop_event
 
@@ -456,6 +459,10 @@ def generate_water_register(crop_season,
         wr.irrigate_to_max = ce.irrigate_to_max
         wr.do_not_irrigate = ce.do_not_irrigate
         wr.message         = ce.irrigation_message
+        # if DEBUG: 
+        #     print "Date: %s  ce.Crop Stage: %s" % ( date, ce.name )
+        #     print "Date: %s  wr.Crop Stage: %s" % ( date, wr.crop_stage )
+
         ##
         ####
 
