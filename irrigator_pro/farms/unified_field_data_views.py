@@ -26,9 +26,7 @@ import os
 import types
 
 from farms.models import CropSeason, Field, WaterRegister, WaterHistory, ProbeReading
-#from farms.generate_water_register import generate_water_register
 from farms.unified_field_data import generate_objects
-#from farms.utils import to_faren, to_inches
 
 from datetime import date, datetime
 
@@ -70,6 +68,8 @@ class UnifiedFieldDataListView(ModelFormSetView):
 
     def get(self, request, *args, **kwargs):
         self.wh_formset = self.construct_formset() #super(UnifiedFieldDataListView, self).construct_formset()
+
+
         self.object_list = generate_objects(self.wh_formset,
                                             self.crop_season, 
                                             self.field, 

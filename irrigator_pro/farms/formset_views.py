@@ -79,6 +79,7 @@ class Farms_FormsetView(ModelFormSetView):
                                                                    )
 
             if "crop_season" in form.fields:
+                form.fields["crop_season"].initial = self.season
                 form.fields["crop_season"].queryset = self.crop_season_filter(self.request.user,
                                                                               season=self.season)
         return formset
@@ -161,7 +162,8 @@ class WaterHistoryFormsetView(Farms_FormsetView):
     fields = [ #'crop_season',
                'datetime',
                'source',
-               #'field',
+               'field',
+               'crop_season',
                'rain',
                'irrigation',
                'soil_potential_8',
@@ -177,8 +179,8 @@ class WaterHistoryFormsetView(Farms_FormsetView):
         'comment':     Textarea(attrs={'rows':2, 'cols':20}),
         'description': Textarea(attrs={'rows':2, 'cols':20}),
         'datetime':    TextInput(attrs={'width':5, 'class':'hasTimePicker'}),
-        #'crop_season': HiddenInput(),
-        #'field':       HiddenInput(),
+        'crop_season': HiddenInput(),
+        'field':       HiddenInput(),
         # 'source':      TextInput(attrs={'style':'width:5em;' ,
         #                          'class':'readonly',
         #                          'readonly':True,
@@ -191,72 +193,3 @@ class WaterHistoryFormsetView(Farms_FormsetView):
 
     }
     extra = 2
-
-
-    def formset_valid(self, formset):
-        """
-        We redefine formset_valid() so we don't save form that didn't really change value
-        but django thinks they have because there has been a change in the units.
-        """
-
-        # if DEBUG: print 'Into formset_valid'
-    
-        changed_form_ids = self.request.POST.getlist('changed_forms[]')
-        formset.save(commit=False)
-        
-        # print len(changed_form_ids), " forms have changed"
-        # print len(formset.deleted_objects), " forms deleted"
-
-
-        for obj in formset.deleted_objects:
-            # if DEBUG: print "Will delete: ", obj, " of class ", obj.__class__
-            # if DEBUG: print "Deleted object with pk: ", obj.pk
-            obj.delete()
-
-
-        for form in formset.forms:
-            if form.cleaned_data.get('DELETE'):
-                # if DEBUG: print 'Should have been deleted'
-                continue
-            obj = form.save(commit=False)
-            if "id_"+form.prefix+"-id"  in changed_form_ids:
-                # print "pk for object: ", form.cleaned_data['id'].pk
-                # print "comment for object: ", form.cleaned_data['comment']
-                # print "source for object: ", form.cleaned_data['source']
-
-                obj.crop_season = CropSeason.objects.get(pk=int(self.season))
-                obj.field = Field.objects.get(pk=int(self.field))
-                obj.save()
-
-
-        ### Process new objects
-
-        ### Doesn't look like it's necessary, since new rows are saved above.
-
-        # ## Need this in order to create new_objects list
-        # for obj in formset.new_objects:
-        #     print "new object: ", obj
-        #     obj.field=Field.objects.get(pk=int(self.field))
-        #     obj.crop_season=CropSeason.objects.get(pk=int(self.season))
-        #     obj.save(force_update=False)
-        #     ### Copied from above. Need to factor out
-        #     # if self.request.POST['temp_units']=='C':
-        #     #     if obj.min_temp_24_hours is not None:
-        #     #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-        #     #     if obj.max_temp_24_hours is not None:
-        #     #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
-
-        #     # if self.request.POST['depth_units']!='in':
-        #     #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-        #     #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
-
-
-        #     obj.save()
-
-        return HttpResponseRedirect(reverse("water_history_season_field",
-                                            kwargs={'season': self.season,
-                                                    'field': self.field}))
-
-
-    # def formset_invalid(self, formset):
-    #     return super(WaterHistoryFormsetView, self).formset_invalid(formset)

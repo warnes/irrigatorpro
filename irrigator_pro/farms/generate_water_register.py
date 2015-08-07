@@ -287,7 +287,7 @@ def earliest_register_to_update(report_date,
     retval = minNone(dependency_mdate, earliest_to_update, 
                    latest_water_register.datetime.date() + timedelta(1))
 
-    # if DEBUG: print "Returning earliest_date: %s" % retval
+    if DEBUG: print "Returning earliest_date: %s" % retval
     return retval
 
 
@@ -565,6 +565,8 @@ def generate_water_register(crop_season,
     irrigate_to_max_days      = 0
     nChanged                  = 0
     for date in daterange(first_process_date, end_date):
+
+        if not wr_query.filter(datetime__range=d2dt_range(date)): continue
         wr = wr_query.filter(datetime__range=d2dt_range(date))[0]
 
         ## Will handle both the case where the first irrigate_to_flag set to 

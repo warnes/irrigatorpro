@@ -63,6 +63,9 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                                Q(datetime__lte =  d2dt_min(report_date + timedelta(WATER_REGISTER_DELTA))) 
                                )
 
+    if len(water_register_query) == 0:
+        return None
+
     ### Get all the forms defined by the formset created from the water history objects
     form_index = 0
     current_form = None
@@ -86,7 +89,12 @@ def generate_objects(wh_formset, crop_season, field, user,  report_date):
                 
 
     for day in daterange(crop_season.season_start_date, report_date + timedelta(days=1)):
-        water_register = water_register_query.get(datetime__range = d2dt_range(day))
+        try:
+            water_register = water_register_query.get(datetime__range = d2dt_range(day))
+        except:
+            print "Some date in crop season does not have a water register. Return nothing."
+            return None
+
         day_record = UnifiedReport(day, water_register)
 
         while current_form is not None and getDateObject(current_form['datetime'].value()) == day:

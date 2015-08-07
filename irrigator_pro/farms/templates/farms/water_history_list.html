@@ -104,7 +104,7 @@
 
 
 
-{% block scripts %}
+{% block scripts-after %}
 
     {% if debug %}
         <script src="{{ STATIC_URL }}js/units_conversion.js?t={% now 'c' %}"></script>
@@ -123,18 +123,22 @@
   /* This function cleans up datepickers when a new formset row is added */
   function renewDatePickers() {
       /* Clear out old datepicker event handlers */
-      $("input[id$=date]").datepicker('destroy');
+      $(".hasTimePicker").datetimepicker('destroy');
   
       /* Remove buttons that got copied by formset.add */
-      $("input[id$=date]").siblings("button").remove();
+      $(".hasTimePicker").siblings("button").remove();
   
       /* 
          Re-activate date pickers, restricting dates to the range 
          specified by the crop season   
       */
-      $("input[id$=date]").datepicker({ 
+
+      var current_date = new Date();
+      console.log(current_date);
+      $(".hasTimePicker").datetimepicker({ 
+          timeFormat: "HH:mm:ss",
           minDate: '{{ season.season_start_date|date:"Y-m-d" }}',
-          maxDate: '{{ season.season_end_date|date:"Y-m-d" }}',
+          maxDate: new Date()
       });
   }
   
@@ -173,6 +177,8 @@
 
 
   })
+
+
 </script>
 
 {% endblock %}
