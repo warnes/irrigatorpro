@@ -125,7 +125,7 @@ class ProbeFormsetView(Farms_FormsetView):
     ### formset_valid() is called when the formset is valid. In base class executed:
     ####    return HttpResponseRedirect(self.get_success_url())
     def formset_valid(self, formset):
-
+        print "Into ProbeFormsetView formset valid"
         ### For each radio_id check that it does not conflict with another entry in the 
         ### database. The validation of the same radio_id in two different lines
 
@@ -223,19 +223,6 @@ class WaterHistoryFormsetView(Farms_FormsetView):
                 # print "pk for object: ", form.cleaned_data['id'].pk
                 # print "comment for object: ", form.cleaned_data['comment']
                 # print "source for object: ", form.cleaned_data['source']
-
-
-                # if self.request.POST['temp_units']=='C':
-                #     if obj.min_temp_24_hours is not None:
-                #         obj.min_temp_24_hours = to_faren(obj.min_temp_24_hours)
-                #     if obj.max_temp_24_hours is not None:
-                #         obj.max_temp_24_hours = to_faren(obj.max_temp_24_hours)
-
-
-                # if self.request.POST['depth_units']!='in':
-                #     obj.rain = to_inches(obj.rain, self.request.POST['depth_units'])
-                #     obj.irrigation = to_inches(obj.irrigation, self.request.POST['depth_units'])
-
 
                 obj.crop_season = CropSeason.objects.get(pk=int(self.season))
                 obj.field = Field.objects.get(pk=int(self.field))
