@@ -565,6 +565,8 @@ def generate_water_register(crop_season,
     irrigate_to_max_days      = 0
     nChanged                  = 0
     for date in daterange(first_process_date, end_date):
+
+        if not wr_query.filter(datetime__range=d2dt_range(date)): continue
         wr = wr_query.filter(datetime__range=d2dt_range(date))[0]
 
         ## Will handle both the case where the first irrigate_to_flag set to 
