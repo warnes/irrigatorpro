@@ -287,7 +287,7 @@ def earliest_register_to_update(report_date,
     retval = minNone(dependency_mdate, earliest_to_update, 
                    latest_water_register.datetime.date() + timedelta(1))
 
-    # if DEBUG: print "Returning earliest_date: %s" % retval
+    if DEBUG: print "Returning earliest_date: %s" % retval
     return retval
 
 
