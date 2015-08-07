@@ -4,6 +4,11 @@
 {% load day_records %}
 {% load static %}
 {% load mathfilters %}
+
+{% block page-title %}
+    <title>Water Register</title>
+{% endblock %}
+
 {% block content %}
     <h1 class="global-data" data-report-date="{{report_date |date:"Y-m-d" }}">
         
