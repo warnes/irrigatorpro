@@ -125,6 +125,10 @@ class NotificationsSetupView(TemplateView):
         notifications_rule_list = [] #NotificationsRule.objects.filter(Q(field_list__in=farm_field_list)).all
 
         for notify in NotificationsRule.objects.all():
+
+            if not notify.field_list.all(): 
+                print "There is a notification record saved without fields. should not happen. Will just ignore for now."
+                continue
             aField = notify.field_list.all()[0]
             if farm_field_list.get(aField.farm) is not None:
                 notifications_rule_list.append(notify)
@@ -192,7 +196,33 @@ class NotificationsSetupView(TemplateView):
 
 class ValidID:
 
+    """
+    Create a valid string that can be used as a valid 'id' element
+    in HTML by replacing all non-word characters with underscores.
+    Will not guarantee uniqueness since "a b" and "a-b" will both
+    generate "a_b", but this is the callers responsibility.
+    """
     def __init__(self, value):
 
         self.value = value
         self.id = re.sub('\W', "_", value)
+
+
+
+#########################################################################
+### Ajax Code
+### Below is the ajax code to generate a list of fields and users 
+### based on the farm.
+#########################################################################
+
+def get_fields_list(request, farm_pk, crop_season_pk, **kwargs):
+    pass
+
+def get_users_list(request, farm_pk,  **kwargs):
+    """
+    Returns all the users, plus the farmer. Remove the duplicate
+    if the user is also the owner.
+    """
+
+    pass
+    

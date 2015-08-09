@@ -47,7 +47,14 @@ class NotificationsRule(Comment, Audit):
         r = self.recipients.all()
         return ', '.join([ obj.email for obj in r])
 
+
+    
     def recipients_changed(sender, **kwargs):
+    """
+    This function called after a signal has been sent that a user list in a 
+    farm has been changes.
+
+    """
 
         # Must be an easier way, but this will work for now
         if kwargs.get('action') != "post_remove": return
