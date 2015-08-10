@@ -20,7 +20,7 @@ def send_invitation_email(invited_user, invited_by, farm):
 
     """
     
-    if (invited_user is None) or (inivted_by is None) or (farm is None): 
+    if (invited_user is None) or (invited_by is None) or (farm is None): 
         return   # Don't send
 
 
