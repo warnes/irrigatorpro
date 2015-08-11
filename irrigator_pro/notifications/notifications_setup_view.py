@@ -215,8 +215,11 @@ class ValidID:
 ### based on the farm.
 #########################################################################
 
-def get_fields_list(request, farm_pk, crop_season_pk, **kwargs):
-    pass
+def get_fields_list(request, crop_season_pk, **kwargs):
+
+    cs = CropSeason.objects.get(pk = crop_season_pk).select_related('field_list')
+    for f in cs.field_list:
+        print "Have field ", f
 
 def get_users_list(request, farm_pk,  **kwargs):
     """
