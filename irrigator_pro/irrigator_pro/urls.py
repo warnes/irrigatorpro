@@ -132,10 +132,29 @@ urlpatterns = patterns('',
                        url(r'^settings/validate_sms/$', 'contact_info.views.validate_sms',  name='validate_sms'),
                        url(r'^sms-incoming',    'contact_info.views.incoming_sms', name='sms-incoming'),
 
-                       ## Ajax pages
+                       ## Ajax pages for available users for contact info.
+                       ## Two separate links because a farm may not exists at the time this is invoked.
                        url(r'^filter_auth/$',                    'contact_info.views.get_available_users', name='filter_auth_users'),
                        url(r'^filter_auth/(?P<farm_pk>\d+)/',    'contact_info.views.get_available_users', name='filter_auth_users_farm'),
+
+                       ## Ajax pages for notifications.
+
+                       ## Fields assigned to a crop season
+                       url(r'^notification_fields/',
+                           'notifications.notifications_setup_view.get_fields_list',
+                           name='notification_fields'),
+
+                       ## Users assigned to a farm
+                       url(r'^notification_users/(?P<farm_pk>\d+)/', 
+                           'notifications.notifications_setup_view.get_users_list',
+                           name='notification_users'),
+
 )
+
+
+
+
+
 
 if settings.DEBUG:
     import debug_toolbar

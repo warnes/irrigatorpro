@@ -35,10 +35,10 @@
           {% for rec in notifications_list %}
           <tr id="row_{{rec.pk}}">
               <td id="{{rec.pk}}">
-                  <button type="button" onclick="editRow({{rec.pk}})">
+                  <button id="edit-row" type="button" onclick="editRow({{rec.pk}})">
                       <i class="fa fa-pencil-square-o"></i>
                   </button>
-                  <button type="button" onclick="deleteRow({{rec.pk}})">
+                  <button id="delete-row" type="button" onclick="deleteRow({{rec.pk}})">
                       <i class="fa fa-times"></i>
                   </button>
               </td>
@@ -78,7 +78,7 @@
           {% endfor %}
           <tr>
               <td colspan="9">
-                  <button type="button" onclick="addRow()">
+                  <button id="add-row" type="button" onclick="addRow()">
                       Add Notification
                   </button>
               </td>
@@ -111,9 +111,9 @@
                   
                   
                   <td>        
-                      <select id="select-farms" onchange="update_fields_and_recipients()">
+                      <select id="select-farm" class="exclude-chosen">
                       {% for f in farms %}
-                          <option id="{{f.pk}}" value="{{f}}">{{f}}</option>
+                          <option data-pk="{{f.pk}}" value="{{f}}">{{f}}</option>
                       {% endfor %}
                   
                       </select>
@@ -122,7 +122,7 @@
                   </td>
                   <td>
                       <div id="field-needed" style="color:red; display: none">You need to select at least one field.</div>
-                      <select id="select-fields" name = "select-fields" multiple>
+                      <select id="select-fields" class="exclude-chosen" name = "select-fields" multiple>
                   
                       </select>
               
@@ -167,7 +167,7 @@
                   
                   <td> 
                       <div id="recipient-needed" style="color: red; display: none">You need to select at least one recipient</div>
-                      <select id="select-users" name="select-users" multiple>
+                      <select id="select-users" class="exclude-chosen" name="select-users" multiple>
                   
                       </select>
                       
@@ -183,10 +183,13 @@
       </form>
   
   </div>
+
 {% endblock %}
 
 {% block scripts %}
   <script>
+
+
 
     var labelCell     = 1;
     var farmCell     = 2;
@@ -212,7 +215,7 @@
         
         $("#edit-label")[0].value = tableRow.cells[labelCell].innerHTML.trim();
                 
-        var farmOptions = document.getElementById("select-farms");
+        var farmOptions = document.getElementById("select-farm");
         for (var i = 0; i < farmOptions.length; i++) {
             var opt = farmOptions[i];
             if ("farm_" + opt.id == tableRow.cells[farmCell].id) {
@@ -220,7 +223,7 @@
             }
         }
         
-        update_fields_and_recipients(document.getElementById("select-farms").options[0].id);
+        //update_fields_and_recipients(document.getElementById("select-farm").options[0].id);
     
         // Add selected tags to fields. n^2 (or worse) algorithm, can improve if needed
         var fieldOptions = document.getElementById("select-fields");
@@ -241,7 +244,6 @@
             var recipient_element = document.getElementById("recipient_" + notifications_pk + "_" + recipient_value)
         
             if (recipient_element != undefined) {
-                console.log("recipient matches");
                 recipientOptions[i].selected = true;
             }
         }    
@@ -272,15 +274,13 @@
             }
         );
 
-        var mydiv = document.getElementById("edit-entry");
-        mydiv.style.visibility = "visible";
+        $("#edit-entry").css("visibility", "visible");
         
         // To make sure that something is displayed in the fields and 
         // recipients lists, set the first farms to selected, call the
         // update method
         
-        document.getElementById("select-farms").selectedIndex = 0;
-        update_fields_and_recipients(document.getElementById("select-farms").options[0].id);
+        document.getElementById("select-farm").selectedIndex = 0;
         
         // Use default selection for time zone, notification time
         
@@ -288,89 +288,6 @@
         $("#edit_row_nt_5_00_am")[0].selected = true;
     }
     
-    function get_fields_for_farm(farm_pk) {
-        var fields = {};
-        
-        if (typeof get_fields_for_farm.fields == 'undefined') {
-            console.log("creating options. Only once!!!")
-            {% for farm, fields in farm_fields.items %}
-        
-            
-            new_list = [];
-            {% for field in fields %}
-                opt = document.createElement('option');
-                opt. value = {{field.pk}};
-                opt.id = "{{field.pk}}";
-                opt.innerHTML = "{{field}}";    
-                new_list.push(opt);
-            {% endfor %};
-            fields["{{farm.pk}}"]=new_list;
-            {% endfor %}
-        }
-        return fields["" + farm_pk];
-    }
-    
-    
-    function get_users_for_farm(farm_pk) {
-        var users = {};
-        if (typeof get_users_for_farm.users == 'undefined') {
-            {% for farm, users in farm_users.items %}
-        
-            
-            new_list = [];
-            {% for user in users %}
-                opt = document.createElement('option');
-                opt.id = "recipient_" + {{user.pk}};
-                opt.value={{user.pk}};
-                opt.text = "{{user}}";    
-                new_list.push(opt);
-            {% endfor %};
-            users["{{farm.pk}}"]=new_list.sort(function(a,b){return a.text > b.text;});
-            {% endfor %}
-        }
-        return users["" + farm_pk];
-        
-    }
-    
-    
-    function update_fields(f_pk) {
-        select_list = document.getElementById("select-fields");
-        
-        // Remove the children
-        while (select_list.firstChild) {
-            select_list.removeChild(select_list.firstChild);
-        }
-        
-        
-        options = get_fields_for_farm(f_pk);
-        for (i = 0; i < options.length; i++) {
-            select_list.appendChild(options[i]);
-        }
-    }
-
-    
-    function update_recipients(farm_pk) {
-        select_list = document.getElementById("select-users");
-        // Remove the children
-        while (select_list.firstChild) {
-            select_list.removeChild(select_list.firstChild);
-        }
-                
-        options = get_users_for_farm(farm_pk);
-        for (i = 0; i < options.length; i++) {
-            select_list.appendChild(options[i]);
-        }
-    }
-    
-    
-    function update_fields_and_recipients() {
-        farm_node = document.getElementById("select-farms");
-        console.log(farm_node);
-        console.log(farm_node.options.length);
-        farm_pk = farm_node.options[farm_node.selectedIndex].id;
-        update_fields(farm_pk);
-        update_recipients(farm_pk);
-    }
     
     
     function validate_form(myform) {
@@ -405,11 +322,37 @@
     
   $(document).ready(function() 
      {
+
+
+
+         /**
+         * Called when the selected farm has changed. Must update the list
+         * of fields and users.
+         */
+
+         $('#select-farm').change(function() {
+             $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+                 $('#select-fields').empty();
+                 
+
+                 for (i=0; i < data.length; i++) {
+                     $('#select-fields').append($('<option/>', {
+                         value: data[i].value,
+                         text: data[i].value,
+                         label: data[i].label,
+                         'data-pk': data[i].id
+                     }));
+                 }
+             });
+         });
+
+
+
         $("#cancelEdit").click(function(){
             if (confirm("Are you sure you want to stop? Any change will be lost")) {
                 window.onbeforeunload = null;
                  $("#edit-entry").css("visibility", "hidden");
-                $("#edit-row")[0].reset();
+                //$("#edit-row")[0].reset();
                 $("#notifications_table button").each(            
                     function() {
                         $(this)[0].disabled = false;
@@ -419,27 +362,11 @@
             }
             
         });
-        $('table').tablesorter( {
-            
-        
-            sortList: [[1,0]],
-            
-            headers: {
-                // set "sorter: false" (no quotes) to disable the column
-                0: { sorter: false },
-                1: { sorter: "text" },
-                    2: { sorter:  "text"},
-                3: { sorter:  false},
-                //4: { sorter:  "text"},
-                    4: { sorter:  "text"},
-                    5: { sorter:  false},
-                6: { sorter:  false},
-                7: { sorter:  false},
-            }
-      });
 
-     $('select').chosen();    	
-     $('.chosen-container').css('width','auto');
+
+
+     //$('select').chosen();    	
+     //$('.chosen-container').css('width','auto');
 
     });    
 </script>

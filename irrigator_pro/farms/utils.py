@@ -13,5 +13,3 @@ def to_inches(original, original_units):
     if original_units == "mm":
         original = original / Decimal(10)
     return quantize(original * Decimal(0.3937008))
-
-

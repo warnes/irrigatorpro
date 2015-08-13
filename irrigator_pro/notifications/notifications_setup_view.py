@@ -9,8 +9,7 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 
-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from datetime import date, datetime
 
@@ -20,6 +19,7 @@ from farms.models import CropSeason, Farm, Field
 
 from pytz import common_timezones
 
+import json
 import re
 
 
@@ -215,11 +215,29 @@ class ValidID:
 ### based on the farm.
 #########################################################################
 
-def get_fields_list(request, crop_season_pk, **kwargs):
 
-    cs = CropSeason.objects.get(pk = crop_season_pk).select_related('field_list')
-    for f in cs.field_list:
-        print "Have field ", f
+def get_fields_list(request, **kwargs):
+
+    """
+    Get all the fields from the given farm which are part of a currently
+    active crop season.
+    """
+
+    farm_pk = request.GET['farm_pk']
+    results = []
+    farm = Farm.objects.get(pk = farm_pk)
+    for f in farm.get_fields():
+        print "Adding ", f, " to result"
+        f_json = {}
+        f_json['id'] = f.pk
+        f_json['label'] = f.name
+        f_json['value'] = f.name
+        results.append(f_json)
+
+    data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
 
 def get_users_list(request, farm_pk,  **kwargs):
     """
