@@ -300,9 +300,15 @@
 
         <BR>
         <BR>
-	<img class = " water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
-	<img class = " water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
-	<img class = " water-register-plot" src= {%url 'daily_temperature'  crop_season.pk field.pk  %} />
+	<a href="{%url 'daily_use' crop_season.pk field.pk  %}">
+	   <img class="water-register-plot" src="{%url 'daily_use' crop_season.pk field.pk  %}"/>
+        </a>
+        <a href="{%url 'cumulative_use'  crop_season.pk field.pk  %}">
+    	   <img class="water-register-plot" src="{%url 'cumulative_use'  crop_season.pk field.pk  %}"/>
+        </a>
+        <a href="{%url 'daily_temperature'  crop_season.pk field.pk  %}">
+	   <img class="water-register-plot" src="{%url 'daily_temperature'  crop_season.pk field.pk  %}"/>
+        </a>
 
     {% else %}
         {% if crop_season.season_start_date > report_date or crop_season.season_end_date < report_date  %}
