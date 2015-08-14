@@ -58,7 +58,7 @@ def crop_season_list(parser, token):
             crop_season.year           = crop_season.season_start_date.year
             crop_season.field_list_all = crop_season.field_list.all()
             crop_season.probe_list_all = crop_season.probe_set.all() \
-                                                     .select_related('field', 'farm')  \
+                                                     .select_related('field')  \
                                                      .distinct() 
 
             probe_field_list = []
