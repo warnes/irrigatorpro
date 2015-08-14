@@ -225,7 +225,8 @@ def get_fields_list(request, **kwargs):
         f_json = {}
         f_json['id'] = f.pk
         f_json['label'] = f.name
-        f_json['value'] = f.name
+        f_json['value'] = f.pk
+        f_json['innerHTML'] = str(f)
         results.append(f_json)
 
     data = json.dumps(results)
@@ -250,7 +251,8 @@ def get_users_list(request,  **kwargs):
         u_json = {}
         u_json['id'] = u.pk
         u_json['label'] = str(u)
-        u_json['value'] = str(u)
+        u_json['value'] = u.pk
+        u_json['innerHTML'] = str(u)
         results.append(u_json)
 
     data = json.dumps(results)

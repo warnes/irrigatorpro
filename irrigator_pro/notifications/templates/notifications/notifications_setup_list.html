@@ -48,7 +48,7 @@
                   
               </td>
   
-              <td id = "farm_{{rec.field_list.all.0.farm.pk}}">
+              <td id = "farm_{{rec.field_list.all.0.farm.pk}}" class="farm-cell" data-pk="{{rec.field_list.all.0.farm.pk}}">
                   {{rec.field_list.all.0.farm}}
                   
               </td>
@@ -113,7 +113,7 @@
                   <td>        
                       <select id="select-farm" class="exclude-chosen">
                       {% for f in farms %}
-                          <option data-pk="{{f.pk}}" value="{{f}}">{{f}}</option>
+                          <option class="farm-option" data-pk="{{f.pk}}" value="{{f}}">{{f}}</option>
                       {% endfor %}
                   
                       </select>
@@ -148,7 +148,7 @@
                   </td>
                   
                   <td>
-                      <select id="notification-time" name="notification-time">
+                      <select class="exclude-chosen" id="notification-time" name="notification-time">
                           {% for ntime in available_times %}
                           <option id="edit_row_nt_{{ntime.id}}" value="{{ntime.value}}">{{ntime.value}}</option>
                           {% endfor %}
@@ -156,7 +156,7 @@
                   </td>
                   
                   <td>
-                      <select id="timezone" name="timezone">
+                      <select class="exclude-chosen" id="timezone" name="timezone">
                           {% for tz in available_timezones %}
                           <option id="edit_row_tz_{{tz.id}}" value="{{tz.value}}">{{tz.value}}</option>
                           {% endfor %}
@@ -207,14 +207,23 @@
             }
         );
         
-        document.getElementById("new_row_pk").value = notifications_pk;
-        var mydiv = document.getElementById("edit-entry");
-        mydiv.style.visibility = "visible";
-        
+        $("#new_row_pk").val(notifications_pk)
+        $("#edit-entry").css("visibility", "visible");
+
         var tableRow = document.getElementById("row_"+notifications_pk);
         
         $("#edit-label")[0].value = tableRow.cells[labelCell].innerHTML.trim();
                 
+
+        // First get the right selected farm
+
+        $(".farm-option").each(function() {
+            if ($(this).attr("data-pk") == $("#row_"+notifications_pk + " .farm-cell").attr("data-pk")) {
+                console.log("selecting farm: ");
+                console.log($(this));
+            }
+        });
+
         var farmOptions = document.getElementById("select-farm");
         for (var i = 0; i < farmOptions.length; i++) {
             var opt = farmOptions[i];
@@ -223,8 +232,6 @@
             }
         }
         
-        //update_fields_and_recipients(document.getElementById("select-farm").options[0].id);
-    
         // Add selected tags to fields. n^2 (or worse) algorithm, can improve if needed
         var fieldOptions = document.getElementById("select-fields");
         for (var i = 0; i < fieldOptions.length; i++) {
@@ -284,12 +291,7 @@
         $("#edit_row_tz_US_Eastern")[0].selected = true;
         $("#edit_row_nt_5_00_am")[0].selected = true;
     }
-    
-    
 
-
-
-    
     function validate_form(myform) {
         var returnedValue = true;
         $("#field-needed").css("display", "none");
@@ -338,6 +340,7 @@
                          value: data[i].value,
                          text: data[i].value,
                          label: data[i].label,
+                         html: data[i].innerHTML,
                          'data-pk': data[i].id
                      }));
                  }
@@ -350,6 +353,7 @@
                          value: data[i].value,
                          text: data[i].value,
                          label: data[i].label,
+                         html: data[i].innerHTML,
                          'data-pk': data[i].id
                      }));
                  }
