@@ -65,7 +65,7 @@ class Farm(NameDesc, Location_Optional, Comment, Audit):
 
     def get_farmer_and_user_objects(self):
         retval = [self.farmer] + map(lambda x: x, self.users.all())
-        return retval
+        return list(set(retval))
 
 
 
