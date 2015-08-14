@@ -276,11 +276,8 @@
 
         $("#edit-entry").css("visibility", "visible");
         
-        // To make sure that something is displayed in the fields and 
-        // recipients lists, set the first farms to selected, call the
-        // update method
-        
-        document.getElementById("select-farm").selectedIndex = 0;
+        $("#select-farm")[0].selectedIndex = 0;
+        $("#select-farm").change();
         
         // Use default selection for time zone, notification time
         
@@ -289,6 +286,9 @@
     }
     
     
+
+
+
     
     function validate_form(myform) {
         var returnedValue = true;

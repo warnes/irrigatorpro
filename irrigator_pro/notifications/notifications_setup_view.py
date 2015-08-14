@@ -15,7 +15,7 @@ from datetime import date, datetime
 
 from notifications.models import NotificationsRule, Field
 
-from farms.models import CropSeason, Farm, Field
+from farms.models import Farm, Field
 
 from pytz import common_timezones
 
@@ -92,8 +92,6 @@ class NotificationsSetupView(TemplateView):
             notifications.recipients.clear()
             notifications.field_list.clear()
 
-        
-
         notifications.save()
         
         for x in request.POST.getlist("select-fields"):
@@ -107,17 +105,37 @@ class NotificationsSetupView(TemplateView):
 
         for x in request.POST.getlist("select-users"):
             notifications.recipients.add(User.objects.get(pk=x))
-
         
-
         notifications.save();
         return HttpResponseRedirect(reverse('notifications'))  # back to the same page
 
 
-    # Get all the notifications for this user and any crop season not yet
-    # ended. Will include crop seasons not yet started.
+    def get_farm_fields(self):
+        """
+        Creates a dictionary with a farm as the key,
+        the list of fields as the value.
+        """
+        farm_fields = {}
+        for farm in farms_filter(self.request.user):
+            fields = []
+            for field in farm.get_fields():
+                fields.append(field)
+            farm_fields[farm] = fields
+
+        return farm_fields
+
+
 
     def get_notifications_list(self):
+        """
+        Get all the notifications for this user and any crop season not yet
+        ended. Will include crop seasons not yet started.
+        """
+
+
+        ### TODO Really just need the farm filter here. Used this inearlier
+        ### version because the dictionary was usedinother place. No longer the
+        ### case.
         farm_field_list = self.get_farm_fields()
 
         # Might be easier way, this will work for now.
@@ -133,32 +151,6 @@ class NotificationsSetupView(TemplateView):
             if farm_field_list.get(aField.farm) is not None:
                 notifications_rule_list.append(notify)
         return notifications_rule_list
-
-
-
-
-
-    def get_farm_fields(self):
-        farm_fields = {}
-        for farm in farms_filter(self.request.user):
-            fields = []
-            for field in farm.get_fields():
-                fields.append(field)
-            farm_fields[farm] = fields
-
-        return farm_fields
-
-
-    def get_farm_users(self):
-        farm_users = {}
-        for farm in farms_filter(self.request.user):
-            users = []
-            for user in farm.get_farmer_and_user_objects():
-                users.append(user)
-            # Remove duplicates
-            farm_users[farm] = list(set(users))
-
-        return farm_users
 
 
     @method_decorator(login_required)
@@ -182,8 +174,6 @@ class NotificationsSetupView(TemplateView):
         context = super(NotificationsSetupView, self).get_context_data(**kwargs)
         context['notifications_list']   = self.get_notifications_list()
         context['farms']                = farms_filter(self.request.user)
-        context['farm_fields']          = self.get_farm_fields()
-        context['farm_users']           = self.get_farm_users()
         context['notifications_types']  = NotificationsRule.NOTIFICATION_TYPE_VALUES
         context['alert_levels']         = get_available_levels
         context['available_times']      = get_available_times
