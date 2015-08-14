@@ -145,7 +145,7 @@ urlpatterns = patterns('',
                            name='notification_fields'),
 
                        ## Users assigned to a farm
-                       url(r'^notification_users/(?P<farm_pk>\d+)/', 
+                       url(r'^notification_users/', 
                            'notifications.notifications_setup_view.get_users_list',
                            name='notification_users'),
 

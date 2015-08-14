@@ -216,12 +216,16 @@ class ValidID:
 #########################################################################
 
 
+# @method_decorator(login_required)
 def get_fields_list(request, **kwargs):
 
     """
     Get all the fields from the given farm which are part of a currently
     active crop season.
     """
+
+    if not request.is_ajax():       
+        raise PermissionDenied()
 
     farm_pk = request.GET['farm_pk']
     results = []
@@ -239,11 +243,26 @@ def get_fields_list(request, **kwargs):
     return HttpResponse(data, mimetype)
 
 
-def get_users_list(request, farm_pk,  **kwargs):
+def get_users_list(request,  **kwargs):
     """
     Returns all the users, plus the farmer. Remove the duplicate
     if the user is also the owner.
     """
 
-    pass
-    
+    if not request.is_ajax():       
+        raise PermissionDenied()
+
+    farm_pk = request.GET['farm_pk']
+    results = []
+
+    for u in Farm.objects.get(pk = farm_pk).get_farmer_and_user_objects():
+        print "Adding ", u, " to result"
+        u_json = {}
+        u_json['id'] = u.pk
+        u_json['label'] = str(u)
+        u_json['value'] = str(u)
+        results.append(u_json)
+
+    data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

@@ -333,10 +333,20 @@
          $('#select-farm').change(function() {
              $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
                  $('#select-fields').empty();
-                 
-
                  for (i=0; i < data.length; i++) {
                      $('#select-fields').append($('<option/>', {
+                         value: data[i].value,
+                         text: data[i].value,
+                         label: data[i].label,
+                         'data-pk': data[i].id
+                     }));
+                 }
+             });
+
+             $.get("{%url 'notification_users'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+                 $('#select-users').empty();
+                 for (i=0; i < data.length; i++) {
+                     $('#select-users').append($('<option/>', {
                          value: data[i].value,
                          text: data[i].value,
                          label: data[i].label,
