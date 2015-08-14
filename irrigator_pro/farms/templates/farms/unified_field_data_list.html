@@ -300,22 +300,9 @@
 
         <BR>
         <BR>
-
-        <div class = "row">
-            <div class = "col-md-4 col-xs-12">
-	        <img class = " water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
-            </div> <!-- col-md-4-->
-            <div class = "col-md-4 col-xs-12">
-	        <img class = " water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
-            </div> <!-- col-md-4-->
-            <div class = "col-md-4 col-xs-12">
-	        <img class = " water-register-plot" src= {%url 'daily_temperature'  crop_season.pk field.pk  %} />
-            </div> <!-- col-md-4-->
-            
-        </div> <!-- row -->
-
-
-
+	<img class = " water-register-plot" src= {%url 'daily_use' crop_season.pk field.pk  %} />
+	<img class = " water-register-plot" src= {%url 'cumulative_use'  crop_season.pk field.pk  %} />
+	<img class = " water-register-plot" src= {%url 'daily_temperature'  crop_season.pk field.pk  %} />
 
     {% else %}
         {% if crop_season.season_start_date > report_date or crop_season.season_end_date < report_date  %}
