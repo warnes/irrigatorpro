@@ -126,7 +126,7 @@ class ProbeFormsetView(Farms_FormsetView):
     ### formset_valid() is called when the formset is valid. In base class executed:
     ####    return HttpResponseRedirect(self.get_success_url())
     def formset_valid(self, formset):
-
+        print "Into ProbeFormsetView formset valid"
         ### For each radio_id check that it does not conflict with another entry in the 
         ### database. The validation of the same radio_id in two different lines
 
