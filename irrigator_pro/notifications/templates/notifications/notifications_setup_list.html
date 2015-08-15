@@ -55,7 +55,7 @@
   
               <td><!-- list of fields--> 
                   {% for f in rec.field_list.all %}
-                      <div id="field_{{rec.pk}}_{{f.pk}}">{{f}}</div>
+                      <div class="current-field" data-pk="{{ f.pk }}" id="field_{{rec.pk}}_{{f.pk}}">{{f}}</div>
                       
                   {% endfor %} 
               </td>
@@ -213,54 +213,33 @@
         var tableRow = document.getElementById("row_"+notifications_pk);
         
         $("#edit-label")[0].value = tableRow.cells[labelCell].innerHTML.trim();
-                
 
         // First get the right selected farm
-
-        $(".farm-option").each(function() {
-            if ($(this).attr("data-pk") == $("#row_"+notifications_pk + " .farm-cell").attr("data-pk")) {
-                console.log("selecting farm: ");
-                console.log($(this));
-            }
+        var pk = $('#row_' + notifications_pk + ' .farm-cell').attr('data-pk');
+        $("#select-farm .farm-option").removeAttr("selected");
+        $(".farm-option[data-pk=" + pk + "]").each(function() {
+            console.log("Farm selected", $(this).val());
+            $(this).attr("selected", "selected");
         });
 
-        var farmOptions = document.getElementById("select-farm");
-        for (var i = 0; i < farmOptions.length; i++) {
-            var opt = farmOptions[i];
-            if ("farm_" + opt.id == tableRow.cells[farmCell].id) {
-                opt.selected = true;
-            }
-        }
-        
-        // Add selected tags to fields. n^2 (or worse) algorithm, can improve if needed
-        var fieldOptions = document.getElementById("select-fields");
-        for (var i = 0; i < fieldOptions.length; i++) {
-            var field_id = fieldOptions[i].id;
-            var field_element = document.getElementById("field_" + notifications_pk + "_" + field_id)
-        
-            if (field_element != undefined) {
-                fieldOptions[i].selected = true;
-            } 
-        }
-        
-        // Add selected tags for users. Use same procedure as for fields.
-        
-        var recipientOptions = document.getElementById("select-users");
-        for (var i = 0; i < recipientOptions.length; i++) {
-            var recipient_value = recipientOptions[i].value;
-            var recipient_element = document.getElementById("recipient_" + notifications_pk + "_" + recipient_value)
-        
-            if (recipient_element != undefined) {
-                recipientOptions[i].selected = true;
-            }
-        }    
-        
+        update_selection_lists();
+
+        // Set selected fields.
+        $("#row_" + notifications_pk + " .current-field").each(function() {
+            console.log("Adding ", $(this).attr("data-pk"), " to selected fields");
+            $(".field-option[data-pk=" + $(this).attr("data-pk") + "]").attr("selected", "selected");
+        });
+
+        // Set selected users
+        $("#row_" + notifications_pk + " .current-user").each(function() {
+            console.log("Adding ", $(this).attr("data-pk"), " to selected users");
+            $(".user-option[data-pk=" + $(this).attr("data-pk") + "]").attr("selected", "selected");
+        });
+
         $("#edit_row_alert_level_" + createValidID(tableRow.cells[alertLevelCell].innerHTML.trim()))[0].selected = true;
         //$("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
         $("#edit_row_nt_" + createValidID(tableRow.cells[notificationTime_col].innerHTML.trim()))[0].selected = true;
         $("#edit_row_tz_" + createValidID(tableRow.cells[timezone_col].innerHTML.trim()))[0].selected = true;
-        
-
     }
     
 
@@ -281,13 +260,13 @@
             }
         );
 
+        $("#edit-entry input").val('');
+
         $("#edit-entry").css("visibility", "visible");
-        
         $("#select-farm")[0].selectedIndex = 0;
         $("#select-farm").change();
         
         // Use default selection for time zone, notification time
-        
         $("#edit_row_tz_US_Eastern")[0].selected = true;
         $("#edit_row_nt_5_00_am")[0].selected = true;
     }
@@ -321,6 +300,42 @@
         window.onbeforeunload = null;
         myform.submit();    
     }
+
+
+   function update_selection_lists() {
+       $.ajaxSetup({
+           async: false
+       });
+       $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+           $('#select-fields').empty();
+           for (i=0; i < data.length; i++) {
+               console.log("Adding field with pk: ", data[i].id);
+               $('#select-fields').append($('<option/>', {
+                   class: "field-option",
+                   value: data[i].value,
+                   text: data[i].value,
+                   label: data[i].label,
+                   html: data[i].innerHTML,
+                   "data-pk": data[i].id
+               }));
+           }
+       });
+
+       $.get("{%url 'notification_users'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+           $('#select-users').empty();
+           for (i=0; i < data.length; i++) {
+               console.log("Adding user with pk: ", data[i].id);
+               $('#select-users').append($('<option/>', {
+                   class: "user-option",
+                   value: data[i].value,
+                   text: data[i].value,
+                   label: data[i].label,
+                   html: data[i].innerHTML,
+                   'data-pk': data[i].id
+               }));
+           }
+       });
+          }
     
   $(document).ready(function() 
      {
@@ -333,31 +348,7 @@
          */
 
          $('#select-farm').change(function() {
-             $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
-                 $('#select-fields').empty();
-                 for (i=0; i < data.length; i++) {
-                     $('#select-fields').append($('<option/>', {
-                         value: data[i].value,
-                         text: data[i].value,
-                         label: data[i].label,
-                         html: data[i].innerHTML,
-                         'data-pk': data[i].id
-                     }));
-                 }
-             });
-
-             $.get("{%url 'notification_users'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
-                 $('#select-users').empty();
-                 for (i=0; i < data.length; i++) {
-                     $('#select-users').append($('<option/>', {
-                         value: data[i].value,
-                         text: data[i].value,
-                         label: data[i].label,
-                         html: data[i].innerHTML,
-                         'data-pk': data[i].id
-                     }));
-                 }
-             });
+             update_selection_lists();
          });
 
 
