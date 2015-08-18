@@ -69,11 +69,13 @@
               <td id = "row_notification_time_{{rec.pk}}">{{rec.delivery_time}}</td>
               <td id = "row_timezone_{{rec.pk}}">{{rec.time_zone}}</td>
   
-              <td style="text-align: left"> {% for u in rec.recipients.all %}
-                  <div id="recipient_{{rec.pk}}_{{u.pk}}">
-                      {{u}}
-                  </div>
-              {% endfor %} </td>
+              <td style="text-align: left"> 
+                  {% for u in rec.recipients.all %}
+                      <div id="recipient_{{rec.pk}}_{{u.pk}}" class="current-user" data-pk="{{u.pk}}">
+                          {{u}}
+                      </div>
+                  {% endfor %} 
+              </td>
           </tr>
           {% endfor %}
           <tr>
@@ -115,18 +117,13 @@
                       {% for f in farms %}
                           <option class="farm-option" data-pk="{{f.pk}}" value="{{f}}">{{f}}</option>
                       {% endfor %}
-                  
                       </select>
-              
-  
                   </td>
+
                   <td>
                       <div id="field-needed" style="color:red; display: none">You need to select at least one field.</div>
                       <select id="select-fields" class="exclude-chosen" name = "select-fields" multiple>
-                  
                       </select>
-              
-              
                    </td>
           <!-- 
                   <td>
@@ -163,19 +160,16 @@
                       </select>
                   </td>
                   
-                  
-                  
                   <td> 
                       <div id="recipient-needed" style="color: red; display: none">You need to select at least one recipient</div>
                       <select id="select-users" class="exclude-chosen" name="select-users" multiple>
-                  
                       </select>
                       
                   </td>
               </tr>
               <tr>
                   <td colspan="7" style="align:left">
-                      <input type="button" value="Save" onclick="validate_form(this.form)"></input>
+                      <input id="save-new" type="button" value="Save" onclick="validate_form(this.form)"></input>
                       <button type="button" id="cancelEdit">Cancel</button>
                   </td>
               </tr>
@@ -187,192 +181,53 @@
 {% endblock %}
 
 {% block scripts %}
-  <script>
+    {% if debug %}
+        <script src="{{ STATIC_URL }}js/notifications.js?t={% now 'c' %}"></script>
+    {% else %}
+        <script src="{{ STATIC_URL }}js/notifications.js"></script>
+    {% endif %}
 
 
+    <script>
+    function update_selection_lists() {
+    $.ajaxSetup({
+        async: false
+    });
+    $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+        $('#select-fields').empty();
+        for (i=0; i < data.length; i++) {
+            $('#select-fields').append($('<option/>', {
+                class: "field-option",
+                value: data[i].value,
+                text: data[i].value,
+                label: data[i].label,
+                html: data[i].innerHTML,
+                "data-pk": data[i].id
+            }));
+        }
+     });
 
-    var labelCell     = 1;
-    var farmCell     = 2;
-   //var commTypeCell = 4;
-    var alertLevelCell = 4;
-    var notificationTime_col = 5;
-    var timezone_col = 6;
-    
-    
-    function editRow(notifications_pk) {
-                
-        $("#notifications_table button").each(
-            function() {
-                $(this)[0].disabled = true;
+        $.get("{%url 'notification_users'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
+            $('#select-users').empty();
+            for (i=0; i < data.length; i++) {
+                $('#select-users').append($('<option/>', {
+                    class: "user-option",
+                    value: data[i].value,
+                    text: data[i].value,
+                    label: data[i].label,
+                    html: data[i].innerHTML,
+                    'data-pk': data[i].id
+                }));
             }
-        );
-        
-        $("#new_row_pk").val(notifications_pk)
-        $("#edit-entry").css("visibility", "visible");
-
-        var tableRow = document.getElementById("row_"+notifications_pk);
-        
-        $("#edit-label")[0].value = tableRow.cells[labelCell].innerHTML.trim();
-
-        // First get the right selected farm
-        var pk = $('#row_' + notifications_pk + ' .farm-cell').attr('data-pk');
-        $("#select-farm .farm-option").removeAttr("selected");
-        $(".farm-option[data-pk=" + pk + "]").each(function() {
-            console.log("Farm selected", $(this).val());
-            $(this).attr("selected", "selected");
         });
-
-        update_selection_lists();
-
-        // Set selected fields.
-        $("#row_" + notifications_pk + " .current-field").each(function() {
-            console.log("Adding ", $(this).attr("data-pk"), " to selected fields");
-            $(".field-option[data-pk=" + $(this).attr("data-pk") + "]").attr("selected", "selected");
-        });
-
-        // Set selected users
-        $("#row_" + notifications_pk + " .current-user").each(function() {
-            console.log("Adding ", $(this).attr("data-pk"), " to selected users");
-            $(".user-option[data-pk=" + $(this).attr("data-pk") + "]").attr("selected", "selected");
-        });
-
-        $("#edit_row_alert_level_" + createValidID(tableRow.cells[alertLevelCell].innerHTML.trim()))[0].selected = true;
-        //$("#edit_row_comm_type_" + tableRow.cells[commTypeCell].innerHTML.trim())[0].selected = true;
-        $("#edit_row_nt_" + createValidID(tableRow.cells[notificationTime_col].innerHTML.trim()))[0].selected = true;
-        $("#edit_row_tz_" + createValidID(tableRow.cells[timezone_col].innerHTML.trim()))[0].selected = true;
-    }
-    
+     }
 
 
      function deleteRow(notifications_pk) {
-        if (confirm("Are you sure you want to delete this row?")) {
-            window.location="{% url 'notifications' %}?delete_row=" + notifications_pk;
-        }
-    }
-
-
-
-    function addRow() {
-        
-        $("#notifications_table button").each(
-            function() {
-                $(this)[0].disabled = true;
-            }
-        );
-
-        $("#edit-entry input").val('');
-
-        $("#edit-entry").css("visibility", "visible");
-        $("#select-farm")[0].selectedIndex = 0;
-        $("#select-farm").change();
-        
-        // Use default selection for time zone, notification time
-        $("#edit_row_tz_US_Eastern")[0].selected = true;
-        $("#edit_row_nt_5_00_am")[0].selected = true;
-    }
-
-    function validate_form(myform) {
-        var returnedValue = true;
-        $("#field-needed").css("display", "none");
-        $("#recipient-needed").css("display", "none");
-        $("#label-needed").css("display", "none");
+         if (confirm("Are you sure you want to delete this row?")) {
+             window.location="{% url 'notifications' %}?delete_row=" + notifications_pk;
+         }
+     }
+    </script>
     
-        if (document.getElementById("select-fields").selectedIndex < 0) {
-            $("#field-needed").css("display", "");
-            returnedValue = false;
-        }
-        if (document.getElementById("select-users").selectedIndex < 0) {
-            $("#recipient-needed").css("display", "");
-            returnedValue = false;
-        }
-        
-        if (document.getElementById("edit-label").value.trim() == "") {
-            $("#label-needed").css("display", "");
-            returnedValue = false;
-        }
-        
-        // Check that the label is not null
-        
-        
-        if (returnedValue == false){
-            return false;
-        }
-        window.onbeforeunload = null;
-        myform.submit();    
-    }
-
-
-   function update_selection_lists() {
-       $.ajaxSetup({
-           async: false
-       });
-       $.get("{%url 'notification_fields'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
-           $('#select-fields').empty();
-           for (i=0; i < data.length; i++) {
-               console.log("Adding field with pk: ", data[i].id);
-               $('#select-fields').append($('<option/>', {
-                   class: "field-option",
-                   value: data[i].value,
-                   text: data[i].value,
-                   label: data[i].label,
-                   html: data[i].innerHTML,
-                   "data-pk": data[i].id
-               }));
-           }
-       });
-
-       $.get("{%url 'notification_users'%}", {farm_pk:$('#select-farm option:selected').attr('data-pk')}, function(data) {
-           $('#select-users').empty();
-           for (i=0; i < data.length; i++) {
-               console.log("Adding user with pk: ", data[i].id);
-               $('#select-users').append($('<option/>', {
-                   class: "user-option",
-                   value: data[i].value,
-                   text: data[i].value,
-                   label: data[i].label,
-                   html: data[i].innerHTML,
-                   'data-pk': data[i].id
-               }));
-           }
-       });
-          }
-    
-  $(document).ready(function() 
-     {
-
-
-
-         /**
-         * Called when the selected farm has changed. Must update the list
-         * of fields and users.
-         */
-
-         $('#select-farm').change(function() {
-             update_selection_lists();
-         });
-
-
-
-        $("#cancelEdit").click(function(){
-            if (confirm("Are you sure you want to stop? Any change will be lost")) {
-                window.onbeforeunload = null;
-                 $("#edit-entry").css("visibility", "hidden");
-                //$("#edit-row")[0].reset();
-                $("#notifications_table button").each(            
-                    function() {
-                        $(this)[0].disabled = false;
-            }
-        );
-
-            }
-            
-        });
-
-
-
-     //$('select').chosen();    	
-     //$('.chosen-container').css('width','auto');
-
-    });    
-</script>
 {% endblock %}

@@ -221,7 +221,6 @@ def get_fields_list(request, **kwargs):
     results = []
     farm = Farm.objects.get(pk = farm_pk)
     for f in farm.get_fields():
-        print "Adding ", f, " to result"
         f_json = {}
         f_json['id'] = f.pk
         f_json['label'] = f.name
@@ -247,7 +246,6 @@ def get_users_list(request,  **kwargs):
     results = []
 
     for u in Farm.objects.get(pk = farm_pk).get_farmer_and_user_objects():
-        print "Adding ", u, " to result"
         u_json = {}
         u_json['id'] = u.pk
         u_json['label'] = str(u)
