@@ -9,17 +9,17 @@ from django.core.urlresolvers import reverse
 
 from django.contrib.auth.models import User
 
-
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 
 from datetime import date, datetime
 
 from notifications.models import NotificationsRule, Field
 
-from farms.models import CropSeason, Farm, Field
+from farms.models import Farm, Field
 
 from pytz import common_timezones
 
+import json
 import re
 
 
@@ -92,8 +92,6 @@ class NotificationsSetupView(TemplateView):
             notifications.recipients.clear()
             notifications.field_list.clear()
 
-        
-
         notifications.save()
         
         for x in request.POST.getlist("select-fields"):
@@ -107,17 +105,37 @@ class NotificationsSetupView(TemplateView):
 
         for x in request.POST.getlist("select-users"):
             notifications.recipients.add(User.objects.get(pk=x))
-
         
-
         notifications.save();
         return HttpResponseRedirect(reverse('notifications'))  # back to the same page
 
 
-    # Get all the notifications for this user and any crop season not yet
-    # ended. Will include crop seasons not yet started.
+    def get_farm_fields(self):
+        """
+        Creates a dictionary with a farm as the key,
+        the list of fields as the value.
+        """
+        farm_fields = {}
+        for farm in farms_filter(self.request.user):
+            fields = []
+            for field in farm.get_fields():
+                fields.append(field)
+            farm_fields[farm] = fields
+
+        return farm_fields
+
+
 
     def get_notifications_list(self):
+        """
+        Get all the notifications for this user and any crop season not yet
+        ended. Will include crop seasons not yet started.
+        """
+
+
+        ### TODO Really just need the farm filter here. Used this inearlier
+        ### version because the dictionary was usedinother place. No longer the
+        ### case.
         farm_field_list = self.get_farm_fields()
 
         # Might be easier way, this will work for now.
@@ -133,32 +151,6 @@ class NotificationsSetupView(TemplateView):
             if farm_field_list.get(aField.farm) is not None:
                 notifications_rule_list.append(notify)
         return notifications_rule_list
-
-
-
-
-
-    def get_farm_fields(self):
-        farm_fields = {}
-        for farm in farms_filter(self.request.user):
-            fields = []
-            for field in farm.get_fields():
-                fields.append(field)
-            farm_fields[farm] = fields
-
-        return farm_fields
-
-
-    def get_farm_users(self):
-        farm_users = {}
-        for farm in farms_filter(self.request.user):
-            users = []
-            for user in farm.get_farmer_and_user_objects():
-                users.append(user)
-            # Remove duplicates
-            farm_users[farm] = list(set(users))
-
-        return farm_users
 
 
     @method_decorator(login_required)
@@ -182,8 +174,6 @@ class NotificationsSetupView(TemplateView):
         context = super(NotificationsSetupView, self).get_context_data(**kwargs)
         context['notifications_list']   = self.get_notifications_list()
         context['farms']                = farms_filter(self.request.user)
-        context['farm_fields']          = self.get_farm_fields()
-        context['farm_users']           = self.get_farm_users()
         context['notifications_types']  = NotificationsRule.NOTIFICATION_TYPE_VALUES
         context['alert_levels']         = get_available_levels
         context['available_times']      = get_available_times
@@ -215,14 +205,54 @@ class ValidID:
 ### based on the farm.
 #########################################################################
 
-def get_fields_list(request, farm_pk, crop_season_pk, **kwargs):
-    pass
 
-def get_users_list(request, farm_pk,  **kwargs):
+# @method_decorator(login_required)
+def get_fields_list(request, **kwargs):
+
+    """
+    Get all the fields from the given farm which are part of a currently
+    active crop season.
+    """
+
+    if not request.is_ajax():       
+        raise PermissionDenied()
+
+    farm_pk = request.GET['farm_pk']
+    results = []
+    farm = Farm.objects.get(pk = farm_pk)
+    for f in farm.get_fields():
+        f_json = {}
+        f_json['id'] = f.pk
+        f_json['label'] = f.name
+        f_json['value'] = f.pk
+        f_json['innerHTML'] = str(f)
+        results.append(f_json)
+
+    data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def get_users_list(request,  **kwargs):
     """
     Returns all the users, plus the farmer. Remove the duplicate
     if the user is also the owner.
     """
 
-    pass
-    
+    if not request.is_ajax():       
+        raise PermissionDenied()
+
+    farm_pk = request.GET['farm_pk']
+    results = []
+
+    for u in Farm.objects.get(pk = farm_pk).get_farmer_and_user_objects():
+        u_json = {}
+        u_json['id'] = u.pk
+        u_json['label'] = str(u)
+        u_json['value'] = u.pk
+        u_json['innerHTML'] = str(u)
+        results.append(u_json)
+
+    data = json.dumps(results)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

@@ -25,7 +25,7 @@ function activateDatePicker() {
 
 function setNavigation() {
     var debug = 0;
-
+    console.log("setNavigation called");
     var path = window.location.pathname;
 
     // trim any # page references
@@ -180,5 +180,5 @@ $(function() {
     // Run filter on seasons 
     filter_seasons()
 
-    $("select").chosen({disable_search_threshold: 5});
+   $("select").not(".exclude-chosen").chosen({disable_search_threshold: 5});
 });

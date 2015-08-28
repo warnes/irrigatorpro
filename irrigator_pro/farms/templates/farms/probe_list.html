@@ -92,27 +92,15 @@
   
   
       <div class="submit-bar">
-        <button value="Submit" type="submit" class="btn btn-success">
-  	<i class="fa fa-floppy-o"></i> Save Changes
-        </button>
+          <button value="Submit" type="submit" class="btn btn-success">
+  	      <i class="fa fa-floppy-o"></i> Save Changes
+          </button>
   
   
-        {% if object.pk %}
-  	<a class="btn btn-warning" href="{% url 'farm_list' %}{{ object.pk }}">
-  	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
-  	</a>
-        {% else %}
-  	<a class="btn btn-warning" href="{% url 'farm_list' %}">
-  	  <i class="fa fa-undo fa-fw"></i> Cancel Changes
-  	</a>
-        {% endif %}
-  
-        {% if object.pk %}
-  	<a class="btn btn-danger" href="{% url 'farm_list' %}delete/{{ object.pk }}">
-  	  <i class="fa fa-times fa-fw"></i> Delete
-  	</a>
-        {% endif %}
-  
+  	  <a class="btn btn-warning" href="{{ request.get_full_path }}">
+  	      <i class="fa fa-undo fa-fw"></i> Cancel Changes
+  	  </a>
+
       </div>
   
       {{ formset.management_form }}
