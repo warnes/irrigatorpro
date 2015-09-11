@@ -1,0 +1,85 @@
+<VirtualHost *:80>
+  ServerName test.irrigatorpro.org
+  ServerAdmin webmaster@irrigatorpro.org
+
+  ####
+  # Root URL Settings
+  ####
+
+  DocumentRoot /www/test/irrigator_pro/root
+  RedirectTemp /index.html http://test.irrigatorpro.org/farm/
+  RedirectTemp /accounts/login http://test.irrigatorpro.org/farm/accounts/login/
+
+  <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+  </Directory>
+
+  <Directory /www/test/irrigator_pro/root/>
+    Order allow,deny
+    Allow from all
+  </Directory>
+
+  ####
+  # Trac Settings
+  ####
+
+  # Trac on test server is simply a redirect to the production server
+  #RedirectTemp /index.html http://irrigatorpro.org/farm/
+  Redirect /trac http://irrigatorpro.org:80/trac
+  Redirect /trac.html http://irrigatorpro.org:80/trac
+  
+#   Alias /trac/chrome/common /www/test/irrigator_pro/trac/htdocs/common
+#   Alias /trac/chrome/site /www/test/irrigator_pro/trac/htdocs/site
+# 
+#   <Directory /www/test/irrigator_pro/trac/htdocs>
+#     Options FollowSymLinks
+#     Order allow,deny
+#     Allow from all
+#   </Directory>
+# 
+#   WSGIScriptAlias /trac /www/test/irrigator_pro/trac/cgi-bin/trac.wsgi
+#   <Directory /www/test/irrigator_pro/trac/cgi-bin>
+#       <Files trac.wsgi>
+#         WSGIApplicationGroup %{GLOBAL}
+#         Order deny,allow
+#         Allow from all
+#       </Files>
+#   </Directory>
+
+  
+  ####
+  # Django Settings 
+  ####
+  
+  Alias /robots.txt  /www/test/irrigator_pro/static/robots.txt
+  Alias /favicon.ico /www/test/irrigator_pro/static/favicon.ico
+  
+  AliasMatch ^/([^/]*\.css) /www/test/irrigator_pro/static/styles/$1
+  
+  Alias /media  /www/test/irrigator_pro/media
+  Alias /static /www/test/irrigator_pro/static
+  
+  <Directory /www/test/irrigator_pro/static >
+      Order deny,allow
+      Allow from all 
+  </Directory>
+  
+  WSGIScriptAlias /farm /www/test/irrigator_pro/irrigator_pro/wsgi.py
+  
+  <Directory /www/test/irrigator_pro/irrigator_pro>
+      <Files wsgi.py>
+          Order deny,allow
+          #Require all granted
+          Allow from all 
+      </Files>
+  </Directory>
+  
+  <Directory />
+      AllowOverride None
+      Order Deny,Allow
+      Deny from all
+  </Directory>
+
+</VirtualHost>
+
