@@ -40,6 +40,6 @@ account_sid = "AC642f7826a30e9666db2716553adf4461"
 auth_token = "38e7c453fee0d95d852af80483025ae2"
 client = TwilioRestClient(account_sid, auth_token)
 message = client.messages.create(body="Test frompython api",
-to="+1XXXXXXX", # Replace with your phone number
+to="+XXXXXXXX", # Replace with your phone number
 from_="+15856729419") # Replace with your Twilio number
 print message.sid
